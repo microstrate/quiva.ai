@@ -9649,7 +9649,7 @@
     "baseURL": {
       "type": "string",
       "enum": [
-        "https://www.googleapis.com"
+        "https://maps.googleapis.com"
       ]
     },
     "security": [
