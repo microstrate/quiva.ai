@@ -1,107 +1,1402 @@
----
-title: 'Development'
-description: 'Preview changes locally to update your docs'
----
+# Bellerophon Compute Technical Documentation
+## Serverless Compute Engine ("Hydra")
 
-<Info>
-  **Prerequisite**: Please install Node.js (version 19 or higher) before proceeding. <br />
-  Please upgrade to ```docs.json``` before proceeding and delete the legacy ```mint.json``` file.
-</Info>
+## I. Introduction & Overview
 
-Follow these steps to install and run Mintlify on your operating system:
+### Purpose
 
-**Step 1**: Install Mintlify:
+Bellerophon Compute, codenamed "Hydra," is a serverless compute engine designed for the Evari Olympus distributed platform. It solves the following core problems:
 
-<CodeGroup>
+- **Isolated Execution**: Provides secure, containerized execution environments for both ephemeral functions and persistent services
+- **Resource Efficiency**: Optimizes resource utilization through dynamic allocation, scaling, and oversubscription
+- **Multi-tenancy**: Enables secure isolation between different accounts and workloads
+- **Distributed Scheduling**: Implements decentralized scheduling without a single point of failure
+- **Seamless Integration**: Native integration with Bellerophon's message streaming platform
 
-  ```bash npm
-  npm i -g mintlify
-  ```
+### Core Concepts
 
-```bash yarn
-yarn global add mintlify
+#### Function
+An ephemeral, event-driven compute workload designed for short-lived operations. Functions are the primary unit of serverless execution in Hydra.
+
+**Key Characteristics:**
+- **Ephemeral Lifecycle**: Created on-demand, destroyed after execution
+- **Event-Driven**: Triggered by messages on Bellerophon subjects
+- **Stateless**: No persistent local state between invocations
+- **Auto-Scaling**: Automatically scales based on invocation rate
+- **Time-Bounded**: Maximum execution time limits (configurable)
+- **Resource-Efficient**: Minimal overhead, fast cold starts
+
+**Function Structure:**
+```go
+type Function struct {
+    Name       string        // Unique identifier within namespace
+    Namespace  string        // Isolation boundary
+    Runtime    string        // Execution environment (e.g., "nodejs:16")
+    Handler    string        // Entry point (e.g., "index.handler")
+    Memory     string        // Memory allocation (e.g., "256MB")
+    Timeout    time.Duration // Maximum execution time
+    Version    string        // Function version identifier
+}
 ```
 
-</CodeGroup>
+**Invocation Pattern:**
+```
+Client → $HYDRA.compute.invoke.<namespace>.<function> → Scheduler → Node → Container → Response
+```
 
-**Step 2**: Navigate to the docs directory (where the `docs.json` file is located) and execute the following command:
+#### Machine
+A persistent compute instance designed for long-running services and stateful applications. Machines provide a more traditional server-like experience within the serverless platform.
 
+**Key Characteristics:**
+- **Persistent State**: Maintains state across restarts
+- **Long-Running**: Designed for continuous operation
+- **Network Accessible**: Can expose services via Bellerophon subjects
+- **Auto-Healing**: Automatic restart on failure
+- **Scalable**: Supports horizontal scaling with multiple instances
+- **Resource Guaranteed**: Dedicated resource allocation
+
+**Machine Types:**
+1. **Service Machines**: Run microservices, APIs, databases
+2. **Worker Machines**: Process background jobs, queues
+3. **Scheduled Machines**: Execute cron-like scheduled tasks
+4. **Stateful Machines**: Maintain persistent data stores
+
+**Machine Configuration:**
+```go
+type Machine struct {
+    ServiceName  string              // Unique service identifier
+    Namespace    string              // Isolation boundary
+    Runtime      string              // Base image or runtime
+    Resources    ResourceLimits      // CPU/Memory allocation
+    Networking   NetworkConfig       // Network rules and configuration
+    Volumes      []Volume            // Persistent storage mounts
+    Environment  map[string]string   // Environment variables
+    Scaling      ScalingPolicy       // Auto-scaling configuration
+}
+```
+
+#### Node
+A physical or virtual host that runs the Hydra compute engine. Nodes are the fundamental infrastructure units that execute workloads.
+
+**Node Components:**
+1. **Host Server**: Connects to external Bellerophon mesh
+2. **Internal Server**: Manages local container communication
+3. **Scheduler**: Processes and assigns workloads
+4. **Resource Manager**: Tracks and allocates resources
+5. **Container Runtime**: Manages Hydra machines
+6. **Network Stack**: Provides isolated networking
+
+**Node Capabilities:**
+```go
+type NodeCapabilities struct {
+    TotalMemoryMB    uint64   // Physical memory available
+    TotalCPUCores    int      // CPU cores available
+    RuntimeSupport   []string // Supported runtimes ("nodejs", "go", etc.)
+    NetworkCIDR      string   // Network range for containers
+    StorageCapacity  uint64   // Available disk space
+    GPUSupport       bool     // GPU acceleration available
+    Tags             []string // Node labels for scheduling
+}
+```
+
+**Node State Management:**
+- Health monitoring and reporting
+- Resource utilization tracking
+- Workload registry maintenance
+- Metrics collection and export
+
+#### Runtime
+The execution environment that provides the necessary dependencies and isolation for running user code. Runtimes are pre-built, optimized environments.
+
+**Runtime Components:**
+1. **Base OS**: Minimal Linux distribution
+2. **Language Runtime**: Node.js, Python, Go, etc.
+3. **System Libraries**: Required dependencies
+4. **Runtime Provider**: Hydra-specific integration
+5. **Security Policies**: AppArmor/SELinux profiles
+
+**Runtime Types:**
+```go
+type RuntimeDefinition struct {
+    Name         string            // Runtime identifier (e.g., "nodejs:16")
+    BaseImage    string            // Pack filesystem image
+    Provider     string            // Runtime provider binary
+    MemOverhead  uint64            // Additional memory required
+    CPUOverhead  uint64            // Additional CPU required
+    Features     []string          // Supported features
+    Constraints  []string          // Required node capabilities
+    Security     SecurityProfile   // Security configuration
+}
+```
+
+**Supported Runtimes:**
+- **Node.js**: 14.x, 16.x, 18.x (CommonJS and ES modules)
+- **Go**: 1.18, 1.19, 1.20 (planned)
+- **Python**: 3.8, 3.9, 3.10 (planned)
+- **Java**: 11, 17 (planned)
+- **.NET**: 6.0, 7.0 (planned)
+- **WebAssembly**: WASI (experimental)
+
+#### Scheduler
+The distributed scheduling system that assigns workloads to appropriate nodes based on resource availability, constraints, and policies.
+
+**Scheduling Algorithm:**
+1. **Message Receipt**: Consume from scheduling stream
+2. **Constraint Evaluation**: Check node capabilities
+3. **Resource Calculation**: Determine requirements
+4. **Node Selection**: Choose optimal placement
+5. **Reservation**: Secure resources
+6. **Execution**: Launch workload
+
+**Scheduling Patterns:**
+```go
+type SchedulingDecision struct {
+    NodeID         string            // Selected node
+    Resources      ResourceAllocation // Allocated resources
+    Priority       int               // Workload priority
+    Constraints    []string          // Applied constraints
+    QoSClass       string            // Quality of service
+    PreemptionRisk bool              // Can be preempted
+}
+```
+
+**Subject-Based Routing:**
+```
+$HYDRA.sch.fun.<account>.<namespace>.<function>.<version>.<memory>
+```
+
+This subject encoding enables:
+- Distributed load balancing
+- Constraint-based filtering
+- Priority-based routing
+- Automatic failover
+
+#### Resource Manager
+The component responsible for tracking, allocating, and managing compute resources (CPU, memory) on each node.
+
+**Resource Tracking:**
+```go
+type ResourceState struct {
+    // Physical resources
+    TotalMemoryMB      uint64
+    TotalMilliCPU      uint64
+    
+    // Reserved resources
+    SystemReservedMB   uint64
+    SystemReservedCPU  uint64
+    
+    // Allocated resources
+    AllocatedMemoryMB  uint64
+    AllocatedMilliCPU  uint64
+    
+    // Available resources
+    AvailableMemoryMB  uint64
+    AvailableMilliCPU  uint64
+}
+```
+
+**Resource Allocation Strategy:**
+1. **Reservation-Based**: Proactive resource reservation
+2. **Best-Fit**: Optimal packing algorithm
+3. **QoS-Aware**: Priority-based allocation
+4. **Oversubscription**: Intelligent resource sharing
+5. **Fragmentation Avoidance**: Contiguous allocation
+
+**Resource Limits:**
+- Memory: Hard limits enforced by cgroups
+- CPU: Soft limits with burst capability
+- IOPS: Disk bandwidth throttling
+- Network: Bandwidth rate limiting
+
+#### Hydra Machine
+The fundamental execution unit in the Hydra system. A containerized instance that provides isolated execution for functions or services.
+
+**Container Technology Stack:**
+1. **Linux Namespaces**: Process, network, mount isolation
+2. **Control Groups**: Resource limits and accounting
+3. **Overlay Filesystem**: Layered filesystem for efficiency
+4. **Virtual Networking**: Bridge networks with veth pairs
+5. **Security Modules**: AppArmor/SELinux enforcement
+
+**Hydra Machine Lifecycle:**
+```
+Created → Starting → Running → Terminating → Terminated
+                        ↓
+                    Suspended (for persistent machines)
+```
+
+**Machine Configuration:**
+```go
+type HydraMachine struct {
+    ID           string           // Unique machine identifier
+    Type         MachineType      // Function or Service
+    State        MachineState     // Current lifecycle state
+    ProcessID    int              // Host process ID
+    Namespace    string           // Container namespaces
+    Resources    ResourceLimits   // Allocated resources
+    Network      NetworkConfig    // Network configuration
+    Mounts       []Mount          // Filesystem mounts
+    StartTime    time.Time        // Container start time
+    Checkpoints  []Checkpoint     // CRIU checkpoints
+}
+```
+
+#### Pack
+A pre-built filesystem image containing all necessary components for a specific runtime environment. Packs are the building blocks for container filesystems.
+
+**Pack Structure:**
+```
+/pack-root/
+├── bin/           # Essential binaries
+├── lib/           # Shared libraries
+├── usr/           # User programs
+├── opt/           # Runtime specific files
+│   ├── node/      # Node.js runtime
+│   ├── hydra/     # Hydra provider
+│   └── app/       # User application
+├── etc/           # Configuration
+├── tmp/           # Temporary files
+└── dev/           # Device files
+```
+
+**Pack Features:**
+- **Layered Design**: Base + runtime + application layers
+- **Compression**: Efficient storage and transfer
+- **Checksumming**: Integrity verification
+- **Versioning**: Immutable, versioned artifacts
+- **Caching**: Local pack cache for fast starts
+
+**Pack Management:**
+```go
+type Pack struct {
+    ID          string    // Unique pack identifier
+    Runtime     string    // Associated runtime
+    Version     string    // Pack version
+    SHA256      string    // Content checksum
+    Size        uint64    // Uncompressed size
+    Layers      []Layer   // Filesystem layers
+    Created     time.Time // Creation timestamp
+    Manifest    Manifest  // Pack metadata
+}
+```
+
+#### Additional Core Concepts
+
+**Namespace**
+Logical isolation boundary for resources and workloads:
+- Account-level isolation
+- Service grouping
+- Access control boundary
+- Resource quota enforcement
+
+**Deployment**
+The specification that defines how a function or service should be deployed:
+- Resource requirements
+- Runtime configuration
+- Environment variables
+- Network policies
+- Scaling parameters
+
+**Invocation**
+The process of executing a function in response to an event:
+- Synchronous: Request/response pattern
+- Asynchronous: Fire-and-forget pattern
+- Batch: Multiple invocations in parallel
+
+**Scaling Policy**
+Rules that govern how workloads scale in response to load:
+- Metrics-based scaling (CPU, memory, custom)
+- Request-based scaling (RPS, queue depth)
+- Schedule-based scaling (time of day)
+- Event-based scaling (external triggers)
+
+### High-Level Architecture
+
+```
+                              Bellerophon Mesh
+                                     |
+                          +----------+----------+
+                          |                     |
+                    Host Server           Internal Server
+                   (External Mesh)       (Internal Comms)
+                          |                     |
+                    +-----+-----+         +-----+-----+
+                    |           |         |           |
+              Scheduler   Resource    Session    Machine
+                          Manager     Manager    Manager
+                              |           |         |
+                              +-----------+---------+
+                                         |
+                                   Hydra Machines
+                              (Containerized Instances)
+                                         |
+                            +------------+------------+
+                            |                         |
+                       Functions               Persistent Services
+                    (Ephemeral)               (Long-running)
+```
+
+### Key Features & Capabilities
+
+- **Dual Workload Support**: Handles both ephemeral functions and persistent services
+- **Auto-scaling**: Dynamic scaling based on load, CPU, memory, and custom metrics
+- **Resource Reservation**: Proactive resource allocation with guaranteed resources
+- **Distributed Scheduling**: Decentralized scheduling with no central coordinator
+- **Multi-Runtime Support**: Node.js (current), with plans for Go, Python, Java, .NET, WebAssembly
+- **Network Isolation**: Containers cannot communicate directly, only via Bellerophon subjects
+- **QoS Classes**: Guaranteed, Burstable, and BestEffort workload prioritization
+- **State Synchronization**: Distributed state management via KeyValue stores
+- **Fault Tolerance**: Graceful handling of node failures and resource conflicts
+
+## II. System Architecture (Deep Dive)
+
+### Unified Scheduler
+
+The UnifiedScheduler is the core scheduling component that replaces the previous separate ComputeScheduler and MachineScheduler implementations.
+
+**Responsibilities:**
+- Process incoming scheduling requests for both functions and machines
+- Make resource allocation decisions based on node capacity
+- Manage consumer subscriptions to scheduling streams
+- Coordinate with the Resource Manager for resource reservations
+- Handle message acknowledgment and dead-letter processing
+
+**Key Data Structures:**
+```go
+type UnifiedScheduler struct {
+    nodeConfig      *server.Options
+    resourceManager *NodeResourceManager
+    
+    // Bellerophon integration
+    hostStream bstream.BStream
+    hostConn   *bClient.Conn
+    
+    // Scheduling streams
+    fnScheduleStream      bstream.Stream
+    machineScheduleStream bstream.Stream
+    deadLetterStream      bstream.Stream
+    
+    // Consumer contexts
+    functionConsumers map[string]bstream.ConsumeContext
+    machineConsumers  map[string]bstream.ConsumeContext
+    
+    // Advanced features
+    prioritizationPolicy    PrioritizationPolicy
+    oversubscriptionManager *OversubscriptionManager
+    machineScalerRegistry   *MachineScalerRegistry
+}
+```
+
+**Core Logic/Algorithms:**
+1. Message arrives on scheduling stream with pattern: `$HYDRA.sch.fun.<account>.<namespace>.<function>.<version>.<memory>`
+2. Scheduler validates JWT token and loads user session
+3. Checks node constraints (tags, runtime availability)
+4. Calculates resource requirements including runtime overhead
+5. Attempts resource reservation via ResourceManager
+6. Acknowledges message if successful, NAKs if resources unavailable
+7. Launches job execution in separate goroutine
+
+**Interactions & Dependencies:**
+- ResourceManager: For resource allocation decisions
+- SessionManager: For user authentication and deployment lookup
+- RuntimeResolver: For runtime availability and configuration
+- BStream: For message consumption and acknowledgment
+
+### Node Resource Manager
+
+The ResourceManager is the central component for resource tracking and allocation on each node.
+
+**Responsibilities:**
+- Track available CPU and memory resources
+- Manage resource reservations for workloads
+- Maintain system resource buffers
+- Synchronize state with distributed KV store
+- Monitor resource health and fragmentation
+- Handle reservation expiration
+
+**Key Data Structures:**
+```go
+type NodeResourceManager struct {
+    nodeID string
+    
+    // Total physical resources
+    totalMemoryMB uint64
+    totalMilliCPU uint64
+    
+    // System reservations
+    systemReservedMemoryMB uint64
+    systemReservedMilliCPU uint64
+    
+    // Current allocations
+    reservations     map[string]*ResourceReservation
+    reservedMemoryMB uint64
+    reservedMilliCPU uint64
+    
+    // Machine limits
+    runningMachineCount int
+    maxMachinesPerNode  int
+    
+    // Distributed state
+    stateKV bstream.KeyValue
+}
+
+type ResourceReservation struct {
+    ReservationID      string
+    JobType            JobType
+    AccountID          string
+    ServiceName        string
+    AllocatedMemoryMB  uint64
+    AllocatedMilliCPU  uint64
+    QoSClass           QoSClass
+    CreatedAt          time.Time
+    ExpiresAt          *time.Time
+}
+```
+
+**State Management:**
+- In-memory tracking of all reservations
+- Periodic synchronization with KV store
+- Expiration checking for time-bound reservations
+- Orphan cleanup during state reconciliation
+
+### Machine Scaler
+
+Manages auto-scaling for persistent services based on various metrics.
+
+**Responsibilities:**
+- Monitor service metrics (RPS, CPU, memory, outstanding requests)
+- Make scaling decisions based on thresholds
+- Coordinate scaling operations across nodes
+- Maintain scaling state in distributed KV store
+- Implement cooldown periods
+
+**Key Data Structures:**
+```go
+type MachineScaler struct {
+    Config          MachineScalerConfig
+    resourceManager *NodeResourceManager
+    
+    // Current state
+    currentMachineCount int32
+    targetMachineCount  int32
+    lastScaleUp         time.Time
+    lastScaleDown       time.Time
+    
+    // Metrics
+    requestsPerSecond   float64
+    outstandingRequests int64
+    
+    // Scaling conditions
+    scalingConditions []ScalingCondition
+}
+
+type MachineScalerConfig struct {
+    MinMachines      int
+    MaxMachines      int
+    TargetRPS        float64
+    CPUThreshold     int
+    MemoryThreshold  int
+    ScaleUpCooldown  time.Duration
+    ScaleDownCooldown time.Duration
+}
+```
+
+### Session Management
+
+The session subsystem handles authentication, deployment lookup, and account isolation.
+
+**Components:**
+- **SessionManager**: Global session registry
+- **UserSession**: Per-user authentication and permissions
+- **AccountSession**: Account-level resource tracking
+- **AssetManager**: Runtime and deployment asset management
+
+### Networking Architecture
+
+Hydra implements isolated networking using Linux bridges and virtual ethernet pairs.
+
+**Key Features:**
+- Bridge-based networking with veth pairs
+- CIDR allocation: /16 prefix, /24 subnets (~32k usable IPs)
+- IP address recycling for ephemeral functions
+- NAT for outbound internet access
+- DNS redirection to host or via inbuilt DNS server
+- IPTables rules for traffic control
+
+**Network Configuration:**
+```go
+type HydraMachineNetworkConfiguration struct {
+    MachineProcessId int
+    HostVethName     string
+    MachineVethName  string
+    BridgeName       string
+    MachineIP        string
+    BridgeIP         string
+    MachineGateway   string
+    Config           *HydraComputeNetworkDeployment
+}
+```
+
+### Request Lifecycle
+
+**Function Invocation:**
+1. Client publishes to `$HYDRA.compute.invoke.<namespace>.<function>`
+2. Message routed to scheduling stream
+3. Scheduler selects node and reserves resources
+4. Function executor retrieves deployment and assets
+5. Container launched with isolated namespace
+6. User code executed in runtime
+7. Response returned via reply subject
+8. Resources released upon completion
+
+**Service Deployment:**
+1. Client publishes to `$HYDRA.machine.deploy.<account>`
+2. Scheduler finds node with sufficient resources
+3. Machine launcher creates persistent container
+4. Service starts and registers health metrics
+5. Auto-scaler monitors and adjusts instance count
+6. Machine runs until explicitly terminated
+
+## III. Deployment & Configuration
+
+### Deployment Model
+
+The compute engine is typically deployed as a distributed cluster of nodes:
+
+- **Physical Servers**: Bare metal Linux hosts with root access
+- **Virtual Machines**: Cloud VMs with nested virtualization support
+
+### Configuration Parameters
+
+**Core Configuration (`compute_engine` section):**
+```conf
+compute_engine {
+    node_description: "Microstrate Compute Node"
+    credentials_file: "./microstrate.creds"
+    pack_directory: "./packs"
+    machine_directory: "./machines"
+    machine_scaling_factor: 1.5
+    machine_min_millicores: 500
+    use_in_process_srv: true
+    
+    scheduler: {
+        system_cpu_reserve_percent: 5.0
+        system_mem_reserve_percent: 10.0
+        memory_buffer_percent: 5.0
+        max_machines_per_node: 20
+        
+        # Subscription patterns
+        instance_ranges: ["128MB:1GB", "1GB:4GB"]
+        account_allocations: ["AC75JGN*"]
+        fn_allocations: ["namespace1.function1"]
+        
+        # Distributed state
+        state_sync_interval: "5m"
+        health_check_interval: "2m"
+        
+        # Prioritization
+        default_function_priority: 100
+        default_machine_priority: 50
+        preemption_enabled: true
+    }
+}
+
+# Standard Bellerophon configuration
+net: 0.0.0.0
+port: 1024
+server_name: hydra-node-1
+
+cluster {
+    host: 0.0.0.0
+    port: 8000
+    name: Microstrate
+    routes: ["evari://node2:8000", "evari://node3:8000"]
+}
+```
+
+**Runtime Configuration:**
+```go
+type ProviderRuntime struct {
+    Name        string                // e.g., "nodejs", "go", "python"
+    Version     string                // e.g., "16.0.0"
+    Description string
+    Limits      *HydraComputeResources // Memory/CPU for runtime
+    RuntimeCommand string             // Command to execute
+    Asset       string                // Pack asset path
+    AssetSHA    string                // Pack checksum
+    IsPersistant bool                 // Function vs. machine
+    Scaling     *HydraMachineScaling  // Auto-scaling config
+}
+```
+
+### Dependencies
+
+**Required:**
+- Linux kernel 5.4+ with cgroups v2
+- Root/sudo access for namespace operations
+- Bellerophon server and streaming
+- Network connectivity to mesh
+
+**Optional:**
+- CoreDNS for internal DNS
+- Prometheus for metrics export
+- Object storage for assets
+- TLS certificates for secure communication
+
+## IV. Operational Guide
+
+### Startup & Shutdown
+
+**Starting the Compute Node:**
 ```bash
-mintlify dev
+# Start with configuration file
+sudo ./bellerophon-compute -c compute-config.conf
+
+# Start with inline options
+sudo ./bellerophon-compute --addr 0.0.0.0 --port 1024 \
+    --server_name hydra-node-1 \
+    --routes "evari://cluster-seed:8000"
 ```
 
-A local preview of your documentation will be available at `http://localhost:3000`.
+**Graceful Shutdown:**
+1. Stop accepting new workloads
+2. Wait for running functions to complete
+3. Persist machine states
+4. Release all resources
+5. Disconnect from cluster
 
-### Custom Ports
+### Monitoring & Observability
 
-By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. To run Mintlify on port 3333, for instance, use this command:
+**Key Metrics:**
 
+| Metric | Description | Alert Threshold |
+|--------|-------------|-----------------|
+| `scheduler.jobs_received` | Total jobs received | N/A |
+| `scheduler.jobs_accepted` | Jobs successfully scheduled | < 80% of received |
+| `scheduler.jobs_rejected` | Jobs rejected (no resources) | > 20% of received |
+| `resource.memory_available` | Available memory (MB) | < 10% of total |
+| `resource.cpu_available` | Available CPU (millicores) | < 10% of total |
+| `resource.reservations_active` | Active resource reservations | > 90% of max |
+| `machines.running_count` | Running machine instances | At capacity |
+| `functions.invocation_latency` | Function cold start time | > 5 seconds |
+| `network.allocation_failures` | IP allocation failures | > 0 |
+
+**Logging:**
+```
+# Standard log levels
+-D, --debug      Enable debugging output
+-V, --trace      Trace the raw protocol
+-VV              Verbose trace
+
+# Log examples
+INFO: Scheduler: Node has capacity for service-x. Required: 512MB, 500 MilliCores
+WARN: Scheduler: Insufficient Memory for service-y. Required: 2048MB, Available: 1024MB
+ERROR: Failed to create veth pair for machine-123: permission denied
+```
+
+### Troubleshooting Common Issues
+
+**Function Deployment Failures:**
+- Check JWT token validity
+- Verify runtime pack exists
+- Ensure sufficient resources
+- Check node constraints match
+- Review deployment manifest
+
+**High Invocation Latency:**
+- Monitor cold start times
+- Check resource fragmentation
+- Verify pack caching
+- Review network configuration
+- Analyze scheduling patterns
+
+**Resource Exhaustion:**
+- Check system reservations
+- Review oversubscription settings
+- Analyze memory fragmentation
+- Monitor for resource leaks
+- Check orphaned reservations
+
+**Scheduling Failures (NAKs):**
+- Verify node has required tags
+- Check resource availability
+- Review account permissions
+- Analyze constraint mismatches
+- Check message queue depth
+
+**Network Connectivity Issues:**
+- Verify bridge creation
+- Check IPTables rules
+- Confirm DNS resolution
+- Test outbound NAT
+- Review CIDR allocation
+
+### Health Checks
+
+**Node Health Endpoint:**
+```
+GET /health
+{
+  "status": "healthy",
+  "uptime": "72h15m",
+  "resources": {
+    "memory_used_mb": 8192,
+    "memory_total_mb": 16384,
+    "cpu_used_millicores": 4000,
+    "cpu_total_millicores": 8000
+  },
+  "machines": {
+    "running": 15,
+    "maximum": 20
+  }
+}
+```
+
+**Component Health Checks:**
+1. Scheduler stream connectivity
+2. Resource manager consistency
+3. KV store synchronization
+4. Runtime pack availability
+5. Network stack functionality
+
+### Upgrades & Maintenance
+
+**Rolling Upgrade Process:**
+1. Drain node of new workloads
+2. Wait for function completions
+3. Migrate persistent machines
+4. Upgrade compute binary
+5. Restart with new version
+6. Rejoin cluster
+7. Resume scheduling
+
+**Maintenance Tasks:**
+- Clean orphaned containers
+- Purge expired reservations
+- Compact KV store entries
+- Rotate log files
+- Update runtime packs
+
+### Capacity Planning
+
+**Resource Estimation:**
+```
+Function Capacity = (Total Memory - System Reserve) / Avg Function Memory
+Machine Capacity = (Total Memory - System Reserve) / Avg Machine Memory
+
+Example (16GB node):
+- Total Memory: 16,384 MB
+- System Reserve (10%): 1,638 MB
+- Buffer (5%): 819 MB
+- Available: 13,927 MB
+
+Functions (256MB avg): ~54 concurrent
+Machines (1GB avg): ~13 concurrent
+```
+
+**Scaling Considerations:**
+- Account for peak load periods
+- Plan for burst capacity
+- Consider resource fragmentation
+- Reserve headroom for scaling
+- Monitor usage trends
+
+## V. Developer Guide
+
+### Defining Functions & Services
+
+**Function Definition:**
+```go
+type HydraComputeDeployment struct {
+    Service     string               // Function name
+    Runtime     string               // Runtime identifier
+    Assets      []ComputeAsset       // Code and dependencies
+    Namespace   string               // Namespace isolation
+    Handler     string               // Entry point
+    EnvVars     []string             // Environment variables
+    Constraints []string             // Node requirements
+    Secrets     []string             // Secret references
+    Limits      *HydraComputeResources // Resource limits
+    Timeout     time.Duration        // Execution timeout
+    Network     *HydraComputeNetworkDeployment // Network config
+}
+
+type HydraComputeResources struct {
+    Memory string // e.g., "256MB", "1GB"
+    CPU    string // e.g., "500m", "2000m"
+}
+```
+
+**Service Definition:**
+```go
+type MachineDeployment struct {
+    ServiceName   string
+    Image         string
+    ConfigVolumes []ConfigVolume
+    Namespace     string
+    Limits        *HydraComputeResources
+    PolicyType    model.PolicyType
+    Network       *HydraComputeNetworkDeployment
+    Restart       model.RestartPolicy
+    Replication   *MachineReplication
+}
+```
+
+**Packaging Code:**
 ```bash
-mintlify dev --port 3333
+# Create deployment package
+tar -czf function.tar.gz index.js package.json node_modules/
+
+# Upload to object store
+bellerophon-cli object put function.tar.gz
+
+# Deploy function
+bellerophon-cli compute deploy \
+    --runtime nodejs:16 \
+    --handler index.handler \
+    --memory 256MB \
+    --asset function.tar.gz
 ```
 
-If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
+### Invoking Functions & Accessing Services
 
-```md
-Port 3000 is already in use. Trying 3001 instead.
+**Function Invocation:**
+```go
+// Synchronous invocation
+response, err := client.Request("$HYDRA.compute.invoke.namespace.function", payload)
+
+// Asynchronous invocation
+err := client.Publish("$HYDRA.compute.invoke.namespace.function", payload)
+
+// With custom headers
+msg := &bstream.Msg{
+    Subject: "$HYDRA.compute.invoke.namespace.function",
+    Data:    payload,
+    Header:  bstream.Header{
+        "Hydra_UserToken": []string{token},
+        "Hydra_InvokeReply": []string{replySubject},
+    },
+}
+client.PublishMsg(msg)
 ```
 
-## Mintlify Versions
+**Service Access:**
+```go
+// Deploy service
+deployment := &MachineDeployment{
+    ServiceName: "web-api",
+    Namespace:   "production",
+    Limits: &HydraComputeResources{
+        Memory: "1GB",
+        CPU:    "1000m",
+    },
+}
+client.Request("$HYDRA.machine.deploy.account", deployment)
 
-Please note that each CLI release is associated with a specific version of Mintlify. If your local website doesn't align with the production version, please update the CLI:
-
-<CodeGroup>
-
-```bash npm
-npm i -g mintlify@latest
+// Access service (via Bellerophon subjects)
+response, err := client.Request("production.web-api.endpoint", request)
 ```
 
-```bash yarn
-yarn global upgrade mintlify
+### Auto-Scaling Configuration
+
+**Scaling Parameters:**
+```go
+type HydraMachineScaling struct {
+    MinInstances       int32         // Minimum running instances
+    MaxInstances       int32         // Maximum running instances
+    
+    // Request-based scaling
+    UpperRPSLimit      int32         // Scale up if RPS exceeds
+    LowerRPSLimit      int32         // Scale down if RPS below
+    UpperOutstanding   int32         // Scale up if queue exceeds
+    LowerOutstanding   int32         // Scale down if queue below
+    
+    // Resource-based scaling
+    UpperCPUPercent    int32         // Scale up if CPU% exceeds
+    LowerCPUPercent    int32         // Scale down if CPU% below
+    UpperMemoryPercent int32         // Scale up if memory% exceeds
+    LowerMemoryPercent int32         // Scale down if memory% below
+    
+    // Timing parameters
+    TimeoutPeriod      time.Duration // Idle timeout
+    SamplePeriod       time.Duration // Metrics sample period
+}
 ```
 
-</CodeGroup>
+**Monitoring Auto-Scaler:**
+```go
+// Get scaling status
+status, err := client.Request("$HYDRA.scaler.status", &ScalerStatusRequest{
+    Service:   "web-api",
+    Namespace: "production",
+})
 
-## Validating Links
+// Update scaling config
+err := client.Request("$HYDRA.scaler.update", &ScalerUpdateRequest{
+    Service:   "web-api",
+    Namespace: "production",
+    Scaling:   updatedScaling,
+})
+```
 
-The CLI can assist with validating reference links made in your documentation. To identify any broken links, use the following command:
+### Logging & Metrics for Deployed Workloads
 
+**Function Logs:**
+```go
+// Functions log to stdout/stderr, captured by the runtime
+console.log("Processing request:", requestId);
+console.error("Failed to connect:", error);
+
+// Logs available via monitoring subject
+// $HYDRA.logs.namespace.function.instance
+```
+
+**Metrics Collection:**
+```go
+// Metrics emitted on monitoring subjects
+// $HYDRA.machine.<namespace>.<service>.<id>.stats
+{
+    "cpu_usage_pct": 45.2,
+    "memory_usage_mb": 512,
+    "requests_per_second": 150,
+    "outstanding_requests": 25,
+    "uptime_seconds": 3600
+}
+```
+
+### Best Practices
+
+1. **Resource Optimization:**
+   - Request only needed resources
+   - Use memory-efficient coding
+   - Minimize cold start time
+   - Cache frequently used data
+
+2. **Error Handling:**
+   - Implement timeout handling
+   - Use circuit breakers
+   - Log errors with context
+   - Return meaningful errors
+
+3. **Security:**
+   - Never log sensitive data
+   - Use secret management
+   - Validate all inputs
+   - Follow least privilege
+
+4. **Performance:**
+   - Minimize dependencies
+   - Optimize startup time
+   - Use connection pooling
+   - Implement graceful shutdown
+
+## VI. API Reference
+
+### Management APIs
+
+**Function Deployment:**
+```
+Subject: $HYDRA.compute.deploy
+Method: Request/Response
+Payload: HydraComputeDeployment
+Response: DeploymentResponse
+
+Example:
+{
+  "service": "image-processor",
+  "runtime": "nodejs:16",
+  "handler": "index.process",
+  "limits": {
+    "memory": "512MB",
+    "cpu": "500m"
+  }
+}
+```
+
+**Function Invocation:**
+```
+Subject: $HYDRA.compute.invoke.<namespace>.<function>
+Method: Request/Response or Publish
+Payload: FunctionInvocation
+Response: FunctionResponse
+
+Headers:
+- Hydra_UserToken: JWT authentication token
+- Hydra_InvokeReply: Reply subject for response
+```
+
+**Machine Deployment:**
+```
+Subject: $HYDRA.machine.deploy.<account>
+Method: Request/Response
+Payload: MachineDeployment
+Response: MachineDeploymentResponse
+```
+
+**Scaling Configuration:**
+```
+Subject: $HYDRA.scaler.update
+Method: Request/Response
+Payload: ScalerUpdateRequest
+Response: ScalerUpdateResponse
+```
+
+**Resource Status:**
+```
+Subject: $HYDRA.node.resources
+Method: Request/Response
+Response: ResourceStatus
+```
+
+## VII. Advanced Topics
+
+### Distributed Scheduling Algorithm
+
+The scheduler uses a decentralized approach with no central coordinator:
+
+1. **Work Distribution:** Jobs are published to scheduling streams with subjects encoding requirements
+2. **Consumer Groups:** Nodes subscribe to patterns matching their capabilities
+3. **Local Decision:** Each node independently decides whether to accept work
+4. **Resource Reservation:** Accepted jobs trigger immediate resource reservation
+5. **Message Acknowledgment:** Success = ACK, Failure = NAK for redistribution
+
+### Auto-Scaling Decision Logic
+
+The auto-scaler evaluates multiple signals:
+
+1. **Metrics Collection:** Aggregate RPS, CPU, memory, queue depth
+2. **Threshold Evaluation:** Compare against configured limits
+3. **Cooldown Check:** Ensure minimum time since last scaling
+4. **Capacity Verification:** Check cluster has resources
+5. **Scaling Execution:** Adjust instance count incrementally
+6. **State Synchronization:** Update distributed state
+
+### Resource Preemption Mechanisms
+
+When resources are exhausted, the scheduler can preempt lower-priority workloads:
+
+1. **Priority Calculation:** Combine job type, account, and service priorities
+2. **Candidate Selection:** Identify preemptible workloads
+3. **Resource Recovery:** Calculate resources to be freed
+4. **Graceful Termination:** Signal workloads to shutdown
+5. **Forced Termination:** Kill if graceful timeout exceeded
+
+### Security Model
+
+Bellerophon Compute implements a comprehensive, multi-layered security architecture designed to protect workloads, isolate tenants, and prevent unauthorized access:
+
+#### 1. Authentication & Authorization
+
+**JWT-Based Authentication:**
+- All API requests must include a valid JWT token in the `Hydra_UserToken` header
+- Tokens are issued by the Bellerophon account system with specific claims
+- Token validation occurs at multiple levels (scheduler, session manager, runtime)
+- Tokens include account ID, user permissions, and expiration time
+
+```go
+// Token validation example
+type UserClaims struct {
+    AccountID   string   `json:"accountId"`
+    UserID      string   `json:"userId"`
+    Permissions []string `json:"permissions"`
+    ExpiresAt   int64    `json:"exp"`
+}
+
+// Required permissions for operations
+const (
+    PermissionDeployFunction = "compute:function:deploy"
+    PermissionInvokeFunction = "compute:function:invoke"
+    PermissionDeployMachine  = "compute:machine:deploy"
+    PermissionManageMachine  = "compute:machine:manage"
+)
+```
+
+**Role-Based Access Control (RBAC):**
+- Hierarchical permission model: Account → User → Permissions
+- Service accounts for automated systems
+- Permission inheritance and delegation
+- Fine-grained access to specific namespaces and resources
+
+#### 2. Container Isolation
+
+**Linux Namespaces:**
+- **PID Namespace**: Process isolation, init process per container
+- **Network Namespace**: Isolated network stack per container
+- **Mount Namespace**: Filesystem isolation with read-only root
+- **UTS Namespace**: Hostname and domain isolation
+- **IPC Namespace**: Inter-process communication isolation
+- **User Namespace**: UID/GID mapping for rootless containers
+
+```go
+// Namespace configuration
+type NamespaceConfig struct {
+    Type uintptr
+    Path string
+}
+
+var namespaces = []NamespaceConfig{
+    {Type: syscall.CLONE_NEWNS},   // Mount
+    {Type: syscall.CLONE_NEWUTS},  // UTS
+    {Type: syscall.CLONE_NEWIPC},  // IPC
+    {Type: syscall.CLONE_NEWPID},  // PID
+    {Type: syscall.CLONE_NEWNET},  // Network
+    {Type: syscall.CLONE_NEWUSER}, // User
+}
+```
+
+**Control Groups (cgroups):**
+- CPU quotas prevent resource exhaustion
+- Memory limits enforce hard boundaries
+- Block I/O throttling
+- Network bandwidth limiting
+- Process count restrictions
+
+#### 3. Network Security
+
+**Network Isolation Architecture:**
+- Containers cannot communicate directly with each other
+- All inter-container communication must use Bellerophon subjects
+- Each container has its own virtual ethernet (veth) pair
+- Bridge networking with strict iptables rules
+
+```go
+// Network security configuration
+type NetworkSecurityConfig struct {
+    // Ingress rules (incoming traffic)
+    IngressRules []NetworkRule
+    
+    // Egress rules (outgoing traffic)
+    EgressRules []NetworkRule
+    
+    // Default policies
+    DefaultIngressPolicy string // "DENY"
+    DefaultEgressPolicy  string // "ALLOW" for internet, "DENY" for internal
+}
+
+type NetworkRule struct {
+    Protocol string // tcp, udp, icmp
+    Port     string // specific port or "*"
+    CIDR     string // source/dest network
+    Action   string // ALLOW or DENY
+}
+```
+
+**IPTables Rules:**
 ```bash
-mintlify broken-links
+# Default DROP for container-to-container
+iptables -A FORWARD -i br0 -o br0 -j DROP
+
+# Allow container to internet (NAT)
+iptables -t nat -A POSTROUTING -s 10.0.0.0/16 -o eth0 -j MASQUERADE
+
+# Log dropped packets for security monitoring
+iptables -A FORWARD -j LOG --log-prefix "HYDRA-DROPPED: "
 ```
 
-## Deployment
+#### 4. Resource Quotas & Limits
 
-<Tip>
-  Unlimited editors available under the [Pro
-  Plan](https://mintlify.com/pricing) and above.
-</Tip>
+**Account-Level Quotas:**
+- Maximum total memory allocation per account
+- Maximum CPU allocation per account
+- Maximum number of concurrent functions
+- Maximum number of persistent machines
+- Storage quotas for assets and logs
 
-If the deployment is successful, you should see the following:
+```go
+type AccountQuota struct {
+    MaxMemoryMB        uint64
+    MaxCPUMillicores   uint64
+    MaxFunctions       int
+    MaxMachines        int
+    MaxStorageGB       uint64
+    MaxInvocationsMin  int64
+}
+```
 
-<Frame>
-  <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
-</Frame>
+**Service-Level Limits:**
+- Per-function/machine resource limits
+- Execution time limits
+- Concurrent execution limits
+- Rate limiting per service
 
-## Code Formatting
+#### 5. Secrets Management
 
-We suggest using extensions on your IDE to recognize and format MDX. If you're a VSCode user, consider the [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) for syntax highlighting, and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for code formatting.
+**Secure Secret Injection:**
+- Secrets stored encrypted in KV store
+- Runtime decryption only when needed
+- Secrets mounted as environment variables or files
+- No secrets in container images or logs
+- Automatic secret rotation support
 
-## Troubleshooting
+```go
+type SecretConfig struct {
+    Name       string
+    Type       SecretType // ENV_VAR, FILE
+    Path       string     // For file type
+    Encrypted  bool
+    KeyID      string     // Encryption key identifier
+    Version    int        // Secret version
+    ExpiresAt  *time.Time
+}
 
-<AccordionGroup>
-  <Accordion title='Error: Could not load the "sharp" module using the darwin-arm64 runtime'>
+// Secret injection during container creation
+func injectSecrets(container *Container, secrets []SecretConfig) error {
+    for _, secret := range secrets {
+        decrypted, err := decryptSecret(secret)
+        if err != nil {
+            return fmt.Errorf("failed to decrypt secret %s: %w", secret.Name, err)
+        }
+        
+        switch secret.Type {
+        case ENV_VAR:
+            container.Env[secret.Name] = decrypted
+        case FILE:
+            container.WriteFile(secret.Path, decrypted, 0400)
+        }
+    }
+    return nil
+}
+```
 
-    This may be due to an outdated version of node. Try the following:
-    1. Remove the currently-installed version of mintlify: `npm remove -g mintlify`
-    2. Upgrade to Node v19 or higher.
-    3. Reinstall mintlify: `npm install -g mintlify`
-  </Accordion>
+#### 6. Audit & Compliance
 
-  <Accordion title="Issue: Encountering an unknown error">
-  
-    Solution: Go to the root of your device and delete the \~/.mintlify folder. Afterwards, run `mintlify dev` again.
-  </Accordion>
-</AccordionGroup>
+**Comprehensive Audit Logging:**
+- All API requests logged with full context
+- Function invocations tracked with parameters
+- Resource allocation/deallocation events
+- Security events (auth failures, quota violations)
+- Audit logs shipped to centralized SIEM
 
-Curious about what changed in the CLI version? [Check out the CLI changelog.](https://www.npmjs.com/package/mintlify?activeTab=versions)
+```go
+type AuditEvent struct {
+    EventID     string
+    EventType   string
+    AccountID   string
+    UserID      string
+    Resource    string
+    Action      string
+    Result      string
+    IPAddress   string
+    UserAgent   string
+    Parameters  map[string]interface{}
+    Timestamp   time.Time
+}
+
+// Audit event types
+const (
+    AuditAuthSuccess    = "AUTH_SUCCESS"
+    AuditAuthFailure    = "AUTH_FAILURE"
+    AuditDeployFunction = "DEPLOY_FUNCTION"
+    AuditInvokeFunction = "INVOKE_FUNCTION"
+    AuditQuotaExceeded  = "QUOTA_EXCEEDED"
+    AuditSecurityAlert  = "SECURITY_ALERT"
+)
+```
+
+#### 7. Runtime Security
+
+**AppArmor Profiles:**
+- Mandatory Access Control (MAC) for containers
+- Restricts system calls and file access
+- Prevents privilege escalation
+- Custom profiles per runtime type
+
+**Seccomp Filters:**
+- System call filtering at kernel level
+- Whitelist approach for allowed syscalls
+- Different profiles for different workload types
+- Prevents container escape attempts
+
+```go
+// Seccomp profile for function runtime
+var functionSeccompProfile = SeccompProfile{
+    DefaultAction: "SCMP_ACT_ERRNO",
+    Syscalls: []SeccompRule{
+        {Names: []string{"read", "write", "open", "close"}, Action: "SCMP_ACT_ALLOW"},
+        {Names: []string{"mmap", "mprotect", "munmap"}, Action: "SCMP_ACT_ALLOW"},
+        {Names: []string{"futex", "nanosleep", "clock_gettime"}, Action: "SCMP_ACT_ALLOW"},
+        // Explicitly deny dangerous syscalls
+        {Names: []string{"mount", "umount", "pivot_root"}, Action: "SCMP_ACT_ERRNO"},
+        {Names: []string{"setuid", "setgid", "setgroups"}, Action: "SCMP_ACT_ERRNO"},
+    },
+}
+```
+
+#### 8. Supply Chain Security
+
+**Image/Pack Verification:**
+- SHA256 checksums for all runtime packs
+- Digital signatures for pack authenticity
+- Vulnerability scanning of base images
+- Regular security updates for runtimes
+
+```go
+type PackSecurity struct {
+    PackID      string
+    SHA256      string
+    Signature   string
+    SignedBy    string
+    ScanResults VulnerabilityScan
+    LastUpdated time.Time
+}
+```
+
+#### 9. Data Protection
+
+**Encryption:**
+- TLS 1.3+ for all network communications
+- Encryption at rest for persistent data
+- Encrypted channels between nodes
+- Certificate pinning for critical services
+
+**Data Privacy:**
+- PII detection and masking in logs
+- Data retention policies
+- GDPR compliance features
+- Right to deletion support
+
+#### 10. Incident Response
+
+**Security Monitoring:**
+- Real-time anomaly detection
+- Failed authentication tracking
+- Resource abuse detection
+- Container escape attempts monitoring
+
+**Automated Response:**
+- Automatic account suspension for violations
+- Rate limiting for suspicious activity
+- Alert generation for security team
+- Forensic data collection
+
+```go
+// Security event handler
+func handleSecurityEvent(event SecurityEvent) {
+    switch event.Severity {
+    case CRITICAL:
+        // Immediate action: suspend account, alert security team
+        suspendAccount(event.AccountID)
+        alertSecurityTeam(event)
+        collectForensics(event)
+    case HIGH:
+        // Rate limit and monitor
+        applyRateLimit(event.AccountID, event.Resource)
+        incrementSecurityScore(event.AccountID)
+    case MEDIUM:
+        // Log and track
+        logSecurityEvent(event)
+        updateSecurityMetrics(event)
+    }
+}
+```
+
+#### Security Best Practices
+
+1. **Defense in Depth**: Multiple layers of security controls
+2. **Least Privilege**: Minimal permissions by default
+3. **Zero Trust**: Verify everything, trust nothing
+4. **Continuous Monitoring**: Real-time security observability
+5. **Regular Updates**: Automated security patching
+6. **Incident Preparedness**: Documented response procedures
+
+This documentation provides a comprehensive guide to operating, maintaining, and developing on the Bellerophon Compute platform. The system's distributed architecture, resource management, and scaling capabilities make it a robust foundation for serverless workloads in the Evari Olympus ecosystem.

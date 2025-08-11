@@ -1,10 +1,10 @@
 ---
 title: "User & Account Security"
-description: "How you can manage your account, including signup, user management and closing an account"
+description: "Securing your account and understanding the security features available"
 icon: "lock-keyhole"
 ---
 
-# Microstrate Cloud: Security Guide & Best Practices
+# Security Guide & Best Practices
 
 ## Introduction
 
@@ -14,15 +14,15 @@ Security is foundational to Microstrate's architecture. This guide outlines the 
 
 ### Multi-Factor Authentication (MFA)
 
-Microstrate provides robust MFA options to protect your account:
+Microstrate provides robust MFA options to protect your account. If MFA is not active, everytime you log into your account you will be prompted to set up MFA:
 
 #### Setting Up MFA
 
-1. Navigate to **Account Settings → Security → Multi-Factor Authentication**
-2. Choose your preferred authentication method:
-   - **Authenticator App** (recommended): Compatible with Google Authenticator, Authy, Microsoft Authenticator, and other TOTP apps
-   - **SMS Authentication**: Receive codes via text message
-   - **Email Authentication**: Receive codes via email (least secure option)
+1. Start the process at login, or Navigate to user settings by clicking your profile icon in the bottom left and selecting "Settings"
+2. Select "Password and authentication"
+2. Add your preferred authentication method:
+   - **Passkey**: Passwordless login. Validate your identify using touch, facial recognition, a device password, or a PIN. 
+   - **Authenticator App**: Compatible with Google Authenticator, Authy, Microsoft Authenticator, and other TOTP apps
 3. Follow the on-screen instructions to complete setup
 
 #### Recovery Codes
@@ -32,7 +32,7 @@ When enabling MFA, you'll receive a set of recovery codes:
 - Store these codes securely in a password manager or physical safe
 - Each code can only be used once
 - If you lose access to your MFA device, these codes provide emergency account access
-- Once you've used all recovery codes, you'll need to contact support for account recovery
+- If you have used all recovery codes, you can contact an admin to issue new recovery codes for your account if needed.
 
 ### Single Sign-On (SSO)
 
