@@ -6,14 +6,10 @@
         "version": "1.0.0",
         "contact": {
             "name": "Microstrate Support",
-            "url": "https://app.staging.microstrate.io"
+            "url": "https://app.microstrate.io"
         }
     },
     "servers": [
-        {
-            "url": "https://api.staging.microstrate.io",
-            "description": "Staging API server"
-        },
         {
             "url": "https://api.microstrate.io",
             "description": "Production API server"

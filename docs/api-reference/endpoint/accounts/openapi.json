@@ -6,14 +6,10 @@
     "version": "1.0.0",
     "contact": {
       "name": "Microstrate Support",
-      "url": "https://app.staging.microstrate.io"
+      "url": "https://app.microstrate.io"
     }
   },
   "servers": [
-    {
-      "url": "https://api.staging.microstrate.io",
-      "description": "Staging API server"
-    },
     {
       "url": "https://api.microstrate.io",
       "description": "Production API server"
@@ -62,7 +58,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Account name that memebers of the account will be using when signing in. It is case-insensitive. Heading and trailing spaces are trimmed"
+            "description": "Account name that members of the account will be using when signing in. It is case-insensitive. Heading and trailing spaces are trimmed"
           },
           "root_first_name": {
             "type": "string",
