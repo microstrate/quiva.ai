@@ -1,0 +1,554 @@
+---
+title: "User Settings"
+description: "Manage your personal profile, security settings, and preferences"
+icon: "user-gear"
+---
+
+# User Settings
+
+Configure your personal Microstrate account settings, including profile information, security options, and preferences. These settings are specific to you and don't affect other users.
+
+## Accessing Your Settings
+
+Click your profile icon in the bottom left corner and select "Settings" to access your personal configuration.
+
+## Profile Information
+
+### Updating Your Name
+
+Change your display name:
+
+<Steps>
+  <Step title="Navigate to Profile">
+    Settings → Profile
+  </Step>
+  
+  <Step title="Update Name">
+    Edit your first and last name
+  </Step>
+  
+  <Step title="Save">
+    Click "Save Changes"
+  </Step>
+</Steps>
+
+Your display name appears in:
+- User lists in account management
+- Activity logs and audit trails
+- Collaboration features
+- Email notifications
+
+## Password & Authentication
+
+### Changing Your Password
+
+<Steps>
+  <Step title="Navigate to Credentials">
+    Settings → Credentials
+  </Step>
+  
+  <Step title="Enter Current Password">
+    Verify your identity
+  </Step>
+  
+  <Step title="Enter New Password">
+    Must meet requirements:
+    - Minimum 8 characters (12+ recommended)
+    - Uppercase and lowercase letters
+    - At least one number
+    - At least one special character
+  </Step>
+  
+  <Step title="Confirm New Password">
+    Re-enter to verify
+  </Step>
+  
+  <Step title="Update">
+    Click "Update Password"
+  </Step>
+</Steps>
+
+<Info>
+After changing your password, all your other active sessions will be terminated. You'll remain logged in on your current device.
+</Info>
+
+### Forgot Your Password?
+
+If you can't remember your current password:
+
+1. Log out of your account
+2. Click "Forgot password?" on the login page
+3. Enter your account name and email
+4. Check your email for reset instructions
+5. Create a new password
+
+[Password recovery guide →](/essentials/security/authentication#password-recovery)
+
+### Multi-Factor Authentication (MFA)
+
+<Warning>
+MFA is strongly recommended for all users and required for Admin and Root roles.
+</Warning>
+
+#### Setting Up MFA
+
+<Tabs>
+  <Tab title="Passkey (Recommended)">
+    Use biometrics or device PIN for secure, passwordless authentication:
+    
+    <Steps>
+      <Step title="Navigate to MFA">
+        Settings → Password and Authentication
+      </Step>
+      
+      <Step title="Add Passkey">
+        Click "Add Passkey"
+      </Step>
+      
+      <Step title="Follow Device Prompts">
+        Complete setup using:
+        - Touch ID / Face ID (mobile)
+        - Windows Hello (PC)
+        - Touch ID (Mac)
+        - Security key (YubiKey, etc.)
+      </Step>
+      
+      <Step title="Save Recovery Codes">
+        Download and store securely
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="Authenticator App">
+    Use time-based codes from apps like Google Authenticator or Authy:
+    
+    <Steps>
+      <Step title="Navigate to MFA">
+        Settings → Password and Authentication
+      </Step>
+      
+      <Step title="Add Authenticator">
+        Click "Add Authenticator App"
+      </Step>
+      
+      <Step title="Scan QR Code">
+        Open your authenticator app and scan
+      </Step>
+      
+      <Step title="Enter Code">
+        Type the 6-digit code to verify
+      </Step>
+      
+      <Step title="Save Recovery Codes">
+        Download and store securely
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+[Complete MFA guide →](/essentials/security/authentication)
+
+#### Managing Recovery Codes
+
+Recovery codes provide backup access if you lose your MFA device.
+
+**To view your recovery codes:**
+
+1. Settings → Password and Authentication
+2. Scroll to "Recovery Codes"
+3. Click "View"
+
+**To generate new codes:**
+
+1. Settings → Password and Authentication
+2. Click "Generate New Recovery Codes"
+3. Download and store securely
+
+<Warning>
+Generating new codes invalidates all previous codes. Store them in a password manager or secure location immediately.
+</Warning>
+
+## Session Management
+
+### Viewing Active Sessions
+
+See all devices where you're currently logged in:
+
+1. Settings → Sessions
+2. Review each session:
+   - Device type (Macintosh, Windows, etc.)
+   - Browser (Chrome, Firefox, Safari)
+   - Location (when available)
+   - IP address
+   - Expiration time
+
+<img 
+  src="/images/essentials/user-sessions.png" 
+  alt="Active Sessions"
+  style={{ maxHeight: '400px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+### Terminating Sessions
+
+**To end a specific session:**
+
+1. Find the session in your list
+2. Click "Terminate session"
+
+**To end all other sessions:**
+
+1. Click "Terminate sessions" at the top
+2. Confirm the action
+
+<Tip>
+Use this if you forgot to log out on a shared computer or suspect unauthorized access.
+</Tip>
+
+### Session Lifetimes
+
+- **Access Token:** 1 hour
+- **Refresh Token:** 24 hours
+
+After 24 hours of inactivity, you'll need to log in again.
+
+[Complete session guide →](/essentials/security/sessions)
+
+## API Keys
+
+Manage API keys for programmatic access to Microstrate.
+
+### Creating an API Key
+
+<Steps>
+  <Step title="Navigate to API Keys">
+    Settings → API Keys
+  </Step>
+  
+  <Step title="Click Add">
+    Click the "Add" button
+  </Step>
+  
+  <Step title="Name Your Key">
+    Enter a descriptive name (e.g., "Production App", "CI/CD Pipeline")
+  </Step>
+  
+  <Step title="Copy Key">
+    **Copy immediately** - it won't be shown again
+  </Step>
+  
+  <Step title="Store Securely">
+    Save in password manager or secret management system
+  </Step>
+</Steps>
+
+<Warning>
+API keys inherit your user permissions and expire after 3 months. Never commit keys to version control.
+</Warning>
+
+### Managing Your Keys
+
+**To view your keys:**
+- Settings → API Keys
+- See all active keys with creation and expiration dates
+
+**To delete a key:**
+1. Click on the key name
+2. Click "Delete"
+3. Confirm deletion
+
+<Info>
+Deleting a key immediately revokes access. Any applications using it will stop working.
+</Info>
+
+[API key best practices →](/essentials/security/api-keys)
+
+## Notifications
+
+### Email Notifications
+
+You'll receive automatic email notifications for:
+
+<CardGroup cols={2}>
+  <Card title="Security Events" icon="shield-halved">
+    - Password changed
+    - Email change requested
+    - Passkey added
+    - Recovery codes viewed
+    - New device login
+  </Card>
+  
+  <Card title="Account Changes" icon="user">
+    - Added to new account
+    - Role changed
+    - Account renamed
+    - Suspended/reactivated
+  </Card>
+  
+  <Card title="Billing" icon="credit-card">
+    - Payment failed
+    - Subscription changed
+    - Plan upgraded/downgraded
+    - Invoice available
+  </Card>
+  
+  <Card title="System" icon="bell">
+    - Scheduled maintenance
+    - Service updates
+    - Important announcements
+  </Card>
+</CardGroup>
+
+<Note>
+Email notification preferences are not yet customizable. All security and account-related emails are sent automatically.
+</Note>
+
+## Personal Preferences
+
+### Language & Region
+
+Currently not customizable. The interface language is determined by:
+- Your browser settings
+- Available translations
+
+### Time Zone
+
+Currently not customizable. Times are displayed:
+- In your browser's local time zone
+- With clear timezone indicators
+
+### Theme
+
+Currently not customizable. The interface uses:
+- System-level dark/light mode preferences
+- Responsive design for all screen sizes
+
+<Info>
+Additional personalization options are planned for future releases.
+</Info>
+
+## Privacy & Data
+
+### Your Data Rights
+
+Under GDPR, you have the right to:
+
+<AccordionGroup>
+  <Accordion title="Access Your Data" icon="folder-open">
+    Request a copy of your personal data at any time.
+    
+    To export your data:
+    - Use buckets to download stored information
+    - Contact privacy@microstrate.io for complete data export
+  </Accordion>
+  
+  <Accordion title="Correct Your Information" icon="pen">
+    Update your personal information:
+    - Name and email in your profile settings
+    - Company details (if Root/Admin)
+    - Billing information (if appropriate role)
+  </Accordion>
+  
+  <Accordion title="Delete Your Data" icon="trash">
+    Request account deletion:
+    - Only Root users can close accounts
+    - All data permanently deleted within 30 days
+    - Cannot be undone
+    
+    [Account closure guide →](/essentials/account/closing-account)
+  </Accordion>
+  
+  <Accordion title="Data Portability" icon="download">
+    Export your data in usable formats:
+    - Download from buckets
+    - Request complete export from support
+  </Accordion>
+</AccordionGroup>
+
+To exercise your rights, contact [privacy@microstrate.io](mailto:privacy@microstrate.io)
+
+### What Data We Store
+
+**Your Personal Information:**
+- Name and email address
+- Password (encrypted hash only)
+- MFA settings and recovery codes
+- Login activity and sessions
+- API keys you've created
+- Your activity within the platform
+
+**We Never:**
+- Sell your data to third parties
+- Use your data to train AI models
+- Share your data between accounts
+- Access your data without permission
+
+[Privacy policy →](https://microstrate.io/legal.html#privacy)
+
+## Account Information
+
+### Your Current Account
+
+View your account details:
+
+**Account Information:**
+- Account name you're logged into
+- Your email address
+- Your current role and permissions
+- Account owner and admins
+
+**Plan Information:**
+- Current plan tier
+- Usage statistics
+- Billing cycle
+- Next renewal date
+
+<Note>
+To view billing details, you need Root, Admin, or Billing role. [Learn about roles →](/essentials/users/roles-permissions)
+</Note>
+
+### Switching Between Accounts
+
+If you have access to multiple Microstrate accounts:
+
+1. Log out of your current account
+2. On the login page, enter the **account name** for the account you want
+3. Enter your email and password
+4. Complete MFA verification
+
+Each account is independent with its own resources and billing.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Can't change my password">
+    **Common causes:**
+    - Entered wrong current password
+    - New password doesn't meet requirements
+    - Browser autocomplete interfering
+    
+    **Solutions:**
+    - Verify current password is correct
+    - Ensure new password has 8+ chars, uppercase, lowercase, number, special char
+    - Try disabling autocomplete
+    - Use "Forgot password?" if you can't remember current password
+  </Accordion>
+  
+  <Accordion title="Lost my MFA device">
+    **If you have recovery codes:**
+    1. Use a recovery code to log in
+    2. Go to Settings → Password and Authentication
+    3. Remove compromised MFA device
+    4. Add new MFA method
+    5. Generate new recovery codes
+    
+    **If you lost recovery codes too:**
+    - Contact an Admin to issue new recovery codes
+    - They can reset your MFA from user management
+    - Set up MFA again immediately after logging in
+  </Accordion>
+  
+  <Accordion title="API key not working">
+    **Check these items:**
+    - Key hasn't expired (3-month limit)
+    - Key wasn't deleted
+    - Using correct Authorization header format
+    - Your role has necessary permissions
+    
+    **Solution:**
+    - Generate a new key if expired or deleted
+    - Verify format: `Authorization: Bearer YOUR_KEY`
+    - Check with Admin if permissions issue
+  </Accordion>
+  
+  <Accordion title="Not receiving security emails">
+    **Check:**
+    - Spam/junk folder
+    - Email filters or rules
+    - Correct email address in your profile
+    
+    **If still not receiving:**
+    - Verify your email address is correct
+    - Add noreply@microstrate.io to contacts
+    - Contact support if emails are being blocked
+  </Accordion>
+  
+  <Accordion title="Can't access certain settings">
+    Some settings require specific roles:
+    
+    - **Billing information:** Root, Admin, or Billing role only
+    - **User management:** Root or Admin only
+    - **Account closure:** Root only
+    
+    **Solution:**
+    Ask an Admin to grant appropriate permissions or make changes for you.
+    
+    [Learn about role permissions →](/essentials/users/roles-permissions)
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Enable MFA Immediately" icon="shield-check">
+    Set up MFA as soon as you create your account. Use passkeys for strongest security.
+  </Card>
+  
+  <Card title="Use Strong Passwords" icon="key">
+    12+ characters with mixed case, numbers, and symbols. Use a password manager.
+  </Card>
+  
+  <Card title="Review Sessions Monthly" icon="calendar-check">
+    Check active sessions regularly and terminate any you don't recognize.
+  </Card>
+  
+  <Card title="Secure Recovery Codes" icon="vault">
+    Store recovery codes in a password manager, not in email or unencrypted notes.
+  </Card>
+  
+  <Card title="Rotate API Keys" icon="rotate">
+    Generate new keys before the 3-month expiration. Delete unused keys immediately.
+  </Card>
+  
+  <Card title="Act on Security Emails" icon="envelope-open-text">
+    If you receive a security notification for an action you didn't perform, investigate immediately.
+  </Card>
+</CardGroup>
+
+[Complete security guide →](/essentials/security/overview)
+
+## Getting Help
+
+<CardGroup cols={3}>
+  <Card title="Security Issues" icon="shield-halved" href="/essentials/security/incident-response">
+    Suspect unauthorized access or compromise
+  </Card>
+  
+  <Card title="Account Support" icon="life-ring" href="/support">
+    General account and technical questions
+  </Card>
+  
+  <Card title="Privacy Questions" icon="user-lock" href="mailto:privacy@microstrate.io">
+    Data privacy and GDPR requests
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
+    Complete MFA and password guide
+  </Card>
+  
+  <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
+    Detailed API key management
+  </Card>
+  
+  <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
+    Advanced session management
+  </Card>
+  
+  <Card title="Roles & Permissions" icon="key" href="/essentials/users/roles-permissions">
+    What your role can access
+  </Card>
+</CardGroup>

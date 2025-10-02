@@ -1,0 +1,469 @@
+---
+title: "Billing & Subscriptions"
+description: "Manage your plan, payment methods, invoices, and subscription settings"
+icon: "credit-card"
+---
+
+# Billing & Subscriptions
+
+Manage your Microstrate subscription, payment methods, and billing information. All billing is securely processed through Stripe.
+
+## Current Plan & Usage
+
+View your current plan and resource usage:
+
+1. Navigate to **Account Management → Billing and Plans**
+2. See your current plan details including:
+   - Plan name and pricing
+   - Billing cycle (monthly or annual)
+   - Next billing date
+   - Current usage vs. limits
+
+<Info>
+Your usage is tracked in real-time. Monitor your consumption to avoid hitting plan limits.
+</Info>
+
+### Understanding Your Limits
+
+<CardGroup cols={2}>
+  <Card title="Flow Runs" icon="arrows-rotate">
+    Number of workflow executions per month
+    
+    [What counts as a flow run? →](/essentials/plans-and-pricing#flow-runs)
+  </Card>
+  
+  <Card title="Storage" icon="database">
+    Total data stored for agents, flows, and history
+  </Card>
+  
+  <Card title="Agents" icon="robot">
+    Number of AI agents you can create
+  </Card>
+  
+  <Card title="Concurrent Executions" icon="layer-group">
+    How many flows can run simultaneously
+    
+    [About concurrency →](/essentials/plans-and-pricing#concurrent-executions)
+  </Card>
+</CardGroup>
+
+## Changing Plans
+
+### Upgrading Your Plan
+
+Upgrade at any time for immediate access to higher limits:
+
+<Steps>
+  <Step title="Navigate to Billing">
+    Go to **Account Management → Billing and Plans**
+  </Step>
+  
+  <Step title="Choose New Plan">
+    Click "Upgrade" or "Change Plan"
+  </Step>
+  
+  <Step title="Select Plan">
+    Choose from Starter, Pro, Team, or Enterprise
+    
+    [Compare plans →](/essentials/plans-and-pricing)
+  </Step>
+  
+  <Step title="Confirm Billing">
+    Review the prorated charge and confirm
+  </Step>
+</Steps>
+
+**What happens when you upgrade:**
+- New limits apply immediately
+- You're charged a prorated amount for the current billing period
+- Your billing cycle remains the same
+- All existing resources and data are preserved
+
+### Downgrading Your Plan
+
+Downgrades take effect at the end of your current billing period:
+
+<Steps>
+  <Step title="Navigate to Billing">
+    Go to **Account Management → Billing and Plans**
+  </Step>
+  
+  <Step title="Select Lower Plan">
+    Choose a plan with lower limits
+  </Step>
+  
+  <Step title="Review Changes">
+    Check what happens if you exceed new limits
+  </Step>
+  
+  <Step title="Schedule Downgrade">
+    Confirm - change happens at next billing cycle
+  </Step>
+</Steps>
+
+**What happens when you downgrade:**
+- Change takes effect at the end of your current billing period
+- You keep your current plan limits until then
+- No partial refunds for the current period
+- If over new limits, some functionality may be restricted
+
+<Warning>
+**Before downgrading:** Ensure your current usage fits within the new plan limits. If you exceed limits, flows may be queued or you'll need to upgrade again.
+</Warning>
+
+### Switching Between Monthly and Annual
+
+Save 20% by switching to annual billing:
+
+**Monthly to Annual:**
+- Switch takes effect immediately
+- You're charged for the full year upfront
+- 20% discount applied
+- Billing cycle changes to annual
+
+**Annual to Monthly:**
+- Change takes effect at the end of your annual period
+- No refunds for remaining months
+- Monthly billing begins after annual period ends
+
+## Payment Methods
+
+### Adding or Updating Payment Methods
+
+<Steps>
+  <Step title="Navigate to Billing">
+    Go to **Account Management → Billing and Plans**
+  </Step>
+  
+  <Step title="Manage Payment Methods">
+    Click "Payment Methods" or "Update Card"
+  </Step>
+  
+  <Step title="Enter Details">
+    Provide card information securely through Stripe
+  </Step>
+  
+  <Step title="Save">
+    Confirm and save your payment method
+  </Step>
+</Steps>
+
+<Info>
+All payment information is securely processed and stored by Stripe. Microstrate never stores your complete card details.
+</Info>
+
+### Accepted Payment Methods
+
+- Credit cards (Visa, Mastercard, American Express)
+- Debit cards
+- Additional methods may be available based on your region
+
+**Enterprise customers** can arrange custom payment terms including:
+- Wire transfers
+- Purchase orders
+- Custom invoicing
+
+[Contact sales for Enterprise billing →](/contact)
+
+## Invoices & Billing History
+
+### Viewing Invoices
+
+Access all past invoices:
+
+1. Navigate to **Account Management → Billing and Plans**
+2. Click "Billing History" or "Invoices"
+3. View, download, or email invoices
+
+Each invoice includes:
+- Invoice date and number
+- Plan and billing period
+- Itemized charges
+- Payment method used
+- Total amount charged
+
+### Downloading Invoices
+
+<Steps>
+  <Step title="Access Billing History">
+    Go to billing section and find invoice list
+  </Step>
+  
+  <Step title="Select Invoice">
+    Click on the invoice you need
+  </Step>
+  
+  <Step title="Download PDF">
+    Click "Download PDF" to save to your device
+  </Step>
+</Steps>
+
+<Tip>
+Need invoices sent to multiple email addresses? Contact support to add additional billing contacts.
+</Tip>
+
+## Understanding Your Bill
+
+### Billing Cycles
+
+<Tabs>
+  <Tab title="Monthly Billing">
+    - Charged on the same day each month
+    - Based on your signup or upgrade date
+    - Usage resets on billing date
+    - Example: Signed up Jan 15 → billed on 15th of each month
+  </Tab>
+  
+  <Tab title="Annual Billing">
+    - Charged once per year
+    - Save 20% compared to monthly
+    - Usage limits are monthly (still reset monthly)
+    - Example: Signed up Jan 15 → next charge Jan 15 next year
+  </Tab>
+</Tabs>
+
+### Prorated Charges
+
+When you upgrade mid-cycle, you're charged a prorated amount:
+
+**How it works:**
+1. Credit for unused time on old plan
+2. Charge for remaining time on new plan
+3. Net difference is charged immediately
+
+**Example:**
+- Current plan: Starter ($20/month)
+- Upgrade on day 15 of 30-day cycle
+- New plan: Pro ($100/month)
+- Prorated charge ≈ $40 (half the difference for remaining days)
+
+### What You're Charged For
+
+Your bill includes:
+
+<AccordionGroup>
+  <Accordion title="Base Plan Price" icon="tag">
+    Monthly or annual subscription fee for your chosen plan
+  </Accordion>
+  
+  <Accordion title="Overage Charges" icon="chart-line">
+    Currently not applicable - if you exceed limits:
+    - **Free plan:** Must upgrade to continue
+    - **Paid plans:** Flows queue when limits reached
+    
+    [What happens at limits →](/essentials/plans-and-pricing#exceeding-limits)
+  </Accordion>
+  
+  <Accordion title="Premium Marketplace Items" icon="store">
+    Any paid agents, flows, or integrations from the marketplace
+    
+    Charges vary by item and are added to your monthly bill
+  </Accordion>
+  
+  <Accordion title="Add-ons" icon="puzzle-piece">
+    Enterprise features like:
+    - Additional edge locations
+    - Custom SLAs
+    - Dedicated support
+    
+    Available on Enterprise plans only
+  </Accordion>
+</AccordionGroup>
+
+## Managing Subscriptions
+
+### Cancelling Your Subscription
+
+<Warning>
+Cancelling converts your account to the Free plan at the end of your billing period. Your data is retained but access may be limited based on Free plan limits.
+</Warning>
+
+To cancel your subscription:
+
+<Steps>
+  <Step title="Navigate to Billing">
+    Go to **Account Management → Billing and Plans**
+  </Step>
+  
+  <Step title="Cancel Subscription">
+    Click "Cancel Subscription" or "Downgrade to Free"
+  </Step>
+  
+  <Step title="Confirm">
+    Review what happens and confirm cancellation
+  </Step>
+</Steps>
+
+**What happens:**
+- Subscription continues until end of current billing period
+- No further charges after current period
+- Account converts to Free plan
+- Resources exceeding Free limits may be restricted
+- Data is retained (not deleted)
+
+<Tip>
+Want to fully delete your account instead? See our [Closing Account guide →](/essentials/account/closing-account)
+</Tip>
+
+### Reactivating a Cancelled Subscription
+
+Reactivate at any time:
+
+1. Navigate to **Account Management → Billing and Plans**
+2. Click "Upgrade" or "Reactivate"
+3. Select your plan
+4. Enter payment information
+5. Subscription reactivates immediately
+
+## Billing Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Payment failed">
+    **Common causes:**
+    - Insufficient funds
+    - Expired card
+    - Card issuer declined
+    - Incorrect billing address
+    
+    **Solutions:**
+    - Update payment method
+    - Contact your card issuer
+    - Verify billing address matches card
+    - Try a different payment method
+  </Accordion>
+  
+  <Accordion title="Unexpected charge">
+    **Check these items:**
+    - Did you upgrade mid-cycle? (prorated charges)
+    - Annual renewal? (charged once per year)
+    - Premium marketplace items purchased?
+    - Team member made changes?
+    
+    **If still unclear:**
+    Contact support with invoice number for clarification
+  </Accordion>
+  
+  <Accordion title="Can't access billing">
+    **Required role:**
+    - Root, Admin, or Billing role needed
+    - Developers and Monitors can't access billing
+    
+    **Solution:**
+    Ask an Admin to grant you Billing role or make changes for you
+    
+    [About roles →](/essentials/users/roles-permissions)
+  </Accordion>
+  
+  <Accordion title="Want to change billing email">
+    The billing email is tied to your account's root email.
+    
+    To change it:
+    1. Root user updates email in account settings
+    2. Or contact support to add additional billing contacts
+    
+    [Change root email →](/essentials/account/account-settings#changing-root-email)
+  </Accordion>
+  
+  <Accordion title="Need invoice with different details">
+    **For updated company info:**
+    - Update details in **Account Management → Account**
+    - Changes apply to future invoices only
+    
+    **For past invoice corrections:**
+    - Contact support with specific requirements
+    - May be possible depending on request
+  </Accordion>
+</AccordionGroup>
+
+## Enterprise Billing
+
+Enterprise plans offer custom billing options:
+
+<CardGroup cols={2}>
+  <Card title="Custom Terms" icon="file-contract">
+    Flexible payment terms and schedules
+  </Card>
+  
+  <Card title="Purchase Orders" icon="file-invoice">
+    PO-based purchasing available
+  </Card>
+  
+  <Card title="Wire Transfers" icon="building-columns">
+    Direct bank transfers accepted
+  </Card>
+  
+  <Card title="Annual Contracts" icon="calendar-days">
+    Commit to annual with custom pricing
+  </Card>
+</CardGroup>
+
+[Contact sales for Enterprise →](/contact)
+
+## Tax & Compliance
+
+### Tax Collection
+
+Taxes are automatically calculated based on:
+- Your billing address
+- Applicable regional tax laws (VAT, GST, sales tax)
+- Your tax identification number (if provided)
+
+**To add tax ID:**
+1. Navigate to **Account Management → Billing and Plans**
+2. Click "Tax Information"
+3. Enter your VAT/tax ID number
+4. Save changes
+
+### Regional Compliance
+
+- **EU Customers:** VAT charged based on country
+- **US Customers:** Sales tax varies by state
+- **Other Regions:** Local tax laws apply
+
+<Info>
+Invoices automatically include all applicable tax information for your records.
+</Info>
+
+## Billing Contact & Support
+
+Need help with billing?
+
+<CardGroup cols={2}>
+  <Card title="Billing Support" icon="envelope" href="mailto:billing@microstrate.io">
+    billing@microstrate.io
+    
+    Invoice questions, payment issues
+  </Card>
+  
+  <Card title="Sales Team" icon="handshake" href="/contact">
+    Enterprise inquiries and custom pricing
+  </Card>
+  
+  <Card title="Documentation" icon="book" href="/essentials/plans-and-pricing">
+    Detailed pricing and features
+  </Card>
+  
+  <Card title="General Support" icon="life-ring" href="/support">
+    Account and technical support
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Plans & Pricing" icon="tags" href="/essentials/plans-and-pricing">
+    Compare all plans and features
+  </Card>
+  
+  <Card title="Account Settings" icon="gear" href="/essentials/account/account-settings">
+    Update company and billing details
+  </Card>
+  
+  <Card title="User Roles" icon="users-gear" href="/essentials/users/roles-permissions">
+    Who can manage billing
+  </Card>
+  
+  <Card title="Close Account" icon="circle-xmark" href="/essentials/account/closing-account">
+    Permanently delete account
+  </Card>
+</CardGroup>

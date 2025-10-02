@@ -1,0 +1,298 @@
+---
+title: "Closing Your Account"
+description: "How to permanently close your Microstrate account and what happens to your data"
+icon: "circle-xmark"
+---
+
+# Closing Your Account
+
+If you need to permanently close your Microstrate account, this guide explains the process and what to expect.
+
+<Warning>
+**This action is permanent and cannot be undone.** All your data will be permanently deleted. Consider alternatives before proceeding.
+</Warning>
+
+## Before You Close Your Account
+
+### Alternatives to Consider
+
+<CardGroup cols={2}>
+  <Card title="Downgrade to Free" icon="arrow-down">
+    Keep your account and data without monthly costs
+    
+    [Change plan →](/essentials/account/billing-subscriptions#changing-plans)
+  </Card>
+  
+  <Card title="Suspend Activity" icon="pause">
+    Stop using the account temporarily without deleting data
+  </Card>
+  
+  <Card title="Export Your Data" icon="download">
+    Download important data using buckets before closing
+  </Card>
+  
+  <Card title="Transfer Ownership" icon="people-arrows">
+    Transfer account to another team member instead of closing
+  </Card>
+</CardGroup>
+
+### What Gets Deleted
+
+When you close your account, these items are permanently deleted within 30 days:
+
+<AccordionGroup>
+  <Accordion title="All Resources" icon="trash">
+    - All agents and their configurations
+    - All flows and workflow definitions
+    - All MCP servers and integrations
+    - All stored data in buckets
+    - All conversation history
+    - All logs and monitoring data
+  </Accordion>
+  
+  <Accordion title="Account Data" icon="user-xmark">
+    - All user accounts and their settings
+    - All API keys (immediately revoked)
+    - All team permissions and roles
+    - Account configuration and settings
+    - Recovery codes and MFA settings
+  </Accordion>
+  
+  <Accordion title="Billing Information" icon="credit-card">
+    - Subscription will be cancelled immediately
+    - No further charges will be made
+    - Payment methods will be removed
+    - Billing history retained for 7 years (legal requirement)
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+**GDPR Compliance:** Deleting your account fulfills your right to erasure under GDPR. All personal data is permanently removed except billing records required for legal/tax purposes.
+</Info>
+
+## Closing Your Account
+
+Only the **Root user** can close an account.
+
+<Steps>
+  <Step title="Prepare for Closure">
+    - Export any important data you want to keep
+    - Cancel any external integrations or webhooks
+    - Notify team members of the closure
+    - Document any information you'll need later
+  </Step>
+  
+  <Step title="Navigate to Account Settings">
+    Go to **Account Management → Account**
+  </Step>
+  
+  <Step title="Click Close Account">
+    Find the "Close Account" button in the top right corner
+  </Step>
+  
+  <Step title="Confirm Deletion">
+    Review the warning message and click "I Am Sure" to confirm
+  </Step>
+  
+  <Step title="Verification">
+    You may be asked to verify your identity or re-enter your password
+  </Step>
+</Steps>
+
+<Warning>
+**Immediate Effects:**
+- All users are immediately logged out
+- All API keys stop working instantly
+- All running flows are terminated
+- Billing is cancelled (no refunds for current period)
+- Your account name becomes available for others to use
+</Warning>
+
+## What Happens After Closure
+
+### Immediate (Within Minutes)
+
+- Account access is revoked for all users
+- All API keys are invalidated
+- Active sessions are terminated
+- Subscription is cancelled
+- Resources stop processing requests
+
+### Within 30 Days
+
+- All data is permanently deleted from production systems
+- Backups are removed from all storage locations
+- Data is unrecoverable after this period
+
+### Retained Indefinitely
+
+- Billing records (invoices, payment history) - Required for legal/tax compliance for 7 years
+- No other personal or account data is retained
+
+## Special Considerations
+
+### Active Subscriptions
+
+<AccordionGroup>
+  <Accordion title="Paid Plans" icon="credit-card">
+    - Subscription ends immediately
+    - No refunds for unused time in current billing period
+    - No further charges after closure
+    - Final invoice generated for current period
+  </Accordion>
+  
+  <Accordion title="Annual Plans" icon="calendar">
+    - Annual subscription cancelled immediately
+    - No refunds for remaining months
+    - Consider downgrading to Free plan instead if you might return
+  </Accordion>
+  
+  <Accordion title="Free Plan" icon="gift">
+    - No billing implications
+    - Data deleted on same timeline
+    - Account name becomes available immediately
+  </Accordion>
+</AccordionGroup>
+
+### External Integrations
+
+Before closing your account:
+
+- **Webhooks:** Update or disable webhook endpoints in external systems
+- **API Integrations:** Remove API keys from applications
+- **Marketplace Items:** Unpublish any items you've published
+- **Third-Party Tools:** Disconnect any connected services
+
+## Reopening a Closed Account
+
+<Warning>
+**Accounts cannot be reopened.** Once closed, all data is permanently deleted and cannot be recovered.
+</Warning>
+
+If you need to use Microstrate again:
+
+1. Create a new account from scratch
+2. Your old account name may be available if no one else has claimed it
+3. All resources, data, and configurations must be recreated
+4. No data from the previous account can be restored
+
+## Alternatives to Closing
+
+### Temporarily Stop Using Microstrate
+
+If you're not sure about permanently closing:
+
+<Steps>
+  <Step title="Downgrade to Free Plan">
+    [Change to Free plan →](/essentials/account/billing-subscriptions#changing-plans) to avoid charges while keeping your data
+  </Step>
+  
+  <Step title="Export Important Data">
+    Download any data you might need using buckets
+  </Step>
+  
+  <Step title="Suspend Users">
+    [Suspend all users →](/essentials/users/user-management#suspending-users) instead of deleting them
+  </Step>
+  
+  <Step title="Pause Workflows">
+    Disable flows rather than deleting them
+  </Step>
+</Steps>
+
+### Transfer Ownership
+
+If someone else should manage the account:
+
+<Note>
+Contact support for assistance with ownership transfers. The current Root user must initiate this process.
+</Note>
+
+## Account Closure Checklist
+
+Use this checklist before closing your account:
+
+### Data & Resources
+
+- [ ] Export all important data from buckets
+- [ ] Download agent configurations you might need
+- [ ] Save flow definitions for future reference
+- [ ] Document any custom MCP server configurations
+- [ ] Backup any important conversation history
+
+### Integrations & External Systems
+
+- [ ] Remove webhooks from external applications
+- [ ] Delete API keys from applications
+- [ ] Disconnect third-party integrations
+- [ ] Update DNS records if using custom domains
+- [ ] Cancel any marketplace subscriptions
+
+### Team & Communication
+
+- [ ] Notify all team members of closure date
+- [ ] Remove user access from external systems
+- [ ] Document handoff for any ongoing projects
+- [ ] Archive important conversations or decisions
+
+### Billing & Financial
+
+- [ ] Review final billing period
+- [ ] Cancel any add-ons or extras
+- [ ] Update financial records
+- [ ] Save final invoice for records
+
+### Security
+
+- [ ] Revoke all API keys
+- [ ] Disable MFA devices
+- [ ] Clear browser data if on shared computers
+- [ ] Update password manager entries
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I get a refund for my current billing period?">
+    No, account closures do not include refunds for the current billing period. Consider timing your closure to align with your billing cycle, or downgrade to Free plan instead.
+  </Accordion>
+  
+  <Accordion title="How long until my data is completely deleted?">
+    All data is permanently deleted within 30 days of account closure. This includes all backups and replicated data across the mesh.
+  </Accordion>
+  
+  <Accordion title="Can I reuse my account name immediately?">
+    Yes, your account name becomes available for others (or yourself) to use immediately after closure.
+  </Accordion>
+  
+  <Accordion title="What happens to users in my account?">
+    All users are immediately logged out and lose access. If they have accounts in other Microstrate accounts, those are unaffected.
+  </Accordion>
+  
+  <Accordion title="Will closing my account affect my other accounts?">
+    No, if you have multiple Microstrate accounts, closing one does not affect the others. Each account is independent.
+  </Accordion>
+  
+  <Accordion title="Can I recover my data after closure?">
+    No, data cannot be recovered once the account is closed. The deletion is permanent and irreversible.
+  </Accordion>
+</AccordionGroup>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Billing Support" icon="credit-card" href="/essentials/account/billing-subscriptions">
+    Questions about charges or refunds
+  </Card>
+  
+  <Card title="Account Settings" icon="gear" href="/essentials/account/account-settings">
+    Update details instead of closing
+  </Card>
+  
+  <Card title="Contact Support" icon="life-ring" href="/support">
+    Discuss alternatives before closing
+  </Card>
+  
+  <Card title="Downgrade Plan" icon="arrow-down" href="/essentials/plans-and-pricing">
+    Keep your account with Free plan
+  </Card>
+</CardGroup>

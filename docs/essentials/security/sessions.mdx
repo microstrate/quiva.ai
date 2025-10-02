@@ -1,0 +1,290 @@
+---
+title: "Session Management"
+description: "View and manage active sessions across all your devices"
+icon: "clock"
+---
+
+# Session Management
+
+Monitor and control your active login sessions across all devices to maintain account security.
+
+## Understanding Sessions
+
+A session represents an active login to your Microstrate account. Each time you log in from a device or browser, a new session is created.
+
+### Session Lifetimes
+
+<CardGroup cols={2}>
+  <Card title="Access Token" icon="clock">
+    **1 Hour**
+    
+    Used for API requests and active browsing
+  </Card>
+  
+  <Card title="Refresh Token" icon="arrows-rotate">
+    **24 Hours**
+    
+    Allows automatic token renewal without re-login
+  </Card>
+</CardGroup>
+
+<Info>
+After 24 hours of inactivity, you'll need to log in again. This security measure helps protect your account from unauthorized access.
+</Info>
+
+## Viewing Active Sessions
+
+See all devices and locations where you're currently logged in:
+
+1. Click your profile icon in the bottom left
+2. Select "Settings"
+3. Navigate to "Sessions"
+
+You'll see details for each active session:
+
+<img 
+  src="/images/essentials/user-sessions.png" 
+  alt="Active Sessions List"
+  style={{ maxHeight: '400px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+### Session Information
+
+Each session shows:
+
+- **Device Type** - Operating system (e.g., Macintosh, Windows, Linux)
+- **Browser** - Which browser is being used (e.g., Chrome, Firefox, Safari)
+- **Location** - Geographic location (when available)
+- **IP Address** - The IP address accessing your account
+- **Expiration** - When the session will expire (e.g., "in 14 minutes")
+- **Current Session** - Marked as "Your session" with a green indicator
+
+<Note>
+Location information may show as "unknown" if geographic data isn't available for the IP address or if you're using a VPN or proxy.
+</Note>
+
+## Terminating Sessions
+
+### Ending a Specific Session
+
+To log out of a specific device:
+
+1. Navigate to **Settings → Sessions**
+2. Find the session you want to end
+3. Click "Terminate session" for that specific session
+
+<Tip>
+Use this if you left yourself logged in on a shared computer or no longer use a particular device.
+</Tip>
+
+### Ending All Other Sessions
+
+To log out of all devices except your current one:
+
+1. Navigate to **Settings → Sessions**
+2. Click the "Terminate sessions" button at the top
+3. Confirm the action
+
+<Warning>
+This will immediately log you out of all other devices. You'll need to log in again on those devices.
+</Warning>
+
+### When to Terminate Sessions
+
+<AccordionGroup>
+  <Accordion title="Suspicious Activity" icon="triangle-exclamation">
+    **Terminate immediately if you see:**
+    - Unfamiliar locations or IP addresses
+    - Devices you don't recognize
+    - Unusual login times
+    - Sessions you didn't create
+    
+    After terminating suspicious sessions:
+    1. Change your password immediately
+    2. Review recent account activity
+    3. Enable MFA if not already active
+    4. Consider reviewing [incident response procedures](/essentials/security/incident-response)
+  </Accordion>
+  
+  <Accordion title="Forgot to Log Out" icon="door-open">
+    If you left yourself logged in:
+    - Public computer or shared device
+    - Work computer you no longer have access to
+    - Lost or stolen device
+    - Device you sold or gave away
+    
+    Terminate those sessions immediately to protect your account.
+  </Accordion>
+  
+  <Accordion title="Routine Security" icon="shield-check">
+    Good security practice:
+    - Review sessions monthly
+    - Terminate old or unused sessions
+    - Clear sessions before traveling
+    - End sessions on devices you no longer use regularly
+  </Accordion>
+  
+  <Accordion title="Password Changed" icon="key">
+    After changing your password, consider terminating all sessions to ensure no one with your old password can access your account.
+  </Accordion>
+</AccordionGroup>
+
+## Admin Session Management
+
+Administrators can force users to log out from all their sessions.
+
+### Logging Out a User (Admin Only)
+
+1. Navigate to **Account Management → Users**
+2. Click on the user's email address
+3. Click the dot menu (three dots)
+4. Select "Logout"
+
+<Info>
+This immediately terminates all of the user's active sessions across all devices. The user will need to log in again to access their account.
+</Info>
+
+**When to use this:**
+- User reports their device was stolen
+- Suspected account compromise
+- Employee leaving the organization
+- User forgot to log out on a shared device
+- Troubleshooting access issues
+
+## Session Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Review Regularly" icon="calendar-check">
+    Check your active sessions at least monthly for any unfamiliar devices or locations
+  </Card>
+  
+  <Card title="Use MFA" icon="shield-halved">
+    Multi-factor authentication adds protection even if someone gets your session token
+  </Card>
+  
+  <Card title="Secure Devices" icon="lock">
+    Use device passwords, biometrics, and encryption on devices with active sessions
+  </Card>
+  
+  <Card title="Public WiFi Caution" icon="wifi">
+    Avoid logging in on untrusted networks. Use a VPN if necessary
+  </Card>
+</CardGroup>
+
+### Additional Security Measures
+
+<AccordionGroup>
+  <Accordion title="Enable MFA">
+    Multi-factor authentication protects your account even if someone steals your session token. See our [Authentication Guide](/essentials/security/authentication).
+  </Accordion>
+  
+  <Accordion title="Use Strong Passwords">
+    Long, unique passwords make it harder for attackers to gain initial access. Consider using a password manager.
+  </Accordion>
+  
+  <Accordion title="Keep Software Updated">
+    Updated browsers and operating systems have the latest security patches to protect your sessions.
+  </Accordion>
+  
+  <Accordion title="Log Out When Done">
+    Especially on shared or public computers, always log out when you're finished rather than just closing the browser.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Session expired unexpectedly">
+    **Common Causes:**
+    - 24 hours of inactivity passed
+    - Admin terminated your sessions
+    - You changed your password
+    - You cleared browser cookies
+    
+    **Solution:**
+    Simply log in again. This is normal security behavior.
+  </Accordion>
+  
+  <Accordion title="Can't see location information">
+    **Why this happens:**
+    - Using VPN or proxy
+    - Corporate network
+    - Privacy-focused browser settings
+    - Geographic data unavailable for IP
+    
+    **This is normal** - Location is helpful but not required. Focus on device and browser information instead.
+  </Accordion>
+  
+  <Accordion title="Session shows wrong device">
+    **Possible Reasons:**
+    - Browser user agent string is generic
+    - Using browser in compatibility mode
+    - Remote desktop or virtualization
+    - Browser extension interfering
+    
+    **Solution:**
+    If you don't recognize the session at all, terminate it and change your password.
+  </Accordion>
+  
+  <Accordion title="Too many active sessions">
+    **If you see many unexpected sessions:**
+    1. Click "Terminate sessions" to end all except current
+    2. Change your password immediately
+    3. Enable MFA if not already active
+    4. Review [incident response guide](/essentials/security/incident-response)
+    
+    **If they're all yours:**
+    - Each browser and device creates a separate session
+    - Mobile apps create their own sessions
+    - This is normal for users with multiple devices
+  </Accordion>
+</AccordionGroup>
+
+## Session Security Checklist
+
+<Steps>
+  <Step title="Weekly">
+    - [ ] Note any unfamiliar sessions when you log in
+    - [ ] Report suspicious activity immediately
+  </Step>
+  
+  <Step title="Monthly">
+    - [ ] Review all active sessions in Settings
+    - [ ] Terminate sessions for devices you no longer use
+    - [ ] Verify all locations and devices are yours
+  </Step>
+  
+  <Step title="After Security Events">
+    - [ ] Terminate all sessions after changing password
+    - [ ] Review sessions after suspected compromise
+    - [ ] Check sessions after device loss or theft
+  </Step>
+  
+  <Step title="Best Practices">
+    - [ ] Always log out on shared/public computers
+    - [ ] Use MFA for additional protection
+    - [ ] Keep your recovery codes accessible
+    - [ ] Report suspicious sessions to your admin
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
+    Set up MFA and passkeys
+  </Card>
+  
+  <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
+    Manage programmatic access
+  </Card>
+  
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Comprehensive security guide
+  </Card>
+  
+  <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
+    What to do if compromised
+  </Card>
+</CardGroup>

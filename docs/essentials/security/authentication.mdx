@@ -1,0 +1,307 @@
+---
+title: "Authentication"
+description: "Secure your account with multi-factor authentication and passkeys"
+icon: "key"
+---
+
+# Authentication & MFA
+
+Protect your Microstrate account with multi-factor authentication (MFA) and modern passkey technology.
+
+## Why Enable MFA?
+
+<CardGroup cols={2}>
+  <Card title="Security" icon="shield-check">
+    Adds an additional layer of protection beyond passwords
+  </Card>
+  
+  <Card title="Compliance" icon="file-certificate">
+    Meet security requirements for regulated industries
+  </Card>
+  
+  <Card title="Account Recovery" icon="life-ring">
+    Receive recovery codes for emergency access
+  </Card>
+  
+  <Card title="Peace of Mind" icon="heart">
+    Sleep better knowing your account is secure
+  </Card>
+</CardGroup>
+
+<Warning>
+You'll be prompted to set up MFA every time you log in until it's enabled. We strongly recommend enabling MFA immediately after account creation.
+</Warning>
+
+## Setting Up Multi-Factor Authentication
+
+<Tabs>
+  <Tab title="Passkey (Recommended)">
+    Passkeys provide passwordless authentication using biometrics or device PINs.
+    
+    <Steps>
+      <Step title="Navigate to Settings">
+        Click your profile icon → "Settings" → "Password and Authentication"
+      </Step>
+      
+      <Step title="Add Passkey">
+        Click "Add Passkey"
+      </Step>
+      
+      <Step title="Complete Setup">
+        Follow your device's prompts:
+        - Touch/Face ID on mobile
+        - Windows Hello on PC
+        - Touch ID on Mac
+        - Security key (YubiKey, etc.)
+      </Step>
+      
+      <Step title="Save Recovery Codes">
+        Store your recovery codes securely
+      </Step>
+    </Steps>
+    
+    <Info>
+    Passkeys are:
+    - More secure than passwords
+    - Resistant to phishing
+    - Faster to use
+    - Backed by FIDO2 standard
+    </Info>
+  </Tab>
+  
+  <Tab title="Authenticator App">
+    Use time-based one-time passwords (TOTP) with apps like Google Authenticator, Authy, or Microsoft Authenticator.
+    
+    <Steps>
+      <Step title="Navigate to Settings">
+        Click your profile icon → "Settings" → "Password and Authentication"
+      </Step>
+      
+      <Step title="Add Authenticator">
+        Click "Add Authenticator App"
+      </Step>
+      
+      <Step title="Scan QR Code">
+        Open your authenticator app and scan the QR code displayed
+      </Step>
+      
+      <Step title="Enter Verification Code">
+        Enter the 6-digit code from your app to confirm setup
+      </Step>
+      
+      <Step title="Save Recovery Codes">
+        Download and securely store your recovery codes
+      </Step>
+    </Steps>
+    
+    **Compatible Apps:**
+    - Google Authenticator
+    - Authy
+    - Microsoft Authenticator
+    - 1Password
+    - LastPass Authenticator
+  </Tab>
+</Tabs>
+
+## Recovery Codes
+
+Recovery codes provide emergency access if you lose your MFA device.
+
+<Warning>
+**Critical:** Store recovery codes in a secure location:
+- Password manager
+- Physical safe
+- Encrypted storage
+- Never in email or cloud notes
+</Warning>
+
+### Characteristics of Recovery Codes
+
+- Each code can only be used **once**
+- You receive **10 codes** when enabling MFA
+- Generate new codes if you run out
+- Old codes become invalid when new ones are issued
+
+### Viewing Your Recovery Codes
+
+1. Click your profile icon → "Settings"
+2. Navigate to "Password and Authentication"
+3. Scroll to recovery codes section
+4. Click "View"
+
+### Using a Recovery Code
+
+1. On the MFA challenge screen, click "Use recovery code instead"
+2. Enter one of your recovery codes
+3. Click "Verify"
+4. **Important:** Generate new recovery codes immediately after using one
+
+<Note>
+If you've used all recovery codes, contact an Admin to issue new ones.
+</Note>
+
+## Password Management
+
+### Password Requirements
+
+Your password must contain:
+- Minimum **8 characters**
+- At least one **uppercase** letter
+- At least one **lowercase** letter
+- At least one **number**
+- At least one **special character** (!@#$%^&*)
+
+<Tip>
+Use a password manager to generate and store complex, unique passwords.
+</Tip>
+
+### Changing Your Password
+
+1. Click your profile icon → "Settings"
+2. Navigate to "Credentials"
+3. Enter your current password
+4. Enter your new password
+5. Confirm your new password
+6. Click "Update Password"
+
+<Info>
+All active sessions will be terminated except your current one. You'll receive an email notification confirming the password change.
+</Info>
+
+### Forgot Your Password?
+
+<Steps>
+  <Step title="Initiate Recovery">
+    1. Visit [https://app.microstrate.io/en/login](https://app.microstrate.io/en/login)
+    2. Click "Forgot password?"
+    3. Enter your account name and email
+    4. Click "Send Recovery Email"
+  </Step>
+  
+  <Step title="Check Your Email">
+    Look for "Reset Your Microstrate Password" email with:
+    - Password reset link (recommended), or
+    - Temporary recovery code
+  </Step>
+  
+  <Step title="Reset Password">
+    1. Click the reset link or enter the code
+    2. Create a new password meeting requirements
+    3. Confirm your new password
+    4. Click "Reset Password"
+  </Step>
+  
+  <Step title="Log In">
+    You'll be logged in automatically. All other sessions are terminated.
+  </Step>
+</Steps>
+
+<Warning>
+Password reset links expire after **15 minutes**. Request a new link if yours expires.
+</Warning>
+
+## Security Notifications
+
+You'll receive email notifications for these authentication events:
+
+<CardGroup cols={2}>
+  <Card title="Password Changed" icon="lock">
+    When your password is updated
+  </Card>
+  
+  <Card title="Email Change Requested" icon="envelope">
+    When someone requests an email change
+  </Card>
+  
+  <Card title="Passkey Added" icon="key">
+    When a new passkey is registered
+  </Card>
+  
+  <Card title="Recovery Codes Viewed" icon="eye">
+    When recovery codes are accessed
+  </Card>
+</CardGroup>
+
+<Tip>
+If you receive a notification for an action you didn't perform, immediately change your password and review your [active sessions](/essentials/security/sessions).
+</Tip>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Unique Passwords">
+    Never reuse passwords across different services. Use a password manager to track unique passwords for each account.
+  </Accordion>
+  
+  <Accordion title="Enable MFA Immediately">
+    Set up MFA as soon as you create your account. Don't wait until a security incident occurs.
+  </Accordion>
+  
+  <Accordion title="Store Recovery Codes Securely">
+    Keep recovery codes in a password manager or physical safe. Never store them in email or unencrypted notes.
+  </Accordion>
+  
+  <Accordion title="Prefer Passkeys">
+    Passkeys are more secure and convenient than authenticator apps. Use them when available.
+  </Accordion>
+  
+  <Accordion title="Review Sessions Regularly">
+    Check your active sessions monthly and terminate any you don't recognize.
+  </Accordion>
+  
+  <Accordion title="Rotate Passwords Periodically">
+    Change your password every 60-90 days, especially for privileged accounts.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Lost access to MFA device">
+    1. Use a recovery code to log in
+    2. Immediately set up a new MFA method
+    3. Generate new recovery codes
+    4. If you've lost recovery codes too, contact an Admin
+  </Accordion>
+  
+  <Accordion title="Authenticator app not working">
+    - Check your device's time is synced correctly
+    - Ensure you're using the latest code (refreshes every 30 seconds)
+    - Try removing and re-adding the account in your app
+    - Use a recovery code if the issue persists
+  </Accordion>
+  
+  <Accordion title="Passkey not recognized">
+    - Ensure your device/browser supports passkeys
+    - Try registering a backup passkey on another device
+    - Clear browser cache if using a browser-based passkey
+    - Use authenticator app or recovery code as fallback
+  </Accordion>
+  
+  <Accordion title="Didn't receive password reset email">
+    - Check spam/junk folder
+    - Verify you entered the correct account name and email
+    - Wait 5 minutes (email delivery can be delayed)
+    - Try requesting another reset email
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
+    Secure programmatic access
+  </Card>
+  
+  <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
+    Manage active sessions
+  </Card>
+  
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Comprehensive security guide
+  </Card>
+  
+  <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
+    What to do if compromised
+  </Card>
+</CardGroup>

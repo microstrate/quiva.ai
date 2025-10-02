@@ -1,0 +1,497 @@
+---
+title: "Roles & Permissions"
+description: "Detailed breakdown of user roles and what each role can access"
+icon: "key"
+---
+
+# Roles & Permissions
+
+Microstrate provides five predefined roles to help you control access levels across your team. This guide details what each role can and cannot do.
+
+## Role Overview
+
+<CardGroup cols={3}>
+  <Card title="Root" icon="crown">
+    **1-2 per account**
+    
+    Complete control including account closure
+  </Card>
+  
+  <Card title="Admin" icon="user-shield">
+    **Few per account**
+    
+    Full management except closure
+  </Card>
+  
+  <Card title="Billing" icon="credit-card">
+    **Finance team**
+    
+    Financial management only
+  </Card>
+  
+  <Card title="Developer" icon="code">
+    **Technical team**
+    
+    Build and deploy resources
+  </Card>
+  
+  <Card title="Monitor" icon="eye">
+    **Stakeholders**
+    
+    View-only access
+  </Card>
+</CardGroup>
+
+## Detailed Role Permissions
+
+### Root
+
+<Note>
+**Recommendation:** Limit Root role to 1-2 people (typically account owner and backup). Root users have unrestricted access to everything.
+</Note>
+
+**Account Management**
+- ✅ Close/delete the account permanently
+- ✅ Change root email address
+- ✅ Rename account
+- ✅ Modify mesh configuration
+- ✅ Update company details
+
+**User Management**
+- ✅ Add and remove users
+- ✅ Modify all user roles (including other Admins)
+- ✅ Suspend and reactivate users
+- ✅ View and issue recovery codes
+- ✅ Terminate user sessions
+- ✅ Delete users
+
+**Billing & Subscriptions**
+- ✅ View billing information
+- ✅ Change plans and pricing
+- ✅ Update payment methods
+- ✅ Access invoices
+- ✅ Cancel subscriptions
+
+**Resources & Development**
+- ✅ Create and manage agents
+- ✅ Create and manage flows
+- ✅ Create and manage MCP servers
+- ✅ Access all storage and data
+- ✅ Deploy and configure resources
+- ✅ View monitoring and logs
+
+**Security**
+- ✅ View all user sessions
+- ✅ Manage API keys (own and others)
+- ✅ Configure security settings
+- ✅ Access audit logs (when available)
+
+<Warning>
+**Root Recovery Codes:** Cannot be viewed by anyone else, including Admins. Root users must store their recovery codes securely.
+</Warning>
+
+### Admin
+
+<Note>
+**Recommendation:** Assign to trusted team leads and IT staff who need full operational control but shouldn't be able to close the account.
+</Note>
+
+**Account Management**
+- ❌ Cannot close/delete the account
+- ❌ Cannot change root email address
+- ✅ Rename account
+- ✅ Modify mesh configuration
+- ✅ Update company details
+
+**User Management**
+- ✅ Add and remove users
+- ✅ Modify user roles (except Root)
+- ✅ Suspend and reactivate users
+- ✅ View and issue recovery codes (except Root)
+- ✅ Terminate user sessions
+- ✅ Delete users
+
+**Billing & Subscriptions**
+- ✅ View billing information
+- ✅ Change plans and pricing
+- ✅ Update payment methods
+- ✅ Access invoices
+- ✅ Cancel subscriptions
+
+**Resources & Development**
+- ✅ Create and manage agents
+- ✅ Create and manage flows
+- ✅ Create and manage MCP servers
+- ✅ Access all storage and data
+- ✅ Deploy and configure resources
+- ✅ View monitoring and logs
+
+**Security**
+- ✅ View all user sessions
+- ✅ Manage API keys (own and others)
+- ✅ Configure security settings
+- ✅ Access audit logs (when available)
+
+**Key Differences from Root:**
+- Cannot close the account
+- Cannot change root email address
+- Cannot view Root user's recovery codes
+
+### Billing
+
+<Note>
+**Recommendation:** Assign to finance team members who need to manage payments and subscriptions but don't need technical access.
+</Note>
+
+**Account Management**
+- ❌ Cannot close/delete account
+- ❌ Cannot modify account settings
+- ✅ View company/billing details only
+
+**User Management**
+- ❌ Cannot add or remove users
+- ❌ Cannot modify user roles
+- ❌ Cannot access user management
+
+**Billing & Subscriptions**
+- ✅ View billing information
+- ✅ Change plans and pricing
+- ✅ Update payment methods
+- ✅ Access and download invoices
+- ✅ View billing history
+- ✅ Cancel subscriptions
+- ✅ Update tax information
+
+**Resources & Development**
+- ❌ Cannot create or manage agents
+- ❌ Cannot create or manage flows
+- ❌ Cannot create or manage MCP servers
+- ❌ Cannot access storage or data
+- ❌ Cannot deploy resources
+- ❌ Cannot view monitoring or logs
+
+**Security**
+- ❌ Cannot view user sessions
+- ❌ Cannot manage API keys
+- ❌ Cannot configure security settings
+
+**Use Cases:**
+- CFO or finance director
+- Accounting team member
+- External accountant with limited access
+
+### Developer
+
+<Note>
+**Recommendation:** Assign to technical team members who build and deploy agents, flows, and integrations.
+</Note>
+
+**Account Management**
+- ❌ Cannot close/delete account
+- ❌ Cannot modify account settings
+- ❌ Cannot access account management
+
+**User Management**
+- ❌ Cannot add or remove users
+- ❌ Cannot modify user roles
+- ❌ Cannot access user management
+
+**Billing & Subscriptions**
+- ❌ Cannot view billing information
+- ❌ Cannot modify plans or payment
+- ❌ Cannot access invoices
+
+**Resources & Development**
+- ✅ Create and manage agents
+- ✅ Create and manage flows
+- ✅ Create and manage MCP servers
+- ✅ Access storage and data
+- ✅ Deploy and configure resources
+- ✅ View monitoring and logs for their resources
+- ✅ Access marketplace and install items
+
+**Security**
+- ✅ View own sessions
+- ✅ Manage own API keys
+- ✅ Configure own MFA settings
+- ❌ Cannot view other users' sessions
+- ❌ Cannot manage others' API keys
+
+**Use Cases:**
+- Software engineers
+- DevOps team members
+- Integration developers
+- Automation specialists
+
+### Monitor
+
+<Note>
+**Recommendation:** Assign to stakeholders who need visibility into operations without the ability to make changes.
+</Note>
+
+**Account Management**
+- ❌ Cannot access account management
+- ❌ View-only access to account details
+
+**User Management**
+- ❌ Cannot access user management
+
+**Billing & Subscriptions**
+- ❌ Cannot access billing
+
+**Resources & Development**
+- ❌ Cannot create resources
+- ❌ Cannot modify existing resources
+- ❌ Cannot delete resources
+- ✅ View agents and configurations
+- ✅ View flows and workflows
+- ✅ View MCP servers
+- ✅ View monitoring dashboards
+- ✅ View logs and metrics
+
+**Security**
+- ✅ View own sessions
+- ❌ Cannot create API keys
+- ✅ Configure own MFA settings
+
+**Use Cases:**
+- Product managers
+- Business analysts
+- External consultants
+- Auditors
+- Executive stakeholders
+
+## Permission Matrix
+
+Quick reference for common actions:
+
+| Action | Root | Admin | Billing | Developer | Monitor |
+|--------|------|-------|---------|-----------|---------|
+| Close account | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Add users | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Modify roles | ✅ | ✅* | ❌ | ❌ | ❌ |
+| View billing | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Change plans | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Create agents | ✅ | ✅ | ❌ | ✅ | ❌ |
+| Deploy flows | ✅ | ✅ | ❌ | ✅ | ❌ |
+| View monitoring | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Manage API keys | ✅ | ✅ | ❌ | Own only | ❌ |
+| View sessions | ✅ | ✅ | ❌ | Own only | Own only |
+
+*Admin cannot modify Root role
+
+## Best Practices
+
+### Applying Least Privilege
+
+<AccordionGroup>
+  <Accordion title="Start with Minimum Access" icon="user-lock">
+    Always assign the least privileged role that allows someone to do their job:
+    
+    - New team member needs to view dashboards? Start with Monitor
+    - Developer needs to build agents? Assign Developer (not Admin)
+    - Finance needs to manage billing? Assign Billing (not Admin)
+    
+    You can always upgrade later if needed.
+  </Accordion>
+  
+  <Accordion title="Limit Root and Admin Assignments" icon="crown">
+    Keep these powerful roles restricted:
+    
+    - **Root:** 1-2 people maximum (owner + backup)
+    - **Admin:** Only senior team leads and IT staff
+    - **Billing:** Finance team only
+    
+    The more people with elevated privileges, the higher your security risk.
+  </Accordion>
+  
+  <Accordion title="Regular Role Audits" icon="calendar-check">
+    Review user roles quarterly:
+    
+    - Does each person still need their current access level?
+    - Have job responsibilities changed?
+    - Are there unused accounts to remove?
+    - Should anyone be downgraded to a less privileged role?
+  </Accordion>
+  
+  <Accordion title="Temporary Elevated Access" icon="clock">
+    Need to grant temporary elevated access?
+    
+    1. Upgrade the user's role
+    2. Set a calendar reminder to downgrade
+    3. Downgrade as soon as the task is complete
+    4. Document why access was needed
+    
+    Don't leave elevated access in place permanently "just in case."
+  </Accordion>
+</AccordionGroup>
+
+### Role Assignment Scenarios
+
+<Tabs>
+  <Tab title="Small Team (2-5 people)">
+    **Recommended structure:**
+    - 1 Root (founder/owner)
+    - 1-2 Developers (technical team)
+    - 0-1 Admin (if needed for user management)
+    
+    **Why:** Small teams often don't need separate Billing or Monitor roles. Developers can handle most tasks.
+  </Tab>
+  
+  <Tab title="Growing Team (6-20 people)">
+    **Recommended structure:**
+    - 1 Root (owner)
+    - 1-2 Admins (team leads)
+    - 1 Billing (finance person)
+    - 3-10 Developers (technical team)
+    - 0-5 Monitors (stakeholders)
+    
+    **Why:** Separation of duties becomes important. Finance should handle billing separately from technical work.
+  </Tab>
+  
+  <Tab title="Large Organization (20+ people)">
+    **Recommended structure:**
+    - 1-2 Root (owner + backup)
+    - 2-5 Admins (department leads)
+    - 1-2 Billing (finance team)
+    - 10+ Developers (engineering)
+    - 5+ Monitors (various stakeholders)
+    
+    **Why:** Clear separation of duties, multiple teams, compliance requirements.
+  </Tab>
+</Tabs>
+
+## Resource Sharing
+
+<Info>
+All resources (agents, flows, MCP servers) are shared across your entire account. Role permissions determine what users can do with these resources, not whether they can see them.
+</Info>
+
+**How roles interact with resources:**
+
+- **Root/Admin:** Full access to all resources regardless of who created them
+- **Developer:** Can create, modify, and delete resources (including those created by others)
+- **Monitor:** Can view all resources but cannot modify anything
+- **Billing:** Cannot access resources at all
+
+When a user is deleted, their resources remain accessible to the team.
+
+[Learn more about user deletion →](/essentials/users/user-management#deleting-users)
+
+## Changing Roles
+
+### How to Update a User's Role
+
+Only Root and Admin users can change roles:
+
+<Steps>
+  <Step title="Navigate to Users">
+    Go to **Account Management → Users**
+  </Step>
+  
+  <Step title="Select User">
+    Click on the user's email address
+  </Step>
+  
+  <Step title="Change Role">
+    Select the new role from the dropdown
+  </Step>
+  
+  <Step title="Confirm">
+    Click "Update Role"
+  </Step>
+</Steps>
+
+Changes take effect immediately.
+
+### Restrictions
+
+- You cannot change your own role
+- Admin users cannot change Root user's role
+- Admin users cannot assign the Root role to others
+- Only Root users can create or modify other Root users
+
+## Security Considerations
+
+<CardGroup cols={2}>
+  <Card title="Require MFA for Elevated Roles" icon="shield-check">
+    **Critical:** All Root and Admin users must enable MFA
+    
+    **Recommended:** All Developer users should enable MFA
+    
+    [Set up MFA →](/essentials/security/authentication)
+  </Card>
+  
+  <Card title="Monitor Privileged Actions" icon="eye">
+    Regularly review actions taken by Root and Admin users
+    
+    When available, use audit logs to track administrative changes
+  </Card>
+  
+  <Card title="Offboarding Process" icon="right-from-bracket">
+    When users leave:
+    1. Suspend account immediately
+    2. Terminate all sessions
+    3. Delete API keys
+    4. Remove user within 24 hours
+    
+    [Offboarding guide →](/essentials/users/user-management#deleting-users)
+  </Card>
+  
+  <Card title="Secure Recovery Codes" icon="life-ring">
+    Root users: Store recovery codes in a secure, accessible location
+    
+    Cannot be recovered by Admins if lost
+  </Card>
+</CardGroup>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I create custom roles?">
+    No, Microstrate provides five predefined roles. These roles cover most use cases. For Enterprise customers with specific needs, contact us about custom permissions.
+  </Accordion>
+  
+  <Accordion title="How many Root users can I have?">
+    Technically unlimited, but we strongly recommend limiting to 1-2 people (account owner and one backup). The Root role has unrestricted access including account deletion.
+  </Accordion>
+  
+  <Accordion title="Can Developers see billing information?">
+    No, only Root, Admin, and Billing roles can access billing information. Developers focus on technical resources only.
+  </Accordion>
+  
+  <Accordion title="What happens if I'm the only Root user and lose access?">
+    This is why we recommend having a backup Root user. If you're the only Root and lose access (lost MFA device, forgotten password, no recovery codes), recovery is extremely difficult. Always maintain:
+    - Secure recovery codes
+    - At least one backup Root user
+    - Working MFA device
+  </Accordion>
+  
+  <Accordion title="Can Monitor users execute flows?">
+    No, Monitor role is strictly view-only. They can see flows and their configurations but cannot execute them, modify them, or trigger them.
+  </Accordion>
+  
+  <Accordion title="Why can't I see billing information?">
+    Your role doesn't have billing access. Only Root, Admin, and Billing roles can view billing. Ask an Admin to either give you information or change your role.
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="User Management" icon="users" href="/essentials/users/user-management">
+    Add users and manage their roles
+  </Card>
+  
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Protect your account
+  </Card>
+  
+  <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
+    Set up MFA for elevated roles
+  </Card>
+  
+  <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
+    Understand key permissions
+  </Card>
+</CardGroup>

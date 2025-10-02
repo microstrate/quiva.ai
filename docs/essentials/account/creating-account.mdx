@@ -1,0 +1,315 @@
+---
+title: "Creating Your Account"
+description: "Step-by-step guide to creating and setting up your Microstrate account"
+icon: "user-plus"
+---
+
+# Creating Your Account
+
+Get started with Microstrate in just a few minutes. This guide walks you through account creation, email verification, and initial setup.
+
+## Before You Begin
+
+Have these details ready:
+- A valid email address
+- A unique account name (you'll use this to log in)
+- Your location/country
+- Payment information (only if choosing a paid plan)
+
+## Step 1: Registration
+
+<Steps>
+  <Step title="Visit the Signup Page">
+    Navigate to [https://app.microstrate.io/en/signup](https://app.microstrate.io/en/signup)
+  </Step>
+  
+  <Step title="Complete the Form">
+    Enter the following information:
+    
+    - **Account Name** - Your unique login identifier (case-sensitive)
+    - **Email Address** - Your primary contact email
+    - **Password** - Must contain:
+      - Minimum 8 characters
+      - Uppercase and lowercase letters
+      - At least one number
+      - At least one special character (!@#$%^&*)
+    - **Country**
+    - **First and Last Name**
+  </Step>
+  
+  <Step title="Accept Terms">
+    Review and accept our [Terms of Service](https://microstrate.io/legal.html#terms) and [Privacy Policy](https://microstrate.io/legal.html#privacy)
+  </Step>
+  
+  <Step title="Complete Verification">
+    Complete the Cloudflare verification to confirm you're human
+  </Step>
+  
+  <Step title="Submit">
+    Click the submit button to create your account
+  </Step>
+</Steps>
+
+<img 
+  src="/images/essentials/registration-screen.png" 
+  alt="Registration Screen"
+  style={{ maxHeight: '300px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+<Note>
+**About Account Names:** The account name allows the same email address to be used across multiple Microstrate accounts. Choose something memorable as you'll use it every time you log in.
+</Note>
+
+## Step 2: Email Verification
+
+After registration, verify your email address to activate your account.
+
+<Tabs>
+  <Tab title="Login Code">
+    1. Check your email for "Confirm Your Email Address"
+    2. Find the 6-digit verification code
+    3. Enter the code on the verification screen
+    4. Click "Verify"
+  </Tab>
+  
+  <Tab title="Magic Link">
+    1. Check your email for "Confirm Your Email Address"
+    2. Click the "Confirm your email" button
+    3. You'll be automatically logged into your new account
+  </Tab>
+</Tabs>
+
+<img 
+  src="/images/essentials/account-registration-email.png" 
+  alt="Registration Email"
+  style={{ maxHeight: '300px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+<Warning>
+**Time Limit:** Accounts must be verified within 48 hours or they'll be automatically deleted. Check your spam folder if you don't receive the email within 5 minutes.
+</Warning>
+
+## Step 3: Select Your Plan
+
+Choose the plan that matches your needs:
+
+<CardGroup cols={2}>
+  <Card title="Free - $0/month" icon="gift">
+    - 3 agents, 200 flow runs/month
+    - 500MB storage
+    - Perfect for exploration
+    
+    [View details →](/essentials/plans-and-pricing#free)
+  </Card>
+  
+  <Card title="Starter - $20/month" icon="seedling">
+    - 5 agents, 2,500 flow runs/month
+    - 2GB storage
+    - Premium marketplace access
+    
+    [View details →](/essentials/plans-and-pricing#starter)
+  </Card>
+  
+  <Card title="Pro - $100/month" icon="chart-line">
+    - 50 agents, 10,000 flow runs/month
+    - 5GB storage
+    - Priority support
+    
+    [View details →](/essentials/plans-and-pricing#pro)
+  </Card>
+  
+  <Card title="Team - $500/month" icon="users">
+    - Unlimited agents, 40,000 flow runs/month
+    - 50GB storage
+    - Dedicated support
+    
+    [View details →](/essentials/plans-and-pricing#team)
+  </Card>
+</CardGroup>
+
+<img 
+  src="/images/essentials/plan-selection.png" 
+  alt="Plan Selection"
+  style={{ maxHeight: '400px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+<Tip>
+Start with the Free plan to explore Microstrate. You can upgrade at any time as your needs grow.
+</Tip>
+
+## Step 4: Configure Account Regions
+
+Select where your data will be processed and stored:
+
+<CardGroup cols={3}>
+  <Card title="EU" icon="location-dot">
+    European Union
+    - GDPR compliant
+    - Frankfurt/Paris
+  </Card>
+  
+  <Card title="US" icon="location-dot">
+    United States
+    - Multiple zones
+    - East/West coast
+  </Card>
+  
+  <Card title="Australia" icon="location-dot">
+    Sydney
+    - APAC region
+    - Low latency
+  </Card>
+</CardGroup>
+
+<Info>
+Your region selection determines where your data is stored and can help you meet compliance requirements like GDPR. You can modify this later in **Account Management → Mesh**.
+</Info>
+
+## Step 5: Secure Your Account
+
+<Warning>
+**Critical Security Step:** Enable multi-factor authentication immediately after account creation.
+</Warning>
+
+You'll be prompted to set up MFA on your first login:
+
+1. Choose your authentication method:
+   - **Passkey** (Recommended) - Use biometrics or device PIN
+   - **Authenticator App** - Use Google Authenticator, Authy, etc.
+
+2. Follow the setup instructions
+
+3. **Save your recovery codes** in a secure location:
+   - Password manager (recommended)
+   - Encrypted file
+   - Physical safe
+
+<Note>
+Recovery codes are your backup access method if you lose your MFA device. Store them securely as they can't be recovered if lost.
+</Note>
+
+[Complete MFA setup guide →](/essentials/security/authentication)
+
+## Account Setup Checklist
+
+<Steps>
+  <Step title="Create Account">
+    - [ ] Register with email and unique account name
+    - [ ] Verify email within 48 hours
+  </Step>
+  
+  <Step title="Select Plan">
+    - [ ] Choose appropriate plan for your needs
+    - [ ] Complete billing information (if paid plan)
+  </Step>
+  
+  <Step title="Configure Regions">
+    - [ ] Select data processing locations
+    - [ ] Verify compliance requirements met
+  </Step>
+  
+  <Step title="Enable Security">
+    - [ ] Set up MFA (passkey or authenticator)
+    - [ ] Save recovery codes securely
+    - [ ] Test login with MFA
+  </Step>
+  
+  <Step title="Complete Profile">
+    - [ ] Update company/organization details
+    - [ ] Add additional account information
+    
+    [Update account details →](/essentials/account/account-settings)
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Didn't receive verification email">
+    **Solutions:**
+    - Check spam/junk folder
+    - Wait 5 minutes for delivery
+    - Click "Resend email" on verification screen
+    - Verify you entered correct email address
+    - Try a different email provider if issues persist
+  </Accordion>
+  
+  <Accordion title="Account name already taken">
+    **Remember:**
+    - Account names are case-sensitive
+    - They must be unique across all Microstrate accounts
+    - Try variations or add numbers/underscores
+    - Consider using your company name or username
+  </Accordion>
+  
+  <Accordion title="Password doesn't meet requirements">
+    **Your password must have:**
+    - At least 8 characters (12+ recommended)
+    - Uppercase letters (A-Z)
+    - Lowercase letters (a-z)
+    - Numbers (0-9)
+    - Special characters (!@#$%^&*)
+    
+    Use a password manager to generate strong passwords.
+  </Accordion>
+  
+  <Accordion title="Cloudflare verification failing">
+    **Try these solutions:**
+    - Refresh the page and try again
+    - Disable browser extensions temporarily
+    - Try a different browser
+    - Ensure JavaScript is enabled
+    - Check your internet connection
+  </Accordion>
+</AccordionGroup>
+
+## Multiple Accounts
+
+You can use the same email address for multiple Microstrate accounts by choosing different account names.
+
+**To access different accounts:**
+1. Log out of your current account
+2. Enter the specific **account name** on the login page
+3. Enter your email and password
+4. Complete MFA verification
+
+Each account operates independently with its own resources, billing, and users.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Build Your First Agent" icon="robot" href="/guides/first-agent">
+    Create and deploy an intelligent AI agent
+  </Card>
+  
+  <Card title="Invite Team Members" icon="user-plus" href="/essentials/users/user-management">
+    Add users and assign roles
+  </Card>
+  
+  <Card title="Explore Marketplace" icon="store" href="/marketplace/overview">
+    Browse pre-built solutions
+  </Card>
+  
+  <Card title="Configure Settings" icon="gear" href="/essentials/account/account-settings">
+    Customize your account
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Documentation" icon="book" href="/overview">
+    Browse complete guides
+  </Card>
+  
+  <Card title="Community" icon="users" href="https://community.microstrate.io">
+    Connect with other users
+  </Card>
+  
+  <Card title="Support" icon="life-ring" href="/support">
+    Get help from our team
+  </Card>
+</CardGroup>

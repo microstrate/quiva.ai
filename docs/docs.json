@@ -24,12 +24,37 @@
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Getting Started",
             "pages": [
-              "essentials/accounts",
-              "essentials/security",
-              "essentials/plans-and-pricing",
-              "essentials/compute-credits"
+              "essentials/getting-started",
+              "essentials/plans-and-pricing"
+            ]
+          },
+          {
+            "group": "Account Management",
+            "pages": [
+              "essentials/account/creating-account",
+              "essentials/account/account-settings",
+              "essentials/account/billing-subscriptions",
+              "essentials/account/closing-account"
+            ]
+          },
+          {
+            "group": "User Management",
+            "pages": [
+              "essentials/users/user-management",
+              "essentials/users/roles-permissions",
+              "essentials/users/user-settings"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "essentials/security/overview",
+              "essentials/security/authentication",
+              "essentials/security/api-keys",
+              "essentials/security/sessions",
+              "essentials/security/incident-response"
             ]
           }
         ]
@@ -85,17 +110,14 @@
               "source": "api-reference/endpoint/monitoring/openapi.json"
             }
           }
-
-        ]    
+        ]
       },
       {
         "tab": "Change Log",
         "groups": [
           {
             "group": "Change Log",
-            "pages": [
-              "changelog/product-updates"
-            ]
+            "pages": ["changelog/product-updates"]
           }
         ]
       }
