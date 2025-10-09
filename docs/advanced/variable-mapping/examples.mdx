@@ -1,0 +1,1158 @@
+Comprehensive real-world examples demonstrating JSON Path mapping in common business scenarios.
+
+## E-commerce Order Processing
+
+### Scenario: Process New Order
+
+You receive an order from an API and need to transform it for your system.
+
+<Tabs>
+  <Tab title="Source Data">
+```json
+{
+  "get_order": {
+    "orderId": "ORD-2025-001",
+    "customer": {
+      "id": "CUST-123",
+      "firstName": "Sarah",
+      "lastName": "Chen",
+      "email": "sarah.chen@example.com",
+      "phone": "+1-555-0123"
+    },
+    "items": [
+      {
+        "sku": "WIDGET-001",
+        "name": "Premium Widget",
+        "quantity": 2,
+        "price": 49.99,
+        "discount": 0.1
+      },
+      {
+        "sku": "GADGET-005",
+        "name": "Smart Gadget",
+        "quantity": 1,
+        "price": 129.99,
+        "discount": 0
+      }
+    ],
+    "shipping": {
+      "method": "express",
+      "address": {
+        "street": "123 Main St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105"
+      },
+      "cost": 12.50
+    },
+    "payment": {
+      "method": "credit_card",
+      "last4": "4242",
+      "status": "authorized"
+    },
+    "timestamps": {
+      "created": "2025-10-08T10:30:00Z",
+      "updated": "2025-10-08T10:35:00Z"
+    }
+  }
+}
+```
+  </Tab>
+  
+  <Tab title="Mapping Configuration">
+```json
+{
+  "orderNumber": "$.get_order.orderId",
+  "customerName": "$.get_order.customer.firstName| |$.get_order.customer.lastName",
+  "customerEmail": "$.get_order.customer.email",
+  "customerPhone": "$.get_order.customer.phone",
+  "itemCount": "$.get_order.items.length",
+  "allProducts": "$.get_order.items[*].name",
+  "totalBeforeDiscount": "$.get_order.items[*].price",
+  "discountedItems": "$.get_order.items[?(@.discount>0)]",
+  "firstItemSku": "$.get_order.items[0].sku",
+  "shippingAddress": "$.get_order.shipping.address.street|, |$.get_order.shipping.address.city|, |$.get_order.shipping.address.state| |$.get_order.shipping.address.zip",
+  "shippingMethod": "Shipping: |$.get_order.shipping.method",
+  "paymentInfo": "$.get_order.payment.method| ending in |$.get_order.payment.last4",
+  "orderDate": "$.get_order.timestamps.created",
+  "isExpressShipping": "$.get_order.shipping[?(@.method==='express')]"
+}
+```
+  </Tab>
+  
+  <Tab title="Result">
+```json
+{
+  "orderNumber": "ORD-2025-001",
+  "customerName": "Sarah Chen",
+  "customerEmail": "sarah.chen@example.com",
+  "customerPhone": "+1-555-0123",
+  "itemCount": 2,
+  "allProducts": ["Premium Widget", "Smart Gadget"],
+  "totalBeforeDiscount": [49.99, 129.99],
+  "discountedItems": [
+    {
+      "sku": "WIDGET-001",
+      "name": "Premium Widget",
+      "quantity": 2,
+      "price": 49.99,
+      "discount": 0.1
+    }
+  ],
+  "firstItemSku": "WIDGET-001",
+  "shippingAddress": "123 Main St, San Francisco, CA 94105",
+  "shippingMethod": "Shipping: express",
+  "paymentInfo": "credit_card ending in 4242",
+  "orderDate": "2025-10-08T10:30:00Z",
+  "isExpressShipping": [{"method": "express", "address": {...}, "cost": 12.50}]
+}
+```
+  </Tab>
+</Tabs>
+
+<Tip>
+**Key Techniques Used:**
+- Pipe operator for full name concatenation
+- Pipe operator for formatted address
+- Array wildcard `[*]` to get all product names
+- Filter `?(@.discount>0)` to find discounted items
+- `.length` to count items
+- Array indexing `[0]` for first item
+</Tip>
+
+---
+
+## User Management & Authorization
+
+### Scenario: User Profile Enrichment
+
+Combine user data from multiple API calls to create a complete profile.
+
+<Tabs>
+  <Tab title="Source Data">
+```json
+{
+  "get_user": {
+    "userId": "USER-456",
+    "username": "jsmith",
+    "email": "john.smith@company.com",
+    "status": "active",
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  "get_permissions": {
+    "roles": ["editor", "reviewer"],
+    "permissions": [
+      {"resource": "articles", "actions": ["read", "write", "publish"]},
+      {"resource": "comments", "actions": ["read", "moderate"]},
+      {"resource": "analytics", "actions": ["read"]}
+    ],
+    "restrictions": {
+      "maxFileSize": 10485760,
+      "allowedFileTypes": ["jpg", "png", "pdf", "docx"]
+    }
+  },
+  "get_activity": {
+    "lastLogin": "2025-10-08T09:15:00Z",
+    "loginCount": 247,
+    "recentActions": [
+      {"action": "published_article", "timestamp": "2025-10-08T09:20:00Z", "articleId": "ART-123"},
+      {"action": "edited_article", "timestamp": "2025-10-08T08:45:00Z", "articleId": "ART-122"},
+      {"action": "moderated_comment", "timestamp": "2025-10-07T16:30:00Z", "commentId": "COM-789"}
+    ]
+  }
+}
+```
+  </Tab>
+  
+  <Tab title="Mapping Configuration">
+```json
+{
+  "userId": "$.get_user.userId",
+  "displayName": "$.get_user.username| (|$.get_user.email|)",
+  "accountStatus": "Status: |$.get_user.status",
+  "memberSince": "$.get_user.createdAt",
+  "primaryRole": "$.get_permissions.roles[0]",
+  "allRoles": "$.get_permissions.roles[*]",
+  "canPublish": "$.get_permissions.permissions[?(@.resource==='articles')].actions",
+  "hasModeratorAccess": "$.get_permissions.permissions[?(@.resource==='comments' && @.actions[*]==='moderate')]",
+  "allowedFileTypes": "Allowed: |$.get_permissions.restrictions.allowedFileTypes[*]",
+  "maxUploadSize": "$.get_permissions.restrictions.maxFileSize",
+  "lastActive": "$.get_activity.lastLogin",
+  "totalLogins": "$.get_activity.loginCount",
+  "recentActivity": "$.get_activity.recentActions[0:3]",
+  "lastAction": "$.get_activity.recentActions[0].action| at |$.get_activity.recentActions[0].timestamp",
+  "isActiveUser": "$.get_activity[?(@.loginCount>100)]"
+}
+```
+  </Tab>
+  
+  <Tab title="Result">
+```json
+{
+  "userId": "USER-456",
+  "displayName": "jsmith (john.smith@company.com)",
+  "accountStatus": "Status: active",
+  "memberSince": "2024-01-15T08:00:00Z",
+  "primaryRole": "editor",
+  "allRoles": ["editor", "reviewer"],
+  "canPublish": [["read", "write", "publish"]],
+  "hasModeratorAccess": [
+    {"resource": "comments", "actions": ["read", "moderate"]}
+  ],
+  "allowedFileTypes": "Allowed: jpg,png,pdf,docx",
+  "maxUploadSize": 10485760,
+  "lastActive": "2025-10-08T09:15:00Z",
+  "totalLogins": 247,
+  "recentActivity": [
+    {"action": "published_article", "timestamp": "2025-10-08T09:20:00Z", "articleId": "ART-123"},
+    {"action": "edited_article", "timestamp": "2025-10-08T08:45:00Z", "articleId": "ART-122"},
+    {"action": "moderated_comment", "timestamp": "2025-10-07T16:30:00Z", "commentId": "COM-789"}
+  ],
+  "lastAction": "published_article at 2025-10-08T09:20:00Z",
+  "isActiveUser": [{"lastLogin": "2025-10-08T09:15:00Z", "loginCount": 247, "recentActions": [...]}]
+}
+```
+  </Tab>
+</Tabs>
+
+<Info>
+**Advanced Pattern:** This example shows how to combine data from three different API calls (`get_user`, `get_permissions`, `get_activity`) into a single enriched user profile.
+</Info>
+
+---
+
+## CRM & Sales Pipeline
+
+### Scenario: Lead Scoring & Qualification
+
+Score leads based on activity, engagement, and company data.
+
+<Tabs>
+  <Tab title="Source Data">
+```json
+{
+  "get_lead": {
+    "leadId": "LEAD-789",
+    "contact": {
+      "name": "Michael Rodriguez",
+      "title": "VP of Engineering",
+      "email": "m.rodriguez@techcorp.com",
+      "phone": "+1-555-0199"
+    },
+    "company": {
+      "name": "TechCorp Solutions",
+      "industry": "Software",
+      "size": "500-1000",
+      "revenue": "50M-100M",
+      "website": "https://techcorp.com"
+    },
+    "engagement": {
+      "score": 85,
+      "activities": [
+        {"type": "email_open", "count": 12, "lastDate": "2025-10-08"},
+        {"type": "link_click", "count": 5, "lastDate": "2025-10-07"},
+        {"type": "form_submit", "count": 2, "lastDate": "2025-10-06"},
+        {"type": "demo_request", "count": 1, "lastDate": "2025-10-05"}
+      ],
+      "pageViews": [
+        {"page": "pricing", "visits": 8},
+        {"page": "features", "visits": 5},
+        {"page": "case-studies", "visits": 3}
+      ]
+    },
+    "sourceInfo": {
+      "channel": "organic_search",
+      "campaign": "Q4_Enterprise",
+      "firstTouch": "2025-09-15T14:30:00Z"
+    }
+  }
+}
+```
+  </Tab>
+  
+  <Tab title="Mapping Configuration">
+```json
+{
+  "leadId": "$.get_lead.leadId",
+  "contactSummary": "$.get_lead.contact.name| - |$.get_lead.contact.title| at |$.get_lead.company.name",
+  "email": "$.get_lead.contact.email",
+  "companyProfile": "$.get_lead.company.name| (|$.get_lead.company.industry|, |$.get_lead.company.size| employees, $|$.get_lead.company.revenue| revenue)",
+  "engagementScore": "Score: |$.get_lead.engagement.score|/100",
+  "isHotLead": "$.get_lead.engagement[?(@.score>=80)]",
+  "totalActivities": "$.get_lead.engagement.activities[*].count",
+  "hasDemoRequest": "$.get_lead.engagement.activities[?(@.type==='demo_request')]",
+  "highValueActivities": "$.get_lead.engagement.activities[?(@.count>=5)]",
+  "topVisitedPage": "$.get_lead.engagement.pageViews[0].page",
+  "pricingPageViews": "$.get_lead.engagement.pageViews[?(@.page==='pricing')].visits",
+  "recentActivity": "$.get_lead.engagement.activities[?(@.lastDate>='2025-10-07')]",
+  "sourceChannel": "Source: |$.get_lead.sourceInfo.channel| (|$.get_lead.sourceInfo.campaign|)",
+  "daysSinceFirstTouch": "$.get_lead.sourceInfo.firstTouch",
+  "qualificationStatus": "$.get_lead[?(@.engagement.score>=80 && @.company.size==='500-1000')]"
+}
+```
+  </Tab>
+  
+  <Tab title="Result">
+```json
+{
+  "leadId": "LEAD-789",
+  "contactSummary": "Michael Rodriguez - VP of Engineering at TechCorp Solutions",
+  "email": "m.rodriguez@techcorp.com",
+  "companyProfile": "TechCorp Solutions (Software, 500-1000 employees, $50M-100M revenue)",
+  "engagementScore": "Score: 85/100",
+  "isHotLead": [{"score": 85, "activities": [...], "pageViews": [...]}],
+  "totalActivities": [12, 5, 2, 1],
+  "hasDemoRequest": [
+    {"type": "demo_request", "count": 1, "lastDate": "2025-10-05"}
+  ],
+  "highValueActivities": [
+    {"type": "email_open", "count": 12, "lastDate": "2025-10-08"},
+    {"type": "link_click", "count": 5, "lastDate": "2025-10-07"}
+  ],
+  "topVisitedPage": "pricing",
+  "pricingPageViews": [8],
+  "recentActivity": [
+    {"type": "email_open", "count": 12, "lastDate": "2025-10-08"},
+    {"type": "link_click", "count": 5, "lastDate": "2025-10-07"}
+  ],
+  "sourceChannel": "Source: organic_search (Q4_Enterprise)",
+  "daysSinceFirstTouch": "2025-09-15T14:30:00Z",
+  "qualificationStatus": [{"leadId": "LEAD-789", "contact": {...}, "company": {...}, "engagement": {...}}]
+}
+```
+  </Tab>
+</Tabs>
+
+<Warning>
+**Scoring Logic:** Use filters to identify hot leads (`score>=80`), demo requests, and recent activity to prioritize sales follow-up.
+</Warning>
+
+---
+
+## Inventory Management
+
+### Scenario: Stock Level Monitoring
+
+Track inventory across multiple warehouses and trigger reorder alerts.
+
+<CodeGroup>
+
+```json Source Data
+{
+  "get_inventory": {
+    "productId": "PROD-2025",
+    "sku": "LAPTOP-PRO-15",
+    "name": "Professional Laptop 15\"",
+    "category": "Electronics",
+    "warehouses": [
+      {
+        "id": "WH-EAST",
+        "location": "New York",
+        "quantity": 45,
+        "reserved": 12,
+        "available": 33,
+        "reorderPoint": 25,
+        "reorderQuantity": 50
+      },
+      {
+        "id": "WH-WEST",
+        "location": "Los Angeles",
+        "quantity": 18,
+        "reserved": 5,
+        "available": 13,
+        "reorderPoint": 20,
+        "reorderQuantity": 50
+      },
+      {
+        "id": "WH-CENTRAL",
+        "location": "Chicago",
+        "quantity": 62,
+        "reserved": 8,
+        "available": 54,
+        "reorderPoint": 30,
+        "reorderQuantity": 75
+      }
+    ],
+    "supplier": {
+      "name": "TechSupply Co",
+      "leadTime": 14,
+      "minOrderQuantity": 25
+    },
+    "pricing": {
+      "cost": 850,
+      "retail": 1299,
+      "margin": 0.346
+    }
+  }
+}
+```
+
+```json Mapping Configuration
+{
+  "productInfo": "$.get_inventory.sku| - |$.get_inventory.name",
+  "totalStock": "$.get_inventory.warehouses[*].quantity",
+  "totalAvailable": "$.get_inventory.warehouses[*].available",
+  "totalReserved": "$.get_inventory.warehouses[*].reserved",
+  "warehouseCount": "$.get_inventory.warehouses.length",
+  "lowStockWarehouses": "$.get_inventory.warehouses[?(@.available<@.reorderPoint)]",
+  "criticalWarehouses": "$.get_inventory.warehouses[?(@.available<10)]",
+  "highStockWarehouses": "$.get_inventory.warehouses[?(@.available>=50)]",
+  "lowestStockLocation": "$.get_inventory.warehouses[?(@.available===@min(@..available))].location",
+  "needsReorder": "$.get_inventory.warehouses[?(@.available<@.reorderPoint)].id",
+  "reorderQuantities": "$.get_inventory.warehouses[?(@.available<@.reorderPoint)].reorderQuantity",
+  "supplierInfo": "Supplier: |$.get_inventory.supplier.name| (|$.get_inventory.supplier.leadTime| day lead time)",
+  "profitMargin": "Margin: |$.get_inventory.pricing.margin",
+  "costPerUnit": "Cost: $|$.get_inventory.pricing.cost| → Retail: $|$.get_inventory.pricing.retail"
+}
+```
+
+```json Result
+{
+  "productInfo": "LAPTOP-PRO-15 - Professional Laptop 15\"",
+  "totalStock": [45, 18, 62],
+  "totalAvailable": [33, 13, 54],
+  "totalReserved": [12, 5, 8],
+  "warehouseCount": 3,
+  "lowStockWarehouses": [
+    {
+      "id": "WH-WEST",
+      "location": "Los Angeles",
+      "quantity": 18,
+      "reserved": 5,
+      "available": 13,
+      "reorderPoint": 20,
+      "reorderQuantity": 50
+    }
+  ],
+  "criticalWarehouses": [],
+  "highStockWarehouses": [
+    {
+      "id": "WH-CENTRAL",
+      "location": "Chicago",
+      "quantity": 62,
+      "reserved": 8,
+      "available": 54,
+      "reorderPoint": 30,
+      "reorderQuantity": 75
+    }
+  ],
+  "lowestStockLocation": ["Los Angeles"],
+  "needsReorder": ["WH-WEST"],
+  "reorderQuantities": [50],
+  "supplierInfo": "Supplier: TechSupply Co (14 day lead time)",
+  "profitMargin": "Margin: 0.346",
+  "costPerUnit": "Cost: $850 → Retail: $1299"
+}
+```
+
+</CodeGroup>
+
+<Tip>
+**Smart Filtering:** Identify warehouses below reorder points, critical stock levels, or high inventory for redistribution decisions.
+</Tip>
+
+---
+
+## Customer Support Ticket Routing
+
+### Scenario: Intelligent Ticket Assignment
+
+Route support tickets based on priority, customer tier, and agent expertise.
+
+<Tabs>
+  <Tab title="Source Data">
+```json
+{
+  "get_ticket": {
+    "ticketId": "TKT-10234",
+    "subject": "API Integration Issues",
+    "description": "Getting 429 rate limit errors on webhook endpoints",
+    "priority": "high",
+    "category": "technical",
+    "tags": ["api", "webhooks", "rate-limiting"],
+    "customer": {
+      "id": "CUST-5678",
+      "name": "Acme Corp",
+      "tier": "enterprise",
+      "plan": "professional",
+      "accountManager": "AM-123"
+    },
+    "reportedBy": {
+      "name": "Tom Anderson",
+      "email": "tom@acme.com",
+      "role": "CTO"
+    },
+    "timestamps": {
+      "created": "2025-10-08T10:15:00Z",
+      "firstResponse": null,
+      "resolved": null
+    },
+    "metadata": {
+      "affectedUsers": 45,
+      "businessImpact": "high",
+      "slaDeadline": "2025-10-08T14:15:00Z"
+    }
+  },
+  "get_team": {
+    "agents": [
+      {
+        "id": "AGENT-001",
+        "name": "Sarah Kim",
+        "expertise": ["api", "integrations", "webhooks"],
+        "currentLoad": 3,
+        "maxCapacity": 5,
+        "available": true
+      },
+      {
+        "id": "AGENT-002",
+        "name": "Mike Johnson",
+        "expertise": ["billing", "accounts"],
+        "currentLoad": 4,
+        "maxCapacity": 5,
+        "available": true
+      },
+      {
+        "id": "AGENT-003",
+        "name": "Lisa Chen",
+        "expertise": ["api", "infrastructure", "performance"],
+        "currentLoad": 2,
+        "maxCapacity": 5,
+        "available": true
+      }
+    ]
+  }
+}
+```
+  </Tab>
+  
+  <Tab title="Mapping Configuration">
+```json
+{
+  "ticketSummary": "Ticket #|$.get_ticket.ticketId|: |$.get_ticket.subject",
+  "priorityLevel": "[|$.get_ticket.priority| Priority] |$.get_ticket.category| issue",
+  "customerInfo": "$.get_ticket.customer.name| (|$.get_ticket.customer.tier| / |$.get_ticket.customer.plan|)",
+  "reportedBy": "$.get_ticket.reportedBy.name| (|$.get_ticket.reportedBy.role|) - |$.get_ticket.reportedBy.email",
+  "businessImpact": "Impact: |$.get_ticket.metadata.businessImpact| (|$.get_ticket.metadata.affectedUsers| users affected)",
+  "slaDeadline": "SLA: |$.get_ticket.metadata.slaDeadline",
+  "ticketTags": "Tags: |$.get_ticket.tags[*]",
+  "isHighPriority": "$.get_ticket[?(@.priority==='high' || @.priority==='urgent')]",
+  "isEnterprise": "$.get_ticket.customer[?(@.tier==='enterprise')]",
+  "qualifiedAgents": "$.get_team.agents[?(@.expertise[*]==='api' && @.available===true)]",
+  "bestAgent": "$.get_team.agents[?(@.expertise[*]==='api' && @.expertise[*]==='webhooks' && @.available===true && @.currentLoad<@.maxCapacity)]",
+  "lowLoadAgents": "$.get_team.agents[?(@.currentLoad<=3 && @.available===true)]",
+  "availableCapacity": "$.get_team.agents[?(@.available===true)].maxCapacity",
+  "assignTo": "$.get_team.agents[?(@.id==='AGENT-001' || @.id==='AGENT-003')][0].name"
+}
+```
+  </Tab>
+  
+  <Tab title="Result">
+```json
+{
+  "ticketSummary": "Ticket #TKT-10234: API Integration Issues",
+  "priorityLevel": "[high Priority] technical issue",
+  "customerInfo": "Acme Corp (enterprise / professional)",
+  "reportedBy": "Tom Anderson (CTO) - tom@acme.com",
+  "businessImpact": "Impact: high (45 users affected)",
+  "slaDeadline": "SLA: 2025-10-08T14:15:00Z",
+  "ticketTags": "Tags: api,webhooks,rate-limiting",
+  "isHighPriority": [{"ticketId": "TKT-10234", ...full ticket object}],
+  "isEnterprise": [{"id": "CUST-5678", "name": "Acme Corp", "tier": "enterprise", ...}],
+  "qualifiedAgents": [
+    {"id": "AGENT-001", "name": "Sarah Kim", "expertise": ["api", "integrations", "webhooks"], "currentLoad": 3, "maxCapacity": 5, "available": true},
+    {"id": "AGENT-003", "name": "Lisa Chen", "expertise": ["api", "infrastructure", "performance"], "currentLoad": 2, "maxCapacity": 5, "available": true}
+  ],
+  "bestAgent": [
+    {"id": "AGENT-001", "name": "Sarah Kim", "expertise": ["api", "integrations", "webhooks"], "currentLoad": 3, "maxCapacity": 5, "available": true}
+  ],
+  "lowLoadAgents": [
+    {"id": "AGENT-001", "name": "Sarah Kim", ...},
+    {"id": "AGENT-003", "name": "Lisa Chen", ...}
+  ],
+  "availableCapacity": [5, 5, 5],
+  "assignTo": "Sarah Kim"
+}
+```
+  </Tab>
+</Tabs>
+
+<Info>
+**Intelligent Routing:** This example demonstrates complex filtering to find the best-matched agent based on expertise (`api` AND `webhooks`), availability, and current workload.
+</Info>
+
+---
+
+## Marketing Campaign Analysis
+
+### Scenario: Multi-Channel Campaign Performance
+
+Analyze campaign performance across email, social, and paid channels.
+
+<AccordionGroup>
+  <Accordion title="Source Data" icon="database">
+```json
+{
+  "get_campaign": {
+    "campaignId": "CAMP-Q4-2025",
+    "name": "Q4 Product Launch",
+    "startDate": "2025-10-01",
+    "endDate": "2025-12-31",
+    "budget": 50000,
+    "channels": [
+      {
+        "name": "email",
+        "sent": 25000,
+        "delivered": 24500,
+        "opened": 9800,
+        "clicked": 2450,
+        "converted": 245,
+        "revenue": 122500,
+        "cost": 5000
+      },
+      {
+        "name": "social",
+        "impressions": 500000,
+        "engagement": 15000,
+        "clicks": 7500,
+        "converted": 150,
+        "revenue": 75000,
+        "cost": 12000
+      },
+      {
+        "name": "paid_search",
+        "impressions": 750000,
+        "clicks": 22500,
+        "converted": 675,
+        "revenue": 337500,
+        "cost": 18000
+      }
+    ],
+    "topPages": [
+      {"url": "/product", "visits": 45000, "conversionRate": 0.025},
+      {"url": "/pricing", "visits": 32000, "conversionRate": 0.045},
+      {"url": "/demo", "visits": 18000, "conversionRate": 0.085}
+    ]
+  }
+}
+```
+  </Accordion>
+  
+  <Accordion title="Mapping Configuration" icon="map">
+```json
+{
+  "campaignName": "Campaign: |$.get_campaign.name| (|$.get_campaign.campaignId|)",
+  "campaignPeriod": "$.get_campaign.startDate| to |$.get_campaign.endDate",
+  "totalBudget": "Budget: $|$.get_campaign.budget",
+  "channelNames": "$.get_campaign.channels[*].name",
+  "emailPerformance": "Emails: |$.get_campaign.channels[?(@.name==='email')].sent| sent, |$.get_campaign.channels[?(@.name==='email')].opened| opened",
+  "emailConversions": "$.get_campaign.channels[?(@.name==='email')].converted",
+  "emailRevenue": "$.get_campaign.channels[?(@.name==='email')].revenue",
+  "emailROI": "$.get_campaign.channels[?(@.name==='email')].revenue",
+  "topPerformer": "$.get_campaign.channels[?(@.revenue===@max(@..revenue))].name",
+  "highROIChannels": "$.get_campaign.channels[?(@.revenue>@.cost*5)]",
+  "totalConversions": "$.get_campaign.channels[*].converted",
+  "totalRevenue": "$.get_campaign.channels[*].revenue",
+  "totalSpend": "$.get_campaign.channels[*].cost",
+  "bestConvertingPage": "$.get_campaign.topPages[?(@.conversionRate===@max(@..conversionRate))].url",
+  "highTrafficPages": "$.get_campaign.topPages[?(@.visits>=30000)]",
+  "demoPageStats": "$.get_campaign.topPages[?(@.url==='/demo')]"
+}
+```
+  </Accordion>
+  
+  <Accordion title="Result" icon="chart-line">
+```json
+{
+  "campaignName": "Campaign: Q4 Product Launch (CAMP-Q4-2025)",
+  "campaignPeriod": "2025-10-01 to 2025-12-31",
+  "totalBudget": "Budget: $50000",
+  "channelNames": ["email", "social", "paid_search"],
+  "emailPerformance": "Emails: 25000 sent, 9800 opened",
+  "emailConversions": [245],
+  "emailRevenue": [122500],
+  "emailROI": [122500],
+  "topPerformer": ["paid_search"],
+  "highROIChannels": [
+    {
+      "name": "email",
+      "sent": 25000,
+      "delivered": 24500,
+      "opened": 9800,
+      "clicked": 2450,
+      "converted": 245,
+      "revenue": 122500,
+      "cost": 5000
+    },
+    {
+      "name": "paid_search",
+      "impressions": 750000,
+      "clicks": 22500,
+      "converted": 675,
+      "revenue": 337500,
+      "cost": 18000
+    }
+  ],
+  "totalConversions": [245, 150, 675],
+  "totalRevenue": [122500, 75000, 337500],
+  "totalSpend": [5000, 12000, 18000],
+  "bestConvertingPage": ["/demo"],
+  "highTrafficPages": [
+    {"url": "/product", "visits": 45000, "conversionRate": 0.025},
+    {"url": "/pricing", "visits": 32000, "conversionRate": 0.045}
+  ],
+  "demoPageStats": [
+    {"url": "/demo", "visits": 18000, "conversionRate": 0.085}
+  ]
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+**Performance Analysis:** Use filters to identify top-performing channels (`revenue===@max`), high-ROI channels (`revenue>cost*5`), and best converting pages.
+</Tip>
+
+---
+
+## Healthcare Patient Management
+
+### Scenario: Patient Appointment Coordination
+
+Coordinate patient appointments across multiple departments and providers.
+
+<Tabs>
+  <Tab title="Source Data">
+```json
+{
+  "get_patient": {
+    "patientId": "PAT-9876",
+    "firstName": "Emma",
+    "lastName": "Wilson",
+    "dob": "1985-03-15",
+    "mrn": "MRN-123456",
+    "insurance": {
+      "provider": "HealthCare Plus",
+      "policyNumber": "HCP-9876543",
+      "groupNumber": "GRP-001",
+      "status": "active"
+    },
+    "primaryCare": {
+      "provider": "Dr. James Chen",
+      "providerId": "PROV-456",
+      "department": "Internal Medicine"
+    },
+    "conditions": [
+      {"name": "Hypertension", "status": "controlled"},
+      {"name": "Type 2 Diabetes", "status": "managed"}
+    ],
+    "allergies": ["Penicillin", "Latex"],
+    "medications": [
+      {"name": "Lisinopril", "dosage": "10mg", "frequency": "daily"},
+      {"name": "Metformin", "dosage": "500mg", "frequency": "twice daily"}
+    ]
+  },
+  "get_appointments": {
+    "upcoming": [
+      {
+        "appointmentId": "APT-001",
+        "date": "2025-10-15",
+        "time": "09:00",
+        "provider": "Dr. James Chen",
+        "department": "Internal Medicine",
+        "type": "follow-up",
+        "status": "confirmed"
+      },
+      {
+        "appointmentId": "APT-002",
+        "date": "2025-10-22",
+        "time": "14:30",
+        "provider": "Dr. Sarah Martinez",
+        "department": "Endocrinology",
+        "type": "consultation",
+        "status": "pending"
+      },
+      {
+        "appointmentId": "APT-003",
+        "date": "2025-11-05",
+        "time": "10:00",
+        "provider": "Lab Services",
+        "department": "Laboratory",
+        "type": "lab_work",
+        "status": "scheduled"
+      }
+    ],
+    "past": [
+      {
+        "appointmentId": "APT-000",
+        "date": "2025-09-20",
+        "provider": "Dr. James Chen",
+        "notes": "Blood pressure stable, continue current medications"
+      }
+    ]
+  }
+}
+```
+  </Tab>
+  
+  <Tab title="Mapping Configuration">
+```json
+{
+  "patientName": "$.get_patient.firstName| |$.get_patient.lastName",
+  "patientDOB": "DOB: |$.get_patient.dob| (MRN: |$.get_patient.mrn|)",
+  "insuranceInfo": "$.get_patient.insurance.provider| - Policy #|$.get_patient.insurance.policyNumber",
+  "insuranceStatus": "Coverage: |$.get_patient.insurance.status",
+  "primaryPhysician": "Primary: |$.get_patient.primaryCare.provider| (|$.get_patient.primaryCare.department|)",
+  "activeConditions": "$.get_patient.conditions[?(@.status!=='resolved')]",
+  "allergiesAlert": "⚠️ ALLERGIES: |$.get_patient.allergies[*]",
+  "currentMedications": "$.get_patient.medications[*].name",
+  "medicationDetails": "$.get_patient.medications[*].name| |$.get_patient.medications[*].dosage| |$.get_patient.medications[*].frequency",
+  "nextAppointment": "$.get_appointments.upcoming[0].date| at |$.get_appointments.upcoming[0].time| with |$.get_appointments.upcoming[0].provider",
+  "confirmedAppointments": "$.get_appointments.upcoming[?(@.status==='confirmed')]",
+  "pendingAppointments": "$.get_appointments.upcoming[?(@.status==='pending')]",
+  "upcomingLabWork": "$.get_appointments.upcoming[?(@.type==='lab_work')]",
+  "appointmentCount": "$.get_appointments.upcoming.length",
+  "nextFollowUp": "$.get_appointments.upcoming[?(@.type==='follow-up')][0]",
+  "specialistVisits": "$.get_appointments.upcoming[?(@.department!=='Internal Medicine' && @.department!=='Laboratory')]"
+}
+```
+  </Tab>
+  
+  <Tab title="Result">
+```json
+{
+  "patientName": "Emma Wilson",
+  "patientDOB": "DOB: 1985-03-15 (MRN: MRN-123456)",
+  "insuranceInfo": "HealthCare Plus - Policy #HCP-9876543",
+  "insuranceStatus": "Coverage: active",
+  "primaryPhysician": "Primary: Dr. James Chen (Internal Medicine)",
+  "activeConditions": [
+    {"name": "Hypertension", "status": "controlled"},
+    {"name": "Type 2 Diabetes", "status": "managed"}
+  ],
+  "allergiesAlert": "⚠️ ALLERGIES: Penicillin,Latex",
+  "currentMedications": ["Lisinopril", "Metformin"],
+  "medicationDetails": "Lisinopril 10mg daily,Metformin 500mg twice daily",
+  "nextAppointment": "2025-10-15 at 09:00 with Dr. James Chen",
+  "confirmedAppointments": [
+    {
+      "appointmentId": "APT-001",
+      "date": "2025-10-15",
+      "time": "09:00",
+      "provider": "Dr. James Chen",
+      "department": "Internal Medicine",
+      "type": "follow-up",
+      "status": "confirmed"
+    }
+  ],
+  "pendingAppointments": [
+    {
+      "appointmentId": "APT-002",
+      "date": "2025-10-22",
+      "time": "14:30",
+      "provider": "Dr. Sarah Martinez",
+      "department": "Endocrinology",
+      "type": "consultation",
+      "status": "pending"
+    }
+  ],
+  "upcomingLabWork": [
+    {
+      "appointmentId": "APT-003",
+      "date": "2025-11-05",
+      "time": "10:00",
+      "provider": "Lab Services",
+      "department": "Laboratory",
+      "type": "lab_work",
+      "status": "scheduled"
+    }
+  ],
+  "appointmentCount": 3,
+  "nextFollowUp": {
+    "appointmentId": "APT-001",
+    "date": "2025-10-15",
+    "time": "09:00",
+    "provider": "Dr. James Chen",
+    "department": "Internal Medicine",
+    "type": "follow-up",
+    "status": "confirmed"
+  },
+  "specialistVisits": [
+    {
+      "appointmentId": "APT-002",
+      "date": "2025-10-22",
+      "time": "14:30",
+      "provider": "Dr. Sarah Martinez",
+      "department": "Endocrinology",
+      "type": "consultation",
+      "status": "pending"
+    }
+  ]
+}
+```
+  </Tab>
+</Tabs>
+
+<Warning>
+**HIPAA Compliance:** When working with healthcare data, ensure all JSON path mappings comply with privacy regulations. Never log or expose PHI in non-compliant systems.
+</Warning>
+
+---
+
+## Financial Transaction Processing
+
+### Scenario: Payment Reconciliation
+
+Match payments across multiple payment processors and accounts.
+
+<CodeGroup>
+
+```json Source Data
+{
+  "get_transactions": {
+    "accountId": "ACC-2025-456",
+    "period": "2025-10",
+    "transactions": [
+      {
+        "id": "TXN-001",
+        "date": "2025-10-08",
+        "type": "payment_received",
+        "amount": 1299.00,
+        "currency": "USD",
+        "method": "credit_card",
+        "processor": "Stripe",
+        "processorId": "ch_3Abc123",
+        "customer": "CUST-789",
+        "status": "completed",
+        "fees": 39.57
+      },
+      {
+        "id": "TXN-002",
+        "date": "2025-10-08",
+        "type": "refund_issued",
+        "amount": -99.00,
+        "currency": "USD",
+        "method": "credit_card",
+        "processor": "Stripe",
+        "processorId": "re_3Def456",
+        "customer": "CUST-456",
+        "status": "completed",
+        "fees": -2.97
+      },
+      {
+        "id": "TXN-003",
+        "date": "2025-10-07",
+        "type": "payment_received",
+        "amount": 4999.00,
+        "currency": "USD",
+        "method": "wire_transfer",
+        "processor": "Bank",
+        "processorId": "WIRE-789",
+        "customer": "CUST-123",
+        "status": "pending",
+        "fees": 25.00
+      },
+      {
+        "id": "TXN-004",
+        "date": "2025-10-07",
+        "type": "payment_received",
+        "amount": 299.00,
+        "currency": "USD",
+        "method": "paypal",
+        "processor": "PayPal",
+        "processorId": "PAY-456789",
+        "customer": "CUST-321",
+        "status": "completed",
+        "fees": 8.97
+      },
+      {
+        "id": "TXN-005",
+        "date": "2025-10-06",
+        "type": "chargeback",
+        "amount": -1299.00,
+        "currency": "USD",
+        "method": "credit_card",
+        "processor": "Stripe",
+        "processorId": "cb_3Ghi789",
+        "customer": "CUST-555",
+        "status": "under_review",
+        "fees": 15.00
+      }
+    ]
+  }
+}
+```
+
+```json Mapping Configuration
+{
+  "accountPeriod": "Account |$.get_transactions.accountId| - Period: |$.get_transactions.period",
+  "transactionCount": "$.get_transactions.transactions.length",
+  "completedPayments": "$.get_transactions.transactions[?(@.type==='payment_received' && @.status==='completed')]",
+  "completedPaymentTotal": "$.get_transactions.transactions[?(@.type==='payment_received' && @.status==='completed')].amount",
+  "refunds": "$.get_transactions.transactions[?(@.type==='refund_issued')]",
+  "refundTotal": "$.get_transactions.transactions[?(@.type==='refund_issued')].amount",
+  "pendingTransactions": "$.get_transactions.transactions[?(@.status==='pending')]",
+  "chargebacks": "$.get_transactions.transactions[?(@.type==='chargeback')]",
+  "chargebackAmount": "$.get_transactions.transactions[?(@.type==='chargeback')].amount",
+  "stripeTransactions": "$.get_transactions.transactions[?(@.processor==='Stripe')]",
+  "stripeTotal": "$.get_transactions.transactions[?(@.processor==='Stripe' && @.status==='completed')].amount",
+  "totalFees": "$.get_transactions.transactions[*].fees",
+  "highValuePayments": "$.get_transactions.transactions[?(@.type==='payment_received' && @.amount>=1000)]",
+  "creditCardPayments": "$.get_transactions.transactions[?(@.method==='credit_card')]",
+  "wireTransfers": "$.get_transactions.transactions[?(@.method==='wire_transfer')]",
+  "underReview": "$.get_transactions.transactions[?(@.status==='under_review')]",
+  "latestTransaction": "$.get_transactions.transactions[0]",
+  "oldestTransaction": "$.get_transactions.transactions[-1]"
+}
+```
+
+```json Result
+{
+  "accountPeriod": "Account ACC-2025-456 - Period: 2025-10",
+  "transactionCount": 5,
+  "completedPayments": [
+    {
+      "id": "TXN-001",
+      "date": "2025-10-08",
+      "type": "payment_received",
+      "amount": 1299.00,
+      "currency": "USD",
+      "method": "credit_card",
+      "processor": "Stripe",
+      "processorId": "ch_3Abc123",
+      "customer": "CUST-789",
+      "status": "completed",
+      "fees": 39.57
+    },
+    {
+      "id": "TXN-004",
+      "date": "2025-10-07",
+      "type": "payment_received",
+      "amount": 299.00,
+      "currency": "USD",
+      "method": "paypal",
+      "processor": "PayPal",
+      "processorId": "PAY-456789",
+      "customer": "CUST-321",
+      "status": "completed",
+      "fees": 8.97
+    }
+  ],
+  "completedPaymentTotal": [1299.00, 299.00],
+  "refunds": [
+    {
+      "id": "TXN-002",
+      "date": "2025-10-08",
+      "type": "refund_issued",
+      "amount": -99.00,
+      "currency": "USD",
+      "method": "credit_card",
+      "processor": "Stripe",
+      "processorId": "re_3Def456",
+      "customer": "CUST-456",
+      "status": "completed",
+      "fees": -2.97
+    }
+  ],
+  "refundTotal": [-99.00],
+  "pendingTransactions": [
+    {
+      "id": "TXN-003",
+      "date": "2025-10-07",
+      "type": "payment_received",
+      "amount": 4999.00,
+      "currency": "USD",
+      "method": "wire_transfer",
+      "processor": "Bank",
+      "processorId": "WIRE-789",
+      "customer": "CUST-123",
+      "status": "pending",
+      "fees": 25.00
+    }
+  ],
+  "chargebacks": [
+    {
+      "id": "TXN-005",
+      "date": "2025-10-06",
+      "type": "chargeback",
+      "amount": -1299.00,
+      "currency": "USD",
+      "method": "credit_card",
+      "processor": "Stripe",
+      "processorId": "cb_3Ghi789",
+      "customer": "CUST-555",
+      "status": "under_review",
+      "fees": 15.00
+    }
+  ],
+  "chargebackAmount": [-1299.00],
+  "stripeTransactions": [
+    {"id": "TXN-001", ...},
+    {"id": "TXN-002", ...},
+    {"id": "TXN-005", ...}
+  ],
+  "stripeTotal": [1299.00, -99.00],
+  "totalFees": [39.57, -2.97, 25.00, 8.97, 15.00],
+  "highValuePayments": [
+    {"id": "TXN-001", "amount": 1299.00, ...},
+    {"id": "TXN-003", "amount": 4999.00, ...}
+  ],
+  "creditCardPayments": [
+    {"id": "TXN-001", ...},
+    {"id": "TXN-002", ...},
+    {"id": "TXN-005", ...}
+  ],
+  "wireTransfers": [
+    {"id": "TXN-003", ...}
+  ],
+  "underReview": [
+    {"id": "TXN-005", ...}
+  ],
+  "latestTransaction": {"id": "TXN-001", ...},
+  "oldestTransaction": {"id": "TXN-005", ...}
+}
+```
+
+</CodeGroup>
+
+<Info>
+**Reconciliation Tips:** Use filters to separate transaction types, identify pending items, flag disputes, and calculate totals by processor for financial reporting.
+</Info>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card 
+    title="Reference Guide" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Complete syntax tables and troubleshooting
+  </Card>
+  <Card 
+    title="Advanced Techniques" 
+    icon="lightbulb" 
+    href="/advanced/variable-mapping/advanced-techniques"
+  >
+    Performance optimization and best practices
+  </Card>
+  <Card 
+    title="Filters & Expressions" 
+    icon="filter" 
+    href="/advanced/variable-mapping/filters-expressions"
+  >
+    Review filtering techniques
+  </Card>
+  <Card 
+    title="Basic Syntax" 
+    icon="arrow-left" 
+    href="/advanced/variable-mapping/basic-syntax"
+  >
+    Return to fundamentals
+  </Card>
+</CardGroup>
+
+<Tip>
+**Practice Makes Perfect:** Try recreating these examples in your own flows. Start with simple mappings and gradually add filters and advanced patterns.
+</Tip>

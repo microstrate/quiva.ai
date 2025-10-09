@@ -1,0 +1,490 @@
+---
+title: "API Keys"
+description: "Generate and manage API keys for programmatic access"
+icon: "code"
+---
+
+# API Key Management
+
+API keys allow you to access Microstrate programmatically for automation, integrations, and custom applications.
+
+## Creating an API Key
+
+<Steps>
+  <Step title="Navigate to API Keys">
+    Click your profile icon in the bottom left → "Settings" → "API Keys"
+  </Step>
+  
+  <Step title="Add New Key">
+    Click the "Add" button
+  </Step>
+  
+  <Step title="Name Your Key">
+    Enter a descriptive name (e.g., "Production Integration", "CI/CD Pipeline", "Monitoring Script")
+  </Step>
+  
+  <Step title="Save Key Securely">
+    **Copy the API key immediately** - it will only be shown once
+  </Step>
+</Steps>
+
+<Warning>
+**You cannot view the API key again after closing the dialog.** Store it securely in a password manager or secret management system immediately.
+</Warning>
+
+## API Key Properties
+
+<CardGroup cols={3}>
+  <Card title="User-Scoped" icon="user">
+    Keys are tied to the user who creates them and inherit that user's permissions
+  </Card>
+  
+  <Card title="3-Month Lifespan" icon="clock">
+    All keys expire after 3 months for security
+  </Card>
+  
+  <Card title="Revocable" icon="ban">
+    Delete keys immediately if compromised
+  </Card>
+</CardGroup>
+
+## Managing API Keys
+
+### Viewing Your Keys
+
+1. Navigate to **Settings → API Keys**
+2. See a list of all your active keys showing:
+   - Key name
+   - Creation date
+   - Expiration date
+   - Last used date (if applicable)
+
+### Deleting an API Key
+
+1. Navigate to **Settings → API Keys**
+2. Click on the key name you want to delete
+3. Click the "Delete" button
+4. Confirm the deletion
+
+<Note>
+Deleting a key immediately revokes access. Any applications using this key will stop working. Update applications with a new key before deleting the old one.
+</Note>
+
+## API Key Security Best Practices
+
+<Warning>
+**Treat API keys like passwords.** Never share them or expose them publicly.
+</Warning>
+
+### Storage and Handling
+
+<AccordionGroup>
+  <Accordion title="Use Environment Variables" icon="check">
+    **Do this:**
+    ```bash
+    # Store in environment variable
+    export MICROSTRATE_API_KEY="your-api-key-here"
+    ```
+    
+    **Never do this:**
+    ```javascript
+    // Don't hardcode keys in your code
+    const apiKey = "ms_1234567890abcdef"; // BAD
+    ```
+  </Accordion>
+  
+  <Accordion title="Use Secret Management Systems" icon="vault">
+    Store keys in secure secret management systems:
+    - AWS Secrets Manager
+    - HashiCorp Vault
+    - Azure Key Vault
+    - Google Secret Manager
+    - 1Password/LastPass for Teams
+    
+    These systems provide:
+    - Encrypted storage
+    - Access controls
+    - Audit trails
+    - Automatic rotation
+  </Accordion>
+  
+  <Accordion title="Never Commit to Version Control" icon="code-branch">
+    Add these patterns to your `.gitignore`:
+    ```
+    .env
+    .env.local
+    .env.*.local
+    config/secrets.yml
+    **/api-keys.txt
+    ```
+    
+    Even in private repositories, avoid committing API keys. They can be exposed through:
+    - Repository forks
+    - Access changes
+    - CI/CD logs
+    - Backup systems
+  </Accordion>
+  
+  <Accordion title="Limit Key Sharing" icon="users-slash">
+    **Never share keys via:**
+    - Email
+    - Slack or Teams messages
+    - Documentation (even internal)
+    - Shared documents or spreadsheets
+    
+    **Instead:**
+    - Create separate keys for each user
+    - Use your secret management system
+    - Grant appropriate role-based access
+  </Accordion>
+</AccordionGroup>
+
+### Key Rotation Strategy
+
+<Steps>
+  <Step title="Generate New Key">
+    Create a new API key 2 weeks before the old one expires
+  </Step>
+  
+  <Step title="Update Applications">
+    Deploy the new key to all applications and services:
+    - Update environment variables
+    - Update secret management entries
+    - Update CI/CD configurations
+  </Step>
+  
+  <Step title="Test Thoroughly">
+    Verify all integrations work with the new key:
+    - Run automated tests
+    - Check production traffic
+    - Monitor error rates
+  </Step>
+  
+  <Step title="Monitor Transition">
+    Keep both keys active briefly to ensure smooth transition
+  </Step>
+  
+  <Step title="Delete Old Key">
+    Only after confirming the new key works everywhere and the old key is no longer in use
+  </Step>
+</Steps>
+
+<Tip>
+Set calendar reminders **2 weeks before** key expiration to avoid service disruption. Consider automating rotation using your secret management system.
+</Tip>
+
+### Organizing Multiple Keys
+
+<CardGroup cols={2}>
+  <Card title="Separate Keys Per Environment" icon="layer-group">
+    Create different keys for:
+    - Production
+    - Staging
+    - Development/Testing
+    - CI/CD pipelines
+    - Third-party integrations
+  </Card>
+  
+  <Card title="Use Descriptive Names" icon="tag">
+    Clear naming helps track usage:
+    - "Production API - Web App"
+    - "GitHub Actions - Main Pipeline"
+    - "Datadog Monitoring Integration"
+    - "Staging Environment - QA Team"
+  </Card>
+</CardGroup>
+
+### Monitoring API Key Usage
+
+Regularly audit your API keys to maintain security:
+
+**Monthly Review Checklist:**
+- List all active API keys in your account
+- Verify each key is still needed
+- Check last used dates for inactive keys
+- Delete keys that haven't been used in 30+ days
+- Confirm key names accurately describe current usage
+
+**Watch for Unusual Patterns:**
+- Unexpected spike in API calls
+- Calls from unfamiliar IP addresses or regions
+- Access outside normal business hours
+- Failed authentication attempts
+- Unusually large data transfers
+
+<Info>
+While Microstrate doesn't currently provide audit logs for API usage, we recommend implementing logging in your applications that use API keys to track their usage patterns.
+</Info>
+
+## If an API Key is Compromised
+
+<Warning>
+Act immediately if you suspect a key has been exposed or compromised.
+</Warning>
+
+<Steps>
+  <Step title="Revoke Immediately">
+    1. Navigate to **Settings → API Keys**
+    2. Click on the compromised key
+    3. Click "Delete"
+    4. Confirm deletion
+  </Step>
+  
+  <Step title="Generate Replacement">
+    Create a new API key with a different name immediately
+  </Step>
+  
+  <Step title="Update Applications">
+    Deploy the new key to all affected services as quickly as possible
+  </Step>
+  
+  <Step title="Review Recent Activity">
+    Check your application logs for any unauthorized or suspicious API usage
+  </Step>
+  
+  <Step title="Assess Impact">
+    Determine:
+    - What resources were accessed
+    - What data may have been exposed
+    - What actions were performed
+    - Duration of potential unauthorized access
+  </Step>
+  
+  <Step title="Report if Needed">
+    For serious breaches involving sensitive data, follow your [incident response procedures](/essentials/security/incident-response)
+  </Step>
+</Steps>
+
+**Common Ways Keys Get Exposed:**
+- Accidentally committed to public GitHub repositories
+- Logged in plain text in application logs
+- Shared in Slack/email/chat messages
+- Included in error messages or stack traces
+- Stored in unencrypted configuration files
+- Exposed through compromised development machines
+
+## Using API Keys
+
+### Authentication
+
+Include your API key in the `Authorization` header:
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.microstrate.io/v1/agents
+```
+
+### Common Integration Patterns
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    // Using environment variables
+    const apiKey = process.env.MICROSTRATE_API_KEY;
+    
+    const response = await fetch('https://api.microstrate.io/v1/agents', {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Python">
+    ```python
+    import os
+    import requests
+    
+    # Load from environment
+    api_key = os.environ['MICROSTRATE_API_KEY']
+    
+    headers = {
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'application/json'
+    }
+    
+    response = requests.get(
+        'https://api.microstrate.io/v1/agents',
+        headers=headers
+    )
+    ```
+  </Tab>
+  
+  <Tab title="cURL">
+    ```bash
+    # Load from environment variable
+    curl -H "Authorization: Bearer $MICROSTRATE_API_KEY" \
+         -H "Content-Type: application/json" \
+         https://api.microstrate.io/v1/agents
+    ```
+  </Tab>
+</Tabs>
+
+### Error Responses
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="circle-xmark">
+    ```json
+    {
+      "error": "Invalid API key",
+      "message": "The provided API key is invalid or expired"
+    }
+    ```
+    
+    **Common Causes:**
+    - API key doesn't exist
+    - Key has been deleted
+    - Key has expired (after 3 months)
+    - Incorrect key format
+    
+    **Solution:**
+    Generate a new API key and update your application configuration.
+  </Accordion>
+  
+  <Accordion title="403 Forbidden" icon="ban">
+    ```json
+    {
+      "error": "Insufficient permissions",
+      "message": "Your API key doesn't have access to this resource"
+    }
+    ```
+    
+    **Common Causes:**
+    - User role lacks required permissions
+    - Resource doesn't exist
+    - Resource belongs to different account
+    - Operation not allowed for this role
+    
+    **Solution:**
+    Check the user's role permissions or create a key from a user with appropriate access.
+  </Accordion>
+  
+  <Accordion title="429 Too Many Requests" icon="gauge-high">
+    ```json
+    {
+      "error": "Rate limit exceeded",
+      "message": "Too many requests. Please try again later",
+      "retry_after": 60
+    }
+    ```
+    
+    **Common Causes:**
+    - Exceeded your plan's rate limits
+    - Too many concurrent requests
+    - Burst limit exceeded
+    
+    **Solution:**
+    Implement exponential backoff and respect the `retry_after` header. Consider upgrading your plan for higher limits.
+  </Accordion>
+</AccordionGroup>
+
+## API Key Best Practices Checklist
+
+Use this checklist when working with API keys:
+
+### Before Creating
+
+- [ ] Determine the specific purpose and required scope
+- [ ] Identify which user should own the key (inherits their permissions)
+- [ ] Choose a descriptive, meaningful name
+- [ ] Confirm you have a secure storage location ready
+
+### Upon Creation
+
+- [ ] Copy the key immediately to secure storage
+- [ ] Store in password manager or secret management system
+- [ ] Never commit to version control
+- [ ] Document where the key will be used
+- [ ] Set a calendar reminder for rotation (before 3-month expiration)
+
+### During Usage
+
+- [ ] Use environment variables, never hardcode
+- [ ] Implement proper error handling for API failures
+- [ ] Monitor usage and performance
+- [ ] Log API errors (but never log the key itself)
+- [ ] Use separate keys for different environments
+
+### Regular Maintenance
+
+- [ ] Review active keys monthly
+- [ ] Delete unused keys
+- [ ] Rotate keys before expiration
+- [ ] Audit API usage patterns
+- [ ] Update documentation when keys change
+- [ ] Test new keys before deleting old ones
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="API key not working after creation">
+    **Possible Issues:**
+    - Key not copied correctly (extra spaces, truncation)
+    - Not included in Authorization header
+    - Using wrong API endpoint
+    - User permissions insufficient
+    
+    **Solutions:**
+    - Regenerate the key and copy carefully
+    - Verify header format: `Authorization: Bearer YOUR_KEY`
+    - Check API documentation for correct endpoints
+    - Verify user role has required permissions
+  </Accordion>
+  
+  <Accordion title="Key stopped working suddenly">
+    **Possible Issues:**
+    - Key expired (3-month lifespan)
+    - Key was deleted by admin
+    - User's permissions changed
+    - Account plan changed affecting limits
+    
+    **Solutions:**
+    - Check key expiration date
+    - Verify key still exists in settings
+    - Contact admin about permission changes
+    - Generate new key and update applications
+  </Accordion>
+  
+  <Accordion title="Getting rate limit errors">
+    **Possible Issues:**
+    - Exceeded your plan's API rate limits
+    - Too many concurrent requests
+    - Application not handling retries properly
+    
+    **Solutions:**
+    - Implement exponential backoff
+    - Reduce request frequency
+    - Consider upgrading your plan
+    - Batch requests where possible
+  </Accordion>
+  
+  <Accordion title="Key accidentally exposed">
+    **Immediate Actions:**
+    1. Delete the key immediately
+    2. Generate a new replacement key
+    3. Update all applications
+    4. Review recent API usage for unauthorized access
+    5. If in version control, contact support about repository history
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation and endpoints
+  </Card>
+  
+  <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
+    Secure your user account with MFA
+  </Card>
+  
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Comprehensive security practices
+  </Card>
+  
+  <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
+    What to do if compromised
+  </Card>
+</CardGroup>

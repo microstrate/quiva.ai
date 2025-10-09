@@ -1,0 +1,870 @@
+---
+title: "Advanced Techniques"
+description: "Master power user features, optimization strategies, and complex patterns"
+---
+
+Take your variable mapping skills to the next level with advanced patterns, optimization strategies, and power user techniques.
+
+<Info>
+This guide assumes you're comfortable with basic syntax, filters, and the pipe operator. If you're new to variable mapping, start with [Basic Syntax](/advanced/variable-mapping/basic-syntax).
+</Info>
+
+## Combining Multiple Data Sources
+
+Reference and combine data from triggers, multiple nodes, and nested structures:
+
+<Tabs>
+  <Tab title="Trigger + Multiple Nodes">
+    ```json Mapping
+    {
+      "enrichedOrder": {
+        "orderId": "$.trigger.order_id",
+        "customer": {
+          "id": "$.trigger.customer_id",
+          "name": "$.fetch_customer.name",
+          "email": "$.fetch_customer.email",
+          "tier": "$.fetch_customer.tier"
+        },
+        "orderDetails": {
+          "items": "$.fetch_order.items",
+          "subtotal": "$.fetch_order.subtotal",
+          "tax": "$.calculate_tax.amount",
+          "total": "$.calculate_total.final_amount"
+        },
+        "shipping": {
+          "address": "$.fetch_customer.shipping_address",
+          "method": "$.fetch_order.shipping_method",
+          "cost": "$.calculate_shipping.cost",
+          "estimatedDays": "$.calculate_shipping.estimated_days"
+        }
+      }
+    }
+    ```
+    
+    Combine trigger data with multiple node outputs into a unified structure.
+  </Tab>
+  
+  <Tab title="Conditional Data Selection">
+    ```json Mapping
+    {
+      "notification": {
+        "to": "$.fetch_customer.email",
+        "template": "$.fetch_customer.tier|",
+        "subject": "Order |$.trigger.order_id| - |$.fetch_order.status|",
+        "priority": "$.fetch_customer.tier===premium|high|normal"
+      }
+    }
+    ```
+    
+    Use pipe operator patterns for conditional values based on customer tier.
+  </Tab>
+  
+  <Tab title="Cross-Node Filtering">
+    ```json Mapping
+    {
+      "matchingProducts": "$.fetch_products.items[?(@.categoryId===$.trigger.selected_category)]",
+      "customerOrders": "$.fetch_orders.data[?(@.customerId===$.fetch_customer.id)]",
+      "recentItems": "$.fetch_items.data[?(@.timestamp>$.trigger.after_date)]"
+    }
+    ```
+    
+    Filter one node's data based on values from trigger or other nodes.
+  </Tab>
+  
+  <Tab title="Aggregated Metrics">
+    ```json Mapping
+    {
+      "summary": {
+        "totalOrders": "$.fetch_orders.data.length",
+        "completedOrders": "$.fetch_orders.data[?(@.status===completed)].length",
+        "totalRevenue": "$.calculate_revenue.total",
+        "averageOrderValue": "$.calculate_metrics.avg_order_value",
+        "topProduct": "$.fetch_orders.data[?(@.total===$.fetch_orders.data[*].total.max())][0].product"
+      }
+    }
+    ```
+    
+    Build comprehensive summaries from multiple data sources.
+  </Tab>
+</Tabs>
+
+## Nested Filter Patterns
+
+Apply multiple levels of filtering for complex queries:
+
+<Tabs>
+  <Tab title="Sequential Filters">
+    ```json Mapping
+    {
+      "specific": "$.categories[?(@.name===Electronics)].products[?(@.price>100 && @.inStock===true)]"
+    }
+    ```
+    
+    ```json Explanation
+    // Step 1: Filter categories by name
+    $.categories[?(@.name===Electronics)]
+    
+    // Step 2: From those categories, get products
+    .products
+    
+    // Step 3: Filter products by price and stock
+    [?(@.price>100 && @.inStock===true)]
+    ```
+    
+    Chain filters to progressively narrow results.
+  </Tab>
+  
+  <Tab title="Parent-Child Filtering">
+    ```json Mapping
+    {
+      "qualifiedUsers": "$.departments[?(@.budget>100000)].employees[?(@.performance>=4)]"
+    }
+    ```
+    
+    Filter parents, then filter their children.
+  </Tab>
+  
+  <Tab title="Cross-Reference Filtering">
+    ```json Mapping
+    {
+      "eligibleItems": "$.products[?(@.categoryId===@root.trigger.category && @.price<=@root.trigger.max_price && @.rating>=@root.trigger.min_rating)]"
+    }
+    ```
+    
+    Filter against multiple trigger values simultaneously.
+  </Tab>
+  
+  <Tab title="Nested Existence Checks">
+    ```json Mapping
+    {
+      "usersWithTasks": "$.users[?(@.tasks && @.tasks.length>0 && @.tasks[?(@.priority===high)])]"
+    }
+    ```
+    
+    Filter users who have at least one high-priority task.
+  </Tab>
+</Tabs>
+
+## Dynamic Property Access
+
+Access properties using computed or variable names:
+
+<Tabs>
+  <Tab title="Property Name from Trigger">
+    ```json Mapping
+    {
+      "dynamicValue": "$.config[$.trigger.setting_name]"
+    }
+    ```
+    
+    ```json Example Data
+    {
+      "trigger": {"setting_name": "theme"},
+      "config": {
+        "theme": "dark",
+        "language": "en",
+        "timezone": "UTC"
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "dynamicValue": "dark"
+    }
+    ```
+    
+    Access properties dynamically based on trigger data.
+  </Tab>
+  
+  <Tab title="Conditional Property Selection">
+    ```json Mapping
+    {
+      "address": "$.user[$.trigger.address_type]"
+    }
+    ```
+    
+    ```json Example
+    {
+      "trigger": {"address_type": "billing"},
+      "user": {
+        "billing": {"street": "123 Main St"},
+        "shipping": {"street": "456 Oak Ave"}
+      }
+    }
+    ```
+    
+    Select between `billing` or `shipping` based on trigger.
+  </Tab>
+  
+  <Tab title="Array Index from Variable">
+    ```json Mapping
+    {
+      "selectedItem": "$.items[$.trigger.index]",
+      "firstN": "$.items[0:$.trigger.limit]"
+    }
+    ```
+    
+    Use trigger values for array indexing and slicing.
+  </Tab>
+</Tabs>
+
+<Warning>
+Dynamic property access is powerful but can make debugging harder. Always validate that the property names exist and document the expected structure.
+</Warning>
+
+## Recursive Operations
+
+Work with deeply nested or recursive structures:
+
+<Tabs>
+  <Tab title="Find All Occurrences">
+    ```json Mapping
+    {
+      "allEmails": "$..email",
+      "allPrices": "$..price",
+      "allIds": "$..id"
+    }
+    ```
+    
+    Use recursive descent (`..`) to find all occurrences at any nesting level.
+  </Tab>
+  
+  <Tab title="Deep Property Search">
+    ```json Mapping
+    {
+      "errorMessages": "$..error.message",
+      "allUserNames": "$..user.name",
+      "allStatuses": "$..status"
+    }
+    ```
+    
+    Find nested properties regardless of structure depth.
+  </Tab>
+  
+  <Tab title="Recursive with Filtering">
+    ```json Mapping
+    {
+      "allActiveUsers": "$..[?(@.type===user && @.active===true)]",
+      "errorNodes": "$..[?(@.error)]"
+    }
+    ```
+    
+    Combine recursive descent with filters for powerful searches.
+  </Tab>
+</Tabs>
+
+<Tip>
+**When to use recursive descent:**
+- Data structure varies or is deeply nested
+- You need all occurrences regardless of location
+- Schema is flexible or unknown
+
+**When to avoid:**
+- You know the exact path (use direct path for better performance)
+- Working with very large datasets (can be slow)
+- You need only one specific occurrence
+</Tip>
+
+## Performance Optimization
+
+Optimize your variable mappings for better performance:
+
+<Tabs>
+  <Tab title="Specific vs Recursive">
+    ```json Better Performance
+    {
+      // ✅ Specific path - fast
+      "email": "$.fetch_user.profile.contact.email"
+    }
+    ```
+    
+    ```json Slower Performance
+    {
+      // ⚠️ Recursive - searches entire structure
+      "email": "$..email"
+    }
+    ```
+    
+    Use specific paths when you know the structure.
+  </Tab>
+  
+  <Tab title="Filter Early">
+    ```json Better
+    {
+      // ✅ Filter first, then process
+      "names": "$.users[?(@.active===true)].name"
+    }
+    ```
+    
+    ```json Worse
+    {
+      // ❌ Gets all names, then filters (not possible with JSONPath)
+      // This pattern shows why filtering early matters
+      "names": "$.users.name[?(@.active===true)]"
+    }
+    ```
+    
+    Apply filters as early as possible in the path.
+  </Tab>
+  
+  <Tab title="Simple Filters">
+    ```json Efficient
+    {
+      // ✅ Simple condition
+      "premium": "$.users[?(@.tier===premium)]"
+    }
+    ```
+    
+    ```json Less Efficient
+    {
+      // ⚠️ Complex nested condition
+      "complex": "$.users[?(@.orders[?(@.total>1000)].length>5 && @.tier===premium)]"
+    }
+    ```
+    
+    Keep filters simple when possible.
+  </Tab>
+  
+  <Tab title="Reuse vs Recalculate">
+    ```json Better - Store Once
+    {
+      "userList": "$.fetch_users.data[?(@.active===true)]",
+      "count": "$.fetch_users.data[?(@.active===true)].length",
+      "firstUser": "$.fetch_users.data[?(@.active===true)][0]"
+    }
+    ```
+    
+    ```json Better Pattern - Use Another Node
+    // Node 1: filter_active_users
+    {
+      "activeUsers": "$.fetch_users.data[?(@.active===true)]"
+    }
+    
+    // Node 2: use filtered data
+    {
+      "userList": "$.filter_active_users.activeUsers",
+      "count": "$.filter_active_users.activeUsers.length",
+      "firstUser": "$.filter_active_users.activeUsers[0]"
+    }
+    ```
+    
+    Store complex query results in intermediate nodes.
+  </Tab>
+</Tabs>
+
+### Performance Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Direct Paths" icon="route">
+    ```json
+    // ✅ Fast
+    "$.user.profile.email"
+    
+    // ⚠️ Slower
+    "$..email"
+    ```
+  </Accordion>
+  
+  <Accordion title="Filter Before Processing" icon="filter">
+    ```json
+    // ✅ Filter then extract
+    "$.items[?(@.active===true)].name"
+    
+    // ❌ Don't wildcard then filter
+    "$.items[*].name[?(@.active===true)]"  // Won't work as intended
+    ```
+  </Accordion>
+  
+  <Accordion title="Minimize Wildcards" icon="asterisk">
+    ```json
+    // ✅ Specific
+    "$.categories[0].products"
+    
+    // ⚠️ May return more than needed
+    "$.categories[*].products"
+    ```
+  </Accordion>
+  
+  <Accordion title="Cache Complex Queries" icon="database">
+    Store expensive query results in intermediate nodes rather than repeating the same complex expression multiple times.
+  </Accordion>
+  
+  <Accordion title="Test with Real Data" icon="vial">
+    Performance characteristics change with data size. Test your mappings with realistic data volumes.
+  </Accordion>
+</AccordionGroup>
+
+## Error Handling Strategies
+
+Build robust mappings that handle missing or invalid data gracefully:
+
+<Tabs>
+  <Tab title="Trailing Pipe for Missing Data">
+```text
+{
+  "safeEmail": "$.user.profile.contact.email|",
+  "safeName": "$.user.firstName| |$.user.lastName|",
+  "safeString": "$.items[*].name|"
+}
+```
+
+**What trailing pipe does:**
+
+Missing property returns `""` (empty string). Array returns comma-separated string `"item1,item2"`. Object returns `"[object Object]"`.
+
+This prevents properties from being removed when data is missing, but does NOT provide custom defaults.
+  </Tab>
+  
+  <Tab title="Existence Checks with Filters">
+```text
+{
+  "verifiedUsers": "$.users[?(@.email && @.verified===true)]",
+  "itemsWithPrice": "$.products[?(@.price)]",
+  "safeNested": "$.data[?(@.metadata && @.metadata.priority)]"
+}
+```
+
+Check property existence with `&&` before accessing or comparing nested values. This prevents errors from undefined properties.
+  </Tab>
+  
+  <Tab title="Handle Empty Arrays">
+```text
+{
+  "firstItem": "$.items[0]",
+  "itemCount": "$.items.length",
+  "hasItems": "$.items[?(@)]",
+  "allNames": "$.items[*].name"
+}
+```
+
+**Array handling:**
+
+`$.items[0]` on empty array returns `undefined`. `$.items.length` returns `0` for empty, number for populated. `$.items[?(@)]` returns `[]` if empty, useful for checking. Use `.length` checks in flow logic to determine if array has items.
+  </Tab>
+  
+  <Tab title="Default Values in Flow Logic">
+```text
+{
+  "email": "$.user.email",
+  "name": "$.user.name",
+  "status": "$.user.status"
+}
+```
+
+For actual default values, handle in subsequent flow nodes. Check if value exists or is empty string. Use conditional routing to provide defaults. Use transformation nodes to set fallback values. Let flow logic handle missing data, not JSONPath.
+  </Tab>
+</Tabs>
+
+<Warning>
+**Key Points:** Pipe operator (`|`) concatenates strings, does NOT provide defaults. Use trailing pipe `$.path|` only to prevent property removal when data is missing. For real default values, use flow logic and conditional routing. Use filter existence checks `?(@.property)` to safely access nested data.
+</Warning>
+
+**Common error scenarios to handle:**
+
+**Missing nested properties** - Use filters with existence checks `?(@.nested && @.nested.prop)`
+
+**Empty arrays** - Check `.length` before accessing indexes
+
+**Null values** - Filter with `?(@.value!==null)` to exclude nulls
+
+**Type mismatches** - Use type selectors `?(@string())` to filter by type
+
+**Out-of-bounds array access** - Check array length, use negative indexes for last items
+
+## Complex String Building
+
+Advanced patterns for building dynamic strings:
+
+<Tabs>
+  <Tab title="Multi-Line Templates">
+    ```json Mapping
+    {
+      "emailBody": "Dear |$.customer.firstName| |$.customer.lastName|,
+
+Thank you for your order #|$.order.id|!
+
+Order Summary:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Items:     |$.order.items.length|
+Subtotal:  $|$.order.subtotal|
+Tax:       $|$.order.tax|
+Shipping:  $|$.order.shipping|
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total:     $|$.order.total|
+
+Status: |$.order.status|
+Tracking: |$.shipping.tracking|
+
+Questions? Contact us at |$.company.support_email|
+
+Best regards,
+|$.company.name| Team"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Conditional Sections">
+    ```json Mapping
+    {
+      "message": "Order |$.order.id| status: |$.order.status||$.order.tracking|| - Tracking: |$.order.tracking|||$.order.estimatedDate|| - ETA: |$.order.estimatedDate||"
+    }
+    ```
+    
+    Sections appear only when data exists.
+  </Tab>
+  
+  <Tab title="Formatted Lists">
+    ```json Mapping
+    {
+      "itemList": "• |$.items[0].name| ($|$.items[0].price|)
+• |$.items[1].name| ($|$.items[1].price|)
+• |$.items[2].name| ($|$.items[2].price|)"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="JSON-like Output">
+    ```json Mapping
+    {
+      "jsonString": "{
+  \"orderId\": \"|$.order.id|\",
+  \"customer\": \"|$.customer.name|\",
+  \"total\": |$.order.total|,
+  \"status\": \"|$.order.status|\"
+}"
+    }
+    ```
+    
+    Build JSON strings (though typically you'd use object structure instead).
+  </Tab>
+</Tabs>
+
+## Mapping Strategies for Large Datasets
+
+Handle large arrays and datasets efficiently:
+
+<Tabs>
+  <Tab title="Pagination Pattern">
+    ```json Node 1: Get Slice
+    {
+      "page": "$.api_response.items[$.trigger.offset:$.trigger.offset+$.trigger.limit]"
+    }
+    ```
+    
+    ```json Node 2: Process Page
+    {
+      "processedItems": "$.get_page.page[*].processed_field"
+    }
+    ```
+    
+    Process data in chunks.
+  </Tab>
+  
+  <Tab title="Selective Extraction">
+    ```json Mapping
+    {
+      // Extract only what you need
+      "summary": {
+        "ids": "$.large_dataset[*].id",
+        "count": "$.large_dataset.length",
+        "firstTen": "$.large_dataset[0:10]"
+      }
+    }
+    ```
+    
+    Don't copy entire large datasets unnecessarily.
+  </Tab>
+  
+  <Tab title="Filter Before Extract">
+    ```json Better
+    {
+      // ✅ Filter first (reduces data)
+      "activeIds": "$.users[?(@.active===true)].id"
+    }
+    ```
+    
+    ```json Worse
+    {
+      // ❌ Extracts everything then filters
+      "activeUsers": "$.users",  // Then filter in next node
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Aggregation Strategy">
+    ```json Mapping
+    {
+      "metrics": {
+        "total": "$.items.length",
+        "highValue": "$.items[?(@.price>1000)].length",
+        "categories": "$.items[*].category",
+        "avgPrice": "$.calculated.average_price"
+      }
+    }
+    ```
+    
+    Extract summary metrics rather than full datasets.
+  </Tab>
+</Tabs>
+
+## Testing and Debugging
+
+Strategies for testing and debugging complex mappings:
+
+<Tabs>
+  <Tab title="Incremental Testing">
+    ```json Step 1: Test Basic Path
+    {
+      "test": "$.node.data"
+    }
+    ```
+    
+    ```json Step 2: Add Filter
+    {
+      "test": "$.node.data[?(@.active===true)]"
+    }
+    ```
+    
+    ```json Step 3: Add Property Access
+    {
+      "test": "$.node.data[?(@.active===true)].email"
+    }
+    ```
+    
+    ```json Step 4: Add String Building
+    {
+      "test": "Emails: |$.node.data[?(@.active===true)].email|"
+    }
+    ```
+    
+    Build complexity gradually.
+  </Tab>
+  
+  <Tab title="Isolation Testing">
+    ```json Test Individual Pieces
+    {
+      "part1": "$.trigger.id",
+      "part2": "$.node.data[?(@.id===$.trigger.id)]",
+      "part3": "$.node.data[?(@.id===$.trigger.id)][0]",
+      "final": "$.node.data[?(@.id===$.trigger.id)][0].name"
+    }
+    ```
+    
+    Test each part of a complex expression separately.
+  </Tab>
+  
+  <Tab title="Debug Output">
+    ```json Mapping
+    {
+      "debug": {
+        "triggerData": "$.trigger",
+        "nodeData": "$.fetch_data",
+        "filterResult": "$.fetch_data.items[?(@.active===true)]",
+        "filterCount": "$.fetch_data.items[?(@.active===true)].length",
+        "firstItem": "$.fetch_data.items[?(@.active===true)][0]"
+      },
+      "actual": {
+        "result": "$.fetch_data.items[?(@.active===true)][0].name"
+      }
+    }
+    ```
+    
+    Include debug fields to understand data flow.
+  </Tab>
+  
+  <Tab title="Type Checking">
+    ```json Mapping
+    {
+      "valueType": "$.node.value|",
+      "isArray": "$.node.items",
+      "arrayLength": "$.node.items.length|0",
+      "hasProperty": "$.node.optional|"
+    }
+    ```
+    
+    Check types and existence to debug issues.
+  </Tab>
+</Tabs>
+
+### Debugging Checklist
+
+<Steps>
+  <Step title="Verify Data Structure">
+    Use Flow Debugger to inspect actual data from previous nodes
+  </Step>
+  
+  <Step title="Test Path Components">
+    Break complex paths into pieces and test each part
+  </Step>
+  
+  <Step title="Check Filter Logic">
+    Verify filter conditions return expected results
+  </Step>
+  
+  <Step title="Validate String Concatenation">
+    Test pipe operator segments individually
+  </Step>
+  
+  <Step title="Handle Edge Cases">
+    Test with missing data, empty arrays, null values
+  </Step>
+  
+  <Step title="Monitor Performance">
+    Check execution time for complex expressions
+  </Step>
+</Steps>
+
+## Advanced Use Cases
+
+<Tabs>
+  <Tab title="Data Transformation Pipeline">
+    ```json Node 1: Extract
+    {
+      "raw": "$.api_response.data"
+    }
+    ```
+    
+    ```json Node 2: Filter
+    {
+      "filtered": "$.extract.raw[?(@.status===active && @.verified===true)]"
+    }
+    ```
+    
+    ```json Node 3: Transform
+    {
+      "transformed": "$.filter.filtered[*].{id: id, name: name, email: email}"
+    }
+    ```
+    
+    ```json Node 4: Aggregate
+    {
+      "summary": {
+        "items": "$.transform.transformed",
+        "count": "$.transform.transformed.length",
+        "emails": "$.transform.transformed[*].email"
+      }
+    }
+    ```
+    
+    Multi-stage transformation with intermediate nodes.
+  </Tab>
+  
+  <Tab title="Dynamic Routing">
+    ```json Mapping
+    {
+      "routeTo": {
+        "endpoint": "$.config.endpoints[$.trigger.event_type]",
+        "method": "$.config.methods[$.trigger.event_type]",
+        "headers": "$.config.headers.default",
+        "body": "$.trigger.payload"
+      }
+    }
+    ```
+    
+    Route to different endpoints based on event type.
+  </Tab>
+  
+  <Tab title="Data Enrichment">
+    ```json Mapping
+    {
+      "enriched": {
+        "original": "$.trigger",
+        "customer": "$.fetch_customer",
+        "orders": "$.fetch_orders.data[?(@.customerId===$.trigger.customer_id)]",
+        "recommendations": "$.fetch_recommendations.items[?(@.categoryId===$.fetch_customer.preferredCategory)]",
+        "summary": {
+          "totalOrders": "$.fetch_orders.data[?(@.customerId===$.trigger.customer_id)].length",
+          "totalSpent": "$.calculate_ltv.value",
+          "avgOrderValue": "$.calculate_metrics.avg"
+        }
+      }
+    }
+    ```
+    
+    Enrich trigger data with multiple lookups and calculations.
+  </Tab>
+  
+  <Tab title="Conditional Workflow">
+    ```json Node: Route Decision
+    {
+      "shouldEscalate": "$.order.total>1000 && $.customer.tier!==premium",
+      "priority": "$.order.total>1000|high|normal",
+      "assignTo": "$.customer.tier===premium|senior-team|standard-team"
+    }
+    ```
+    
+    Create routing logic for conditional flows.
+  </Tab>
+</Tabs>
+
+## Best Practices Summary
+
+<CardGroup cols={2}>
+  <Card title="Performance" icon="gauge-high">
+    - Use specific paths over recursive
+    - Filter early in expressions
+    - Cache expensive queries
+    - Test with realistic data sizes
+  </Card>
+  
+  <Card title="Reliability" icon="shield-check">
+    - Use trailing pipes for optional data
+    - Check existence in filters
+    - Handle empty arrays
+    - Validate assumptions
+  </Card>
+  
+  <Card title="Maintainability" icon="wrench">
+    - Use descriptive node IDs
+    - Document complex mappings
+    - Break into steps
+    - Test incrementally
+  </Card>
+  
+  <Card title="Debugging" icon="bug">
+    - Test pieces individually
+    - Use debug output fields
+    - Verify data structures
+    - Monitor performance
+  </Card>
+</CardGroup>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card 
+    title="Examples" 
+    icon="6" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See comprehensive real-world examples
+  </Card>
+  <Card 
+    title="Reference" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Complete syntax tables and troubleshooting
+  </Card>
+  <Card 
+    title="Filters & Expressions" 
+    icon="arrow-left" 
+    href="/advanced/variable-mapping/filters-and-expressions"
+  >
+    Review filtering techniques
+  </Card>
+  <Card 
+    title="Flow Builder" 
+    icon="diagram-project" 
+    href="/flows/builder"
+  >
+    Learn about building complete flows
+  </Card>
+</CardGroup>
+
+<Info>
+**Questions?** Check the [Reference](/advanced/variable-mapping/reference) or visit our [Help Center](/help).
+</Info>

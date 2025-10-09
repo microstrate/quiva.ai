@@ -17,18 +17,103 @@
           {
             "group": "Get Started",
             "pages": [
-              "overview",
+              "welcome-to-microstrate/overview",
+              "welcome-to-microstrate/quick-start",
               "hub/hub-description",
-              "development"
+              "welcome-to-microstrate/development"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Getting Started",
             "pages": [
-              "essentials/accounts",
-              "essentials/security",
-              "essentials/plans-and-pricing",
-              "essentials/compute-credits"
+              "essentials/getting-started",
+              "essentials/plans-and-pricing"
+            ]
+          },
+          {
+            "group": "Account Management",
+            "pages": [
+              "essentials/account/creating-account",
+              "essentials/account/account-settings",
+              "essentials/account/billing-subscriptions",
+              "essentials/account/closing-account"
+            ]
+          },
+          {
+            "group": "User Management",
+            "pages": [
+              "essentials/users/user-management",
+              "essentials/users/roles-permissions",
+              "essentials/users/user-settings"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "essentials/security/overview",
+              "essentials/security/authentication",
+              "essentials/security/api-keys",
+              "essentials/security/sessions",
+              "essentials/security/incident-response"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/overview",
+              {
+                "group": "Variable Mapping",
+                "icon": "arrow-right-arrow-left",
+                "pages": [
+                  "advanced/variable-mapping/overview",
+                  "advanced/variable-mapping/basic-syntax",
+                  "advanced/variable-mapping/jsonpath-features",
+                  "advanced/variable-mapping/pipe-operator",
+                  "advanced/variable-mapping/filters-and-expressions",
+                  "advanced/variable-mapping/advanced-techniques",
+                  "advanced/variable-mapping/examples",
+                  "advanced/variable-mapping/reference"
+                ]
+              },
+              {
+                "group": "Steps",
+                "icon": "list-check",
+                "pages": [
+                  "advanced/steps/overview",
+                  "advanced/steps/conditional-logic",
+                  "advanced/steps/error-handling",
+                  "advanced/steps/parallel-execution"
+                ]
+              },
+              {
+                "group": "Rules",
+                "icon": "gavel",
+                "pages": [
+                  "advanced/rules/overview",
+                  "advanced/rules/creating-rules",
+                  "advanced/rules/rule-syntax",
+                  "advanced/rules/examples",
+                  "advanced/rules/best-practices"
+                ]
+              },
+              {
+                "group": "Data Transformation",
+                "icon": "wand-magic-sparkles",
+                "pages": [
+                  "advanced/data-transformation/overview",
+                  "advanced/data-transformation/filters",
+                  "advanced/data-transformation/aggregations"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "icon": "plug",
+                "pages": [
+                  "advanced/integrations/custom-mcp-servers",
+                  "advanced/integrations/webhooks",
+                  "advanced/integrations/api-connections"
+                ]
+              }
             ]
           }
         ]
@@ -84,17 +169,14 @@
               "source": "api-reference/endpoint/monitoring/openapi.json"
             }
           }
-
-        ]    
+        ]
       },
       {
         "tab": "Change Log",
         "groups": [
           {
             "group": "Change Log",
-            "pages": [
-              "changelog/product-updates"
-            ]
+            "pages": ["changelog/product-updates"]
           }
         ]
       }

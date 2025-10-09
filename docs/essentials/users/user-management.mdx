@@ -1,0 +1,502 @@
+---
+title: "User Management"
+description: "Add team members, assign roles, and manage user access"
+icon: "users"
+---
+
+# User Management
+
+Manage your team members, control access levels, and configure user permissions. All Microstrate plans include unlimited users at no additional cost.
+
+## Adding Users
+
+Invite team members to collaborate on your Microstrate account.
+
+<Steps>
+  <Step title="Navigate to Users">
+    Go to **Account Management → Users**
+  </Step>
+  
+  <Step title="Click Invite">
+    Click the "Invite" button
+  </Step>
+  
+  <Step title="Enter User Details">
+    - **Email address** - Where the invitation will be sent
+    - **First and last name**
+    - **Role** - Select appropriate access level
+    
+    [Understanding roles →](/essentials/users/roles-permissions)
+  </Step>
+  
+  <Step title="Send Invitation">
+    Click "Invite" to send the invitation email
+  </Step>
+</Steps>
+
+Users will appear with **"Invitation Pending"** status until they accept.
+
+<img 
+  src="/images/essentials/user-invited-email.png" 
+  alt="User Invitation Email"
+  style={{ maxHeight: '300px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+<Info>
+**Unlimited Users:** All plans include unlimited users at no extra cost. Add as many team members as you need.
+</Info>
+
+## User Roles
+
+Choose the appropriate role based on what each user needs to do:
+
+<CardGroup cols={2}>
+  <Card title="Root" icon="crown">
+    **Account owners only**
+    
+    Complete control including account closure
+    
+    [View permissions →](/essentials/users/roles-permissions#root)
+  </Card>
+  
+  <Card title="Admin" icon="user-shield">
+    **Team leads and IT**
+    
+    Full management except account closure
+    
+    [View permissions →](/essentials/users/roles-permissions#admin)
+  </Card>
+  
+  <Card title="Billing" icon="credit-card">
+    **Finance team**
+    
+    Manage billing and subscriptions only
+    
+    [View permissions →](/essentials/users/roles-permissions#billing)
+  </Card>
+  
+  <Card title="Developer" icon="code">
+    **Technical team**
+    
+    Build and deploy resources
+    
+    [View permissions →](/essentials/users/roles-permissions#developer)
+  </Card>
+  
+  <Card title="Monitor" icon="eye">
+    **Stakeholders**
+    
+    View-only access
+    
+    [View permissions →](/essentials/users/roles-permissions#monitor)
+  </Card>
+</CardGroup>
+
+<Tip>
+Always apply the **principle of least privilege** - assign the minimum role needed for each user to do their job effectively.
+</Tip>
+
+## Managing Users
+
+### Updating User Roles
+
+Only Root and Admin users can change roles.
+
+<Steps>
+  <Step title="Navigate to Users">
+    Go to **Account Management → Users**
+  </Step>
+  
+  <Step title="Select User">
+    Click on the user's email address
+  </Step>
+  
+  <Step title="Change Role">
+    Select the new role from the dropdown
+  </Step>
+  
+  <Step title="Confirm">
+    Click "Update Role"
+  </Step>
+</Steps>
+
+Changes take effect immediately.
+
+**Restrictions:**
+- You cannot change your own role
+- Admins cannot modify Root user roles
+- Admins cannot assign the Root role
+
+### Suspending Users
+
+Temporarily restrict access without deleting the account:
+
+<Steps>
+  <Step title="Find User">
+    Navigate to **Account Management → Users** and click on user's email
+  </Step>
+  
+  <Step title="Suspend">
+    Click the dot menu (⋮) → "Suspend"
+  </Step>
+  
+  <Step title="Confirm">
+    Confirm the suspension
+  </Step>
+</Steps>
+
+**What happens:**
+- User cannot log in
+- All active sessions are terminated
+- User resources remain in the account
+- Can be reactivated by an Admin at any time
+
+**When to use:**
+- Employee on extended leave
+- Temporary contractor work completed
+- Investigating potential security issue
+- Pending account transfer
+
+<Note>
+View suspended users by filtering for "Suspended" status in user management.
+</Note>
+
+### Terminating User Sessions
+
+Force a user to log out from all devices:
+
+<Steps>
+  <Step title="Find User">
+    Navigate to **Account Management → Users** and click on user's email
+  </Step>
+  
+  <Step title="Logout">
+    Click the dot menu (⋮) → "Logout"
+  </Step>
+  
+  <Step title="Confirm">
+    Confirm to terminate all sessions
+  </Step>
+</Steps>
+
+**Use cases:**
+- User reports device stolen
+- Suspected unauthorized access
+- User forgot to log out on shared computer
+- Troubleshooting access issues
+
+<Info>
+Users can also manage their own sessions in their [personal settings](/essentials/security/sessions).
+</Info>
+
+### Deleting Users
+
+Permanently remove a user from your account:
+
+<Steps>
+  <Step title="Find User">
+    Navigate to **Account Management → Users** and click on user's email
+  </Step>
+  
+  <Step title="Delete">
+    Click the dot menu (⋮) → "Delete"
+  </Step>
+  
+  <Step title="Confirm">
+    Confirm the deletion
+  </Step>
+</Steps>
+
+<Warning>
+**This action is permanent and cannot be undone.**
+
+What's deleted:
+- User's personal settings
+- User's sessions and API keys
+- User's MFA settings
+
+What's preserved:
+- Resources they created (agents, flows, MCP servers)
+- All data remains accessible to the team
+</Warning>
+
+## Recovery Codes
+
+Admins can issue or view recovery codes for users who have enabled MFA.
+
+### Issuing New Recovery Codes
+
+<Steps>
+  <Step title="Find User">
+    Navigate to **Account Management → Users** and click on user's email
+  </Step>
+  
+  <Step title="Issue Codes">
+    Click the dot menu (⋮) → "Issue new recovery codes"
+  </Step>
+  
+  <Step title="Confirm">
+    Click "I Am Sure" in the dialog
+  </Step>
+  
+  <Step title="Save Codes">
+    Download, print, or copy the codes securely
+  </Step>
+</Steps>
+
+<Info>
+When recovery codes are issued or viewed, the user receives a "Security Codes Viewed" email notification to alert them of the access.
+</Info>
+
+### Viewing Existing Codes
+
+<Steps>
+  <Step title="Find User">
+    Navigate to **Account Management → Users** and click on user's email
+  </Step>
+  
+  <Step title="View Codes">
+    Click the dot menu (⋮) → "View recovery codes"
+  </Step>
+</Steps>
+
+<Warning>
+**Root user recovery codes** cannot be viewed by anyone else, including Admins. Root users must store their recovery codes securely as they cannot be recovered if lost.
+</Warning>
+
+## Resource Sharing
+
+<Info>
+All resources (agents, flows, MCP servers) are shared across your entire account. All team members can access resources based on their role permissions.
+</Info>
+
+**How it works:**
+- Resources are organized into collections within flows
+- Access is controlled by role, not by who created the resource
+- When a user is deleted, their resources remain accessible to the team
+- No per-user resource ownership or isolation
+
+**Role-based access:**
+- **Root/Admin:** Full access to all resources
+- **Developer:** Can create, modify, and delete all resources
+- **Monitor:** Can view all resources (read-only)
+- **Billing:** Cannot access resources
+
+[Learn more about role permissions →](/essentials/users/roles-permissions)
+
+## Best Practices
+
+### User Lifecycle Management
+
+<AccordionGroup>
+  <Accordion title="Onboarding New Users" icon="user-plus">
+    **When adding new team members:**
+    
+    1. Create account with appropriate role
+    2. Send invitation email
+    3. Verify they receive and accept invitation
+    4. Confirm they enable MFA (required for Admin/Root)
+    5. Provide onboarding documentation
+    6. Review access after first week
+    
+    Start with minimal permissions and increase as needed.
+  </Accordion>
+  
+  <Accordion title="Regular Access Reviews" icon="calendar-check">
+    **Monthly reviews:**
+    - List all active users
+    - Verify each user still needs access
+    - Check for unused accounts (no recent activity)
+    - Confirm roles are still appropriate
+    
+    **Quarterly reviews:**
+    - Comprehensive audit of all permissions
+    - Review role assignments
+    - Update access based on job changes
+    - Document why each elevated role is needed
+  </Accordion>
+  
+  <Accordion title="Offboarding Process" icon="right-from-bracket">
+    **When users leave your organization:**
+    
+    **Immediately:**
+    1. Suspend the user account
+    2. Terminate all their sessions
+    
+    **Within 1 hour:**
+    3. Delete all their API keys
+    
+    **Within 24 hours:**
+    4. Review their resources for any needed handoff
+    5. Delete the user account
+    
+    **Document:**
+    - Who left and when
+    - What resources they managed
+    - Who took over their responsibilities
+  </Accordion>
+  
+  <Accordion title="Security for Elevated Roles" icon="shield-check">
+    **Mandatory for Root and Admin:**
+    - Enable MFA immediately
+    - Use passkeys when possible
+    - Store recovery codes in password manager
+    - Use strong, unique passwords
+    - Review sessions monthly
+    
+    **Recommended for all users:**
+    - Enable MFA
+    - Use password manager
+    - Review active sessions regularly
+    
+    [Security best practices →](/essentials/security/overview)
+  </Accordion>
+</AccordionGroup>
+
+### Role Assignment Guidelines
+
+<Tabs>
+  <Tab title="Small Teams (2-5)">
+    **Typical structure:**
+    - 1 Root (founder/owner)
+    - 0-1 Admin (if needed)
+    - 2-4 Developers
+    
+    **Why:**
+    Small teams usually don't need separate Billing or Monitor roles. Developers can handle most operational tasks.
+  </Tab>
+  
+  <Tab title="Growing Teams (6-20)">
+    **Typical structure:**
+    - 1 Root (owner)
+    - 1-2 Admins (team leads)
+    - 1 Billing (finance)
+    - 3-12 Developers
+    - 0-5 Monitors (stakeholders)
+    
+    **Why:**
+    Separation of duties becomes important. Finance should handle billing independently from technical operations.
+  </Tab>
+  
+  <Tab title="Large Orgs (20+)">
+    **Typical structure:**
+    - 1-2 Root (owner + backup)
+    - 2-5 Admins (department leads)
+    - 1-2 Billing (finance team)
+    - 10+ Developers
+    - 5+ Monitors
+    
+    **Why:**
+    Clear separation of duties, compliance requirements, multiple teams and departments.
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="User didn't receive invitation email">
+    **Solutions:**
+    
+    1. Check spam/junk folder
+    2. Verify correct email address was entered
+    3. Click "Resend Invitation" in user management
+    4. Try different email address if corporate email blocks it
+    5. Ask user to check email filters/rules
+    
+    If still not received after 10 minutes, contact support.
+  </Accordion>
+  
+  <Accordion title="Can't change a user's role">
+    **Common causes:**
+    
+    - You don't have Admin or Root role
+    - Trying to change your own role (not allowed)
+    - Admin trying to change Root user (not allowed)
+    - Admin trying to assign Root role (not allowed)
+    
+    **Solution:**
+    Ask a Root user or different Admin to make the change.
+  </Accordion>
+  
+  <Accordion title="Suspended user still has access">
+    **Why this happens:**
+    
+    Active sessions don't terminate automatically on suspension.
+    
+    **Solution:**
+    1. Click on the user
+    2. Use the "Logout" option to terminate all sessions
+    3. Sessions expire after 24 hours maximum anyway
+  </Accordion>
+  
+  <Accordion title="Need to recover deleted user">
+    **Unfortunately:**
+    
+    Deleted users cannot be recovered. You'll need to:
+    1. Send a new invitation to the same email
+    2. They'll need to accept and set up a new account
+    3. Re-enable MFA
+    4. Their old resources remain accessible to the team
+  </Accordion>
+  
+  <Accordion title="Too many Admin users">
+    **Security concern:**
+    
+    Having too many Admins increases security risk.
+    
+    **Recommendation:**
+    - Limit Admin to 2-5 people maximum
+    - Review if all Admins still need that level of access
+    - Consider downgrading some to Developer role
+    - Document why each Admin role is necessary
+  </Accordion>
+</AccordionGroup>
+
+## User Management Checklist
+
+### New User Setup
+
+- [ ] Determine appropriate role (least privilege)
+- [ ] Send invitation with clear expectations
+- [ ] Verify invitation accepted within 48 hours
+- [ ] Confirm MFA enabled (if Admin/Root)
+- [ ] Provide onboarding documentation
+- [ ] Review access after trial period
+
+### Regular Maintenance
+
+- [ ] Monthly: Review active users list
+- [ ] Monthly: Check for inactive accounts
+- [ ] Quarterly: Audit role assignments
+- [ ] Quarterly: Verify elevated roles still needed
+- [ ] Annually: Comprehensive security review
+
+### User Departure
+
+- [ ] Suspend account immediately
+- [ ] Terminate all sessions
+- [ ] Delete API keys within 1 hour
+- [ ] Review and transfer resources
+- [ ] Delete user account within 24 hours
+- [ ] Document handoff and transition
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Roles & Permissions" icon="key" href="/essentials/users/roles-permissions">
+    Detailed breakdown of what each role can do
+  </Card>
+  
+  <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
+    Set up MFA for your users
+  </Card>
+  
+  <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
+    Monitor and manage active logins
+  </Card>
+  
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Complete security best practices
+  </Card>
+</CardGroup>

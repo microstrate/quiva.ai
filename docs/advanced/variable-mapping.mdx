@@ -1,0 +1,2275 @@
+# JSON Path Mapping
+
+Map data between nodes in your flows using JSON Path expressions. Microstrate's mapping system allows you to reference data from previous nodes and transform it as needed.
+
+## Quick Reference
+
+**Common patterns:**
+- Basic access: `$.NODE_ID.property`
+- Array item: `$.NODE_ID.items[0]` (0-based)
+- All items: `$.NODE_ID.items[*]`
+- Filter: `$.NODE_ID.items[?(@.price>10)]`
+- Recursive: `$..email`
+- Concatenate: `text|$.NODE.value` (Microstrate custom)
+- Join: `$.NODE.first| |$.NODE.last` (Microstrate custom)
+- Fallback: `$.NODE.value|default` (Microstrate custom)
+
+**Key points:**
+- Arrays are 0-based: `[0]` is first, `[-1]` is last
+- Use `===` for equality in filters, not `=`
+- Everything is case-sensitive
+- Microstrate auto-detects `$.` anywhere in your mapping
+
+---
+
+## Basic Syntax
+
+The core syntax for referencing node data is:
+
+```
+$.NODE_ID.property
+```
+
+- ` - Root indicator (required)
+- `NODE_ID` - The ID of the node you want to reference
+- `property` - The property path you want to access
+
+## Simple Examples
+
+### Accessing Node Data
+
+Reference a property from a previous node:
+
+```json
+{
+  "customerName": "$.get_customer.name",
+  "customerEmail": "$.get_customer.email"
+}
+```
+
+### Nested Properties
+
+Access deeply nested data using dot notation:
+
+```json
+{
+  "street": "$.get_customer.address.street",
+  "city": "$.get_customer.address.city"
+}
+```
+
+### Array Access
+
+Access array elements by index (0-based, like JavaScript):
+
+```json
+{
+  "firstItem": "$.get_items[0]",
+  "secondItem": "$.get_items[1]",
+  "lastItem": "$.get_items[-1]"
+}
+```
+
+**Note:** Array indexes in JSONPath are 0-based, meaning the first element is at index `[0]`, not `[1]`.
+
+## The Pipe Operator (`|`)
+
+Microstrate extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+
+### Concatenating Values
+
+Combine static text with node data:
+
+```json
+{
+  "greeting": "Hello |$.get_customer.name"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "name": "Alice"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "greeting": "Hello Alice"
+}
+```
+
+### Multiple Concatenations
+
+Chain multiple values together:
+
+```json
+{
+  "fullName": "$.get_customer.firstName| |$.get_customer.lastName",
+  "address": "$.customer.street|, |$.customer.city|, |$.customer.country"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "customer": {
+    "street": "123 Main St",
+    "city": "New York",
+    "country": "USA"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "fullName": "John Doe",
+  "address": "123 Main St, New York, USA"
+}
+```
+
+### Static Text with Multiple Variables
+
+```json
+{
+  "message": "Order #|$.order.id| for |$.order.customerName| is |$.order.status"
+}
+```
+
+## Advanced Mapping Patterns
+
+### Mapping Arrays
+
+Map entire arrays from one node to another:
+
+```json
+{
+  "allOrders": "$.get_orders.data"
+}
+```
+
+### Mapping Objects
+
+Map complex objects:
+
+```json
+{
+  "customer": {
+    "name": "$.get_customer.name",
+    "contact": {
+      "email": "$.get_customer.email",
+      "phone": "$.get_customer.phone"
+    }
+  }
+}
+```
+
+### Conditional Values
+
+Use the pipe operator to provide fallback text:
+
+```json
+{
+  "status": "$.order.status|pending"
+}
+```
+
+If `$.order.status` is undefined or null, the value will be "pending".
+
+## JSONPath Plus Features
+
+Microstrate uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+
+### Wildcard Selection
+
+Select all elements:
+
+```json
+{
+  "allNames": "$.customers[*].name"
+}
+```
+
+**Result:** Returns an array of all customer names.
+
+### Recursive Descent
+
+Search at any depth using `..`:
+
+```json
+{
+  "allEmails": "$..email"
+}
+```
+
+**Result:** Finds all `email` properties at any level of nesting.
+
+### Filter Expressions
+
+Filter arrays based on conditions using `?()`:
+
+```json
+{
+  "activeUsers": "$.users[?(@.active===true)]",
+  "cheapItems": "$.products[?(@.price<10)]",
+  "hasISBN": "$.books[?(@.isbn)]"
+}
+```
+
+**Filter variables available:**
+- `@` - Current item being filtered
+- `@.property` - Access properties of the current item
+
+**Important:** Use JavaScript comparison operators:
+- `===` or `==` for equality
+- `!==` or `!=` for inequality
+- `<`, `>`, `<=`, `>=` for comparisons
+- `&&` for AND, `||` for OR
+
+### Array Slicing
+
+Get array subsets using `[start:end]` syntax:
+
+```json
+{
+  "firstThree": "$.items[0:3]",
+  "lastTwo": "$.items[-2:]",
+  "middleItems": "$.items[2:5]",
+  "everyOther": "$.items[0:10:2]"
+}
+```
+
+**Syntax:** `[start:end:step]`
+- Negative indexes count from the end: `[-1]` is the last item
+- Omit `start` to begin at 0: `[:3]` gets first three items
+- Omit `end` to go to the end: `[2:]` gets all items from index 2 onwards
+- Add `step` to skip items: `[::2]` gets every other item
+
+### Parent Selector (`^`)
+
+Get the parent of a matched item:
+
+```json
+{
+  "expensiveItemParents": "$.products[?(@.price>100)]^"
+}
+```
+
+**Result:** Returns the parent objects of items where price > 100.
+
+### Property Name Selector (`~`)
+
+Get property names instead of values:
+
+```json
+{
+  "storeProperties": "$.store.*~"
+}
+```
+
+**Result:** Returns property names like `["book", "bicycle"]` instead of their values.
+
+### Advanced Filter Variables
+
+Use these special variables inside filter expressions:
+
+```json
+{
+  "samePriceAsFirst": "$..book[?(@.price === @root.store.book[0].price)]",
+  "notFirstBook": "$..book[?(@property !== 0)]",
+  "hasParentBicycle": "$..book[?(@parent.bicycle)]",
+  "notCategoryProp": "$..book.*[?(@property !== 'category')]",
+  "checkPath": "$..book[?(@path !== \"$['store']['book'][0]\")]"
+}
+```
+
+**Available filter variables:**
+- `@` - Current node value
+- `@root` - Root JSON object
+- `@parent` - Parent of current node
+- `@property` - Property name or array index of current node
+- `@parentProperty` - Property name of the parent
+- `@path` - JSONPath string to current node
+
+### Type Selectors
+
+Filter by data type using type operators:
+
+```json
+{
+  "allStrings": "$..*@string()",
+  "allNumbers": "$..*@number()",
+  "allBooleans": "$..*@boolean()",
+  "allArrays": "$..*@array()",
+  "allObjects": "$..*@object()",
+  "allIntegers": "$..*@integer()",
+  "nullValues": "$..*@null()"
+}
+```
+
+**Available type selectors:**
+- `@string()` - String values
+- `@number()` - Numeric values (including non-finite)
+- `@boolean()` - Boolean values (true/false)
+- `@array()` - Array values
+- `@object()` - Object values
+- `@integer()` - Integer numbers only
+- `@null()` - Null values
+- `@undefined()` - Undefined values (JavaScript objects)
+- `@function()` - Function values (JavaScript objects)
+- `@scalar()` - All non-object/non-function types
+- `@nonFinite()` - Non-finite numbers (Infinity, -Infinity, NaN)
+
+### Escaping Special Characters
+
+Use backticks to escape special characters or property names:
+
+```json
+{
+  "literalDollar": "`$",
+  "specialProperty": "$.node.`property.with.dots`",
+  "literalBacktick": "$.node.``escaped``"
+}
+```
+
+**When to escape:**
+- Property names containing dots: `property.with.dots`
+- Property names that look like operators: `# JSON Path Mapping
+
+Map data between nodes in your flows using JSON Path expressions. Microstrate's mapping system allows you to reference data from previous nodes and transform it as needed.
+
+## Basic Syntax
+
+The core syntax for referencing node data is:
+
+```
+$.NODE_ID.property
+```
+
+- ` - Root indicator (required)
+- `NODE_ID` - The ID of the node you want to reference
+- `property` - The property path you want to access
+
+## Simple Examples
+
+### Accessing Node Data
+
+Reference a property from a previous node:
+
+```json
+{
+  "customerName": "$.get_customer.name",
+  "customerEmail": "$.get_customer.email"
+}
+```
+
+### Nested Properties
+
+Access deeply nested data using dot notation:
+
+```json
+{
+  "street": "$.get_customer.address.street",
+  "city": "$.get_customer.address.city"
+}
+```
+
+### Array Access
+
+Access array elements by index (0-based, like JavaScript):
+
+```json
+{
+  "firstItem": "$.get_items[0]",
+  "secondItem": "$.get_items[1]",
+  "lastItem": "$.get_items[-1]"
+}
+```
+
+**Note:** Array indexes in JSONPath are 0-based, meaning the first element is at index `[0]`, not `[1]`.
+
+## The Pipe Operator (`|`)
+
+Microstrate extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+
+### Concatenating Values
+
+Combine static text with node data:
+
+```json
+{
+  "greeting": "Hello |$.get_customer.name"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "name": "Alice"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "greeting": "Hello Alice"
+}
+```
+
+### Multiple Concatenations
+
+Chain multiple values together:
+
+```json
+{
+  "fullName": "$.get_customer.firstName| |$.get_customer.lastName",
+  "address": "$.customer.street|, |$.customer.city|, |$.customer.country"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "customer": {
+    "street": "123 Main St",
+    "city": "New York",
+    "country": "USA"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "fullName": "John Doe",
+  "address": "123 Main St, New York, USA"
+}
+```
+
+### Static Text with Multiple Variables
+
+```json
+{
+  "message": "Order #|$.order.id| for |$.order.customerName| is |$.order.status"
+}
+```
+
+## Advanced Mapping Patterns
+
+### Mapping Arrays
+
+Map entire arrays from one node to another:
+
+```json
+{
+  "allOrders": "$.get_orders.data"
+}
+```
+
+### Mapping Objects
+
+Map complex objects:
+
+```json
+{
+  "customer": {
+    "name": "$.get_customer.name",
+    "contact": {
+      "email": "$.get_customer.email",
+      "phone": "$.get_customer.phone"
+    }
+  }
+}
+```
+
+### Conditional Values
+
+Use the pipe operator to provide fallback text:
+
+```json
+{
+  "status": "$.order.status|pending"
+}
+```
+
+If `$.order.status` is undefined or null, the value will be "pending".
+
+## JSONPath Plus Features
+
+Microstrate uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+
+### Wildcard Selection
+
+Select all elements:
+
+```json
+{
+  "allNames": "$.customers[*].name"
+}
+```
+
+**Result:** Returns an array of all customer names.
+
+### Recursive Descent
+
+Search at any depth using `..`:
+
+```json
+{
+  "allEmails": "$..email"
+}
+```
+
+**Result:** Finds all `email` properties at any level of nesting.
+
+### Filter Expressions
+
+Filter arrays based on conditions using `?()`:
+
+```json
+{
+  "activeUsers": "$.users[?(@.active===true)]",
+  "cheapItems": "$.products[?(@.price<10)]",
+  "hasISBN": "$.books[?(@.isbn)]"
+}
+```
+
+**Filter variables available:**
+- `@` - Current item being filtered
+- `@.property` - Access properties of the current item
+
+**Important:** Use JavaScript comparison operators:
+- `===` or `==` for equality
+- `!==` or `!=` for inequality
+- `<`, `>`, `<=`, `>=` for comparisons
+- `&&` for AND, `||` for OR
+
+### Array Slicing
+
+Get array subsets using `[start:end]` syntax:
+
+```json
+{
+  "firstThree": "$.items[0:3]",
+  "lastTwo": "$.items[-2:]",
+  "middleItems": "$.items[2:5]",
+  "everyOther": "$.items[0:10:2]"
+}
+```
+
+**Syntax:** `[start:end:step]`
+- Negative indexes count from the end: `[-1]` is the last item
+- Omit `start` to begin at 0: `[:3]` gets first three items
+- Omit `end` to go to the end: `[2:]` gets all items from index 2 onwards
+- Add `step` to skip items: `[::2]` gets every other item
+
+### Parent Selector (`^`)
+
+Get the parent of a matched item:
+
+```json
+{
+  "expensiveItemParents": "$.products[?(@.price>100)]^"
+}
+```
+
+**Result:** Returns the parent objects of items where price > 100.
+
+### Property Name Selector (`~`)
+
+Get property names instead of values:
+
+```json
+{
+  "storeProperties": "$.store.*~"
+}
+```
+
+**Result:** Returns property names like `["book", "bicycle"]` instead of their values.
+
+### Advanced Filter Variables
+
+Use these special variables inside filter expressions:
+
+```json
+{
+  "samePriceAsFirst": "$..book[?(@.price === @root.store.book[0].price)]",
+  "notFirstBook": "$..book[?(@property !== 0)]",
+  "hasParentBicycle": "$..book[?(@parent.bicycle)]",
+  "notCategoryProp": "$..book.*[?(@property !== 'category')]",
+  "checkPath": "$..book[?(@path !== \"$['store']['book'][0]\")]"
+}
+```
+
+**Available filter variables:**
+- `@` - Current node value
+- `@root` - Root JSON object
+- `@parent` - Parent of current node
+- `@property` - Property name or array index of current node
+- `@parentProperty` - Property name of the parent
+- `@path` - JSONPath string to current node
+
+, `@`, `~`, `^`
+- To get a literal backtick, use double backticks: `` `` ``
+
+### Bracket Notation for Special Properties
+
+Access properties with special characters using bracket notation:
+
+```json
+{
+  "spacedProperty": "$['property with spaces']",
+  "numericProperty": "$['123']",
+  "specialChars": "$['property-name']"
+}
+```
+
+## Real-World JSONPath Examples
+
+### E-commerce Example
+
+Given this data from an API node:
+
+```json
+{
+  "api_response": {
+    "store": {
+      "book": [
+        {
+          "category": "reference",
+          "author": "Nigel Rees",
+          "title": "Sayings of the Century",
+          "price": 8.95
+        },
+        {
+          "category": "fiction",
+          "author": "Herman Melville",
+          "title": "Moby Dick",
+          "isbn": "0-553-21311-3",
+          "price": 8.99
+        },
+        {
+          "category": "fiction",
+          "author": "J. R. R. Tolkien",
+          "title": "The Lord of the Rings",
+          "isbn": "0-395-19395-8",
+          "price": 22.99
+        }
+      ],
+      "bicycle": {
+        "color": "red",
+        "price": 19.95
+      }
+    }
+  }
+}
+```
+
+**JSONPath queries:**
+
+```json
+{
+  "allAuthors": "$.api_response.store.book[*].author",
+  "allPrices": "$.api_response.store..price",
+  "cheapBooks": "$.api_response.store.book[?(@.price<10)]",
+  "booksWithISBN": "$.api_response.store.book[?(@.isbn)]",
+  "firstTwoBooks": "$.api_response.store.book[0:2]",
+  "lastBook": "$.api_response.store.book[-1]",
+  "fictionBooks": "$.api_response.store.book[?(@.category==='fiction')]",
+  "storeItems": "$.api_response.store.*",
+  "propertyNames": "$.api_response.store.*~"
+}
+```
+
+**Results:**
+
+```json
+{
+  "allAuthors": ["Nigel Rees", "Herman Melville", "J. R. R. Tolkien"],
+  "allPrices": [8.95, 8.99, 22.99, 19.95],
+  "cheapBooks": [
+    {"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95},
+    {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}
+  ],
+  "booksWithISBN": [
+    {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99},
+    {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}
+  ],
+  "firstTwoBooks": [
+    {"category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95},
+    {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99}
+  ],
+  "lastBook": {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99},
+  "fictionBooks": [
+    {"category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99},
+    {"category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99}
+  ],
+  "storeItems": [
+    [{"category": "reference", ...}, {"category": "fiction", ...}, {"category": "fiction", ...}],
+    {"color": "red", "price": 19.95}
+  ],
+  "propertyNames": ["book", "bicycle"]
+}
+```
+
+### Example 1: Customer Order Processing
+
+**Mapping Configuration:**
+```json
+{
+  "orderId": "$.fetch_order.id",
+  "customerInfo": {
+    "fullName": "$.fetch_order.customer.firstName| |$.fetch_order.customer.lastName",
+    "email": "$.fetch_order.customer.email"
+  },
+  "orderSummary": "Order |$.fetch_order.id| placed by |$.fetch_order.customer.firstName| |$.fetch_order.customer.lastName",
+  "items": "$.fetch_order.items",
+  "totalAmount": "$.fetch_order.total"
+}
+```
+
+### Example 2: User Profile Aggregation
+
+**Mapping Configuration:**
+```json
+{
+  "userId": "$.get_user.id",
+  "displayName": "$.get_user.profile.displayName|$.get_user.username",
+  "bio": "$.get_user.profile.bio|No bio available",
+  "socialLinks": {
+    "twitter": "https://twitter.com/|$.get_user.social.twitter",
+    "linkedin": "https://linkedin.com/in/|$.get_user.social.linkedin"
+  },
+  "recentPosts": "$.get_posts.data[0:5]"
+}
+```
+
+### Example 3: Data Transformation
+
+**Mapping Configuration:**
+```json
+{
+  "products": "$.api_response.data[*].product",
+  "totalProducts": "$.api_response.data.length",
+  "categories": "$.api_response.data[*].category",
+  "topProduct": "$.api_response.data[0].product.name"
+}
+```
+
+## Automatic Detection
+
+Microstrate automatically detects JSON Path expressions anywhere in your mapping by looking for the `$.` pattern. This means you can use JSON Path in:
+
+- Object property values
+- Array elements
+- Nested structures
+- String concatenations with the pipe operator
+
+## Important Notes
+
+### Array Indexing
+
+JSONPath uses **0-based indexing** like JavaScript, not 1-based like XPath:
+- First element: `[0]`
+- Second element: `[1]`
+- Last element: `[-1]`
+- Second to last: `[-2]`
+
+### Equality Operators
+
+Use JavaScript comparison operators in filter expressions:
+- Use `===` or `==` for equality (prefer `===`)
+- Use `!==` or `!=` for inequality (prefer `!==`)
+- Single `=` is **not valid** in JSONPath filters
+
+### Case Sensitivity
+
+All JSONPath expressions are **case-sensitive**:
+- Property names must match exactly: `$.user.Name` ≠ `$.user.name`
+- Node IDs must match exactly: `$.GetUser` ≠ `$.getuser`
+- Filter comparisons respect case: `?(@.status==='Active')` ≠ `?(@.status==='active')`
+
+### Filter Scope
+
+When using filters `?()`, the `@` symbol refers to the current item being evaluated:
+- Inside array filter: `@` is each array element
+- The filter returns items where the condition is `true`
+- Always returns an array (even if only one item matches)
+
+### Return Values
+
+Understanding what JSONPath returns:
+- **Single property access** (`$.node.name`): Returns the value directly
+- **Array access** (`$.node.items`): Returns the array
+- **Wildcard** (`$.node[*]`): Always returns an array
+- **Filter** (`$.node[?(@.x)]`): Always returns an array
+- **Recursive descent** (`$..prop`): Always returns an array
+- **Non-existent path**: Returns `undefined` (or use pipe operator for default)
+
+## Type Handling
+
+### String Values
+```json
+{
+  "name": "$.node.name"
+}
+```
+Returns the string value directly.
+
+### Numeric Values
+```json
+{
+  "count": "$.node.count",
+  "price": "$.node.price"
+}
+```
+Returns numbers as-is (integers or floats).
+
+### Boolean Values
+```json
+{
+  "isActive": "$.node.active",
+  "verified": "$.node.verified"
+}
+```
+Returns `true` or `false`.
+
+### Array Values
+```json
+{
+  "items": "$.node.items",
+  "allNames": "$.node.items[*].name"
+}
+```
+Returns the array or extracted values from array items.
+
+### Object Values
+```json
+{
+  "user": "$.node.user",
+  "nestedData": "$.node.data.nested"
+}
+```
+Returns the entire object or nested object.
+
+### Null/Undefined Handling
+
+If a path doesn't exist, the result will be `undefined`. Use the pipe operator to provide defaults:
+
+```json
+{
+  "value": "$.node.missing|default value",
+  "count": "$.node.count|0",
+  "flag": "$.node.enabled|false"
+}
+```
+
+## How Mapping Works in Flows
+
+### Node Execution Order
+
+Nodes execute sequentially in your flow. When mapping data:
+
+1. **Source node completes** - Data becomes available
+2. **Target node executes** - Mapping expressions are evaluated
+3. **Data is transformed** - JSON Path extracts and transforms data
+4. **Result is used** - Transformed data flows to the next node
+
+### Node Data Structure
+
+Each node's output is accessible via its ID:
+
+```json
+{
+  "node_id_1": {
+    "output": "data from node 1"
+  },
+  "node_id_2": {
+    "result": "data from node 2"
+  }
+}
+```
+
+Access it using: `$.node_id_1.output` or `$.node_id_2.result`
+
+### Mapping in Different Node Types
+
+**HTTP Request Node:**
+```json
+{
+  "url": "https://api.example.com/users/|$.get_user_id.id",
+  "headers": {
+    "Authorization": "Bearer |$.auth_node.token"
+  },
+  "body": {
+    "email": "$.user_input.email",
+    "name": "$.user_input.firstName| |$.user_input.lastName"
+  }
+}
+```
+
+**Data Transformation Node:**
+```json
+{
+  "customer": {
+    "id": "$.fetch_customer.data.id",
+    "name": "$.fetch_customer.data.name",
+    "orders": "$.fetch_orders.data[?(@.customerId===@root.fetch_customer.data.id)]"
+  }
+}
+```
+
+**Conditional Node:**
+```json
+{
+  "condition": "$.previous_node.status===completed && $.previous_node.count>0"
+}
+```
+
+### Multiple Node References
+
+Reference multiple nodes in a single mapping:
+
+```json
+{
+  "summary": {
+    "userId": "$.get_user.id",
+    "userName": "$.get_user.name",
+    "orderCount": "$.get_orders.data.length",
+    "totalSpent": "$.calculate_total.amount",
+    "lastOrder": "$.get_orders.data[-1]",
+    "combinedInfo": "User |$.get_user.name| has |$.get_orders.data.length| orders totaling $|$.calculate_total.amount"
+  }
+}
+```
+
+### Error Handling in Mappings
+
+If a referenced node hasn't executed yet or failed:
+- The path will return `undefined`
+- Use fallback values: `$.node.value|default`
+- Check node execution in the Flow Debugger
+
+```json
+{
+  "safeMapping": {
+    "primaryEmail": "$.user_node.email|$.fallback_node.email|no-email@example.com",
+    "status": "$.processing_node.status|pending"
+  }
+}
+```
+
+## Best Practices
+
+### 1. Use Descriptive Node IDs
+
+Make your flows easier to understand and maintain:
+```json
+// ✅ Good - Clear and descriptive
+"$.fetch_customer_data.email"
+"$.calculate_total.amount"
+
+// ❌ Avoid - Unclear and unmaintainable
+"$.node_1.email"
+"$.step_2.amount"
+```
+
+### 2. Test Mappings Incrementally
+
+Start with simple mappings and add complexity:
+```json
+// Step 1: Get basic data
+{
+  "name": "$.customer.name"
+}
+
+// Step 2: Add formatting
+{
+  "name": "$.customer.firstName| |$.customer.lastName"
+}
+
+// Step 3: Add conditional logic
+{
+  "displayName": "$.customer.preferredName|$.customer.firstName| |$.customer.lastName"
+}
+```
+
+### 3. Provide Fallbacks with Pipe Operator
+
+Use the pipe operator for robust mappings:
+```json
+{
+  "status": "$.order.status|pending",
+  "notes": "$.order.notes|No notes provided",
+  "quantity": "$.item.quantity|1",
+  "priority": "$.task.priority|normal"
+}
+```
+
+### 4. Handle Arrays Carefully
+
+Be explicit about what you want from arrays:
+```json
+{
+  "firstItem": "$.items[0]",              // Single item (first)
+  "lastItem": "$.items[-1]",              // Single item (last)
+  "allItems": "$.items",                  // Entire array
+  "itemNames": "$.items[*].name",         // Property from all items (array)
+  "activeItems": "$.items[?(@.active)]"   // Filtered items (array)
+}
+```
+
+### 5. Use Appropriate Selectors
+
+Choose the right selector for your use case:
+```json
+{
+  // ✅ Specific path - Fast and precise
+  "email": "$.user.contact.email",
+  
+  // ⚠️ Recursive descent - Slower, use when structure varies
+  "allEmails": "$..email",
+  
+  // ✅ Direct array access - Fast
+  "firstUser": "$.users[0]",
+  
+  // ⚠️ Wildcard - Returns array, use when needed
+  "allUserNames": "$.users[*].name"
+}
+```
+
+### 6. Validate Filter Expressions
+
+Test filters in isolation before using in complex mappings:
+```json
+{
+  // Simple filter first
+  "activeUsers": "$.users[?(@.active===true)]",
+  
+  // Then add complexity
+  "activeAdmins": "$.users[?(@.active===true && @.role==='admin')]",
+  
+  // Finally add multiple conditions
+  "premiumActive": "$.users[?(@.active===true && @.role==='admin' && @.subscription==='premium')]"
+}
+```
+
+### 7. Document Complex Mappings
+
+Add comments (in your flow documentation) for complex JSONPath:
+```json
+{
+  // Gets users who joined in the last 30 days and have made a purchase
+  "recentActiveUsers": "$.users[?(@.joinDate>@root.thirtyDaysAgo && @.purchaseCount>0)]",
+  
+  // Gets the parent object of expensive items (items with price > 100)
+  "expensiveItemCategories": "$.categories..items[?(@.price>100)]^"
+}
+```
+
+### 8. Prefer Explicit Paths Over Wildcards
+
+Use specific paths when the structure is known:
+```json
+{
+  // ✅ Better - Explicit and clear
+  "userName": "$.response.data.user.name",
+  
+  // ❌ Avoid unless necessary - May return unexpected results
+  "userName": "$..name"
+}
+```
+
+### 9. Handle Missing Data Gracefully
+
+Always plan for missing or null data:
+```json
+{
+  "address": "$.user.address.street|Not provided",
+  "phone": "$.user.contact.phone|No phone number",
+  "optional": "$.user.preferences.newsletter|false"
+}
+```
+
+### 10. Use Type Selectors for Data Validation
+
+Filter by type when processing mixed data:
+```json
+{
+  "numericValues": "$.data.values.*@number()",
+  "stringValues": "$.data.values.*@string()",
+  "validItems": "$.items[*][?(@.id@number() && @.name@string())]"
+}
+```
+
+## Performance Considerations
+
+### Optimize Path Selection
+
+**Fast operations:**
+- Direct property access: `$.node.property`
+- Array index access: `$.node.items[0]`
+- Specific paths: `$.node.nested.property`
+
+**Slower operations (use judiciously):**
+- Recursive descent: `$..property` (searches entire structure)
+- Complex filters: `$.items[?(@.x>5 && @.y<10 && @.z==='value')]`
+- Multiple wildcards: `$..*.*[*]`
+
+### Best Practices for Performance
+
+```json
+{
+  // ✅ Good - Direct path
+  "userEmail": "$.api_response.user.email",
+  
+  // ⚠️ Slower - Recursive search
+  "anyEmail": "$..email",
+  
+  // ✅ Good - Single filter condition
+  "activeUsers": "$.users[?(@.active===true)]",
+  
+  // ⚠️ Slower - Complex filter with multiple conditions
+  "specificUsers": "$.users[?(@.active===true && @.role==='admin' && @.age>25 && @.verified===true)]"
+}
+```
+
+### Caching and Reuse
+
+Microstrate automatically caches JSONPath expressions, so repeated use of the same path is efficient. This means you can safely reference the same node multiple times without performance penalty:
+
+```json
+{
+  "firstName": "$.user.firstName",
+  "lastName": "$.user.lastName",
+  "fullName": "$.user.firstName| |$.user.lastName",
+  "email": "$.user.email"
+}
+```
+
+## Advanced Techniques
+
+### Combining Multiple Selectors
+
+Chain different selectors for complex queries:
+
+```json
+{
+  // Get prices of fiction books
+  "fictionPrices": "$.store.book[?(@.category==='fiction')].price",
+  
+  // Get authors of books with ISBN
+  "authorsWithISBN": "$.store.book[?(@.isbn)].author",
+  
+  // Get first 3 active users' emails
+  "topActiveEmails": "$.users[?(@.active===true)][0:3].email"
+}
+```
+
+### Using Parent and Root References
+
+Access related data in complex structures:
+
+```json
+{
+  // Items priced higher than the root price threshold
+  "expensiveItems": "$.items[?(@.price>@root.priceThreshold)]",
+  
+  // Books in same category as the selected book
+  "relatedBooks": "$.store.book[?(@.category===@root.selectedBook.category && @.id!==@root.selectedBook.id)]",
+  
+  // Users with same role as their parent group
+  "consistentUsers": "$.groups..users[?(@.role===@parent.defaultRole)]"
+}
+```
+
+### Nested Filters
+
+Apply filters within filters for complex data:
+
+```json
+{
+  // Get users who have active premium subscriptions
+  "premiumActiveUsers": "$.users[?(@.subscriptions[?(@.type==='premium' && @.active===true)])]"
+}
+```
+
+### Dynamic Property Access
+
+Use computed property names in filters:
+
+```json
+{
+  // Properties matching a pattern
+  "metadataFields": "$.data.*[?(@property.match(/^meta_/))]",
+  
+  // Non-system properties (don't start with underscore)
+  "userFields": "$.data.*[?(@property[0]!=='_')]"
+}
+```
+
+## Common Patterns
+
+### Building URLs
+```json
+{
+  "profileUrl": "https://example.com/users/|$.user.id",
+  "avatarUrl": "https://cdn.example.com/avatars/|$.user.id|/|$.user.avatar"
+}
+```
+
+### Creating Messages
+```json
+{
+  "welcomeMessage": "Welcome |$.user.firstName|! Your account was created on |$.user.createdAt",
+  "orderConfirmation": "Order #|$.order.id| has been |$.order.status"
+}
+```
+
+### Combining Multiple Sources
+```json
+{
+  "userData": {
+    "fromDatabase": "$.db_query.user",
+    "fromAPI": "$.api_call.profile",
+    "computed": "User |$.db_query.user.name| has |$.api_call.profile.followers| followers"
+  }
+}
+```
+
+## Troubleshooting
+
+### Path Not Found
+
+**Issue:** `undefined` result or empty array `[]`
+
+**Solutions:**
+- Verify the node ID is correct and matches exactly
+- Check the property path exists in the source data using the Flow Debugger
+- Remember: array indexes are **0-based** (first item is `[0]`, not `[1]`)
+- Use bracket notation for properties with special characters: `$['property-name']`
+- Check for typos in property names (JSONPath is case-sensitive)
+
+### Filter Not Working
+
+**Issue:** Filter expression returns empty array or unexpected results
+
+**Solutions:**
+- Use `===` (triple equals) for strict equality, not single `=`
+- Ensure you're using `@` to reference the current item: `?(@.price>10)`
+- Check property names are spelled correctly
+- Use `&&` for AND, `||` for OR (not `and`/`or`)
+- Wrap string values in quotes: `?(@.status==='active')`
+
+### Unexpected Concatenation
+
+**Issue:** Getting literal string instead of data when using pipe operator
+
+**Solutions:**
+- Ensure you're using `$.` to start JSON Path expressions after the pipe
+- Check for typos in node IDs or property names
+- Verify the source node has completed execution
+- Example: `"Hello |$.user.name"` not `"Hello |user.name"`
+
+### Array Results When Expecting Single Value
+
+**Issue:** Getting `[value]` instead of `value`
+
+**Solutions:**
+- Add array index to get single item: `$.node.array[0]`
+- Use filter expression to get specific item: `$.node.array[?(@.id===123)]`
+- Access the first item with `[0]` or last with `[-1]`
+- If using wildcard `[*]`, you'll always get an array
+
+### Special Characters in Property Names
+
+**Issue:** Path not working with properties containing dots, spaces, or special characters
+
+**Solutions:**
+- Use bracket notation: `$['property.with.dots']`
+- Or use backticks: `` $.`property.with.dots` ``
+- For spaces: `$['property with spaces']`
+- For dashes: `$['property-name']`
+
+### Parent/Root References in Filters
+
+**Issue:** Can't compare with values from other parts of the data
+
+**Solutions:**
+- Use `@root` to access the root object: `?(@.userId===@root.currentUser.id)`
+- Use `@parent` to access the parent: `?(@parent.type==='premium')`
+- Use `@parentProperty` to check the parent's property name
+
+### Empty Results with Recursive Descent
+
+**Issue:** `$..property` returns empty array
+
+**Solutions:**
+- Check spelling of property name (case-sensitive)
+- Ensure the property exists somewhere in the data structure
+- Try starting from a specific node: `$.node..property` instead of `$..property`
+- Use the debugger to verify data structure
+
+## Syntax Reference
+
+| Pattern | Description | Example | Result Type |
+|---------|-------------|---------|-------------|
+| `$.NODE.prop` | Access property | `$.user.name` | Single value |
+| `$.NODE.arr[0]` | Array index (0-based) | `$.items[0]` | Single value |
+| `$.NODE.arr[-1]` | Negative index (from end) | `$.items[-1]` | Single value |
+| `$.NODE.arr[*]` | All array items | `$.users[*].name` | Array |
+| `$.NODE.arr[0:3]` | Array slice | `$.items[0:3]` | Array |
+| `$.NODE.arr[:5]` | From start to index | `$.items[:5]` | Array |
+| `$.NODE.arr[2:]` | From index to end | `$.items[2:]` | Array |
+| `$.NODE.arr[-3:]` | Last N items | `$.items[-3:]` | Array |
+| `$.NODE[?(@.x)]` | Filter by property exists | `$.items[?(@.active)]` | Array |
+| `$.NODE[?(@.x>5)]` | Filter by condition | `$.items[?(@.price>10)]` | Array |
+| `$.NODE[?(@.x===y)]` | Filter by equality | `$.users[?(@.role==='admin')]` | Array |
+| `$..prop` | Recursive descent | `$..email` | Array |
+| `$.NODE.*` | All properties | `$.user.*` | Array |
+| `$.NODE.*~` | Property names | `$.store.*~` | Array of strings |
+| `$.NODE[?(@.x)]^` | Parent of filtered items | `$.items[?(@.price>100)]^` | Array |
+| `text\|$.NODE.prop` | Concatenation (Microstrate) | `Hello \|$.user.name` | String |
+| `$.A\| \|$.B` | Join with separator (Microstrate) | `$.first\| \|$.last` | String |
+| `$.NODE.prop\|default` | Fallback value (Microstrate) | `$.user.name\|Guest` | String |
+| `` `special` `` | Escape special characters | `` $.`$property` `` | Single value |
+| `$['prop']` | Bracket notation | `$['property-name']` | Single value |
+| `$..*@string()` | Type selector | `$..*@number()` | Array |
+| `$..book[0,2]` | Multiple indexes | `$.items[0,2,4]` | Array |
+
+### JSONPath Standard Operators
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `# JSON Path Mapping
+
+Map data between nodes in your flows using JSON Path expressions. Microstrate's mapping system allows you to reference data from previous nodes and transform it as needed.
+
+## Basic Syntax
+
+The core syntax for referencing node data is:
+
+```
+$.NODE_ID.property
+```
+
+- ` - Root indicator (required)
+- `NODE_ID` - The ID of the node you want to reference
+- `property` - The property path you want to access
+
+## Simple Examples
+
+### Accessing Node Data
+
+Reference a property from a previous node:
+
+```json
+{
+  "customerName": "$.get_customer.name",
+  "customerEmail": "$.get_customer.email"
+}
+```
+
+### Nested Properties
+
+Access deeply nested data using dot notation:
+
+```json
+{
+  "street": "$.get_customer.address.street",
+  "city": "$.get_customer.address.city"
+}
+```
+
+### Array Access
+
+Access array elements by index (0-based, like JavaScript):
+
+```json
+{
+  "firstItem": "$.get_items[0]",
+  "secondItem": "$.get_items[1]",
+  "lastItem": "$.get_items[-1]"
+}
+```
+
+**Note:** Array indexes in JSONPath are 0-based, meaning the first element is at index `[0]`, not `[1]`.
+
+## The Pipe Operator (`|`)
+
+Microstrate extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+
+### Concatenating Values
+
+Combine static text with node data:
+
+```json
+{
+  "greeting": "Hello |$.get_customer.name"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "name": "Alice"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "greeting": "Hello Alice"
+}
+```
+
+### Multiple Concatenations
+
+Chain multiple values together:
+
+```json
+{
+  "fullName": "$.get_customer.firstName| |$.get_customer.lastName",
+  "address": "$.customer.street|, |$.customer.city|, |$.customer.country"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "customer": {
+    "street": "123 Main St",
+    "city": "New York",
+    "country": "USA"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "fullName": "John Doe",
+  "address": "123 Main St, New York, USA"
+}
+```
+
+### Static Text with Multiple Variables
+
+```json
+{
+  "message": "Order #|$.order.id| for |$.order.customerName| is |$.order.status"
+}
+```
+
+## Advanced Mapping Patterns
+
+### Mapping Arrays
+
+Map entire arrays from one node to another:
+
+```json
+{
+  "allOrders": "$.get_orders.data"
+}
+```
+
+### Mapping Objects
+
+Map complex objects:
+
+```json
+{
+  "customer": {
+    "name": "$.get_customer.name",
+    "contact": {
+      "email": "$.get_customer.email",
+      "phone": "$.get_customer.phone"
+    }
+  }
+}
+```
+
+### Conditional Values
+
+Use the pipe operator to provide fallback text:
+
+```json
+{
+  "status": "$.order.status|pending"
+}
+```
+
+If `$.order.status` is undefined or null, the value will be "pending".
+
+## JSONPath Plus Features
+
+Microstrate uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+
+### Wildcard Selection
+
+Select all elements:
+
+```json
+{
+  "allNames": "$.customers[*].name"
+}
+```
+
+**Result:** Returns an array of all customer names.
+
+### Recursive Descent
+
+Search at any depth using `..`:
+
+```json
+{
+  "allEmails": "$..email"
+}
+```
+
+**Result:** Finds all `email` properties at any level of nesting.
+
+### Filter Expressions
+
+Filter arrays based on conditions using `?()`:
+
+```json
+{
+  "activeUsers": "$.users[?(@.active===true)]",
+  "cheapItems": "$.products[?(@.price<10)]",
+  "hasISBN": "$.books[?(@.isbn)]"
+}
+```
+
+**Filter variables available:**
+- `@` - Current item being filtered
+- `@.property` - Access properties of the current item
+
+**Important:** Use JavaScript comparison operators:
+- `===` or `==` for equality
+- `!==` or `!=` for inequality
+- `<`, `>`, `<=`, `>=` for comparisons
+- `&&` for AND, `||` for OR
+
+### Array Slicing
+
+Get array subsets using `[start:end]` syntax:
+
+```json
+{
+  "firstThree": "$.items[0:3]",
+  "lastTwo": "$.items[-2:]",
+  "middleItems": "$.items[2:5]",
+  "everyOther": "$.items[0:10:2]"
+}
+```
+
+**Syntax:** `[start:end:step]`
+- Negative indexes count from the end: `[-1]` is the last item
+- Omit `start` to begin at 0: `[:3]` gets first three items
+- Omit `end` to go to the end: `[2:]` gets all items from index 2 onwards
+- Add `step` to skip items: `[::2]` gets every other item
+
+### Parent Selector (`^`)
+
+Get the parent of a matched item:
+
+```json
+{
+  "expensiveItemParents": "$.products[?(@.price>100)]^"
+}
+```
+
+**Result:** Returns the parent objects of items where price > 100.
+
+### Property Name Selector (`~`)
+
+Get property names instead of values:
+
+```json
+{
+  "storeProperties": "$.store.*~"
+}
+```
+
+**Result:** Returns property names like `["book", "bicycle"]` instead of their values.
+
+### Advanced Filter Variables
+
+Use these special variables inside filter expressions:
+
+```json
+{
+  "samePriceAsFirst": "$..book[?(@.price === @root.store.book[0].price)]",
+  "notFirstBook": "$..book[?(@property !== 0)]",
+  "hasParentBicycle": "$..book[?(@parent.bicycle)]",
+  "notCategoryProp": "$..book.*[?(@property !== 'category')]",
+  "checkPath": "$..book[?(@path !== \"$['store']['book'][0]\")]"
+}
+```
+
+**Available filter variables:**
+- `@` - Current node value
+- `@root` - Root JSON object
+- `@parent` - Parent of current node
+- `@property` - Property name or array index of current node
+- `@parentProperty` - Property name of the parent
+- `@path` - JSONPath string to current node
+
+### Type Selectors
+
+Filter by data type using type operators:
+
+```json
+{
+  "allStrings": "$..*@string()",
+  "allNumbers": "$..*@number()",
+  "allBooleans": "$..*@boolean()",
+  "allArrays": "$..*@array()",
+  "allObjects": "$..*@object()",
+  "allIntegers": "$..*@integer()",
+  "nullValues": "$..*@null()"
+}
+```
+
+**Available type selectors:**
+- `@string()` - String values
+- `@number()` - Numeric values (including non-finite)
+- `@boolean()` - Boolean values (true/false)
+- `@array()` - Array values
+- `@object()` - Object values
+- `@integer()` - Integer numbers only
+- `@null()` - Null values
+- `@undefined()` - Undefined values (JavaScript objects)
+- `@function()` - Function values (JavaScript objects)
+- `@scalar()` - All non-object/non-function types
+- `@nonFinite()` - Non-finite numbers (Infinity, -Infinity, NaN)
+
+### Escaping Special Characters
+
+Use backticks to escape special characters or property names:
+
+```json
+{
+  "literalDollar": "`$",
+  "specialProperty": "$.node.`property.with.dots`",
+  "literalBacktick": "$.node.``escaped``"
+}
+```
+
+**When to escape:**
+- Property names containing dots: `property.with.dots`
+- Property names that look like operators: `# JSON Path Mapping
+
+Map data between nodes in your flows using JSON Path expressions. Microstrate's mapping system allows you to reference data from previous nodes and transform it as needed.
+
+## Basic Syntax
+
+The core syntax for referencing node data is:
+
+```
+$.NODE_ID.property
+```
+
+- ` - Root indicator (required)
+- `NODE_ID` - The ID of the node you want to reference
+- `property` - The property path you want to access
+
+## Simple Examples
+
+### Accessing Node Data
+
+Reference a property from a previous node:
+
+```json
+{
+  "customerName": "$.get_customer.name",
+  "customerEmail": "$.get_customer.email"
+}
+```
+
+### Nested Properties
+
+Access deeply nested data using dot notation:
+
+```json
+{
+  "street": "$.get_customer.address.street",
+  "city": "$.get_customer.address.city"
+}
+```
+
+### Array Access
+
+Access array elements by index (0-based, like JavaScript):
+
+```json
+{
+  "firstItem": "$.get_items[0]",
+  "secondItem": "$.get_items[1]",
+  "lastItem": "$.get_items[-1]"
+}
+```
+
+**Note:** Array indexes in JSONPath are 0-based, meaning the first element is at index `[0]`, not `[1]`.
+
+## The Pipe Operator (`|`)
+
+Microstrate extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+
+### Concatenating Values
+
+Combine static text with node data:
+
+```json
+{
+  "greeting": "Hello |$.get_customer.name"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "name": "Alice"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "greeting": "Hello Alice"
+}
+```
+
+### Multiple Concatenations
+
+Chain multiple values together:
+
+```json
+{
+  "fullName": "$.get_customer.firstName| |$.get_customer.lastName",
+  "address": "$.customer.street|, |$.customer.city|, |$.customer.country"
+}
+```
+
+**Input Data:**
+```json
+{
+  "get_customer": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "customer": {
+    "street": "123 Main St",
+    "city": "New York",
+    "country": "USA"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "fullName": "John Doe",
+  "address": "123 Main St, New York, USA"
+}
+```
+
+### Static Text with Multiple Variables
+
+```json
+{
+  "message": "Order #|$.order.id| for |$.order.customerName| is |$.order.status"
+}
+```
+
+## Advanced Mapping Patterns
+
+### Mapping Arrays
+
+Map entire arrays from one node to another:
+
+```json
+{
+  "allOrders": "$.get_orders.data"
+}
+```
+
+### Mapping Objects
+
+Map complex objects:
+
+```json
+{
+  "customer": {
+    "name": "$.get_customer.name",
+    "contact": {
+      "email": "$.get_customer.email",
+      "phone": "$.get_customer.phone"
+    }
+  }
+}
+```
+
+### Conditional Values
+
+Use the pipe operator to provide fallback text:
+
+```json
+{
+  "status": "$.order.status|pending"
+}
+```
+
+If `$.order.status` is undefined or null, the value will be "pending".
+
+## JSONPath Plus Features
+
+Microstrate uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+
+### Wildcard Selection
+
+Select all elements:
+
+```json
+{
+  "allNames": "$.customers[*].name"
+}
+```
+
+**Result:** Returns an array of all customer names.
+
+### Recursive Descent
+
+Search at any depth using `..`:
+
+```json
+{
+  "allEmails": "$..email"
+}
+```
+
+**Result:** Finds all `email` properties at any level of nesting.
+
+### Filter Expressions
+
+Filter arrays based on conditions using `?()`:
+
+```json
+{
+  "activeUsers": "$.users[?(@.active===true)]",
+  "cheapItems": "$.products[?(@.price<10)]",
+  "hasISBN": "$.books[?(@.isbn)]"
+}
+```
+
+**Filter variables available:**
+- `@` - Current item being filtered
+- `@.property` - Access properties of the current item
+
+**Important:** Use JavaScript comparison operators:
+- `===` or `==` for equality
+- `!==` or `!=` for inequality
+- `<`, `>`, `<=`, `>=` for comparisons
+- `&&` for AND, `||` for OR
+
+### Array Slicing
+
+Get array subsets using `[start:end]` syntax:
+
+```json
+{
+  "firstThree": "$.items[0:3]",
+  "lastTwo": "$.items[-2:]",
+  "middleItems": "$.items[2:5]",
+  "everyOther": "$.items[0:10:2]"
+}
+```
+
+**Syntax:** `[start:end:step]`
+- Negative indexes count from the end: `[-1]` is the last item
+- Omit `start` to begin at 0: `[:3]` gets first three items
+- Omit `end` to go to the end: `[2:]` gets all items from index 2 onwards
+- Add `step` to skip items: `[::2]` gets every other item
+
+### Parent Selector (`^`)
+
+Get the parent of a matched item:
+
+```json
+{
+  "expensiveItemParents": "$.products[?(@.price>100)]^"
+}
+```
+
+**Result:** Returns the parent objects of items where price > 100.
+
+### Property Name Selector (`~`)
+
+Get property names instead of values:
+
+```json
+{
+  "storeProperties": "$.store.*~"
+}
+```
+
+**Result:** Returns property names like `["book", "bicycle"]` instead of their values.
+
+### Advanced Filter Variables
+
+Use these special variables inside filter expressions:
+
+```json
+{
+  "samePriceAsFirst": "$..book[?(@.price === @root.store.book[0].price)]",
+  "notFirstBook": "$..book[?(@property !== 0)]",
+  "hasParentBicycle": "$..book[?(@parent.bicycle)]",
+  "notCategoryProp": "$..book.*[?(@property !== 'category')]",
+  "checkPath": "$..book[?(@path !== \"$['store']['book'][0]\")]"
+}
+```
+
+**Available filter variables:**
+- `@` - Current node value
+- `@root` - Root JSON object
+- `@parent` - Parent of current node
+- `@property` - Property name or array index of current node
+- `@parentProperty` - Property name of the parent
+- `@path` - JSONPath string to current node
+
+, `@`, `~`, `^`
+- To get a literal backtick, use double backticks: `` `` ``
+
+### Bracket Notation for Special Properties
+
+Access properties with special characters using bracket notation:
+
+```json
+{
+  "spacedProperty": "$['property with spaces']",
+  "numericProperty": "$['123']",
+  "specialChars": "$['property-name']"
+}
+```
+
+## Practical Examples
+
+### Example 1: Customer Order Processing
+
+**Mapping Configuration:**
+```json
+{
+  "orderId": "$.fetch_order.id",
+  "customerInfo": {
+    "fullName": "$.fetch_order.customer.firstName| |$.fetch_order.customer.lastName",
+    "email": "$.fetch_order.customer.email"
+  },
+  "orderSummary": "Order |$.fetch_order.id| placed by |$.fetch_order.customer.firstName| |$.fetch_order.customer.lastName",
+  "items": "$.fetch_order.items",
+  "totalAmount": "$.fetch_order.total"
+}
+```
+
+### Example 2: User Profile Aggregation
+
+**Mapping Configuration:**
+```json
+{
+  "userId": "$.get_user.id",
+  "displayName": "$.get_user.profile.displayName|$.get_user.username",
+  "bio": "$.get_user.profile.bio|No bio available",
+  "socialLinks": {
+    "twitter": "https://twitter.com/|$.get_user.social.twitter",
+    "linkedin": "https://linkedin.com/in/|$.get_user.social.linkedin"
+  },
+  "recentPosts": "$.get_posts.data[0:5]"
+}
+```
+
+### Example 3: Data Transformation
+
+**Mapping Configuration:**
+```json
+{
+  "products": "$.api_response.data[*].product",
+  "totalProducts": "$.api_response.data.length",
+  "categories": "$.api_response.data[*].category",
+  "topProduct": "$.api_response.data[0].product.name"
+}
+```
+
+## Automatic Detection
+
+Microstrate automatically detects JSON Path expressions anywhere in your mapping by looking for the `$.` pattern. This means you can use JSON Path in:
+
+- Object property values
+- Array elements
+- Nested structures
+- String concatenations with the pipe operator
+
+## Type Handling
+
+### String Values
+```json
+{
+  "name": "$.node.name"
+}
+```
+
+### Numeric Values
+```json
+{
+  "count": "$.node.count"
+}
+```
+
+### Boolean Values
+```json
+{
+  "isActive": "$.node.active"
+}
+```
+
+### Null/Undefined Handling
+
+If a path doesn't exist, the result will be `undefined`. Use the pipe operator to provide defaults:
+
+```json
+{
+  "value": "$.node.missing|default value"
+}
+```
+
+## Best Practices
+
+### 1. Use Descriptive Node IDs
+
+Make your flows easier to understand:
+```json
+// Good
+"$.fetch_customer.email"
+
+// Avoid
+"$.node_1.email"
+```
+
+### 2. Test Mappings Incrementally
+
+Start with simple mappings and add complexity:
+```json
+// Step 1: Get basic data
+{
+  "name": "$.customer.name"
+}
+
+// Step 2: Add formatting
+{
+  "name": "$.customer.firstName| |$.customer.lastName"
+}
+```
+
+### 3. Provide Fallbacks
+
+Use the pipe operator for robust mappings:
+```json
+{
+  "status": "$.order.status|unknown",
+  "notes": "$.order.notes|No notes provided"
+}
+```
+
+### 4. Handle Arrays Carefully
+
+When working with arrays, be explicit about what you want:
+```json
+{
+  "firstItem": "$.items[0]",           // Single item
+  "allItems": "$.items",               // Entire array
+  "itemNames": "$.items[*].name"       // Property from all items
+}
+```
+
+## Common Patterns
+
+### Building URLs
+```json
+{
+  "profileUrl": "https://example.com/users/|$.user.id",
+  "avatarUrl": "https://cdn.example.com/avatars/|$.user.id|/|$.user.avatar"
+}
+```
+
+### Creating Messages
+```json
+{
+  "welcomeMessage": "Welcome |$.user.firstName|! Your account was created on |$.user.createdAt",
+  "orderConfirmation": "Order #|$.order.id| has been |$.order.status"
+}
+```
+
+### Combining Multiple Sources
+```json
+{
+  "userData": {
+    "fromDatabase": "$.db_query.user",
+    "fromAPI": "$.api_call.profile",
+    "computed": "User |$.db_query.user.name| has |$.api_call.profile.followers| followers"
+  }
+}
+```
+
+## Troubleshooting
+
+### Path Not Found
+
+**Issue:** `undefined` result
+**Solution:** 
+- Verify the node ID is correct
+- Check the property path exists in the source data
+- Use the Flow Debugger to inspect node outputs
+
+### Unexpected Concatenation
+
+**Issue:** Getting literal string instead of data
+**Solution:**
+- Ensure you're using `$.` to start JSON Path expressions
+- Check for typos in node IDs or property names
+
+### Array Results When Expecting Single Value
+
+**Issue:** Getting `[value]` instead of `value`
+**Solution:**
+- Add array index: `$.node.array[0]`
+- Use filter expressions to get specific items
+
+ | Root object | `$.store` |
+| `.property` | Dot notation for properties | `$.user.name` |
+| `['property']` | Bracket notation | `$['user']['name']` |
+| `[n]` | Array index (0-based) | `$.items[0]` |
+| `[-n]` | Negative array index | `$.items[-1]` |
+| `[start:end]` | Array slice | `$.items[2:5]` |
+| `[*]` | Wildcard (all items) | `$.users[*]` |
+| `..` | Recursive descent | `$..email` |
+| `?()` | Filter expression | `$[?(@.price<10)]` |
+| `^` | Parent operator | `$.items[0]^` |
+| `~` | Property name | `$.store.*~` |
+
+### Filter Expression Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `@` | Current node | `?(@.active===true)` |
+| `@.property` | Current node property | `?(@.price>10)` |
+| `@root` | Root JSON object | `?(@.id===@root.userId)` |
+| `@parent` | Parent object | `?(@parent.type==='admin')` |
+| `@property` | Property name/index | `?(@property!==0)` |
+| `@parentProperty` | Parent's property name | `?(@parentProperty!=='hidden')` |
+| `@path` | JSONPath to current node | `?(@path!==\"$['items'][0]\")` |
+
+### Comparison Operators in Filters
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `===` | Strict equality | `?(@.status==='active')` |
+| `!==` | Strict inequality | `?(@.type!=='hidden')` |
+| `==` | Loose equality | `?(@.count==5)` |
+| `!=` | Loose inequality | `?(@.value!=null)` |
+| `<` | Less than | `?(@.age<18)` |
+| `>` | Greater than | `?(@.price>100)` |
+| `<=` | Less than or equal | `?(@.score<=50)` |
+| `>=` | Greater than or equal | `?(@.quantity>=10)` |
+| `&&` | Logical AND | `?(@.active===true && @.verified===true)` |
+| `\|\|` | Logical OR | `?(@.role==='admin' \|\| @.role==='moderator')` |
+
+### Type Selectors Reference
+
+| Selector | Matches | Example |
+|----------|---------|---------|
+| `@null()` | null values | `$..*@null()` |
+| `@boolean()` | true or false | `$..*@boolean()` |
+| `@number()` | All numbers | `$..*@number()` |
+| `@string()` | String values | `$..*@string()` |
+| `@array()` | Arrays | `$..*@array()` |
+| `@object()` | Objects | `$..*@object()` |
+| `@integer()` | Integer numbers | `$..*@integer()` |
+| `@scalar()` | Non-object/non-function types | `$..*@scalar()` |
+| `@undefined()` | undefined values | `$..*@undefined()` |
+| `@function()` | Functions | `$..*@function()` |
+| `@nonFinite()` | Infinity, -Infinity, NaN | `$..*@nonFinite()` |
+
+## Next Steps
+
+- **Learn More:** Review the [Flow Builder documentation](/flows/builder) to understand how to create multi-step workflows
+- **Explore Nodes:** Check out available [Node Types](/flows/nodes) to see what data sources you can map from
+- **See Examples:** Browse [Flow Examples](/flows/examples) for real-world mapping patterns
+- **Test JSONPath:** Use the [Flow Debugger](/flows/debugger) to test your JSON Path expressions with live data
+- **Official Spec:** Visit [JSONPath Plus on GitHub](https://github.com/JSONPath-Plus/JSONPath) for the complete specification
+
+## Additional Resources
+
+### Learning Resources
+- [JSONPath Online Evaluator](https://jsonpath.com/) - Test JSONPath expressions in your browser
+- [JSONPath Comparison to XPath](https://goessner.net/articles/JsonPath/) - Original JSONPath specification
+- [JSON Schema](https://json-schema.org/) - For validating JSON structure
+
+### Microstrate-Specific
+- [Help Center](/help) - General platform help and FAQs
+- [Community Forum](/community) - Ask questions and share solutions
+- [API Documentation](/api) - For programmatic flow creation and management
+
+### Common Use Cases
+- **API Integration:** Map responses from external APIs to your flow data
+- **Data Transformation:** Convert data formats between different systems
+- **Conditional Logic:** Use filter expressions to route data based on conditions
+- **Aggregation:** Combine data from multiple nodes into summary reports
+- **Validation:** Filter and validate data before processing
+
+## Version Information
+
+This documentation is based on **jsonpath-plus version 1.1.0**, which Microstrate uses for JSON Path mapping. Key features of this version include:
+
+- ✅ Full JSONPath specification compliance
+- ✅ Advanced filter expressions with `@root`, `@parent`, `@property`, etc.
+- ✅ Type selectors (`@string()`, `@number()`, `@array()`, etc.)
+- ✅ Parent (`^`) and property name (`~`) operators
+- ✅ Recursive descent (`..`) for nested searches
+- ✅ Array slicing with negative indexes
+- ✅ Safe evaluation mode (default) for security
+- ✅ High performance with automatic caching
+
+**Microstrate Custom Extensions:**
+- 🔧 Pipe operator (`|`) for string concatenation
+- 🔧 Multiple pipe segments for complex string building
+- 🔧 Automatic JSONPath detection anywhere in mappings
+- 🔧 Fallback values using pipe operator
+
+---
+
+**Last Updated:** October 2025  
+**JSONPath Plus Version:** 1.1.0  
+**Microstrate Platform Version:** Current
+
+**Need Help?** Visit our [Help Center](/help) or join the [Community](/community) for support.

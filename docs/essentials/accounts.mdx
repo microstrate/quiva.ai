@@ -1,107 +1,138 @@
 ---
 title: "Account Management"
-description: "How you can manage your account, including signup, user management and closing an account"
+description: "Manage your account, including signup, user management, and account closure"
 icon: "circle-user"
 ---
 
-# Microstrate Cloud: Account Management User Guide
+# Account Management User Guide
 
-## Creating Your Account
+## Creating a New Account
 
-Getting started with Microstrate Cloud is straightforward and only takes a few minutes. Follow these steps to create your account:
+Getting started with Microstrate AI Agent Platform is straightforward and only takes a few minutes. Follow these steps to create your account:
 
 ### Registration Process
 
 1. Visit [https://app.microstrate.io/en/signup](https://app.microstrate.io/en/signup)
 2. Complete the registration form with the following details:
-   - Account name - This is the name users will use to log into your account. It must be unique (case sensitive) as the same email address can be used to access multiple accounts
-   - Email address - This will be the root email address of the account. This can be changed later, but it can only be used as the root email on one account
-   - Password (must contain at least 8 characters including uppercase, lowercase, number, and a special character)
-   - Country
-   - First and Last name
-3. Accept the [Terms of Service](https://microstrate.io/privacy-policy) and [Privacy Policy](https://microstrate.io/en/terms-and-conditions)
+   - **Account Name** - The unique identifier users will use to log into your account (case-sensitive). This allows the same email address to be used across multiple different accounts
+   - **Email Address** - Your root email address for the account. This can be changed later but can only be used as the root email on one account
+   - **Password** - Must contain at least 8 characters including uppercase, lowercase, number, and a special character
+   - **Country**
+   - **First and Last Name**
+3. Accept the [Terms](https://microstrate.io/legal.html#terms) and [Privacy Policy](https://microstrate.io/legal.html#terms)
+4. Complete Cloudflare verification to confirm you're human and prevent bot signups
+
+<img 
+  src="/images/essentials/registration-screen.png" 
+  alt="Registration Screen"
+  style={{ height: '300px', width: 'auto' }}
+  className="rounded-lg"
+/>
 
 ### Email Verification
 
-After submitting the registration form, you'll need to verify your email address. You will receive an email with 2 options in it for verification:
+After submitting the registration form, you'll need to verify your email address. Check your inbox for an email from Microstrate titled "Confirm Your Email Address" with two verification options:
 
-- **Option 1: Login Code**
-  - Check your email for a message from Microstrate "Confirm Your Email Address"
-  - Locate the 6-digit verification code
-  - Enter this code on the verification screen
-  
-- **Option 2: Magic Link**
-  - Check your email for a message from Microstrate "Confirm Your Email Address"
-  - Click the "Confirm your email" link in the email
-  - You'll be automatically redirected to a success page where you can then log into your new account
+**Option 1: Login Code**
+- Locate the 6-digit verification code in the email
+- Enter this code on the verification screen
 
-> **Note:** If you don't receive a verification email within 5 minutes, check your spam folder or click "Resend email" on the verification screen. If your email address isn't confirmed within 48 hours, the account will be removed automatically and need to be set up again.
+**Option 2: Magic Link**
+- Click the "Confirm your email" link in the email
+- You'll be automatically redirected to a success page where you can log into your new account
 
-![Registion Email](/images/account-registration-email.png)
+> **Important:** When logging in for the first time, we recommend setting up MFA and saving your backup codes to secure your account and enable recovery.
+
+> **Note:** If you don't receive a verification email within 5 minutes, check your spam folder or click "Resend email" on the verification screen. Accounts not verified within 48 hours will be automatically removed and will need to be set up again.
+
+<img 
+  src="/images/essentials/account-registration-email.png" 
+  alt="Registration Email"
+  style={{ height: '300px', width: 'auto' }}
+  className="rounded-lg"
+/>
 
 ## Selecting a Plan
 
-Once your account it confirmed, you will need to select a plan. Microstrate offers several plans to match your specific needs:
+Once your account is confirmed, you'll need to select a plan. Microstrate offers several plans to match your specific needs:
 
 1. Review the [available options](/essentials/plans-and-pricing):
-   - **Starter**: Perfect for solo builders, side projects, and experimentation
-   - **Pro**: For teams and power users running live business-critical workflows
-   - **Business**: For fast-scaling teams processing high volumes of data, events, and logic
-   - **Enterprise**: For large organizations with compliance, security, and infrastructure needs
-2. Select your preferred plan by clicking "Choose Plan"
-3. Complete the billing information if required
-4. Click "Confirm Subscription"
+   - **Free** - Perfect for solo builders, side projects, and experimentation
+   - **Starter** - Includes additional capacity and access to premium Marketplace templates
+   - **Pro** - For teams and power users running business-critical workflows
+   - **Team** - For fast-scaling teams processing high volumes of data, events, and logic
+   - **Enterprise** - For large organizations with compliance, security, and infrastructure needs
 
-Your plan can be changed at any time through the **Account Management -> Billing and plans** section of your account.
+2. Select your preferred plan by clicking "Choose Plan" or click "Continue with Free Plan" in the top right corner
+3. Complete billing information if required
+4. Click "Subscribe"
+
+Your plan can be changed at any time through **Account Management → Billing and Plans**. For detailed information about billing, payment methods, and subscription management, see our [Pricing & Plans guide](/essentials/plans-and-pricing).
+
+<img 
+  src="/images/essentials/plan-selection.png" 
+  alt="Plan Selection"
+  style={{ height: '400px', width: 'auto' }}
+  className="rounded-lg"
+/>
 
 ## Selecting Account Regions
 
 Microstrate's multi-cloud mesh architecture allows you to deploy your resources across different geographic regions for optimal performance and compliance.
 
-On account creation, you will be asked to select the number of servers that make up your mesh, and their geographic locations.
+During account creation, you'll be asked to select the geographic locations for the servers included in your account.
 
-After the initial setup, you can modify your mesh regions:
+### Modifying Mesh Regions
+
+After initial setup, you can modify your mesh regions:
 
 1. Navigate to **Account Management → Mesh**
-2. The available regions available with the [Microstrate Cloud](/cloud/mesh) (Hetzner/OVHCloud) include:
+2. Available regions with [Microstrate Cloud](/cloud/mesh) (Hetzner/OVHCloud) include:
    - EU
    - US
    - Australia (Sydney)
 3. Select the desired region for each mesh node
 4. Click "Save Changes"
 
-> **Note:** Initially supported regions are EU, Australia, and US. For other regions or to use private infrastructure or Hyperscaler clouds, please contact us.
+> **Note:** Currently supported regions are EU, Australia, and US. For other regions or to use private infrastructure or hyperscaler clouds, please contact us.
+
+> **Data Residency:** Your mesh region selection determines where your data is processed and stored, helping you meet regional compliance requirements like GDPR.
 
 ## User Management
 
 ### Adding Users to Your Account
 
-1. Navigate to **Account Management -> Users**
+1. Navigate to **Account Management → Users**
 2. Click the "Invite" button
 3. Enter the new user's email address
 4. Select the appropriate role (see role descriptions below)
 5. Complete their first and last names
 6. Click "Invite"
 
-The new user will receive an email invitation with instructions to join your Microstrate account. The user can be found under the "Invited" tab of user management until they have accepted the invitation.
+The new user will receive an email invitation with instructions to join your Microstrate account. Users appear with "Invitation Pending" status in user management until they accept the invitation.
 
-![user invited email](/images/user-invited-email.png)
+<img 
+  src="/images/essentials/user-invited-email.png" 
+  alt="User Invitation Email"
+  style={{ height: '300px', width: 'auto' }}
+  className="rounded-lg"
+/>
 
 ### Role Descriptions
 
-Microstrate provides four predefined roles to help you manage access levels:
+Microstrate provides five predefined roles to help you manage access levels:
 
 **Root**
 - Full account management capabilities
 - Can close the account
+- Can change the root email address
 - Can add/remove users and modify their roles
 - Complete access to all Microstrate services
 - Can manage billing and subscription details
 - Can create and manage all resources
 
 **Admin**
-- Full account management capabilities 
-- No ability to close the account
+- Full account management capabilities (except account closure and root email changes)
 - Can add/remove users and modify their roles
 - Complete access to all Microstrate services
 - Can manage billing and subscription details
@@ -126,84 +157,218 @@ Microstrate provides four predefined roles to help you manage access levels:
 - Cannot create or modify resources
 - Cannot access account settings or billing information
 
-To update a users role:
-1. Navigate to **Account Management -> Users**
+> **Resource Sharing:** All resources (agents, flows, MCP servers) are shared across the entire account and accessible to all team members based on their role permissions. Resources are organized into collections within flows for better organization.
+
+### Updating a User's Role
+
+1. Navigate to **Account Management → Users**
 2. Find the user you want to update and click on their email address
-3. Click the Role from the dropdown
-4. Confirm the change with the "Update role" button
+3. Select the new role from the dropdown
+4. Confirm the change with the "Update Role" button
 
 ### Suspending a User
 
 If you need to temporarily restrict a user's access:
 
-1. Navigate to **Account Management -> Users**
+1. Navigate to **Account Management → Users**
 2. Find the user you want to suspend and click on their email address
-3. Click the "Suspend" button in the dialog box
+3. Click the dot menu on the right-hand side and select "Suspend" from the dropdown
 
-Suspended users will not be able to log in until their account is reactivated by an Admin. You can view a list of suspended users under the "Suspended" tab in user management
+Suspended users cannot log in until their account is reactivated by an Admin. View suspended users by filtering for "Suspended" status in user management.
 
-### Logging Out a User from All Sessions
+### Managing User Sessions
 
-To force a user to log out from all active sessions:
+#### Viewing Active Sessions
 
-1. Navigate to **Account Management -> Users**
-2. Find the user you want to log out of all sessions and click on their email address
-3. Click the "Logout" button in the dialog box
+Users can view and manage their own active sessions:
 
-This is useful if you suspect unauthorized access or need to enforce immediate session termination.
+1. Click your profile icon in the bottom left corner
+2. Select "Settings"
+3. Navigate to "Sessions"
+4. You'll see a list of all active sessions with details including:
+   - Device type (e.g., Macintosh)
+   - Browser (e.g., Chrome)
+   - Location (when available)
+   - IP Address
+   - Session expiration time
+   - Current session indicator (marked as "Your session")
 
-Users can also view all their sessions in their [user settings](/essentials/user-settings) and choose to terminate them rather than having an Admin perform the action.
+<img 
+  src="/images/essentials/user-sessions.png" 
+  alt="User Sessions Management"
+  style={{ height: '400px', width: 'auto' }}
+  className="rounded-lg"
+/>
+
+#### Session Lifetimes
+
+- **Access Token:** 1 hour
+- **Refresh Token:** 24 hours
+
+After 24 hours of inactivity, you'll need to log in again.
+
+#### Terminating Your Own Sessions
+
+To terminate a specific session:
+1. Navigate to **Settings → Sessions**
+2. Click "Terminate session" on the session you want to end
+
+To terminate all sessions except your current one:
+1. Navigate to **Settings → Sessions**
+2. Click the "Terminate sessions" button at the top of the page
+
+This is useful if you suspect unauthorized access or left yourself logged in on a shared device.
+
+#### Admin Actions: Logging Out Users
+
+Admins can force users to log out from all active sessions:
+
+1. Navigate to **Account Management → Users**
+2. Find the user and click on their email address
+3. Click the dot menu and select "Logout" from the dropdown
+
+This immediately terminates all of the user's active sessions and requires them to log in again.
 
 ### Deleting a User
 
 To permanently remove a user from your account:
 
-1. Navigate to **Account Management -> Users**
+1. Navigate to **Account Management → Users**
 2. Find the user you want to delete and click on their email address
-3. Click the "Delete" button in the dialog box
-4. Confirm you want to delete the user
+3. Click the dot menu and select "Delete" from the dropdown
+4. Confirm the deletion
 
-> **Warning:** This action is permanent and cannot be undone. All the user's personal settings will be deleted, but their created resources will remain in the account.
+> **Warning:** This action is permanent and cannot be undone. The user's personal settings will be deleted, but their created resources (agents, flows, MCP servers) will remain in the account and continue to be accessible to other team members.
 
 ### Issuing and Viewing Recovery Codes
 
-Recovery codes provide a backup method for account access when [two-factor authentication](/essentials/security) is enabled.
+Recovery codes provide a backup method for account access when [two-factor authentication](/essentials/security) is enabled. They're automatically provided to users when they first enable multi-factor authentication.
 
-**To issue recovery codes:**
+**To Issue New Recovery Codes:**
 
-1. Navigate to **Account Management -> Users**
-2. Find the user you want to issue recovery codes for and click on their email address
-3. click on the "issue new recovery codes" button
-4. Confirm that you would like to generate new codes in the dialog box by clicking "I Am Sure"
-5. The recovery codes will be displayed and they can be downloaded, printed and copied using the buttons. Ensure you store them safely
+1. Navigate to **Account Management → Users**
+2. Find the user and click on their email address
+3. Click the dot menu and select "Issue new recovery codes" from the dropdown
+4. Confirm by clicking "I Am Sure" in the dialog box
+5. Recovery codes will be displayed and can be downloaded, printed, or copied. Store them securely
 
-When recovery codes are viewed, the user will be notified via email so they can take action to secure their account if they believe this was unauthorized. For more information on security your account, see our [security guide](/essentials/security)
+When recovery codes are viewed, the user receives an email notification titled "Security Codes Viewed" so they can secure their account if the access was unauthorized. For more information, see our [Security Guide](/essentials/security).
 
-**To view existing recovery codes for Admins:**
+**To View Existing Recovery Codes (Admins):**
 
-1. Navigate to **Account Management -> Users**
+1. Navigate to **Account Management → Users**
 2. Find the user whose recovery codes you need to view and click on their email address
-3. Click the "View recovery codes" button
+3. Click the dot menu and select "View recovery codes"
 
-**To view your own recovery codes**
+**To View Your Own Recovery Codes:**
 
-1. Navigate to user settings by clicking your profile icon in the bottom left and selecting "Settings"
-2. Select "Password and authentication"
+1. Click your profile icon in the bottom left and select "Settings"
+2. Select "Password and Authentication"
 3. Scroll down to recovery codes and click "View"
 
-**NOTE:** Root user recovery codes cannot be viewed or recovered by any other user, please be sure to secure these in a safe place such as a password manager.
+> **Important:** Root user recovery codes cannot be viewed or recovered by any other user. Please store these securely in a password manager.
+
+## API Key Management
+
+API keys allow programmatic access to your Microstrate account for automation and integration purposes.
+
+### Creating an API Key
+
+1. Click your profile icon in the bottom left corner
+2. Select "Settings"
+3. Navigate to "API Keys"
+4. Click the "Add" button
+5. Enter a descriptive name for your API key (e.g., "Production Integration", "CI/CD Pipeline")
+6. Click "Add"
+7. **Important:** Copy and securely store the API key immediately - it won't be shown again
+
+### API Key Lifespan
+
+- All API keys have a lifespan of **3 months**
+- You'll need to rotate keys before they expire to maintain uninterrupted access
+- Set a reminder to generate new keys before expiration
+
+### Deleting an API Key
+
+1. Navigate to **Settings → API Keys**
+2. Click on the key name you want to delete
+3. Click the "Delete" button
+4. Confirm the deletion
+
+### Best Practices for API Key Security
+
+<Warning>
+**Never share or expose your API keys.** Treat them like passwords.
+</Warning>
+
+Follow these best practices to keep your API keys secure:
+
+1. **Store Securely**
+   - Use environment variables or secure secret management systems (e.g., AWS Secrets Manager, HashiCorp Vault)
+   - Never commit API keys to version control (Git, SVN, etc.)
+   - Add API key patterns to your `.gitignore` file
+
+2. **Limit Exposure**
+   - Only share keys with team members who absolutely need them
+   - Create separate keys for different applications or environments
+   - Use descriptive names to track where each key is used
+
+3. **Rotate Regularly**
+   - Rotate keys every 3 months (before expiration)
+   - Immediately rotate any key that may have been compromised
+   - Maintain a key rotation schedule
+
+4. **Monitor Usage**
+   - Regularly review which API keys are active
+   - Delete unused or outdated keys
+   - Monitor for unusual API activity
+
+5. **Incident Response**
+   - If a key is compromised, delete it immediately
+   - Generate a new key and update all applications
+   - Review account activity for unauthorized access
+
+## Security Notifications
+
+Microstrate automatically sends email notifications for important security events to help you protect your account:
+
+- **Email Change Requested** - When someone requests to change an account email address
+- **Passkey Added** - When a new passkey is added to an account
+- **Security Codes Viewed** - When recovery codes are viewed by an admin
+- **Set Password** - When a password is changed
+- **User Added** - When a new user is invited to your account
+
+These notifications help you detect and respond to unauthorized access attempts. If you receive a notification for an action you didn't perform, take immediate action to secure your account.
 
 ## Completing Your Account Details
 
+### Changing the Root Email Address
+
+The root email address is used for the primary login and important account notifications. Only the root user can change this email address.
+
+To change the root email:
+
+1. Log in as the root user
+2. Click your profile icon in the bottom left corner
+3. Select "Settings"
+4. Navigate to "Credentials"
+5. Update the email address field
+6. Click "Request Change"
+7. Check the **old email address** for a confirmation email
+8. Click the confirmation link in the email to approve the transfer
+9. Once confirmed, the new email address becomes the root login
+
+> **Important:** The old email address must approve the change before it takes effect. This security measure ensures unauthorized users cannot change your email without your knowledge. After the change is complete, the old email address can be used as the root email for a different account.
+
 ### Renaming Your Account
 
-Your account name is used to log into your account, and also appears in various places including billing statements and team invitations. 
+Your account name is used to log into your account and appears on billing statements and team invitations.
 
-**NOTE:** When updating your account name, users will no longer be able to log in using the old account name. An email will be sent to all users in your account to notify them of the change.
+> **Important:** When updating your account name, users will no longer be able to log in using the old account name. All users in your account will receive an email notification of the change.
 
-To update it:
+To update your account name:
 
-1. Navigate to **Account Management -> Account**
+1. Navigate to **Account Management → Account**
 2. Find the "Account Name" field
 3. Enter your preferred name
 4. Click the "Rename Account" button
@@ -212,28 +377,151 @@ To update it:
 
 Complete your account profile with additional details:
 
-1. Navigate to **Account Management -> Account**
+1. Navigate to **Account Management → Account**
 2. Update the following fields as needed:
-   - Root Email - changing this will change the root login to use the new email address, freeing the old root email to be used for another account
-   - Company/Entity name
-   - Address
-   - Website
-   - Phone Number
-   - Country
+   - **Company/Entity Name**
+   - **Address**
+   - **Website**
+   - **Phone Number**
+   - **Country**
 3. Click "Save"
+
+## Managing Multiple Accounts
+
+You can use the same email address to access multiple Microstrate accounts by using different account names for each.
+
+### Switching Between Accounts
+
+To switch between accounts:
+
+1. Log out of your current account
+2. On the login page, enter the **account name** for the account you want to access
+3. Enter your email address and password
+4. Complete any authentication steps (MFA if enabled)
+
+> **Tip:** Each account has its own unique account name. Make note of the account names you have access to for easy switching.
+
+## Troubleshooting Common Issues
+
+### I Can't Log In
+
+**Forgot Your Password?**
+1. Click "Forgot Password?" on the login page
+2. Enter your account name and email address
+3. Check your email for a password reset link
+4. Click the link and create a new password
+5. Log in with your new password
+
+**Account Locked?**
+- Multiple failed login attempts may temporarily lock your account for security
+- Wait 15 minutes and try again
+- If the issue persists, contact support
+
+**Wrong Account Name?**
+- Ensure you're using the correct account name (case-sensitive)
+- If you're not sure of the account name, check previous email invitations or contact your account administrator
+
+### I Didn't Receive an Invitation Email
+
+1. **Check your spam/junk folder** - Sometimes invitation emails are filtered
+2. **Verify the email address** - Ask your admin to confirm they used the correct email
+3. **Request a resend** - Ask your account administrator to resend the invitation
+4. **Check your email provider** - Some corporate email systems may block automated emails
+
+If you still don't receive the invitation after 10 minutes, contact your account administrator.
+
+### I Didn't Receive a Verification Email
+
+1. **Check your spam/junk folder**
+2. **Wait a few minutes** - Email delivery can sometimes be delayed
+3. **Click "Resend email"** on the verification screen
+4. **Check for typos** - Ensure you entered your email address correctly during registration
+5. **Try a different email provider** - Some email providers may block verification emails
+
+> **Remember:** Accounts not verified within 48 hours are automatically deleted and must be recreated.
+
+### My Session Expired
+
+Sessions expire after 24 hours of inactivity for security. If your session expires:
+1. Simply log in again with your credentials
+2. Consider enabling MFA for additional security
+3. If you're frequently timing out, try using the "Remember me" option (if available)
+
+### I Lost My Recovery Codes
+
+**If you're the root user:**
+- Root user recovery codes cannot be recovered by anyone else
+- If you've lost them and can still log in, generate new codes:
+  1. Navigate to **Settings → Password and Authentication**
+  2. Generate new recovery codes
+  3. Store them securely in a password manager
+
+**If you're not the root user:**
+- Contact an Admin to issue new recovery codes for your account
+- They can generate new codes from **Account Management → Users**
+
+### I Suspect Unauthorized Access
+
+Take these immediate steps:
+
+1. **Change your password immediately**
+   - Go to **Settings → Credentials**
+   - Update your password
+
+2. **Review active sessions**
+   - Go to **Settings → Sessions**
+   - Terminate any suspicious sessions
+   - Use "Terminate sessions" to log out of all sessions
+
+3. **Enable MFA if not already active**
+   - Go to **Settings → Password and Authentication**
+   - Enable multi-factor authentication
+
+4. **Review account activity**
+   - Check for unexpected resource changes
+   - Review user additions or modifications
+
+5. **Contact support** if you notice unauthorized changes
+
+### Resources Not Showing Up
+
+1. **Check your role permissions** - Monitor roles have view-only access
+2. **Verify you're in the correct account** - If you have multiple accounts, ensure you're logged into the right one
+3. **Check collection filters** - Resources may be organized into different collections within flows
+4. **Refresh the page** - Sometimes a simple refresh resolves display issues
+
+### Need Additional Help?
+
+If you're experiencing issues not covered here:
+- **Community Support (Free plan):** Visit our community forums
+- **Email Support (Starter+ plans):** Contact support@microstrate.io
+- **Priority Support (Pro+ plans):** Use the priority support channel in your account
+- **Dedicated Support (Team/Enterprise):** Contact your dedicated support representative
 
 ## Closing/Deleting Your Account
 
 If you need to close your Microstrate account:
 
-1. Navigate to **Account Management -> Account**
-2. In the top right, click on the "Close Account" button
-3. Confirm that you would like to delete your account by clicking "I Am Sure"
+1. Navigate to **Account Management → Account**
+2. In the top right, click the "Close Account" button
+3. Confirm the deletion by clicking "I Am Sure"
 
-> **Important Warning:** Closing your account will:
-> - Permanently delete all your resources and data
+> **Critical Warning:** Closing your account will:
+> - Permanently delete all your resources and data (agents, flows, MCP servers, storage)
 > - Cancel your subscription and billing
 > - Remove all users and their access
 > - Make your account name available for others to use
+> - Cannot be undone or reversed
 > 
-> This action cannot be undone. If you have active workloads, consider downloading any important data before proceeding.
+> **This action is permanent and irreversible.** If you have active workloads, download any important data before proceeding.
+
+> **Data Retention:** In accordance with GDPR and our privacy policy, all account data is permanently deleted when you close your account. This fulfills your right to erasure under data protection regulations.
+
+## Next Steps
+
+Now that your account is set up, explore these guides:
+
+- [User Settings](/essentials/user-settings) - Customize your personal preferences and security settings
+- [Security Guide](/essentials/security) - Learn about MFA, passkeys, and account security best practices
+- [Plans & Pricing](/essentials/plans-and-pricing) - Understand your plan limits and billing options
+- [Getting Started with Agents](/guides/getting-started) - Create your first AI agent

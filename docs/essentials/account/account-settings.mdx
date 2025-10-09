@@ -1,0 +1,123 @@
+---
+title: "Account Settings"
+description: "Manage your account name, details, and configuration"
+icon: "gear"
+---
+
+# Account Settings
+
+Manage your Microstrate account configuration, including account name, company details, and regional settings.
+
+## Changing Your Account Name
+
+Your account name is used to log in and appears on billing statements and team invitations.
+
+<Warning>
+When you update your account name, all users must use the new name to log in. All users will be notified via email of this change.
+</Warning>
+
+**To update your account name:**
+
+1. Navigate to **Account Management → Account**
+2. Find the "Account Name" field
+3. Enter your new account name (case-sensitive)
+4. Click "Rename Account"
+
+## Updating Company Details
+
+Keep your account information current for billing and communication purposes.
+
+1. Navigate to **Account Management → Account**
+2. Update the following fields:
+   - **Company/Entity Name**
+   - **Address**
+   - **Website**
+   - **Phone Number**
+   - **Country**
+3. Click "Save"
+
+## Managing Account Regions
+
+Microstrate's multi-cloud mesh architecture allows you to deploy resources across different geographic regions for optimal performance and compliance.
+
+### Available Regions
+
+<CardGroup cols={3}>
+  <Card title="EU" icon="location-dot">
+    European Union
+    - GDPR compliant
+    - Frankfurt/Paris data centers
+  </Card>
+  
+  <Card title="US" icon="location-dot">
+    United States
+    - Multiple availability zones
+    - East/West coast options
+  </Card>
+  
+  <Card title="Australia" icon="location-dot">
+    Sydney
+    - Asia-Pacific access
+    - Low latency for APAC
+  </Card>
+</CardGroup>
+
+### Modifying Mesh Regions
+
+1. Navigate to **Account Management → Mesh**
+2. Select desired regions for your mesh nodes
+3. Click "Save Changes"
+
+<Info>
+Your mesh configuration determines where your data is processed and stored. Choose regions that align with your compliance requirements and user locations.
+</Info>
+
+<Note>
+Need additional regions or private infrastructure? [Contact us](/contact) about Enterprise options including BYO Cloud and on-premise deployments.
+</Note>
+
+## Changing the Root Email Address
+
+Only the root user can change the account's root email address.
+
+<Steps>
+  <Step title="Initiate Change">
+    1. Log in as the root user
+    2. Click your profile icon → "Settings"
+    3. Navigate to "Credentials"
+    4. Update the email address field
+    5. Click "Request Change"
+  </Step>
+  
+  <Step title="Confirm via Email">
+    Check the **old email address** for a confirmation email and click the confirmation link
+  </Step>
+  
+  <Step title="Complete Transfer">
+    Once confirmed, the new email becomes the root login. The old email can now be used for another account.
+  </Step>
+</Steps>
+
+<Warning>
+The old email address must approve the transfer before it takes effect. This prevents unauthorized email changes.
+</Warning>
+
+## Related Pages
+
+<CardGroup cols={2}>
+  <Card title="User Management" icon="users" href="/essentials/users/user-management">
+    Add and manage team members
+  </Card>
+  
+  <Card title="Billing & Subscriptions" icon="credit-card" href="/essentials/account/billing-subscriptions">
+    Manage your plan and payments
+  </Card>
+  
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Secure your account
+  </Card>
+  
+  <Card title="Close Account" icon="circle-xmark" href="/essentials/account/closing-account">
+    Delete your account
+  </Card>
+</CardGroup>

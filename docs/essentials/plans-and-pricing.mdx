@@ -1,148 +1,407 @@
 ---
-title: "Plans and Pricing"
-description: "Our plans, limits, and pricing"
-icon: "tags"
+title: "Plans & Pricing"
+description: "Compare plans, understand resources, and choose the right tier for your intelligent automation needs"
+icon: "credit-card"
 ---
 
-# Microstrate Cloud & Hub Pricing Guide
+# Plans & Pricing
 
-## Understanding Your Cloud Investment
+Microstrate enables you to create sophisticated multi-agent architectures with enterprise-grade infrastructure. Choose the plan that fits your needs, with unlimited users on every tier.
 
-Microstrate isn't just another cloud platform – it's a revolutionary approach to cloud computing and workflow automation that fundamentally changes how your applications consume resources and scale. This guide explains our pricing structure, what makes each plan unique, and how our unified architecture delivers exceptional value.
+## What Makes Microstrate Different
 
-Every Microstrate account gives you access to both the Cloud Platform, and the Hub workflow automation platform
+Before exploring plans, understand what sets us apart:
 
-## Our Unique Advantage
-
-Before diving into the plans, it's important to understand what makes Microstrate different:
-
-- **Unified Messaging Foundation**: Our platform eliminates the need to mix and match disparate messaging, serverless, containerized, queueing, and storage services.
-- **CPU-Optimized Resource Model**: Our Hydra compute engine allocates resources based on actual CPU needs (down to the millicore level) rather than memory blocks, achieving better resource utilization.
-- **Multi-Cloud Mesh**: Run resiliant workloads anywhere, with no extra work... – on-prem, private cloud, hybrid, or across multiple providers – with consistent performance.
-- **Built-in Observability**: Every component emits consistent metrics and traces through OpenTelemetry, transported through our mesh architecture.
+- **Production-Grade Multi-Agent Orchestration** - Advanced architecture for sophisticated agent systems
+- **Built-in Intelligence** - Output schema validation, auto-improving prompts, and smart context management
+- **Enterprise Infrastructure** - Proprietary data streaming and compute technology with enterprise-grade security
+- **Visual Flow Builder** - Combine agents with functions, HTTP requests, and business logic without coding
+- **Native MCP Protocol Support** - Advanced integrations with automated MCP server creation
+- **Open Standards** - Portable solutions built on MCP and OpenAPI standards
 
 ## Plan Comparison
 
-### Starter – Free Forever
-**Perfect for solo builders, side projects, and experimentation**
+<CardGroup cols={2}>
+  <Card title="Free - $0/month" icon="gift">
+    **Perfect for exploring and proof of concepts**
+    
+    - 3 agents
+    - 200 flow runs/month
+    - 500MB storage
+    - 3 edge locations
+    - 5 concurrent executions
+    - Unlimited users
+    - Community support
+  </Card>
+  
+  <Card title="Starter - $20/month" icon="seedling">
+    **For small teams starting automation**
+    
+    Save 20% with annual billing ($20/month paid annually vs $25/month)
+    
+    - 5 agents
+    - 2,500 flow runs/month
+    - 2GB storage
+    - 3 edge locations
+    - 10 concurrent executions
+    - Unlimited users
+    - Email support
+    - Premium marketplace access
+  </Card>
+  
+  <Card title="Pro - $100/month" icon="chart-line">
+    **For growing businesses with production workloads**
+    
+    Save 20% with annual billing ($100/month paid annually vs $125/month)
+    
+    - 50 agents
+    - 10,000 flow runs/month
+    - 5GB storage
+    - 3 edge locations
+    - 50 concurrent executions
+    - Unlimited users
+    - Priority support
+    - Team collaboration & analytics
+  </Card>
+  
+  <Card title="Team - $500/month" icon="users">
+    **For organizations scaling across departments**
+    
+    Save 20% with annual billing ($500/month paid annually vs $625/month)
+    
+    - Unlimited agents
+    - 40,000 flow runs/month
+    - 50GB storage
+    - 5 edge locations
+    - 200 concurrent executions
+    - Unlimited users
+    - Dedicated support & onboarding
+  </Card>
+</CardGroup>
 
-| Feature | Limit | What This Means For You |
-|---------|-------|--------------------------|
-| Active Workflows | 3 | Perfect for testing concepts and building simple automations |
-| Flow Runs | 300/month (up to 1 minute) | Ideal for low-volume processes and development |
-| Compute Credits | 50/month | Run lightweight functions and services for development and testing |
-| Gateway Requests | 50/second | Handle personal projects with moderate traffic |
-| Concurrent Functions | 10 | Execute multiple lightweight processes simultaneously |
-| Storage | 500MB (storage, KV, stream, object, logs) | Store essential data for your applications |
-| Replicas | 3 | Enjoy high availability even on the free tier |
-| Throughput | 4 Mbps read/write | Process data at speeds suitable for personal projects |
+## Detailed Feature Comparison
 
-**Who it's for**: Developers exploring Microstrate Cloud & Hub capabilities, startups validating concepts, or hobbyists building side projects.
-
-**Get started in seconds. No credit card required.**
-
-### Pro – \$99/month
-**For teams and power users running live business-critical workflows**
-
-| Feature | Limit | What This Means For You |
-|---------|-------|--------------------------|
-| Active Workflows | 25 | Build comprehensive automation systems for your business |
-| Flow Runs | 10,000/month ($0.01 per additional run) | Support business operations with reliable, high-volume workflows |
-| Compute Credits | 500/month ($0.0756 per additional credit) | Run multiple services continuously; each credit equals a 128MB function running for 1 hour |
-| Gateway Requests | 500/second | Support applications with significant traffic |
-| Concurrent Functions | 100 | Execute complex processes simultaneously without throttling |
-| Storage | 5GB | Store business data, state information, and logs |
-| Replicas | 3 | Ensure high availability across multiple nodes |
-| Throughput | 16 Mbps read/write | Process data at speeds suitable for business applications |
-
-**Who it's for**: Small to medium businesses, professional developers, and teams deploying production workloads and automations that need reliability and performance.
-
-### Business – Starting at \$499/month
-**For fast-scaling teams processing high volumes of data, events, and logic**
-
-| Feature | Limit | What This Means For You |
-|---------|-------|--------------------------|
-| Active Workflows | Unlimited | Build as many automation processes as your business requires |
-| Flow Runs | 100,000/month ($0.005 per additional run) | Support enterprise-scale operation with high-volume workflows |
-| Compute Credits | 5,000/month ($0.0756 per additional credit) | Power data-intensive applications (can run a 4GB function for 23 days non-stop) |
-| Gateway Requests | 5,000/second | Support high-traffic applications with consistent performance |
-| Concurrent Functions | 1,000 | Execute complex, parallel processes at scale |
-| Storage | 50GB | Store substantial data volumes for enterprise applications |
-| Replicas | 3 | Ensure high availability across multiple nodes |
-| Throughput | 32 Mbps read/write | Process data at speeds suitable for enterprise applications |
-
-**Who it's for**: High-growth companies, development teams building complex systems, and businesses processing significant data volumes.
-
-### Enterprise – Custom Pricing
-**For large organizations with compliance, security, and infrastructure needs**
-
-| Feature | Details | What This Means For You |
-|---------|---------|--------------------------|
-| Deployment Options | Private cloud, Hyperscaler or VPC deployment | Meet your specific security and compliance requirements |
-| Service Level | Custom SLAs, support, and training | Receive guarantees aligned with your business needs |
-| Support | Dedicated CSM + white-glove onboarding | Get personalized assistance throughout your journey |
-| Contract | Custom terms | Structure agreements that work for your organization |
-| Replicas | Up to 9 | Maximum reliability for mission-critical applications |
-| Throughput | 100+ Mbps | Process massive data volumes with exceptional performance |
-| Custom Limits | Exceed standard plan limits | Gbps scale across all services including throughput, gateway, compute, and storage |
-
-**Who it's for**: Large enterprises, organizations with strict compliance requirements, and businesses that need maximum performance and reliability.
-
-## All Plans Include
-
-- **Unlimited Users**: Collaborate across your entire organization without user-based fees
-- **Full Custom Code Support**: Leverage the full power of Microstrate Cloud with custom functions
-- **Real-time Monitoring**: Track performance, usage, and availability in real-time
-- **Hub Integration**: Build powerful workflows that connect to your cloud resources
+| Feature | Free | Starter | Pro | Team | Enterprise |
+|---------|------|---------|-----|------|------------|
+| **Agents** | 3 | 5 | 50 | Unlimited | Custom |
+| **Flow Runs/Month** | 200 | 2,500 | 10,000 | 40,000 | Custom |
+| **Storage** | 500MB | 2GB | 5GB | 50GB | Custom |
+| **Edge Locations** | 3 | 3 | 3 | 5 | Custom |
+| **Concurrent Executions** | 5 | 10 | 50 | 200 | Custom |
+| **Users** | ✅ Unlimited | ✅ Unlimited | ✅ Unlimited | ✅ Unlimited | ✅ Unlimited |
+| **Support** | Community | Email | Priority | Dedicated | Enterprise SLA |
+| **Marketplace** | Free items | Premium access | Premium access | Premium access | Premium access |
+| **Analytics** | Basic | Basic | ✅ Advanced | ✅ Advanced | ✅ Advanced |
+| **Team Collaboration** | ❌ | ❌ | ✅ | ✅ | ✅ |
+| **White-label** | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **On-premise** | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Custom SLAs** | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 ## Understanding Your Resources
 
-### [Compute Credits](/essentials/compute-credits)
-One compute credit equals a 128MB function running continuously for one hour. Our millicore-based allocation means you're only paying for actual CPU usage, not idle resources, resulting in significantly better cost efficiency.
+### 🤖 Agents
 
-### Flow Runs
-Each workflow execution in Hub counts as one flow run, regardless of complexity. This predictable pricing model makes it easy to forecast costs as your automation needs grow.
+Intelligent AI agents that connect to your data and systems to deliver consistent, validated results. Each agent includes:
+- Output schema validation with automatic correction loops
+- Auto-improving prompts based on agent settings and usage
+- Smart context management across conversations
+- Custom business logic and instructions
 
-### Storage
-Your storage allocation includes all data types in the Microstrate ecosystem: key-value stores, object storage, streams, and logs. This unified approach eliminates the need to manage separate storage services. Storage allocation includes replicas, so if your account has 3 replicas, you will consume your storage allocation at 3x
+### ⚡ Flow Runs
 
-## Maximum Usage Limits
+A flow run represents one complete execution of an automated workflow from start to finish. This includes all agent interactions, API calls, validation loops, data transformations, and business logic processing within that workflow. You're only charged for actual workflow executions, not idle time.
 
-Additional capacity can be purchased beyond your plan limits:
+### 💾 Storage
 
-| Resource | Maximum Limit per Account |
-|----------|---------------------------|
-| Storage | 500GB |
-| Throughput | 100Mbps |
-| Concurrent Executions | 1,000 |
-| Gateway Requests | 5,000/second (up to 10,000/second with approval) |
+Unified storage for all your agent data including:
+- Conversation history and agent memory
+- Workflow outputs and execution logs
+- Document processing and file uploads
+- System logs and monitoring data
 
-Enterprise plans can exceed these limits
+This integrated approach eliminates the need to manage separate storage services.
+
+### 🌍 Edge Locations
+
+Deploy your agents closer to your users and data sources for optimal performance. Multiple edge locations provide:
+- Reduced latency for global operations
+- Redundancy and high availability
+- Regional compliance options (GDPR, etc.)
+
+Available regions: EU, US, Australia (Sydney). Additional regions on Enterprise plans.
+
+[Configure regions →](/essentials/account/account-settings#managing-account-regions)
+
+### 🔄 Concurrent Executions
+
+The number of flows that can run simultaneously in your account. This ensures your workflows execute promptly without queueing delays during peak usage periods. Higher concurrency means better responsiveness for time-sensitive automations.
+
+## Billing Options
+
+<Tabs>
+  <Tab title="Monthly Billing">
+    Pay month-to-month with no long-term commitment:
+    
+    - **Starter:** $25/month
+    - **Pro:** $125/month
+    - **Team:** $625/month
+    
+    Cancel or change plans anytime.
+  </Tab>
+  
+  <Tab title="Annual Billing (Save 20%)">
+    Commit to annual billing and save:
+    
+    - **Starter:** $20/month ($240/year)
+    - **Pro:** $100/month ($1,200/year)
+    - **Team:** $500/month ($6,000/year)
+    
+    Paid annually, 20% savings compared to monthly.
+  </Tab>
+  
+  <Tab title="Enterprise">
+    Custom billing terms to fit your organization:
+    
+    - Flexible payment schedules
+    - Purchase orders accepted
+    - Wire transfers available
+    - Annual contracts with custom pricing
+    
+    [Contact sales →](/contact)
+  </Tab>
+</Tabs>
+
+## What Happens at Plan Limits
+
+### Flow Runs Exceeded
+
+If you exceed your monthly flow run limit:
+
+**On Free Plan:**
+- You must upgrade to continue running flows
+- Flows are not queued or saved
+
+**On Paid Plans:**
+- Additional flow runs are added to an error queue
+- Queue flows can be replayed next month when limits reset
+- Or upgrade immediately to process queued flows
+
+[Manage billing →](/essentials/account/billing-subscriptions)
+
+### Concurrent Executions Exceeded
+
+If you exceed your concurrency limit:
+
+**Request/Response Flows:**
+- Return a 429 rate limit error
+- Retry after a brief delay
+
+**Async Flows:**
+- Automatically queued
+- Processed when capacity becomes available
+
+**Solution:**
+Upgrade to a plan with higher concurrency for peak workloads.
 
 ## How We're Different
 
-Unlike traditional cloud providers that charge separately for compute, storage, messaging, and databases, Microstrate's unified architecture delivers:
+<AccordionGroup>
+  <Accordion title="vs. Simple Automation Tools (Zapier, Power Automate)">
+    **Their Limitation:** Rigid automation that breaks on exceptions
+    
+    **Microstrate Advantage:** Intelligent agents that adapt, learn, and handle edge cases automatically with built-in validation loops and smart context management
+  </Accordion>
+  
+  <Accordion title="vs. Developer Frameworks (LangChain, Custom Development)">
+    **Their Challenge:** Building agent infrastructure from scratch takes months
+    
+    **Microstrate Advantage:** Production-grade multi-agent orchestration with advanced features built-in, deploy in minutes instead of months
+  </Accordion>
+  
+  <Accordion title="vs. Basic AI Platforms">
+    **Their Problem:** Generic AI without business context
+    
+    **Microstrate Advantage:** Business-aware agents using your proprietary data with automatic output validation and error correction
+  </Accordion>
+  
+  <Accordion title="vs. Closed Ecosystems">
+    **Their Issue:** Vendor lock-in with limited portability
+    
+    **Microstrate Advantage:** Open standards (MCP, OpenAPI) with portable, future-proof solutions that work with any system
+  </Accordion>
+</AccordionGroup>
 
-1. **Simplified Billing**: One coherent pricing model versus multiple disconnected services
-2. **Economic Efficiency**: Pay for exactly what you use, down to the millicore
-3. **Predictable Performance**: Consistent experience regardless of where your workloads run
-4. **Developer Experience**: Built-in observability and simplified workflows
-5. **Security By Design**: Isolated networks, encrypted channels, and declarative security policies
-6. **Integrated Workflows**: Seamless connection between Hub workflows and Cloud resources
+## Every Plan Includes
+
+<CardGroup cols={2}>
+  <Card title="Unlimited Users" icon="users">
+    Collaborate across your entire organization without per-user fees
+  </Card>
+  
+  <Card title="Visual Flow Builder" icon="diagram-project">
+    Create complex agent workflows with drag-and-drop simplicity
+  </Card>
+  
+  <Card title="MCP Protocol Support" icon="plug">
+    Native support for Model Context Protocol with automated server creation
+  </Card>
+  
+  <Card title="Schema Validation" icon="check-double">
+    Automatic output validation with correction loops for consistent results
+  </Card>
+  
+  <Card title="Smart Context" icon="brain">
+    Intelligent memory management across agent conversations
+  </Card>
+  
+  <Card title="Auto-Improving Prompts" icon="sparkles">
+    AI that optimizes based on agent settings and usage patterns
+  </Card>
+  
+  <Card title="Enterprise Security" icon="shield-halved">
+    ISO27001 certified, GDPR compliant, with data isolation
+  </Card>
+  
+  <Card title="Real-time Monitoring" icon="chart-line">
+    Track agent performance and system health
+  </Card>
+</CardGroup>
+
+## Enterprise Plan
+
+For large organizations with specific requirements:
+
+<CardGroup cols={2}>
+  <Card title="Deployment Options" icon="server">
+    - White-label branding
+    - On-premise installation
+    - BYO Cloud infrastructure
+    - Hybrid deployments
+  </Card>
+  
+  <Card title="Custom Resources" icon="sliders">
+    - Tailored resource allocations
+    - Custom edge locations
+    - Dedicated infrastructure
+    - Scalable to any size
+  </Card>
+  
+  <Card title="Enterprise Support" icon="headset">
+    - Custom SLAs
+    - Dedicated support team
+    - Strategic consulting
+    - Onboarding & training
+  </Card>
+  
+  <Card title="Advanced Features" icon="star">
+    - Custom governance controls
+    - Advanced audit logging
+    - Private model deployments
+    - Compliance certifications
+  </Card>
+</CardGroup>
+
+[Contact sales for Enterprise pricing →](/contact)
 
 ## Common Questions
 
-### How do compute credits work?
-[Compute credits](/essentials/compute-credits) represent CPU time and are consumed based on the actual processing power your functions use. This millicore-based approach means you're not paying for idle resources, resulting in better utilization compared to traditional serverless offerings.
+<AccordionGroup>
+  <Accordion title="How do flow runs work?">
+    Each time a workflow executes from start to finish, it counts as one flow run. This includes all agent processing, API calls, validation loops, and business logic within that execution. You only pay for actual workflow runs, not idle time.
+  </Accordion>
+  
+  <Accordion title="What happens if I exceed my plan limits?">
+    **Flow Runs:**
+    - Free plan: Must upgrade to continue
+    - Paid plans: Excess runs queued for replay next month or upgrade immediately
+    
+    **Concurrent Executions:**
+    - Request/response flows return 429 rate limit
+    - Async flows are automatically queued
+    
+    We notify you as you approach limits so you can upgrade before disruption.
+  </Accordion>
+  
+  <Accordion title="Can I change between annual and monthly billing?">
+    Yes, you can switch anytime:
+    
+    - **Monthly to Annual:** Immediate 20% discount applied
+    - **Annual to Monthly:** Change takes effect at next billing cycle
+    
+    [Manage billing →](/essentials/account/billing-subscriptions)
+  </Accordion>
+  
+  <Accordion title="Can I change plans anytime?">
+    Yes:
+    
+    - **Upgrade:** Takes effect immediately with prorated charge
+    - **Downgrade:** Takes effect at next billing cycle
+    
+    Your data is always preserved during plan changes.
+  </Accordion>
+  
+  <Accordion title="Do you offer custom enterprise solutions?">
+    Absolutely. Enterprise plans include:
+    - White-label options
+    - On-premise deployment
+    - Custom SLAs
+    - Strategic consulting
+    - Flexible payment terms
+    
+    [Contact sales →](/contact)
+  </Accordion>
+  
+  <Accordion title="How quickly can I get started?">
+    You can create your first intelligent agent in minutes:
+    
+    - Free plan requires no credit card
+    - Visual flow builder makes complex agent creation accessible
+    - Pre-built marketplace templates accelerate deployment
+    - 14-day free trial on paid plans
+    
+    [Get started →](/essentials/account/creating-account)
+  </Accordion>
+  
+  <Accordion title="What payment methods do you accept?">
+    - Credit/debit cards (Visa, Mastercard, Amex)
+    - Annual plans can be paid upfront
+    - Enterprise: Wire transfers, POs, custom terms
+    
+    All billing processed securely through Stripe.
+  </Accordion>
+  
+  <Accordion title="Is there a free trial?">
+    - **Free plan:** Permanent, no credit card required
+    - **Paid plans:** 14-day free trial, no credit card required upfront
+    
+    Start with Free and upgrade when ready, or try paid features risk-free for 14 days.
+  </Accordion>
+</AccordionGroup>
 
-### What's the relationship between Microstrate Cloud and Hub?
-Microstrate Hub is our advanced workflow automation platform built on top of the core Microstrate Cloud infrastructure. Hub leverages Cloud's capabilities to execute workflows, process data, and integrate with external systems. All Hub workflows run on the same high-performance infrastructure as your other Cloud workloads.
+## Ready to Get Started?
 
-### What happens if I exceed my plan limits?
-For most resources (compute credits, flow runs, storage), you'll be billed for additional usage at the rates specified in your plan. Your workflows will continue running without interruption.
-
-### Can I upgrade or downgrade my plan?
-Yes, you can change plans at any time. When upgrading, the new limits and capabilities take effect immediately. When downgrading, changes apply at the start of your next billing cycle.
-
-### How does Microstrate compare to AWS Lambda or similar services?
-Unlike traditional serverless platforms that inefficiently allocate entire memory blocks, Microstrate's Hydra compute engine uses precision resource allocation (millicores) and eliminates cold starts through our multi-layered approach. This results in better performance, predictability, and cost efficiency.
+<CardGroup cols={2}>
+  <Card title="Start Free" icon="gift" href="https://app.microstrate.io/en/signup">
+    No credit card required
+    
+    Create account in minutes
+  </Card>
+  
+  <Card title="Contact Sales" icon="handshake" href="/contact">
+    Enterprise inquiries
+    
+    Custom pricing & terms
+  </Card>
+  
+  <Card title="Compare Features" icon="table">
+    See detailed comparison above
+    
+    Find the right fit
+  </Card>
+  
+  <Card title="View Documentation" icon="book" href="/overview">
+    Learn about the platform
+    
+    Explore capabilities
+  </Card>
+</CardGroup>

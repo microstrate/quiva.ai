@@ -1,0 +1,847 @@
+---
+title: "Basic Syntax"
+description: "Learn the fundamentals of accessing and mapping data in Microstrate flows"
+---
+
+## The Two Data Sources
+
+Microstrate flows work with two primary data sources that you can reference using variable mapping:
+
+<CardGroup cols={2}>
+  <Card title="Trigger Data" icon="bolt">
+    Data provided when the flow starts (webhooks, API calls, manual triggers)
+    
+    ```
+    $.trigger.property
+    ```
+  </Card>
+  
+  <Card title="Node Data" icon="cubes">
+    Output data from any previously executed node in your flow
+    
+    ```
+    $.NODE_ID.property
+    ```
+  </Card>
+</CardGroup>
+
+## Core Syntax Pattern
+
+The basic syntax follows this pattern:
+
+```
+$.source.property
+```
+
+- `$` - Root indicator (always required)
+- `source` - Either `trigger` or a `NODE_ID`
+- `property` - The data you want to access
+
+<Info>
+The `$.` prefix tells Microstrate to evaluate this as a variable mapping expression rather than treating it as a literal string.
+</Info>
+
+## Accessing Trigger Data
+
+Trigger data is available from the very first node in your flow. It contains the data provided when the flow was initiated.
+
+<Tabs>
+  <Tab title="Webhook Trigger">
+    When a webhook triggers your flow:
+    
+    ```json Webhook Payload
+    {
+      "event": "order.created",
+      "order_id": "ORD-12345",
+      "user_id": "USR-789",
+      "timestamp": "2025-01-15T10:30:00Z",
+      "data": {
+        "total": 299.99,
+        "items_count": 3
+      }
+    }
+    ```
+    
+    ```json Variable Mapping
+    {
+      "eventType": "$.trigger.event",
+      "orderId": "$.trigger.order_id",
+      "userId": "$.trigger.user_id",
+      "orderTotal": "$.trigger.data.total",
+      "itemCount": "$.trigger.data.items_count"
+    }
+    ```
+    
+    **Result:**
+    ```json
+    {
+      "eventType": "order.created",
+      "orderId": "ORD-12345",
+      "userId": "USR-789",
+      "orderTotal": 299.99,
+      "itemCount": 3
+    }
+    ```
+  </Tab>
+  
+  <Tab title="API Trigger">
+    When an API call triggers your flow:
+    
+    ```json API Request Body
+    {
+      "action": "process_payment",
+      "customer_id": "CUST-456",
+      "amount": 150.00,
+      "currency": "USD",
+      "metadata": {
+        "source": "mobile_app",
+        "device": "iPhone"
+      }
+    }
+    ```
+    
+    ```json Variable Mapping
+    {
+      "action": "$.trigger.action",
+      "customerId": "$.trigger.customer_id",
+      "paymentAmount": "$.trigger.amount",
+      "paymentCurrency": "$.trigger.currency",
+      "source": "$.trigger.metadata.source"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Manual Trigger">
+    When manually starting a flow with form data:
+    
+    ```json Manual Form Input
+    {
+      "email": "user@example.com",
+      "name": "John Doe",
+      "message": "Please process my request",
+      "priority": "high"
+    }
+    ```
+    
+    ```json Variable Mapping
+    {
+      "recipientEmail": "$.trigger.email",
+      "recipientName": "$.trigger.name",
+      "requestMessage": "$.trigger.message",
+      "priorityLevel": "$.trigger.priority"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+Trigger data is **read-only** throughout the flow. It contains the original input and doesn't change as nodes execute.
+</Warning>
+
+## Accessing Node Data
+
+Node data becomes available after a node completes execution. You can reference any previously executed node using its unique ID.
+
+### Basic Node Access
+
+<CodeGroup>
+```json Node Output (fetch_customer)
+{
+  "id": "CUST-789",
+  "firstName": "Alice",
+  "lastName": "Smith",
+  "email": "alice@example.com",
+  "phone": "+1-555-0123",
+  "tier": "premium"
+}
+```
+
+```json Variable Mapping
+{
+  "customerId": "$.fetch_customer.id",
+  "customerEmail": "$.fetch_customer.email",
+  "customerTier": "$.fetch_customer.tier"
+}
+```
+
+```json Result
+{
+  "customerId": "CUST-789",
+  "customerEmail": "alice@example.com",
+  "customerTier": "premium"
+}
+```
+</CodeGroup>
+
+### Execution Order Matters
+
+<Steps>
+  <Step title="Node 1: fetch_customer">
+    Executes first. Can access `$.trigger.*` but no other nodes yet.
+  </Step>
+  
+  <Step title="Node 2: fetch_orders">
+    Can access `$.trigger.*` and `$.fetch_customer.*`
+  </Step>
+  
+  <Step title="Node 3: send_email">
+    Can access `$.trigger.*`, `$.fetch_customer.*`, and `$.fetch_orders.*`
+  </Step>
+</Steps>
+
+<Warning>
+You **cannot** reference a node that hasn't executed yet. If Node 2 tries to access `$.node_3.data`, it will return `undefined`.
+</Warning>
+
+## Nested Properties
+
+Access deeply nested data using dot notation:
+
+<Tabs>
+  <Tab title="Simple Nesting">
+    ```json Data
+    {
+      "fetch_user": {
+        "profile": {
+          "contact": {
+            "email": "user@example.com",
+            "phone": "+1-555-0100"
+          }
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "email": "$.fetch_user.profile.contact.email",
+      "phone": "$.fetch_user.profile.contact.phone"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Complex Nesting">
+    ```json Data
+    {
+      "api_response": {
+        "data": {
+          "user": {
+            "account": {
+              "settings": {
+                "notifications": {
+                  "email": true,
+                  "sms": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "emailNotifications": "$.api_response.data.user.account.settings.notifications.email",
+      "smsNotifications": "$.api_response.data.user.account.settings.notifications.sms"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Mixed Sources">
+    ```json Mapping
+    {
+      "triggerId": "$.trigger.request_id",
+      "userEmail": "$.fetch_user.profile.contact.email",
+      "orderTotal": "$.fetch_order.payment.total",
+      "shippingAddress": "$.fetch_user.addresses.shipping.street"
+    }
+    ```
+    
+    Combine trigger data with nested node data seamlessly.
+  </Tab>
+</Tabs>
+
+## Array Access
+
+Arrays use zero-based indexing (first element is at index `0`).
+
+### Accessing Array Elements
+
+<CodeGroup>
+```json Data
+{
+  "fetch_orders": {
+    "orders": [
+      {"id": "ORD-001", "total": 99.99},
+      {"id": "ORD-002", "total": 149.99},
+      {"id": "ORD-003", "total": 79.99}
+    ]
+  }
+}
+```
+
+```json Positive Index
+{
+  "firstOrder": "$.fetch_orders.orders[0]",
+  "secondOrder": "$.fetch_orders.orders[1]",
+  "thirdOrder": "$.fetch_orders.orders[2]"
+}
+```
+
+```json Negative Index
+{
+  "lastOrder": "$.fetch_orders.orders[-1]",
+  "secondLastOrder": "$.fetch_orders.orders[-2]"
+}
+```
+</CodeGroup>
+
+<Tip>
+**Negative indexes** count from the end:
+- `[-1]` = last item
+- `[-2]` = second to last item
+- `[-3]` = third to last item
+</Tip>
+
+### Accessing Properties in Array Items
+
+```json Data
+{
+  "products": [
+    {"name": "Widget", "price": 29.99, "stock": 100},
+    {"name": "Gadget", "price": 49.99, "stock": 50},
+    {"name": "Doohickey", "price": 19.99, "stock": 200}
+  ]
+}
+```
+
+```json Mapping
+{
+  "firstProductName": "$.node.products[0].name",
+  "firstProductPrice": "$.node.products[0].price",
+  "lastProductStock": "$.node.products[-1].stock"
+}
+```
+
+```json Result
+{
+  "firstProductName": "Widget",
+  "firstProductPrice": 29.99,
+  "lastProductStock": 200
+}
+```
+
+## Combining Trigger and Node Data
+
+Real-world flows typically combine both data sources:
+
+<CodeGroup>
+```json Scenario
+// Webhook triggers flow with order ID
+// Flow fetches customer and order details
+// Combines all data for email
+```
+
+```json Trigger Data
+{
+  "event": "order.shipped",
+  "order_id": "ORD-12345",
+  "tracking_number": "TRK-98765"
+}
+```
+
+```json Node Data
+{
+  "fetch_customer": {
+    "name": "Alice Smith",
+    "email": "alice@example.com"
+  },
+  "fetch_order": {
+    "items": [
+      {"product": "Widget", "quantity": 2},
+      {"product": "Gadget", "quantity": 1}
+    ],
+    "total": 179.97
+  }
+}
+```
+
+```json Combined Mapping
+{
+  "to": "$.fetch_customer.email",
+  "subject": "Your Order |$.trigger.order_id| Has Shipped!",
+  "body": {
+    "customerName": "$.fetch_customer.name",
+    "orderId": "$.trigger.order_id",
+    "trackingNumber": "$.trigger.tracking_number",
+    "itemCount": "$.fetch_order.items.length",
+    "total": "$.fetch_order.total"
+  }
+}
+```
+</CodeGroup>
+
+## Type Handling
+
+Variable mapping preserves data types from the source:
+
+<Tabs>
+  <Tab title="Strings">
+    ```json Input
+    {
+      "node": {
+        "name": "Alice Smith",
+        "status": "active"
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "userName": "$.node.name",
+      "userStatus": "$.node.status"
+    }
+    ```
+    
+    ```json Output (Strings)
+    {
+      "userName": "Alice Smith",
+      "userStatus": "active"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Numbers">
+    ```json Input
+    {
+      "node": {
+        "count": 42,
+        "price": 29.99,
+        "rating": 4.5
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "itemCount": "$.node.count",
+      "itemPrice": "$.node.price",
+      "itemRating": "$.node.rating"
+    }
+    ```
+    
+    ```json Output (Numbers)
+    {
+      "itemCount": 42,
+      "itemPrice": 29.99,
+      "itemRating": 4.5
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Booleans">
+    ```json Input
+    {
+      "node": {
+        "active": true,
+        "verified": false,
+        "premium": true
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "isActive": "$.node.active",
+      "isVerified": "$.node.verified",
+      "isPremium": "$.node.premium"
+    }
+    ```
+    
+    ```json Output (Booleans)
+    {
+      "isActive": true,
+      "isVerified": false,
+      "isPremium": true
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Arrays & Objects">
+    ```json Input
+    {
+      "node": {
+        "tags": ["urgent", "vip", "priority"],
+        "metadata": {
+          "source": "api",
+          "version": "2.0"
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "allTags": "$.node.tags",
+      "meta": "$.node.metadata"
+    }
+    ```
+    
+    ```json Output (Preserved Structure)
+    {
+      "allTags": ["urgent", "vip", "priority"],
+      "meta": {
+        "source": "api",
+        "version": "2.0"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Handling Missing Data
+
+When a path doesn't exist, variable mapping **removes the property** from the output entirely:
+
+<CodeGroup>
+```json Available Data
+{
+  "node": {
+    "name": "Alice",
+    "email": "alice@example.com"
+  }
+}
+```
+
+```json Mapping with Missing Path
+{
+  "userName": "$.node.name",
+  "userPhone": "$.node.phone",
+  "userAddress": "$.node.address.street"
+}
+```
+
+```json Result (properties removed)
+{
+  "userName": "Alice"
+}
+```
+</CodeGroup>
+
+<Warning>
+**Properties with missing data are removed from the output entirely.** They won't appear as `undefined` or `null` - they simply won't exist in the result object.
+</Warning>
+
+<Tip>
+Use a **trailing pipe** to ensure missing values create the property with an empty string:
+
+```json
+{
+  "userPhone": "$.node.phone|",
+  "userAddress": "$.node.address.street|"
+}
+```
+
+**Result:**
+```json
+{
+  "userPhone": "",
+  "userAddress": ""
+}
+```
+
+This keeps the property in the output instead of removing it completely.
+
+**Note:** The trailing pipe also affects how arrays and objects are handled:
+- **Arrays:** Joined as comma-separated string (e.g., `"a,b,c"`)
+- **Objects:** Converted to `"[object Object]"` (usually not desired)
+
+Learn more about the pipe operator in [Pipe Operator](/advanced/variable-mapping/pipe-operator).
+</Tip>
+
+## Type Handling with Pipe Operator
+
+The trailing pipe (`|`) forces string conversion, which affects different data types:
+
+<Tabs>
+  <Tab title="Primitives">
+    ```json Data
+    {
+      "node": {
+        "name": "Alice",
+        "age": 30,
+        "active": true
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "name": "$.node.name|",
+      "age": "$.node.age|",
+      "active": "$.node.active|"
+    }
+    ```
+    
+    ```json Result (unchanged)
+    {
+      "name": "Alice",
+      "age": "30",
+      "active": "true"
+    }
+    ```
+    
+    Strings, numbers, and booleans are all converted to strings with pipe.
+  </Tab>
+  
+  <Tab title="Arrays">
+    ```json Data
+    {
+      "node": {
+        "tags": ["premium", "verified", "active"]
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "withPipe": "$.node.tags|",
+      "withoutPipe": "$.node.tags"
+    }
+    ```
+    
+    ```json Result
+    {
+      "withPipe": "premium,verified,active",
+      "withoutPipe": ["premium", "verified", "active"]
+    }
+    ```
+    
+    **With pipe:** Array becomes comma-separated string  
+    **Without pipe:** Array structure preserved
+  </Tab>
+  
+  <Tab title="Objects">
+    ```json Data
+    {
+      "node": {
+        "address": {
+          "street": "123 Main St",
+          "city": "Boston"
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "withPipe": "$.node.address|",
+      "withoutPipe": "$.node.address"
+    }
+    ```
+    
+    ```json Result
+    {
+      "withPipe": "[object Object]",
+      "withoutPipe": {
+        "street": "123 Main St",
+        "city": "Boston"
+      }
+    }
+    ```
+    
+    **With pipe:** Object becomes unhelpful `"[object Object]"` string  
+    **Without pipe:** Object structure preserved
+  </Tab>
+</Tabs>
+
+<Warning>
+**Use trailing pipe carefully:**
+
+| Scenario | Recommendation |
+|----------|----------------|
+| Ensuring property exists when data might be missing | ✅ Use pipe: `$.value|` |
+| Simple array to comma-separated string | ✅ Use pipe: `$.tags|` |
+| Preserving array structure | ❌ No pipe: `$.items` |
+| Preserving object structure | ❌ No pipe: `$.user.address` |
+| Array of objects | ❌ No pipe: `$.orders` |
+</Warning>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Descriptive Node IDs" icon="tag">
+    Choose clear, meaningful node IDs that describe what the node does:
+    
+    ```json
+    // ✅ Good - Clear and descriptive
+    {
+      "email": "$.fetch_customer_data.email",
+      "total": "$.calculate_order_total.amount"
+    }
+    
+    // ❌ Avoid - Unclear and unmaintainable
+    {
+      "email": "$.node_1.email",
+      "total": "$.node_5.amount"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Check Data Availability" icon="circle-check">
+    Only reference nodes that have already executed:
+    
+    ```
+    Flow Order:
+    1. trigger → available to all nodes
+    2. node_a → available to node_b, node_c
+    3. node_b → available to node_c only
+    4. node_c → not available to previous nodes
+    ```
+    
+    Use the Flow Debugger to verify node execution order.
+  </Accordion>
+  
+  <Accordion title="Handle Missing Values" icon="triangle-exclamation">
+    Always plan for missing or null data. Use a trailing pipe to ensure empty strings:
+    
+    ```json
+    {
+      "email": "$.user.email|",
+      "phone": "$.user.phone|",
+      "address": "$.user.address|"
+    }
+    ```
+    
+    Or use static text concatenation for default messages:
+    
+    ```json
+    {
+      "status": "Status: |$.order.status|",
+      "note": "Note: |$.order.note|"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Test with Real Data" icon="vial">
+    Use the Flow Debugger to test mappings with actual data:
+    
+    1. Run your flow with test data
+    2. Inspect each node's output
+    3. Verify mapping expressions return expected values
+    4. Check for undefined or null values
+  </Accordion>
+</AccordionGroup>
+
+## Common Patterns
+
+<Tabs>
+  <Tab title="Webhook to Database">
+    ```json
+    {
+      "table": "orders",
+      "data": {
+        "order_id": "$.trigger.order_id",
+        "customer_id": "$.trigger.customer_id",
+        "created_at": "$.trigger.timestamp",
+        "total": "$.trigger.data.total"
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Enrichment">
+    ```json
+    {
+      "enrichedOrder": {
+        "orderId": "$.trigger.order_id",
+        "customerDetails": "$.fetch_customer",
+        "orderDetails": "$.fetch_order",
+        "shippingInfo": "$.fetch_shipping"
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Notification">
+    ```json
+    {
+      "to": "$.fetch_customer.email",
+      "message": "Order $.trigger.order_id is being processed",
+      "userId": "$.trigger.user_id",
+      "userName": "$.fetch_customer.name"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Quick Syntax Reference
+
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| `$.trigger.prop` | Access trigger data | `$.trigger.order_id` |
+| `$.node.prop` | Access node data | `$.fetch_user.email` |
+| `$.node.nested.prop` | Nested property | `$.user.address.city` |
+| `$.node.array[0]` | First array item | `$.orders[0]` |
+| `$.node.array[-1]` | Last array item | `$.orders[-1]` |
+| `$.node.array[0].prop` | Property in array | `$.orders[0].total` |
+
+## Try It Yourself
+
+<Steps>
+  <Step title="Create a Test Flow">
+    Set up a simple flow with a manual trigger
+  </Step>
+  
+  <Step title="Add Test Data">
+    Provide sample JSON data in the trigger form
+  </Step>
+  
+  <Step title="Add a Node">
+    Create a node that uses variable mapping to access trigger data
+  </Step>
+  
+  <Step title="Run and Debug">
+    Execute the flow and inspect the results in the debugger
+  </Step>
+</Steps>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card 
+    title="JSONPath Features" 
+    icon="2" 
+    href="/advanced/variable-mapping/jsonpath-features"
+  >
+    Learn advanced selectors like wildcards, slicing, and recursive descent
+  </Card>
+  <Card 
+    title="Pipe Operator" 
+    icon="3" 
+    href="/advanced/variable-mapping/pipe-operator"
+  >
+    Build dynamic strings and provide fallback values
+  </Card>
+  <Card 
+    title="Examples" 
+    icon="code" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See real-world variable mapping patterns
+  </Card>
+  <Card 
+    title="Reference" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Quick syntax lookup and troubleshooting
+  </Card>
+</CardGroup>
+
+<Info>
+**Questions?** Check the [Reference](/advanced/variable-mapping/reference) for troubleshooting or visit our [Help Center](/help).
+</Info>

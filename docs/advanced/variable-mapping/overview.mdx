@@ -1,0 +1,404 @@
+---
+title: "Overview"
+description: "Introduction to mapping and transforming data between flow nodes"
+---
+
+Variable mapping allows you to dynamically reference and transform data as it flows between nodes in your workflow. Instead of hardcoding values, you can pull data from previous nodes, triggers, and apply transformations on the fly.
+
+## What is Variable Mapping?
+
+When building flows in Microstrate, you work with two primary data sources:
+
+1. **Node outputs** - Data produced by previous nodes in your flow
+2. **Trigger data** - Data provided when the flow is initiated
+
+Variable mapping lets you:
+
+- **Reference data** from any previous node or the flow trigger
+- **Transform data** using powerful JSONPath expressions
+- **Combine data** from multiple sources
+- **Build dynamic strings** with the pipe operator
+- **Filter and query** complex data structures
+
+<CodeGroup>
+```json Node Data
+{
+  "email": "$.fetch_customer.email",
+  "name": "$.fetch_customer.firstName| |$.fetch_customer.lastName"
+}
+```
+
+```json Trigger Data
+{
+  "orderId": "$.trigger.order_id",
+  "userId": "$.trigger.user_id",
+  "eventType": "$.trigger.event"
+}
+```
+
+```json Combined
+{
+  "message": "Order |$.trigger.order_id| for |$.fetch_customer.name| is ready!"
+}
+```
+</CodeGroup>
+
+<Info>
+Variable mapping is powered by [JSONPath Plus v1.1.0](https://github.com/JSONPath-Plus/JSONPath) with custom Microstrate extensions for enhanced functionality.
+</Info>
+
+## Data Sources
+
+<Tabs>
+  <Tab title="Node Data">
+    Access output from any previous node in your flow using the node's unique ID:
+    
+    ```
+    $.NODE_ID.property
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "customerEmail": "$.fetch_customer.email",
+      "orderTotal": "$.calculate_total.amount"
+    }
+    ```
+    
+    Nodes execute sequentially, so you can only reference nodes that have already executed.
+  </Tab>
+  
+  <Tab title="Trigger Data">
+    Access data provided when the flow starts using the special `trigger` keyword:
+    
+    ```
+    $.trigger.property
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "webhookOrderId": "$.trigger.order_id",
+      "webhookEvent": "$.trigger.event_type",
+      "webhookTimestamp": "$.trigger.timestamp"
+    }
+    ```
+    
+    Trigger data is available to all nodes in the flow from the very first node.
+  </Tab>
+  
+  <Tab title="Combined Usage">
+    Combine trigger data with node outputs for powerful workflows:
+    
+    ```json
+    {
+      "summary": {
+        "eventType": "$.trigger.event",
+        "userId": "$.trigger.user_id",
+        "userDetails": "$.fetch_user.details",
+        "processedAt": "$.process_data.timestamp",
+        "message": "Event |$.trigger.event| processed for user |$.fetch_user.name|"
+      }
+    }
+    ```
+    
+    This pattern is common in webhook-driven workflows.
+  </Tab>
+</Tabs>
+
+## Quick Reference
+
+<AccordionGroup>
+  <Accordion title="Basic Syntax" icon="text">
+    ```
+    $.NODE_ID.property              # Access node data
+    $.trigger.property              # Access trigger data
+    $.NODE_ID.nested.deep.value     # Nested properties
+    ```
+  </Accordion>
+  
+  <Accordion title="Array Operations" icon="list">
+    ```
+    $.NODE_ID.items[0]              # First item (0-based)
+    $.NODE_ID.items[-1]             # Last item
+    $.NODE_ID.items[*]              # All items
+    $.NODE_ID.items[0:3]            # First 3 items
+    ```
+  </Accordion>
+  
+  <Accordion title="Filters & Queries" icon="filter">
+    ```
+    $.items[?(@.price>10)]          # Filter by condition
+    $..email                        # Recursive search
+    $.items[?(@.active===true)]     # Equality check
+    ```
+  </Accordion>
+  
+  <Accordion title="String Building" icon="plus">
+    ```
+    text|$.NODE.value               # Concatenate static text with values
+    $.first| |$.last                # Join values with separator
+    $.NODE.value|                   # Force string conversion
+    ```
+    
+    **Trailing pipe behavior:**
+    - Missing data: Returns `""` (empty string)
+    - Arrays: Returns comma-separated string (e.g., `"a,b,c"`)
+    - Objects: Returns `"[object Object]"`
+    - Primitives: Returns value as-is
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+**Key Points to Remember:**
+- Arrays are 0-based: `[0]` is first, `[-1]` is last
+- Use `===` for equality in filters, not `=`
+- Everything is case-sensitive
+- Microstrate auto-detects `$.` anywhere in your mapping
+</Warning>
+
+## How Variable Mapping Works
+
+<Steps>
+  <Step title="Flow Starts">
+    Trigger data becomes available immediately via `$.trigger.*`
+  </Step>
+  
+  <Step title="First Node Executes">
+    Can access trigger data but not other node data yet
+  </Step>
+  
+  <Step title="Subsequent Nodes Execute">
+    Each node can access:
+    - Trigger data (`$.trigger.*`)
+    - All previous node outputs (`$.node_id.*`)
+  </Step>
+  
+  <Step title="Data Transforms">
+    JSONPath expressions extract and transform data as needed
+  </Step>
+  
+  <Step title="Flow Completes">
+    Final node has access to all trigger and node data
+  </Step>
+</Steps>
+
+### Example Flow Data Structure
+
+```json
+{
+  "trigger": {
+    "event": "order.created",
+    "order_id": "ORD-12345",
+    "user_id": "USR-789"
+  },
+  "fetch_customer": {
+    "id": "USR-789",
+    "name": "Alice Smith",
+    "email": "alice@example.com",
+    "tier": "premium"
+  },
+  "fetch_order": {
+    "id": "ORD-12345",
+    "total": 299.99,
+    "items": [
+      {"product": "Widget", "price": 149.99},
+      {"product": "Gadget", "price": 150.00}
+    ]
+  },
+  "calculate_discount": {
+    "amount": 29.99,
+    "percentage": 10
+  }
+}
+```
+
+**Access this data:**
+```json
+{
+  "triggerEvent": "$.trigger.event",
+  "customerName": "$.fetch_customer.name",
+  "orderTotal": "$.fetch_order.total",
+  "firstProduct": "$.fetch_order.items[0].product",
+  "finalAmount": "$.fetch_order.total",
+  "discountApplied": "$.calculate_discount.amount"
+}
+```
+
+## When to Use Variable Mapping
+
+<CardGroup cols={2}>
+  <Card title="Webhook Processing" icon="webhook">
+    Access incoming webhook data via `$.trigger` and enrich with additional API calls
+  </Card>
+  <Card title="API Integration" icon="cloud">
+    Map responses from external APIs to your flow data structure
+  </Card>
+  <Card title="Data Transformation" icon="arrows-rotate">
+    Convert data formats between different systems and services
+  </Card>
+  <Card title="Dynamic Content" icon="message">
+    Create personalized messages, emails, and notifications
+  </Card>
+  <Card title="Conditional Logic" icon="code-branch">
+    Route data based on conditions and business rules
+  </Card>
+  <Card title="Data Aggregation" icon="layer-group">
+    Combine data from multiple sources into unified structures
+  </Card>
+</CardGroup>
+
+## Common Use Cases
+
+<Tabs>
+  <Tab title="Webhook to Email">
+    ```json
+    {
+      "to": "$.fetch_customer.email",
+      "subject": "Order Confirmation #|$.trigger.order_id|",
+      "body": "Hi |$.fetch_customer.firstName|, your order for |$.fetch_order.items.length| items totaling $|$.fetch_order.total| has been confirmed!"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Data Enrichment">
+    ```json
+    {
+      "enrichedData": {
+        "rawEvent": "$.trigger",
+        "userProfile": "$.fetch_user",
+        "accountDetails": "$.fetch_account",
+        "computedScore": "$.calculate_score.value",
+        "timestamp": "$.trigger.timestamp"
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Conditional Routing">
+    Conditional logic in JSONPath works through filter expressions. Use filters to select data based on conditions:
+    
+    ```text
+    {
+      "highPriorityItems": "$.trigger.items[?(@.priority==='high' || @.priority==='urgent')]",
+      "premiumCustomers": "$.customers[?(@.tier==='premium')]",
+      "largeOrders": "$.orders[?(@.amount>1000)]",
+      "activeVerifiedUsers": "$.users[?(@.active===true && @.verified===true)]"
+    }
+    ```
+    
+    For routing decisions, check conditions and use the results in your flow logic:
+    
+    ```text
+    {
+      "isPremiumCustomer": "$.fetch_customer[?(@.tier==='premium')]",
+      "isHighPriority": "$.trigger[?(@.priority==='high')]",
+      "requiresEscalation": "$.trigger[?(@.amount>1000)]"
+    }
+    ```
+    
+    These filter results return arrays:
+    - Empty array `[]` means condition is false
+    - Array with data `[{...}]` means condition is true
+    
+    Use these results in subsequent nodes to make routing decisions.
+  </Tab>
+</Tabs>
+
+## Getting Started Checklist
+
+<Steps>
+  <Step title="Understand Data Sources">
+    Learn the difference between `$.trigger` (flow input) and `$.node_id` (node outputs)
+  </Step>
+  <Step title="Master Basic Syntax">
+    Practice accessing properties using `$.NODE_ID.property` pattern
+  </Step>
+  <Step title="Work with Arrays">
+    Get comfortable with array indexing `[0]`, slicing `[0:3]`, and wildcards `[*]`
+  </Step>
+  <Step title="Try the Pipe Operator">
+    Build dynamic strings using Microstrate's custom `|` concatenation
+  </Step>
+  <Step title="Learn Filters">
+    Filter data with conditions like `[?(@.price>10)]`
+  </Step>
+  <Step title="Test in Debugger">
+    Use the Flow Debugger to test your mappings with real data
+  </Step>
+</Steps>
+
+## Documentation Structure
+
+This comprehensive guide is organized into focused sections:
+
+<CardGroup cols={2}>
+  <Card title="Basic Syntax" icon="1" href="/advanced/variable-mapping/basic-syntax">
+    Core concepts, trigger data, and simple examples
+  </Card>
+  <Card title="JSONPath Features" icon="2" href="/advanced/variable-mapping/jsonpath-features">
+    Standard JSONPath capabilities and operators
+  </Card>
+  <Card title="Pipe Operator" icon="3" href="/advanced/variable-mapping/pipe-operator">
+    Microstrate's string concatenation and fallbacks
+  </Card>
+  <Card title="Filters & Expressions" icon="4" href="/advanced/variable-mapping/filters-and-expressions">
+    Query, filter, and select data
+  </Card>
+  <Card title="Advanced Techniques" icon="5" href="/advanced/variable-mapping/advanced-techniques">
+    Power user features and optimization
+  </Card>
+  <Card title="Examples" icon="6" href="/advanced/variable-mapping/examples">
+    Real-world use cases and patterns
+  </Card>
+  <Card title="Reference" icon="bookmark" href="/advanced/variable-mapping/reference">
+    Syntax tables and troubleshooting
+  </Card>
+</CardGroup>
+
+<Tip>
+**New to Variable Mapping?** Start with [Basic Syntax](/advanced/variable-mapping/basic-syntax) to learn the fundamentals.
+
+**Need a quick answer?** Jump to the [Reference](/advanced/variable-mapping/reference) for syntax tables and troubleshooting.
+
+**Want to see it in action?** Check out [Examples](/advanced/variable-mapping/examples) for real-world patterns.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card 
+    title="Learn Basic Syntax" 
+    icon="play" 
+    href="/advanced/variable-mapping/basic-syntax"
+  >
+    Start with the fundamentals of variable mapping
+  </Card>
+  <Card 
+    title="View Examples" 
+    icon="code" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See real-world variable mapping patterns
+  </Card>
+  <Card 
+    title="Quick Reference" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Syntax tables and troubleshooting guide
+  </Card>
+  <Card 
+    title="Flow Builder" 
+    icon="diagram-project" 
+    href="/flows/builder"
+  >
+    Learn how to build flows with multiple nodes
+  </Card>
+</CardGroup>
+
+---
+
+<Info>
+**Need help?** Visit our [Help Center](/help) or join the [Community](/community) for support.
+</Info>
