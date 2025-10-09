@@ -1,0 +1,744 @@
+---
+title: "JSONPath Features"
+description: "Master standard JSONPath operators for powerful data queries"
+---
+
+Microstrate uses [JSONPath Plus v1.1.0](https://github.com/JSONPath-Plus/JSONPath) which provides powerful operators for querying and selecting data from complex structures.
+
+<Info>
+These are **standard JSONPath features** that work across all JSONPath implementations. The next sections cover Microstrate-specific extensions.
+</Info>
+
+## Wildcard Selection
+
+Select all elements at a specific level using the wildcard operator `[*]`.
+
+<Tabs>
+  <Tab title="Array Wildcard">
+    ```json Data
+    {
+      "fetch_orders": {
+        "orders": [
+          {"id": "ORD-001", "total": 99.99, "status": "shipped"},
+          {"id": "ORD-002", "total": 149.99, "status": "pending"},
+          {"id": "ORD-003", "total": 79.99, "status": "delivered"}
+        ]
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "allOrderIds": "$.fetch_orders.orders[*].id",
+      "allTotals": "$.fetch_orders.orders[*].total",
+      "allStatuses": "$.fetch_orders.orders[*].status"
+    }
+    ```
+    
+    ```json Result
+    {
+      "allOrderIds": ["ORD-001", "ORD-002", "ORD-003"],
+      "allTotals": [99.99, 149.99, 79.99],
+      "allStatuses": ["shipped", "pending", "delivered"]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Object Wildcard">
+    ```json Data
+    {
+      "api_response": {
+        "users": {
+          "user1": {"name": "Alice", "age": 30},
+          "user2": {"name": "Bob", "age": 25},
+          "user3": {"name": "Charlie", "age": 35}
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "allUsers": "$.api_response.users.*",
+      "allNames": "$.api_response.users.*.name",
+      "allAges": "$.api_response.users.*.age"
+    }
+    ```
+    
+    ```json Result
+    {
+      "allUsers": [
+        {"name": "Alice", "age": 30},
+        {"name": "Bob", "age": 25},
+        {"name": "Charlie", "age": 35}
+      ],
+      "allNames": ["Alice", "Bob", "Charlie"],
+      "allAges": [30, 25, 35]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Nested Wildcard">
+    ```json Data
+    {
+      "departments": [
+        {
+          "name": "Sales",
+          "employees": [
+            {"name": "Alice", "role": "Manager"},
+            {"name": "Bob", "role": "Rep"}
+          ]
+        },
+        {
+          "name": "Engineering",
+          "employees": [
+            {"name": "Charlie", "role": "Developer"},
+            {"name": "Diana", "role": "Designer"}
+          ]
+        }
+      ]
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "allEmployeeNames": "$.node.departments[*].employees[*].name"
+    }
+    ```
+    
+    ```json Result
+    {
+      "allEmployeeNames": ["Alice", "Bob", "Charlie", "Diana"]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+Wildcard `[*]` always returns an **array**, even if there's only one item. If you need a single value, use an index like `[0]` instead.
+</Warning>
+
+## Recursive Descent
+
+Search for properties at any depth in the structure using `..` (double dot).
+
+<Tabs>
+  <Tab title="Find All Occurrences">
+    ```json Data
+    {
+      "fetch_data": {
+        "user": {
+          "contact": {
+            "email": "user@example.com"
+          }
+        },
+        "admin": {
+          "contact": {
+            "email": "admin@example.com"
+          }
+        },
+        "support": {
+          "email": "support@example.com"
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "allEmails": "$.fetch_data..email"
+    }
+    ```
+    
+    ```json Result
+    {
+      "allEmails": [
+        "user@example.com",
+        "admin@example.com",
+        "support@example.com"
+      ]
+    }
+    ```
+    
+    Finds all `email` properties regardless of nesting level.
+  </Tab>
+  
+  <Tab title="Deep Search">
+    ```json Data
+    {
+      "company": {
+        "departments": [
+          {
+            "name": "Sales",
+            "manager": {"name": "Alice"},
+            "teams": [
+              {
+                "name": "Team A",
+                "lead": {"name": "Bob"}
+              }
+            ]
+          },
+          {
+            "name": "Engineering",
+            "manager": {"name": "Charlie"}
+          }
+        ]
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "allPersonNames": "$.node..name"
+    }
+    ```
+    
+    ```json Result
+    {
+      "allPersonNames": ["Sales", "Alice", "Team A", "Bob", "Engineering", "Charlie"]
+    }
+    ```
+    
+    Note: Returns ALL properties named "name", including department and team names.
+  </Tab>
+</Tabs>
+
+<Tip>
+**When to use recursive descent:**
+- Structure varies and you need to find all occurrences
+- You don't know the exact depth of the property
+- You're searching across multiple nested levels
+
+**When NOT to use:**
+- You know the exact path (use direct path for better performance)
+- You only want a specific occurrence (use explicit path)
+</Tip>
+
+## Array Slicing
+
+Extract portions of arrays using slice notation `[start:end:step]`.
+
+<Tabs>
+  <Tab title="Basic Slicing">
+    ```json Data
+    {
+      "items": [
+        {"id": 1, "name": "Item 1"},
+        {"id": 2, "name": "Item 2"},
+        {"id": 3, "name": "Item 3"},
+        {"id": 4, "name": "Item 4"},
+        {"id": 5, "name": "Item 5"}
+      ]
+    }
+    ```
+    
+    ```json Examples
+    {
+      "firstThree": "$.node.items[0:3]",
+      "middleTwo": "$.node.items[1:3]",
+      "lastTwo": "$.node.items[3:5]",
+      "fromThirdOnward": "$.node.items[2:]",
+      "upToThird": "$.node.items[:3]"
+    }
+    ```
+    
+    ```json Results
+    {
+      "firstThree": [Item 1, Item 2, Item 3],
+      "middleTwo": [Item 2, Item 3],
+      "lastTwo": [Item 4, Item 5],
+      "fromThirdOnward": [Item 3, Item 4, Item 5],
+      "upToThird": [Item 1, Item 2, Item 3]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Negative Indexes">
+    ```json Data
+    {
+      "items": ["A", "B", "C", "D", "E", "F"]
+    }
+    ```
+    
+    ```json Examples
+    {
+      "lastThree": "$.node.items[-3:]",
+      "allButLast": "$.node.items[:-1]",
+      "secondToLast": "$.node.items[-2:-1]",
+      "lastItem": "$.node.items[-1]"
+    }
+    ```
+    
+    ```json Results
+    {
+      "lastThree": ["D", "E", "F"],
+      "allButLast": ["A", "B", "C", "D", "E"],
+      "secondToLast": ["E"],
+      "lastItem": "F"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Step Values">
+    ```json Data
+    {
+      "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+    ```
+    
+    ```json Examples
+    {
+      "everyOther": "$.node.numbers[::2]",
+      "everyThird": "$.node.numbers[::3]",
+      "evenIndexes": "$.node.numbers[0::2]",
+      "oddIndexes": "$.node.numbers[1::2]"
+    }
+    ```
+    
+    ```json Results
+    {
+      "everyOther": [1, 3, 5, 7, 9],
+      "everyThird": [1, 4, 7, 10],
+      "evenIndexes": [1, 3, 5, 7, 9],
+      "oddIndexes": [2, 4, 6, 8, 10]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Slice Syntax
+
+<ParamField path="[start:end:step]" type="array slice">
+  - **start** - Index to begin at (inclusive, default: 0)
+  - **end** - Index to stop at (exclusive, default: array length)
+  - **step** - Increment between items (default: 1)
+</ParamField>
+
+<CodeGroup>
+```javascript Syntax Pattern
+[start:end:step]
+```
+
+```javascript Examples
+[0:3]    // First 3 items (index 0, 1, 2)
+[2:]     // From index 2 to end
+[:5]     // First 5 items
+[-3:]    // Last 3 items
+[::2]    // Every other item
+[1::2]   // Every other item, starting at index 1
+```
+</CodeGroup>
+
+## Parent Selector
+
+Get the parent object of a matched item using the `^` operator.
+
+<Tabs>
+  <Tab title="Basic Parent Access">
+    ```json Data
+    {
+      "products": [
+        {
+          "name": "Laptop",
+          "price": 999,
+          "specs": {"cpu": "i7", "ram": 16}
+        },
+        {
+          "name": "Mouse",
+          "price": 25,
+          "specs": {"wireless": true}
+        }
+      ]
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "expensiveProduct": "$.node.products[?(@.price>100)]^"
+    }
+    ```
+    
+    The `^` returns the parent array containing the expensive items.
+  </Tab>
+  
+  <Tab title="Filter Then Get Parent">
+    ```json Data
+    {
+      "store": {
+        "inventory": [
+          {"item": "Widget", "stock": 50},
+          {"item": "Gadget", "stock": 5},
+          {"item": "Doohickey", "stock": 100}
+        ]
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "lowStockParent": "$.node.store.inventory[?(@.stock<10)]^"
+    }
+    ```
+    
+    First filters items with low stock, then `^` returns the parent inventory array.
+  </Tab>
+</Tabs>
+
+<Info>
+The parent selector is useful when you need to reference the container of filtered items, not just the items themselves.
+</Info>
+
+## Property Name Selector
+
+Get property names instead of values using the `~` operator.
+
+<Tabs>
+  <Tab title="Object Property Names">
+    ```json Data
+    {
+      "api_response": {
+        "user": {"name": "Alice"},
+        "account": {"balance": 1000},
+        "settings": {"theme": "dark"}
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "propertyNames": "$.node.api_response.*~"
+    }
+    ```
+    
+    ```json Result
+    {
+      "propertyNames": ["user", "account", "settings"]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Array Index Names">
+    ```json Data
+    {
+      "items": ["Apple", "Banana", "Cherry"]
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "indexNames": "$.node.items[*]~"
+    }
+    ```
+    
+    ```json Result
+    {
+      "indexNames": ["0", "1", "2"]
+    }
+    ```
+    
+    For arrays, `~` returns string representations of indexes.
+  </Tab>
+  
+  <Tab title="Nested Property Names">
+    ```json Data
+    {
+      "config": {
+        "database": {"host": "localhost"},
+        "cache": {"ttl": 3600},
+        "api": {"timeout": 30}
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "configSections": "$.node.config.*~",
+      "databaseSettings": "$.node.config.database.*~"
+    }
+    ```
+    
+    ```json Result
+    {
+      "configSections": ["database", "cache", "api"],
+      "databaseSettings": ["host"]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Bracket Notation
+
+With JSON path, you can access properties with special characters using bracket notation `['property']`. Microstrate allows you to access properties with special characters without using this notation, however if you are experiencing unexpected results you can still use this notation.
+
+<Tabs>
+  <Tab title="Spaces in Names">
+    ```json Data
+    {
+      "api response": {
+        "user data": {
+          "first name": "Alice"
+        }
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "userName": "$['api response']['user data']['first name']"
+    }
+    ```
+    
+    ```json Result
+    {
+      "userName": "Alice"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Special Characters">
+    ```json Data
+    {
+      "response": {
+        "property-with-dashes": "value1",
+        "property.with.dots": "value2",
+        "property@special": "value3"
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "value1": "$.node.response['property-with-dashes']",
+      "value2": "$.node.response['property.with.dots']",
+      "value3": "$.node.response['property@special']"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Numeric String Keys">
+    ```json Data
+    {
+      "data": {
+        "123": "numeric string key",
+        "456": "another numeric key"
+      }
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "first": "$.node.data['123']",
+      "second": "$.node.data['456']"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+**When to use bracket notation:**
+- Property names contain spaces
+- Property names contain special characters (`. - @ # $` etc.)
+- Property names are numeric strings
+- Property names could be confused with JSONPath operators
+</Warning>
+
+## Escaping Special Characters
+
+Use backticks to escape property names that might conflict with JSONPath operators.
+
+<Tabs>
+  <Tab title="Dollar Sign Property">
+    ```json Data
+    {
+      "$price": 100,
+      "$total": 500
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "price": "$.node.`$price`",
+      "total": "$.node.`$total`"
+    }
+    ```
+    
+    Without backticks, `$` would be interpreted as the root operator.
+  </Tab>
+  
+  <Tab title="At Sign Property">
+    ```json Data
+    {
+      "@timestamp": "2025-01-15T10:30:00Z",
+      "@version": "2.0"
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "timestamp": "$.node.`@timestamp`",
+      "version": "$.node.`@version`"
+    }
+    ```
+    
+    Without backticks, `@` would be interpreted as a filter variable.
+  </Tab>
+  
+  <Tab title="Literal Backtick">
+    ```json Data
+    {
+      "code": "`example`"
+    }
+    ```
+    
+    ```json Mapping
+    {
+      "value": "$.node.``code``"
+    }
+    ```
+    
+    Use double backticks to escape a literal backtick character.
+  </Tab>
+</Tabs>
+
+## Important Notes
+
+<AccordionGroup>
+  <Accordion title="Array Indexing" icon="list-ol">
+    JSONPath uses **0-based indexing** like JavaScript (not 1-based like XPath):
+    
+    - First element: `[0]`
+    - Second element: `[1]`
+    - Last element: `[-1]`
+    - Second to last: `[-2]`
+  </Accordion>
+  
+  <Accordion title="Case Sensitivity" icon="text-height">
+    All JSONPath expressions are **case-sensitive**:
+    
+    - `$.user.Name` ≠ `$.user.name`
+    - `$.NODE_ID` ≠ `$.node_id`
+    - Property names must match exactly
+  </Accordion>
+  
+  <Accordion title="Return Values" icon="arrow-turn-down-right">
+    Understanding what JSONPath returns:
+    
+    - **Single property**: Returns the value directly
+    - **Wildcard `[*]`**: Always returns an array
+    - **Filter `[?()]`**: Always returns an array
+    - **Recursive `..`**: Always returns an array
+    - **Slice `[:]`**: Always returns an array
+    - **Non-existent path**: Property is removed from output entirely
+  </Accordion>
+  
+  <Accordion title="Performance" icon="gauge-high">
+    **Fast operations:**
+    - Direct property access: `$.node.property`
+    - Array index: `$.node.items[0]`
+    - Specific paths: `$.node.nested.property`
+    
+    **Slower operations:**
+    - Recursive descent: `$..property`
+    - Complex filters: `$.items[?(@.x>5 && @.y<10)]`
+    - Multiple wildcards: `$..*.*[*]`
+    
+    Use specific paths when possible for better performance.
+  </Accordion>
+</AccordionGroup>
+
+## Common Patterns
+
+<Tabs>
+  <Tab title="Get All Values">
+    ```json
+    {
+      "allEmails": "$.users[*].email",
+      "allPrices": "$.products[*].price",
+      "allIds": "$..id"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Slice Arrays">
+    ```json
+    {
+      "topThree": "$.leaderboard[0:3]",
+      "recentFive": "$.logs[-5:]",
+      "everyOther": "$.items[::2]"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Get Structure">
+    ```json
+    {
+      "sections": "$.config.*~",
+      "firstLevelKeys": "$.*~",
+      "arrayIndexes": "$.items[*]~"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Try It Yourself
+
+<Steps>
+  <Step title="Create Sample Data">
+    Add a node that returns complex nested JSON data
+  </Step>
+  
+  <Step title="Use Wildcards">
+    Try `[*]` to select all items in an array
+  </Step>
+  
+  <Step title="Try Recursive Search">
+    Use `..propertyName` to find all occurrences
+  </Step>
+  
+  <Step title="Experiment with Slicing">
+    Practice array slicing with different start:end:step combinations
+  </Step>
+  
+  <Step title="Test in Debugger">
+    Verify results in the Flow Debugger
+  </Step>
+</Steps>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card 
+    title="Pipe Operator" 
+    icon="3" 
+    href="/advanced/variable-mapping/pipe-operator"
+  >
+    Learn Microstrate's string concatenation operator
+  </Card>
+  <Card 
+    title="Filters & Expressions" 
+    icon="4" 
+    href="/advanced/variable-mapping/filters-and-expressions"
+  >
+    Filter and query data with conditional expressions
+  </Card>
+  <Card 
+    title="Examples" 
+    icon="code" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See real-world usage patterns
+  </Card>
+  <Card 
+    title="Reference" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Complete syntax reference
+  </Card>
+</CardGroup>
+
+<Info>
+**Questions?** Check the [Reference](/advanced/variable-mapping/reference) or visit our [Help Center](/help).
+</Info>

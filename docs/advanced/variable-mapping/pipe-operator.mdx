@@ -1,0 +1,1181 @@
+---
+title: "Pipe Operator"
+description: "Build dynamic strings with Microstrate's custom concatenation operator"
+---
+
+The pipe operator (`|`) is a Microstrate-specific extension that enables powerful string concatenation and handling of missing values. It's one of the most frequently used features for building dynamic content.
+
+<Info>
+The pipe operator is **not** part of standard JSONPath. It's a custom Microstrate feature designed to make string building easier and more intuitive.
+</Info>
+
+## How It Works
+
+The pipe operator splits your expression into segments and concatenates them:
+
+```
+segment1|segment2|segment3
+```
+
+- **Static text** segments are included as-is
+- **Variable mappings** (starting with `$.`) are evaluated and inserted
+- All segments are **converted to strings** and joined together
+
+<Info>
+**Important:** The pipe operator forces string conversion of all values. This means objects, arrays, and primitives are all converted to strings during concatenation.
+</Info>
+
+<CodeGroup>
+```json Example
+{
+  "message": "Hello |$.user.name|, welcome back!"
+}
+```
+
+```json With Data
+{
+  "user": {
+    "name": "Alice"
+  }
+}
+```
+
+```json Result
+{
+  "message": "Hello Alice, welcome back!"
+}
+```
+</CodeGroup>
+
+## Pipe Operator with Different Data Types
+
+The trailing pipe (`|`) has special behavior depending on the data type:
+
+<Tabs>
+  <Tab title="Strings & Primitives">
+    ```json Mapping
+    {
+      "withPipe": "$.user.name|",
+      "withoutPipe": "$.user.name",
+      "numberWithPipe": "$.user.age|",
+      "numberWithoutPipe": "$.user.age",
+      "booleanWithPipe": "$.user.active|",
+      "booleanWithoutPipe": "$.user.active"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {
+        "name": "Alice",
+        "age": 30,
+        "active": true
+      }
+    }
+    ```
+    
+    ```json Result (same for both)
+    {
+      "withPipe": "Alice",
+      "withoutPipe": "Alice",
+      "numberWithPipe": "30",
+      "numberWithoutPipe": 30,
+      "booleanWithPipe": "true",
+      "booleanWithoutPipe": true
+    }
+    ```
+    
+    For primitive values (strings, numbers, booleans), the pipe converts them all into strings.
+  </Tab>
+  
+  <Tab title="Arrays">
+    ```json Mapping
+    {
+      "withPipe": "$.user.tags|",
+      "withoutPipe": "$.user.tags"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {
+        "tags": ["premium", "verified", "active"]
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "withPipe": "premium,verified,active",
+      "withoutPipe": ["premium", "verified", "active"]
+    }
+    ```
+    
+    **With pipe:** Array is joined into a comma-separated string  
+    **Without pipe:** Array is preserved as-is
+  </Tab>
+  
+  <Tab title="Objects">
+    ```json Mapping
+    {
+      "withPipe": "$.user.address|",
+      "withoutPipe": "$.user.address"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {
+        "address": {
+          "street": "123 Main St",
+          "city": "Boston",
+          "state": "MA"
+        }
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "withPipe": "[object Object]",
+      "withoutPipe": {
+        "street": "123 Main St",
+        "city": "Boston",
+        "state": "MA"
+      }
+    }
+    ```
+    
+    **With pipe:** Object is converted to `"[object Object]"` string  
+    **Without pipe:** Object is preserved as-is
+  </Tab>
+  
+  <Tab title="Missing Data">
+    ```json Mapping
+    {
+      "withPipe": "$.user.phone|",
+      "withoutPipe": "$.user.phone"
+    }
+    ```
+    
+    ```json With Data (missing property)
+    {
+      "user": {
+        "name": "Alice"
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "withPipe": ""
+    }
+    ```
+    
+    **With pipe:** Property exists with empty string  
+    **Without pipe:** Property is removed entirely from output
+  </Tab>
+</Tabs>
+
+**Key Behaviors:**
+
+| Data Type | Without Pipe `$.path` | With Pipe `$.path\|` |
+|-----------|----------------------|---------------------|
+| String/Number/Boolean | Value as-is | Value as string |
+| Array | Full array | Comma-separated string |
+| Object | Full object | `"[object Object]"` |
+| Missing | Property removed | Empty string `""` |
+
+<Warning>
+The pipe operator **always forces string conversion**, so use it carefully with objects and arrays.
+</Warning>
+
+## Working with Arrays
+
+The pipe operator provides convenient ways to work with array data.
+
+<Tabs>
+  <Tab title="Join Array Elements">
+    ```json Mapping
+    {
+      "commaSeparated": "$.order.items|",
+      "withLabel": "Items: |$.order.items|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "order": {
+        "items": ["Widget", "Gadget", "Doohickey"]
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "commaSeparated": "Widget,Gadget,Doohickey",
+      "withLabel": "Items: Widget,Gadget,Doohickey"
+    }
+    ```
+    
+    Arrays are automatically joined with commas.
+  </Tab>
+  
+  <Tab title="Custom Separators">
+    ```json Mapping
+    {
+      "pipeSeparated": "$.tags[0]| | |$.tags[1]| | |$.tags[2]|",
+      "listFormat": "Tags: |$.tags[0]|, |$.tags[1]|, and |$.tags[2]|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "tags": ["urgent", "important", "review"]
+    }
+    ```
+    
+    ```json Result
+    {
+      "pipeSeparated": "urgent | important | review",
+      "listFormat": "Tags: urgent, important, and review"
+    }
+    ```
+    
+    For custom formatting, access array elements individually.
+  </Tab>
+  
+  <Tab title="Preserve Array Structure">
+    ```json Mapping
+    {
+      "asArray": "$.order.items",
+      "asString": "$.order.items|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "order": {
+        "items": [
+          {"name": "Widget", "price": 29.99},
+          {"name": "Gadget", "price": 49.99}
+        ]
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "asArray": [
+        {"name": "Widget", "price": 29.99},
+        {"name": "Gadget", "price": 49.99}
+      ],
+      "asString": "[object Object],[object Object]"
+    }
+    ```
+    
+    **Without pipe:** Array structure is preserved  
+    **With pipe:** Array of objects becomes unhelpful string
+  </Tab>
+</Tabs>
+
+<Tip>
+**When to use pipe with arrays:**
+- ✅ Simple arrays of strings or numbers: `["a", "b", "c"]` → `"a,b,c"`
+- ✅ When you want a comma-separated list
+- ❌ Arrays of objects - will result in `"[object Object],[object Object]"`
+- ❌ When you need to preserve array structure for further processing
+</Tip>
+
+## Working with Objects
+
+When working with nested objects, be careful with the pipe operator.
+
+<Tabs>
+  <Tab title="Access Nested Properties">
+    ```json Mapping
+    {
+      "street": "$.user.address.street|",
+      "city": "$.user.address.city|",
+      "fullAddress": "$.user.address.street|, |$.user.address.city|, |$.user.address.state|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {
+        "address": {
+          "street": "123 Main St",
+          "city": "Boston",
+          "state": "MA"
+        }
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "street": "123 Main St",
+      "city": "Boston",
+      "fullAddress": "123 Main St, Boston, MA"
+    }
+    ```
+    
+    ✅ Access nested properties individually for concatenation.
+  </Tab>
+  
+  <Tab title="Preserve Object Structure">
+    ```json Mapping
+    {
+      "addressObject": "$.user.address",
+      "userProfile": "$.user.profile"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {
+        "address": {
+          "street": "123 Main St",
+          "city": "Boston"
+        },
+        "profile": {
+          "bio": "Developer",
+          "avatar": "avatar.jpg"
+        }
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "addressObject": {
+        "street": "123 Main St",
+        "city": "Boston"
+      },
+      "userProfile": {
+        "bio": "Developer",
+        "avatar": "avatar.jpg"
+      }
+    }
+    ```
+    
+    ✅ Omit pipe to preserve full object structure.
+  </Tab>
+  
+  <Tab title="Avoid Pipe with Objects">
+    ```json Mapping (incorrect)
+    {
+      "address": "$.user.address|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {
+        "address": {
+          "street": "123 Main St",
+          "city": "Boston"
+        }
+      }
+    }
+    ```
+    
+    ```json Result (not useful)
+    {
+      "address": "[object Object]"
+    }
+    ```
+    
+    ❌ Don't use pipe with objects - you'll get `"[object Object]"`.
+  </Tab>
+</Tabs>
+
+<Warning>
+**Common Mistake:**
+
+```json
+// ❌ Wrong - will return "[object Object]"
+{"address": "$.user.address|"}
+
+// ✅ Correct - preserves object
+{"address": "$.user.address"}
+
+// ✅ Correct - access specific properties
+{"address": "$.user.address.street|, |$.user.address.city|"}
+```
+</Warning>
+
+Combine static text with dynamic values from your flow.
+
+<Tabs>
+  <Tab title="Simple Text">
+    ```json Mapping
+    {
+      "greeting": "Hello |$.fetch_user.name|!",
+      "message": "Your order |$.trigger.order_id| is ready",
+      "status": "Processing order for |$.customer.email|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "trigger": {"order_id": "ORD-123"},
+      "fetch_user": {"name": "Alice"},
+      "customer": {"email": "alice@example.com"}
+    }
+    ```
+    
+    ```json Result
+    {
+      "greeting": "Hello Alice!",
+      "message": "Your order ORD-123 is ready",
+      "status": "Processing order for alice@example.com"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Multiple Variables">
+    ```json Mapping
+    {
+      "subject": "Order |$.trigger.order_id| for |$.customer.name|",
+      "summary": "User |$.user.id| (|$.user.email|) placed order |$.order.id|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "trigger": {"order_id": "ORD-456"},
+      "customer": {"name": "Bob"},
+      "user": {"id": "USR-789", "email": "bob@example.com"},
+      "order": {"id": "ORD-456"}
+    }
+    ```
+    
+    ```json Result
+    {
+      "subject": "Order ORD-456 for Bob",
+      "summary": "User USR-789 (bob@example.com) placed order ORD-456"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="No Static Text">
+    ```json Mapping
+    {
+      "fullName": "$.user.firstName| |$.user.lastName",
+      "address": "$.address.street|, |$.address.city|, |$.address.state"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {"firstName": "Alice", "lastName": "Smith"},
+      "address": {"street": "123 Main St", "city": "Boston", "state": "MA"}
+    }
+    ```
+    
+    ```json Result
+    {
+      "fullName": "Alice Smith",
+      "address": "123 Main St, Boston, MA"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Tip>
+The pipe operator automatically converts all values to strings during concatenation, so you can mix numbers, booleans, and strings freely.
+</Tip>
+
+## Joining Values
+
+Use the pipe operator with a separator to join multiple values.
+
+<Tabs>
+  <Tab title="Space Separator">
+    ```json Mapping
+    {
+      "fullName": "$.user.firstName| |$.user.lastName",
+      "fullAddress": "$.user.title| |$.user.firstName| |$.user.lastName"
+    }
+    ```
+    
+    ```json Result
+    {
+      "fullName": "Alice Smith",
+      "fullAddress": "Dr. Alice Smith"
+    }
+    ```
+    
+    Each `| |` adds a space between values.
+  </Tab>
+  
+  <Tab title="Custom Separators">
+    ```json Mapping
+    {
+      "commaSeparated": "$.a|, |$.b|, |$.c",
+      "pipeSeparated": "$.x| | |$.y| | |$.z",
+      "hyphenated": "$.date.year|-|$.date.month|-|$.date.day"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "a": "Apple", "b": "Banana", "c": "Cherry",
+      "x": "1", "y": "2", "z": "3",
+      "date": {"year": "2025", "month": "01", "day": "15"}
+    }
+    ```
+    
+    ```json Result
+    {
+      "commaSeparated": "Apple, Banana, Cherry",
+      "pipeSeparated": "1 | 2 | 3",
+      "hyphenated": "2025-01-15"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Multi-line Content">
+    ```json Mapping
+    {
+      "emailBody": "Dear |$.customer.name|,
+
+Your order |$.order.id| has been shipped.
+
+Tracking: |$.shipping.tracking|
+
+Thank you!"
+    }
+    ```
+    
+    You can include line breaks in your static text segments.
+  </Tab>
+</Tabs>
+
+## Handling Missing Values
+
+The pipe operator provides elegant solutions for handling missing or undefined data.
+
+<Tabs>
+  <Tab title="Empty String Default">
+    ```json Mapping
+    {
+      "phone": "$.user.phone|",
+      "address": "$.user.address|",
+      "notes": "$.order.notes|"
+    }
+    ```
+    
+    ```json With Data (missing properties)
+    {
+      "user": {
+        "name": "Alice"
+      },
+      "order": {
+        "id": "ORD-123"
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "phone": "",
+      "address": "",
+      "notes": ""
+    }
+    ```
+    
+    **Trailing pipe ensures properties exist with empty strings instead of being removed.**
+  </Tab>
+  
+  <Tab title="Default Text">
+    ```json Mapping
+    {
+      "status": "Status: |$.order.status|",
+      "note": "Note: |$.order.note|",
+      "priority": "Priority: |$.task.priority|"
+    }
+    ```
+    
+    ```json With Data (missing some values)
+    {
+      "order": {
+        "status": "shipped"
+      },
+      "task": {}
+    }
+    ```
+    
+    ```json Result
+    {
+      "status": "Status: shipped",
+      "note": "Note: ",
+      "priority": "Priority: "
+    }
+    ```
+    
+    When a value is missing, only the static text remains.
+  </Tab>
+  
+  <Tab title="Without Pipe Operator">
+    ```json Mapping (no pipe)
+    {
+      "phone": "$.user.phone",
+      "address": "$.user.address"
+    }
+    ```
+    
+    ```json With Data (missing properties)
+    {
+      "user": {
+        "name": "Alice"
+      }
+    }
+    ```
+    
+    ```json Result (properties removed)
+    {
+    }
+    ```
+    
+    **Without the pipe operator, missing properties are removed entirely from the output.**
+  </Tab>
+</Tabs>
+
+<Warning>
+**Without a trailing pipe:**
+```json
+{"value": "$.missing.property"}  // Property removed from output
+```
+
+**With a trailing pipe:**
+```json
+{"value": "$.missing.property|"}  // Returns: ""
+```
+
+The trailing pipe ensures the property exists in the output with an empty string value instead of being removed.
+</Warning>
+
+## Building URLs and Endpoints
+
+Construct dynamic URLs using the pipe operator.
+
+<Tabs>
+  <Tab title="API Endpoints">
+    ```json Mapping
+    {
+      "userEndpoint": "https://api.example.com/users/|$.trigger.user_id|",
+      "orderEndpoint": "https://api.example.com/orders/|$.trigger.order_id|/details",
+      "searchUrl": "https://example.com/search?q=|$.query.term|&limit=|$.query.limit|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "trigger": {
+        "user_id": "USR-789",
+        "order_id": "ORD-456"
+      },
+      "query": {
+        "term": "laptop",
+        "limit": 10
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "userEndpoint": "https://api.example.com/users/USR-789",
+      "orderEndpoint": "https://api.example.com/orders/ORD-456/details",
+      "searchUrl": "https://example.com/search?q=laptop&limit=10"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="File Paths">
+    ```json Mapping
+    {
+      "avatarUrl": "https://cdn.example.com/avatars/|$.user.id|/|$.user.avatar|",
+      "documentPath": "/documents/|$.company.id|/|$.document.year|/|$.document.id|.pdf",
+      "imagePath": "images/|$.product.category|/|$.product.id|/thumbnail.jpg"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "user": {"id": "USR-123", "avatar": "profile.jpg"},
+      "company": {"id": "COMP-456"},
+      "document": {"year": "2025", "id": "DOC-789"},
+      "product": {"category": "electronics", "id": "PROD-001"}
+    }
+    ```
+    
+    ```json Result
+    {
+      "avatarUrl": "https://cdn.example.com/avatars/USR-123/profile.jpg",
+      "documentPath": "/documents/COMP-456/2025/DOC-789.pdf",
+      "imagePath": "images/electronics/PROD-001/thumbnail.jpg"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Query Parameters">
+    ```json Mapping
+    {
+      "webhookUrl": "https://hooks.example.com/webhook?event=|$.trigger.event|&id=|$.trigger.id|&timestamp=|$.trigger.timestamp|"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "trigger": {
+        "event": "order.created",
+        "id": "EVT-123",
+        "timestamp": "2025-01-15T10:30:00Z"
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "webhookUrl": "https://hooks.example.com/webhook?event=order.created&id=EVT-123&timestamp=2025-01-15T10:30:00Z"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Email and Message Templates
+
+Create personalized email content and notifications.
+
+<Tabs>
+  <Tab title="Email Subject Lines">
+    ```json Mapping
+    {
+      "orderConfirmation": "Order |$.order.id| Confirmed - Thank you |$.customer.firstName|!",
+      "shipmentNotice": "Your order |$.order.id| has shipped!",
+      "invoice": "Invoice #|$.invoice.number| for |$.customer.company|"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Email Bodies">
+    ```json Mapping
+    {
+      "body": "Dear |$.customer.firstName| |$.customer.lastName|,
+
+Thank you for your order #|$.order.id|!
+
+Order Details:
+- Items: |$.order.itemCount|
+- Total: $|$.order.total|
+- Status: |$.order.status|
+
+Tracking Number: |$.shipping.tracking|
+
+Questions? Reply to this email or call |$.support.phone|.
+
+Best regards,
+|$.company.name| Team"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="SMS Messages">
+    ```json Mapping
+    {
+      "sms": "Hi |$.customer.firstName|! Your order |$.order.id| ($|$.order.total|) has shipped. Track: |$.tracking.url|"
+    }
+    ```
+    
+    Keep it concise for SMS with character limits.
+  </Tab>
+  
+  <Tab title="Push Notifications">
+    ```json Mapping
+    {
+      "title": "Order Update",
+      "body": "|$.order.status| - Order |$.order.id|",
+      "data": {
+        "orderId": "$.order.id|",
+        "status": "$.order.status|"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Complex Concatenation
+
+Combine multiple data sources and formats.
+
+<Tabs>
+  <Tab title="Formatted Data">
+```text
+{
+  "summary": "Customer |$.customer.name| (|$.customer.tier| tier) placed order |$.order.id| on |$.order.date| for $|$.order.total|. Shipping to |$.shipping.address.city|, |$.shipping.address.state|.",
+  
+  "details": "Order: |$.order.id|\nCustomer: |$.customer.firstName| |$.customer.lastName|\nEmail: |$.customer.email|\nPhone: |$.customer.phone|\nTotal: $|$.order.total|\nStatus: |$.order.status|\nEstimated Delivery: |$.shipping.estimatedDate|"
+}
+```
+
+**Result:**
+```text
+{
+  "summary": "Customer Alice Smith (premium tier) placed order ORD-12345 on 2025-10-08 for $299.99. Shipping to San Francisco, CA.",
+  
+  "details": "Order: ORD-12345
+Customer: Alice Smith
+Email: alice@example.com
+Phone: +1-555-0123
+Total: $299.99
+Status: confirmed
+Estimated Delivery: 2025-10-15"
+}
+```
+  </Tab>
+  
+  <Tab title="Conditional Text">
+    ```json Mapping
+    {
+      "message": "Order |$.order.id| is |$.order.status||. |$.order.tracking||Estimated delivery: |$.order.estimatedDate||"
+    }
+    ```
+    
+    ```json With Complete Data
+    {
+      "order": {
+        "id": "ORD-123",
+        "status": "shipped",
+        "tracking": "Track at: https://track.example.com/TRK-789",
+        "estimatedDate": "Jan 20, 2025"
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "message": "Order ORD-123 is shipped. Track at: https://track.example.com/TRK-789. Estimated delivery: Jan 20, 2025"
+    }
+    ```
+    
+    ```json With Partial Data
+    {
+      "order": {
+        "id": "ORD-124",
+        "status": "processing"
+      }
+    }
+    ```
+    
+    ```json Result (missing optional fields)
+    {
+      "message": "Order ORD-124 is processing. "
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Mixed Data Types">
+    ```json Mapping
+    {
+      "report": "Report for |$.report.date|: |$.metrics.orders| orders, $|$.metrics.revenue| revenue, |$.metrics.customers| customers (|$.metrics.newCustomers| new)"
+    }
+    ```
+    
+    ```json With Data
+    {
+      "report": {"date": "2025-01-15"},
+      "metrics": {
+        "orders": 145,
+        "revenue": 12450.75,
+        "customers": 89,
+        "newCustomers": 12
+      }
+    }
+    ```
+    
+    ```json Result
+    {
+      "report": "Report for 2025-01-15: 145 orders, $12450.75 revenue, 89 customers (12 new)"
+    }
+    ```
+    
+    Numbers are automatically converted to strings.
+  </Tab>
+</Tabs>
+
+## JSONPath with Pipe Operator
+
+Combine JSONPath queries with string concatenation.
+
+<Tabs>
+  <Tab title="Array Properties">
+    ```json Mapping
+    {
+      "firstItem": "First item: |$.items[0].name| ($|$.items[0].price|)",
+      "lastItem": "Last item: |$.items[-1].name| ($|$.items[-1].price|)"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Nested Access">
+    ```json Mapping
+    {
+      "userInfo": "User |$.response.data.user.profile.name| (|$.response.data.user.email|)",
+      "location": "Located in |$.response.data.user.address.city|, |$.response.data.user.address.country|"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="With Filters">
+    ```json Mapping
+    {
+      "premiumUsers": "Premium users: |$.users[?(@.tier===premium)].length|",
+      "totalRevenue": "Total: $|$.orders[?(@.status===completed)].total|"
+    }
+    ```
+    
+    Note: This combines JSONPath filters with string concatenation.
+  </Tab>
+</Tabs>
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Full Name" icon="user">
+    ```json
+    {
+      "fullName": "$.user.firstName| |$.user.lastName",
+      "displayName": "$.user.title| |$.user.firstName| |$.user.lastName|, |$.user.suffix|"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Full Address" icon="location-dot">
+    ```json
+    {
+      "fullAddress": "$.address.street|, |$.address.city|, |$.address.state| |$.address.zip|",
+      "singleLine": "$.address.street| |$.address.city| |$.address.state| |$.address.zip|"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Formatted Dates" icon="calendar">
+    ```json
+    {
+      "isoDate": "$.date.year|-|$.date.month|-|$.date.day|",
+      "usDate": "$.date.month|/|$.date.day|/|$.date.year|",
+      "display": "$.date.month| |$.date.day|, |$.date.year|"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Currency Formatting" icon="dollar-sign">
+    ```json
+    {
+      "price": "$|$.product.price|",
+      "withCurrency": "$.order.total| |$.order.currency|",
+      "detailed": "Total: $|$.order.subtotal| + $|$.order.tax| = $|$.order.total|"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="List Items" icon="list">
+    ```json
+    {
+      "summary": "Order contains: |$.items[0].name|, |$.items[1].name|, and |$.items[2].name|",
+      "count": "Total items: |$.items.length|",
+      "simpleList": "Tags: |$.tags|"
+    }
+    ```
+    
+    **Note:** Use `$.tags|` to join simple arrays. For arrays of objects, access individual items.
+  </Accordion>
+  
+  <Accordion title="Array vs String" icon="list-check">
+    ```json
+    {
+      "tagsAsArray": "$.product.tags",
+      "tagsAsString": "$.product.tags|",
+      "customFormat": "Tags: |$.product.tags[0]|, |$.product.tags[1]|, |$.product.tags[2]|"
+    }
+    ```
+    
+    Choose based on whether you need array structure or a readable string.
+  </Accordion>
+
+</AccordionGroup>
+
+## Best Practices
+
+<Steps>
+  <Step title="Use Trailing Pipes for Optional Fields">
+    Add `|` at the end when you want to ensure empty strings instead of undefined:
+    ```json
+    {"optional": "$.user.middleName|"}
+    ```
+  </Step>
+  
+  <Step title="Be Consistent with Spacing">
+    Choose a spacing style and stick with it:
+    ```json
+    {
+      "withSpaces": "$.a| |$.b| |$.c",
+      "withCommas": "$.a|, |$.b|, |$.c|"
+    }
+    ```
+  </Step>
+  
+  <Step title="Handle Missing Data Gracefully">
+    Structure your templates to work even when optional data is missing:
+    ```json
+    {
+      "message": "Status: |$.status||. |$.details||"
+    }
+    ```
+  </Step>
+  
+  <Step title="Test with Missing Values">
+    Always test your pipe expressions with partial data to ensure they degrade gracefully.
+  </Step>
+  
+  <Step title="Keep It Readable">
+    For complex concatenations, consider breaking into multiple fields:
+    ```json
+    {
+      "firstName": "$.user.firstName|",
+      "lastName": "$.user.lastName|",
+      "fullName": "$.user.firstName| |$.user.lastName|"
+    }
+    ```
+  </Step>
+</Steps>
+
+## Performance Tips
+
+<CardGroup cols={2}>
+  <Card title="Efficient" icon="gauge-high">
+    Simple concatenations with few variables:
+    ```json
+    "Hello |$.name|!"
+    ```
+  </Card>
+  
+  <Card title="Less Efficient" icon="gauge-simple">
+    Complex expressions with many variables:
+    ```json
+    "|$.a||$.b||$.c||$.d||$.e||$.f|"
+    ```
+  </Card>
+</CardGroup>
+
+<Tip>
+The pipe operator is evaluated during mapping, so there's minimal performance impact. However, excessively long concatenations with dozens of variables may be better split into multiple fields.
+</Tip>
+
+## Debugging Tips
+
+<AccordionGroup>
+  <Accordion title="Missing Values" icon="bug">
+    If parts of your string are missing:
+    
+    1. Check that the source path exists
+    2. Verify the node has executed
+    3. Use the Flow tester to inspect data
+    4. Add trailing pipes to see empty strings: `$.value|`
+  </Accordion>
+  
+  <Accordion title="Unexpected Output" icon="circle-exclamation">
+    If concatenation doesn't work as expected:
+    
+    1. Verify `$.` prefix on all variable paths
+    2. Check for typos in node IDs or property names
+    3. Test each variable separately first
+    4. Ensure all segments are separated by `|`
+  </Accordion>
+  
+  <Accordion title="Special Characters" icon="wand-sparkles">
+    If you need a literal pipe character in your output:
+    
+    Unfortunately, there's no escape for literal `|` in pipe expressions. Consider:
+    - Using a different character
+    - Building the string in multiple steps
+    - Using a static field with the pipe character
+  </Accordion>
+  
+  <Accordion title="[object Object] Output" icon="cube">
+    If you're seeing `"[object Object]"` in your output:
+    
+    **Cause:** You're using a trailing pipe with an object:
+    ```json
+    {"address": "$.user.address|"}  // ❌ Returns "[object Object]"
+    ```
+    
+    **Solutions:**
+    1. Remove the pipe to preserve the object:
+    ```json
+    {"address": "$.user.address"}  // ✅ Returns full object
+    ```
+    
+    2. Access individual properties:
+    ```json
+    {"address": "$.user.address.street|, |$.user.address.city|"}
+    ```
+  </Accordion>
+  
+  <Accordion title="Unexpected Array Behavior" icon="list">
+    If your array is appearing as a comma-separated string:
+    
+    **Cause:** You're using a trailing pipe with an array:
+    ```json
+    {"items": "$.order.items|"}  // Returns "item1,item2,item3"
+    ```
+    
+    **Solutions:**
+    - Remove pipe to preserve array: `{"items": "$.order.items"}`
+    - Keep pipe if you want comma-separated string
+    - Use JSONPath to select specific items: `$.order.items[0]`
+  </Accordion>
+
+</AccordionGroup>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card 
+    title="Filters & Expressions" 
+    icon="4" 
+    href="/advanced/variable-mapping/filters-and-expressions"
+  >
+    Learn to filter and query data with conditional expressions
+  </Card>
+  <Card 
+    title="Advanced Techniques" 
+    icon="5" 
+    href="/advanced/variable-mapping/advanced-techniques"
+  >
+    Discover power user features and optimizations
+  </Card>
+  <Card 
+    title="Examples" 
+    icon="code" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See real-world pipe operator patterns
+  </Card>
+  <Card 
+    title="Reference" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Complete syntax reference
+  </Card>
+</CardGroup>
+
+<Info>
+**Questions?** Check the [Reference](/advanced/variable-mapping/reference) or visit our [Help Center](/help).
+</Info>

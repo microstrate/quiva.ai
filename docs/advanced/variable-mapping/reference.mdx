@@ -1,0 +1,981 @@
+# Reference Guide
+
+Complete syntax reference, troubleshooting guide, and quick-lookup tables for JSON Path mapping.
+
+## Quick Syntax Reference
+
+### Core Operators
+
+| Operator | Name | Description | Example |
+|----------|------|-------------|---------|
+| `$` | Root | Document root | `$.NODE.data` |
+| `.` | Dot | Child operator | `$.NODE.user.name` |
+| `..` | Recursive | Deep scan | `$..price` |
+| `*` | Wildcard | All elements | `$.NODE.*` |
+| `[]` | Brackets | Subscript | `$.NODE['property-name']` |
+| `[n]` | Array Index | Specific position | `$.NODE.items[0]` |
+| `[start:end]` | Slice | Array range | `$.NODE.items[0:3]` |
+| `[-n]` | Negative Index | From end | `$.NODE.items[-1]` |
+| `[*]` | Array Wildcard | All array items | `$.NODE.items[*]` |
+| `[?()]` | Filter | Conditional selection | `$.NODE[?(@.price>10)]` |
+| `^` | Parent | Parent reference | `$.NODE.child^` |
+| `~` | Property Name | Get key names | `$.NODE.*~` |
+| `\|` | Pipe | Concatenation (custom) | `First\|$\|Last` |
+
+### Microstrate-Specific Extensions
+
+| Feature | Description | Example |
+|---------|-------------|---------|
+| **NODE_ID Reference** | Reference any node by ID | `$.NODE_ID.property` |
+| **Pipe Operator** | Concatenate static + dynamic | `Name: \|$.NODE.name` |
+| **Inline Detection** | Use anywhere in object | `{"key": "$.NODE.value"}` |
+| **Multi-pipe** | Multiple concatenations | `$.first\| \|$.last` |
+
+<Info>
+The pipe operator (`|`) is a Microstrate custom extension not found in standard JSONPath implementations.
+</Info>
+
+---
+
+## Array Operations
+
+### Array Access Methods
+
+<Tabs>
+  <Tab title="Index Access">
+```json
+// Positive indexing (0-based)
+"$.NODE.items[0]"      // First item
+"$.NODE.items[1]"      // Second item
+"$.NODE.items[5]"      // Sixth item
+
+// Negative indexing (from end)
+"$.NODE.items[-1]"     // Last item
+"$.NODE.items[-2]"     // Second-to-last
+"$.NODE.items[-5]"     // Fifth from end
+```
+  </Tab>
+  
+  <Tab title="Slicing">
+```json
+// Basic slicing [start:end]
+"$.NODE.items[0:3]"    // First 3 items (0, 1, 2)
+"$.NODE.items[2:5]"    // Items 2, 3, 4
+"$.NODE.items[5:10]"   // Items 5-9
+
+// Omit start (from beginning)
+"$.NODE.items[:3]"     // First 3 items
+
+// Omit end (to end)
+"$.NODE.items[2:]"     // From item 2 to end
+
+// Negative slicing
+"$.NODE.items[-3:]"    // Last 3 items
+"$.NODE.items[:-2]"    // All except last 2
+```
+  </Tab>
+  
+  <Tab title="Wildcards">
+```json
+// Get all array items
+"$.NODE.items[*]"              // All items as array
+"$.NODE.items[*].name"         // All names
+"$.NODE.items[*].price"        // All prices
+
+// Get all properties
+"$.NODE.user.*"                // All user properties
+"$.NODE.*"                     // All NODE properties
+
+// Get property names
+"$.NODE.user.*~"               // Property keys
+"$.NODE.items[*]~"             // Array indices as strings
+```
+  </Tab>
+  
+  <Tab title="Array Properties">
+```json
+// Array length
+"$.NODE.items.length"          // Number of items
+
+// Combined with filters
+"$.NODE.items[?(@.active)].length"  // Count active items
+
+// Nested arrays
+"$.NODE.users[*].orders.length"     // Each user's order count
+```
+  </Tab>
+</Tabs>
+
+---
+
+## Filter Expressions
+
+### Filter Syntax Patterns
+
+<AccordionGroup>
+  <Accordion title="Basic Filters" icon="filter">
+```json
+// Existence check
+"$.items[?(@.id)]"                    // Has 'id' property
+"$.items[?(@.active)]"                // Has truthy 'active'
+
+// Equality
+"$.items[?(@.status==='active')]"    // Strict equality
+"$.items[?(@.type=='premium')]"      // Loose equality
+"$.items[?(@.count===0)]"            // Zero check
+
+// Inequality
+"$.items[?(@.status!=='deleted')]"   // Not equal
+"$.items[?(@.role!='guest')]"        // Loose not equal
+```
+  </Accordion>
+  
+  <Accordion title="Numeric Comparisons" icon="calculator">
+```json
+// Greater than / Less than
+"$.items[?(@.price>100)]"            // Price over 100
+"$.items[?(@.stock<10)]"             // Low stock
+"$.items[?(@.rating>=4.5)]"          // High rated
+"$.items[?(@.age<=18)]"              // Max age
+
+// Numeric ranges
+"$.items[?(@.price>=10 && @.price<=100)]"     // Between 10-100
+"$.items[?(@.quantity>0 && @.quantity<50)]"   // Range 1-49
+```
+  </Accordion>
+  
+  <Accordion title="Logical Operators" icon="code-branch">
+```json
+// AND operator (&&)
+"$.items[?(@.active===true && @.verified===true)]"
+"$.users[?(@.age>=18 && @.country==='US')]"
+"$.products[?(@.inStock && @.price<100)]"
+
+// OR operator (||)
+"$.items[?(@.status==='pending' || @.status==='processing')]"
+"$.users[?(@.role==='admin' || @.role==='moderator')]"
+"$.items[?(@.priority==='high' || @.urgent===true)]"
+
+// Complex combinations
+"$.items[?(@.active && (@.type==='A' || @.type==='B'))]"
+"$.users[?(@.verified && @.age>=18 && (@.role==='admin' || @.role==='moderator'))]"
+```
+  </Accordion>
+  
+  <Accordion title="String Matching" icon="text">
+```json
+// Exact match
+"$.items[?(@.category==='electronics')]"
+"$.users[?(@.email==='john@example.com')]"
+
+// Case sensitivity
+"$.items[?(@.name==='Product')]"     // Case-sensitive
+"$.items[?(@.name=='product')]"      // Still case-sensitive
+
+// Note: Regular expressions not supported in standard JSONPath
+// Use exact string matching only
+```
+  </Accordion>
+  
+  <Accordion title="Null & Undefined" icon="ban">
+```json
+// Check for null
+"$.items[?(@.deletedAt===null)]"     // Is null
+"$.items[?(@.value!==null)]"         // Not null
+
+// Check existence (undefined)
+"$.items[?(@.optional)]"             // Property exists and truthy
+"$.items[?(!@.optional)]"            // Property missing or falsy
+
+// Type selectors (advanced)
+"$.items[?(@null())]"                // Null values only
+"$.items[?(@undefined())]"           // Undefined only
+```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Filter Expression Variables
+
+### Special Variables Reference
+
+| Variable | Scope | Description | Example |
+|----------|-------|-------------|---------|
+| `@` | Current | The current node being filtered | `?(@.price>10)` |
+| `@.property` | Current | Property of current node | `?(@.status==='active')` |
+| `@.nested.prop` | Current | Nested property access | `?(@.user.age>=18)` |
+| `@root` | Global | Root of entire JSON document | `?(@.id===@root.userId)` |
+| `@parent` | Parent | Parent object of current node | `?(@parent.type==='premium')` |
+| `@property` | Meta | Property name or array index | `?(@property!==0)` |
+| `@parentProperty` | Meta | Parent's property name | `?(@parentProperty!=='hidden')` |
+| `@path` | Meta | JSONPath to current node | `?(@path!==\"$['items'][0]\")` |
+
+### Special Functions
+
+<Tabs>
+  <Tab title="Aggregation">
+```json
+// Min/Max
+"$.items[?(@.price===@min(@..price))]"    // Cheapest item
+"$.items[?(@.score===@max(@..score))]"    // Highest score
+
+// Note: @min() and @max() work on descendant values
+"$.products[?(@.price===@min(@root.products[*].price))]"
+```
+  </Tab>
+  
+  <Tab title="Type Selectors">
+```json
+// Type checking
+"$..@null()"              // All null values
+"$..@boolean()"           // All booleans  
+"$..@number()"            // All numbers
+"$..@integer()"           // Integer numbers only
+"$..@string()"            // All strings
+"$..@array()"             // All arrays
+"$..@object()"            // All objects
+
+// In filters
+"$.items[?(@number())]"                    // Numeric items
+"$.data[?(@.value@string())]"              // String values
+"$.config[?(@.settings@object())]"         // Object settings
+```
+  </Tab>
+  
+  <Tab title="Context Access">
+```json
+// Root reference
+"$.orders[?(@.userId===@root.currentUser.id)]"    // Match root value
+"$.items[?(@.category===@root.filter)]"           // Filter by root
+
+// Parent reference  
+"$.users[*].orders[?(@parent.status==='active')]" // Active user orders
+"$.sections[*].items[?(@parent.visible)]"         // Items in visible sections
+
+// Property/Path reference
+"$.data[?(@property!=='internal')]"               // Exclude internal keys
+"$.items[?(@path!==\"$.excluded\")]"              // Exclude specific paths
+```
+  </Tab>
+</Tabs>
+
+---
+
+## Comparison Operators
+
+### Complete Operator Table
+
+| Operator | Description | Works With | Example |
+|----------|-------------|------------|---------|
+| `===` | Strict equality | All types | `?(@.status==='active')` |
+| `!==` | Strict inequality | All types | `?(@.type!=='hidden')` |
+| `==` | Loose equality | All types | `?(@.count==5)` |
+| `!=` | Loose inequality | All types | `?(@.value!=null)` |
+| `<` | Less than | Numbers, strings | `?(@.age<18)` |
+| `>` | Greater than | Numbers, strings | `?(@.price>100)` |
+| `<=` | Less than or equal | Numbers, strings | `?(@.score<=50)` |
+| `>=` | Greater than or equal | Numbers, strings | `?(@.quantity>=10)` |
+| `&&` | Logical AND | Boolean expressions | `?(@.a && @.b)` |
+| `\|\|` | Logical OR | Boolean expressions | `?(@.a \|\| @.b)` |
+| `!` | Logical NOT | Boolean expressions | `?(!@.deleted)` |
+
+<Warning>
+**Important Differences:**
+- Use `===` (triple equals) not `=` (single equals)
+- Use `!==` not `!` for inequality
+- Strings in comparisons must be quoted: `'value'` or `"value"`
+</Warning>
+
+### Operator Precedence
+
+From highest to lowest priority:
+
+1. **Grouping**: `()`
+2. **Property Access**: `.`, `[]`
+3. **Logical NOT**: `!`
+4. **Comparison**: `<`, `>`, `<=`, `>=`
+5. **Equality**: `===`, `!==`, `==`, `!=`
+6. **Logical AND**: `&&`
+7. **Logical OR**: `||`
+
+<CodeGroup>
+
+```json Example 1: Without Grouping
+// This evaluates as: (@.active && @.verified) || @.admin
+"$.users[?(@.active && @.verified || @.admin)]"
+
+// Result: Active+Verified users OR any admin (even inactive)
+```
+
+```json Example 2: With Grouping
+// This evaluates as: @.active && (@.verified || @.admin)
+"$.users[?(@.active && (@.verified || @.admin))]"
+
+// Result: Active users who are either verified OR admin
+```
+
+</CodeGroup>
+
+---
+
+## Common Patterns Quick Reference
+
+### Pattern Library
+
+<CardGroup cols={2}>
+  <Card title="Basic Property Access" icon="arrow-right">
+```json
+"$.NODE.property"
+"$.NODE.nested.deep.value"
+"$.NODE['property-name']"
+"$.NODE['property with spaces']"
+```
+  </Card>
+
+  <Card title="Array Operations" icon="list">
+```json
+"$.NODE.array[0]"
+"$.NODE.array[-1]"
+"$.NODE.array[*]"
+"$.NODE.array[0:3]"
+"$.NODE.array.length"
+```
+  </Card>
+
+  <Card title="Concatenation" icon="link">
+```json
+"Text|$.NODE.value"
+"$.NODE.first| |$.NODE.last"
+"$.NODE.city|, |$.NODE.state"
+"Prefix:|$.NODE.data|:Suffix"
+```
+  </Card>
+
+  <Card title="Filtering" icon="filter">
+```json
+"$.NODE[?(@.active)]"
+"$.NODE[?(@.price>100)]"
+"$.NODE[?(@.status==='done')]"
+"$.NODE[?(@.type==='A' || @.type==='B')]"
+```
+  </Card>
+
+  <Card title="Deep Scanning" icon="magnifying-glass">
+```json
+"$..property"
+"$..price"
+"$..id"
+"$.NODE..status"
+```
+  </Card>
+
+  <Card title="Wildcards" icon="asterisk">
+```json
+"$.NODE.*"
+"$.NODE.users[*].name"
+"$.NODE.items[*].price"
+"$.NODE.*~"
+```
+  </Card>
+
+  <Card title="Complex Filters" icon="filter-circle-xmark">
+```json
+"$.NODE[?(@.a && @.b)]"
+"$.NODE[?(@.x>10 && @.y<20)]"
+"$.NODE[?(@.status!=='deleted')]"
+"$.NODE[?(@.price>=@min(@..price))]"
+```
+  </Card>
+
+  <Card title="Combining Patterns" icon="layer-group">
+```json
+"$.NODE.items[?(@.active)][0]"
+"$.NODE.users[*].orders[?(@.paid)]"
+"$.NODE[?(@.type==='A')].value|text"
+"First: |$.NODE[0].name"
+```
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting Guide
+
+### Common Errors & Solutions
+
+<AccordionGroup>
+  <Accordion title="❌ Undefined or Empty Result" icon="circle-xmark">
+**Symptoms:** Path returns `undefined`, filter returns empty array `[]`, or property seems to exist but isn't found.
+
+**Common Causes:**
+
+**Incorrect Node ID**
+```json
+// ❌ Wrong
+"$.wrong_node_id.property"
+
+// ✅ Correct
+"$.correct_node_id.property"
+```
+
+**Case Sensitivity**
+```json
+// ❌ Wrong case
+"$.NODE.Username"
+
+// ✅ Correct case
+"$.NODE.username"
+```
+
+**Array Index Out of Bounds**
+```json
+// ❌ Array only has 3 items
+"$.NODE.items[5]"
+
+// ✅ Check length first
+"$.NODE.items[2]"
+```
+
+**Property Doesn't Exist**
+```json
+// ❌ Typo in property name
+"$.NODE.custmor_name"
+
+// ✅ Correct spelling
+"$.NODE.customer_name"
+```
+
+**Solutions:** Verify node ID matches exactly in flow, check property names in Flow Debugger, test with simpler paths and build up, and use `.length` to check array sizes.
+  </Accordion>
+
+  <Accordion title="❌ Filter Not Working" icon="filter-circle-xmark">
+**Symptoms:** Filter returns wrong items, filter returns nothing, or comparison seems correct but fails.
+
+**Common Causes:**
+
+**Using `=` Instead of `===`**
+```json
+// ❌ Single equals doesn't work
+"$.items[?(@.status='active')]"
+
+// ✅ Use triple equals
+"$.items[?(@.status==='active')]"
+```
+
+**Missing Quotes on Strings**
+```json
+// ❌ String without quotes
+"$.items[?(@.type===premium)]"
+
+// ✅ Quoted string
+"$.items[?(@.type==='premium')]"
+```
+
+**Wrong Comparison Type**
+```json
+// ❌ Comparing string to number
+"$.items[?(@.id===123)]"
+// If id is string "123"
+
+// ✅ Match types
+"$.items[?(@.id==='123')]"
+```
+
+**Forgetting `@` in Filter**
+```json
+// ❌ Missing @ symbol
+"$.items[?(price>10)]"
+
+// ✅ Include @ for current node
+"$.items[?(@.price>10)]"
+```
+
+**Solutions:** Always use `===` for equality (not `=`), quote string values in comparisons, use `@` to reference current node, and check data types match in comparisons.
+  </Accordion>
+
+  <Accordion title="❌ Type Mismatch Errors" icon="exclamation-triangle">
+**Symptoms:** Comparison fails unexpectedly, filter returns empty when data exists, or inconsistent results.
+
+**Common Causes:**
+
+**String vs Number**
+```json
+// ❌ Comparing string "10" to number 10
+"$.items[?(@.quantity===10)]"
+// When quantity is string "10"
+
+// ✅ Match the type in source data
+"$.items[?(@.quantity==='10')]"
+```
+
+**Boolean as String**
+```json
+// ❌ Boolean comparison fails
+"$.items[?(@.active===true)]"
+// When active is string "true"
+
+// ✅ String comparison
+"$.items[?(@.active==='true')]"
+```
+
+**Null vs Undefined**
+```json
+// ❌ These are different
+"$.items[?(@.value===null)]"      // Explicitly null
+"$.items[?(!@.value)]"             // Undefined or falsy
+
+// ✅ Be specific
+"$.items[?(@.value===null)]"       // Only null
+"$.items[?(@value)]"               // Exists check
+```
+
+**Solutions:** Check source data types in debugger, use loose equality `==` if types vary, and convert types in earlier flow nodes if needed.
+  </Accordion>
+
+  <Accordion title="❌ Pipe Operator Issues" icon="link-slash">
+**Symptoms:** Pipe concatenation not working, literal `|` appears in output, or parts missing from concatenated string.
+
+**Common Causes:**
+
+**Spaces Around Pipe**
+```json
+// ❌ Spaces might cause issues
+"$.NODE.first | $.NODE.last"
+
+// ✅ No spaces around pipe
+"$.NODE.first|$.NODE.last"
+```
+
+**Empty/Undefined Values**
+```json
+// ❌ If middle_name doesn't exist
+"$.first| |$.middle| |$.last"
+// Result: "John  Smith" (double space)
+
+// ✅ Ensure all values exist or handle in flow
+```
+
+**Wrong Pipe Type**
+```json
+// ❌ Using filter pipe instead of concat
+"$.items | $.NODE.name"
+
+// ✅ Custom concat pipe
+"Text|$.NODE.name"
+```
+
+**Solutions:** Remove spaces around pipes, check all referenced values exist, and remember that `|` is a Microstrate custom extension (not standard JSONPath).
+  </Accordion>
+
+  <Accordion title="❌ Performance Issues" icon="gauge-high">
+**Symptoms:** Slow flow execution, timeouts on large datasets, or high memory usage.
+
+**Common Causes:**
+
+**Deep Scan on Large Data**
+```json
+// ❌ Scans entire tree
+"$..price"
+
+// ✅ Specific path
+"$.NODE.products[*].price"
+```
+
+**Multiple Filters**
+```json
+// ❌ Separate filters compound
+"$.items[?(@.active)][?(@.verified)][?(@.premium)]"
+
+// ✅ Combined filter
+"$.items[?(@.active && @.verified && @.premium)]"
+```
+
+**Unnecessary Wildcards**
+```json
+// ❌ Gets all properties
+"$.NODE.*"
+
+// ✅ Get only what you need
+"$.NODE.specificProperty"
+```
+
+**Solutions:** Use specific paths instead of deep scan, combine filter conditions, limit array slicing ranges, and process data in smaller batches if possible.
+  </Accordion>
+
+  <Accordion title="❌ Special Characters in Property Names" icon="at">
+**Symptoms:** Properties with special characters not accessible, syntax errors with property names, or unexpected undefined results.
+
+**Common Causes:**
+
+**Spaces in Property Names**
+```json
+// ❌ Dot notation fails
+"$.NODE.user name"
+
+// ✅ Bracket notation
+"$.NODE['user name']"
+```
+
+**Hyphens/Dashes**
+```json
+// ❌ Interpreted as subtraction
+"$.NODE.user-id"
+
+// ✅ Bracket notation
+"$.NODE['user-id']"
+```
+
+**Special Characters**
+```json
+// ❌ Dot notation fails
+"$.NODE.user@email"
+"$.NODE.price$amount"
+
+// ✅ Bracket notation
+"$.NODE['user@email']"
+"$.NODE['price$amount']"
+```
+
+**Numeric-Starting Names**
+```json
+// ❌ Confusing syntax
+"$.NODE.2fa_enabled"
+
+// ✅ Bracket notation
+"$.NODE['2fa_enabled']"
+```
+
+**Solutions:** Use bracket notation `['property']` for special characters, spaces, hyphens, @, $, etc., and for properties that start with numbers.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Error Messages Reference
+
+### Common Error Messages
+
+| Error Message | Cause | Solution |
+|---------------|-------|----------|
+| `JSONPath syntax error` | Invalid JSONPath expression | Check syntax, ensure proper quotes and brackets |
+| `Unexpected token` | Malformed JSON or path | Verify JSON structure and path syntax |
+| `Cannot read property of undefined` | Accessing non-existent property | Check if property exists before accessing |
+| `Invalid array index` | Array index out of bounds | Verify array length, use `.length` |
+| `Filter expression error` | Invalid filter syntax | Check filter uses `@`, `===`, proper operators |
+| `Type error in comparison` | Comparing incompatible types | Ensure types match or use loose equality `==` |
+| `Circular reference` | Parent/root creates infinite loop | Avoid self-referential filters |
+| `Maximum call stack exceeded` | Infinite recursion in path | Review recursive descent usage `..` |
+
+---
+
+## Best Practices
+
+### Do's and Don'ts
+
+<Tabs>
+  <Tab title="✅ Do">
+**Do These Things:**
+
+✅ Use specific paths when possible: `$.NODE.user.name`
+
+✅ Use triple equals in filters: `?(@.status==='active')`
+
+✅ Quote strings in filters: `?(@.type==='premium')`
+
+✅ Check array length before accessing: `$.items.length`
+
+✅ Use bracket notation for special characters: `['user-id']`
+
+✅ Combine filters with `&&` and `||`: `?(@.a && @.b)`
+
+✅ Use meaningful node IDs in flows for clarity
+
+✅ Test paths with Flow Debugger before deploying
+
+✅ Use array slicing for pagination: `[0:10]`
+
+✅ Validate data structures in earlier nodes when possible
+  </Tab>
+  
+  <Tab title="❌ Don't">
+**Avoid These Mistakes:**
+
+❌ Use single equals: `?(@.status='active')` ← Wrong!
+
+❌ Forget quotes on strings: `?(@.type===premium)` ← Wrong!
+
+❌ Forget `@` in filters: `?(status==='active')` ← Wrong!
+
+❌ Use deep scan unnecessarily: `$..property` (slow)
+
+❌ Chain multiple separate filters: `[?(@.a)][?(@.b)]` (slow)
+
+❌ Access properties without checking existence
+
+❌ Use incorrect case: `$.NODE.Username` when it's `username`
+
+❌ Mix types in comparisons: `?(@.id===123)` when id is string
+
+❌ Use wildcards when you need specific properties
+
+❌ Assume array order is stable without sorting first
+  </Tab>
+  
+  <Tab title="⚡ Performance">
+**Performance Optimization Tips:**
+
+⚡ **Specific Paths > Wildcards**: `$.NODE.items[*]` better than `$.NODE..*`
+
+⚡ **Combined Filters > Multiple Filters**: One `?(@.a && @.b)` better than `[?(@.a)][?(@.b)]`
+
+⚡ **Array Slicing > Full Array**: `[0:10]` better than `[*]` for large arrays
+
+⚡ **Property Access > Deep Scan**: `$.NODE.property` better than `$..property`
+
+⚡ **Early Filtering**: Filter data as early as possible in your flow
+
+⚡ **Limit Recursion**: Avoid `..` on deeply nested structures
+
+⚡ **Cache Results**: Store filtered results in variables instead of re-filtering
+
+⚡ **Batch Processing**: Process large datasets in smaller chunks
+  </Tab>
+  
+  <Tab title="🔒 Security">
+**Security Best Practices:**
+
+🔒 **Validate Inputs**: Don't use user input directly in paths
+
+🔒 **Sanitize Data**: Clean data before using in filters
+
+🔒 **Limit Depth**: Prevent deep scans on untrusted data
+
+🔒 **Access Control**: Only map data users should access
+
+🔒 **Sensitive Data**: Avoid logging or storing sensitive path results
+
+🔒 **Rate Limiting**: Limit complex path operations on large datasets
+
+🔒 **Error Handling**: Handle undefined results gracefully
+
+🔒 **Type Safety**: Validate data types before comparisons
+  </Tab>
+</Tabs>
+
+---
+
+## Testing Strategies
+
+### How to Test Your Paths
+
+<Steps>
+  <Step title="Start Simple">
+Begin with basic property access and verify it works:
+
+```json
+"$.NODE.property"
+```
+  </Step>
+  
+  <Step title="Add Complexity Gradually">
+Add one feature at a time (arrays, then filters):
+
+```json
+"$.NODE.items[0]"
+"$.NODE.items[?(@.active)]"
+```
+  </Step>
+  
+  <Step title="Use Flow Debugger">
+Test each path in the Flow Debugger to see actual results before deploying.
+  </Step>
+  
+  <Step title="Test Edge Cases">
+Test with empty arrays `[]`, missing properties `undefined`, null values `null`, and different data types.
+  </Step>
+  
+  <Step title="Verify Output Format">
+Check if you need an array `[...]` or single value, and adjust accordingly:
+
+```json
+"$.NODE.items[?(@.active)][0]"  // Single item
+"$.NODE.items[?(@.active)]"     // Array of items
+```
+  </Step>
+</Steps>
+
+---
+
+## Migration from Other Systems
+
+### From Zapier
+
+<CodeGroup>
+
+```json Zapier Format
+// Zapier uses {{double.braces}}
+{{1.customer.name}}
+{{2.order.items.0.price}}
+```
+
+```json Microstrate Equivalent
+// Microstrate uses $.NODE_ID.path
+"$.step1.customer.name"
+"$.step2.order.items[0].price"
+```
+
+</CodeGroup>
+
+### From Make (Integromat)
+
+<CodeGroup>
+
+```json Make Format
+// Make uses {{module.field}}
+{{1.name}}
+{{2.items[].name}}
+```
+
+```json Microstrate Equivalent  
+// Similar but with $ and proper array syntax
+"$.module1.name"
+"$.module2.items[*].name"
+```
+
+</CodeGroup>
+
+### From n8n
+
+<CodeGroup>
+
+```json n8n Format
+// n8n uses {{$node["Node Name"].json.field}}
+{{$node["HTTP Request"].json.data.name}}
+```
+
+```json Microstrate Equivalent
+// Use node IDs instead of names
+"$.http_request.data.name"
+```
+
+</CodeGroup>
+
+<Info>
+**Key Difference:** Microstrate uses standard JSONPath syntax with custom extensions, making it more powerful for complex data transformations.
+</Info>
+
+---
+
+## Keyboard Shortcuts & Tips
+
+### Flow Builder Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| **Test Path** | Click "Test" button in mapping field |
+| **View Source Data** | Open Flow Debugger panel |
+| **Copy Path** | Right-click property in debugger |
+| **Format JSON** | Auto-formats in code view |
+| **Validate Syntax** | Automatic on field blur |
+
+### Debugging Tips
+
+<CardGroup cols={2}>
+  <Card title="Start Small" icon="seedling">
+Test basic path first, then add complexity one step at a time.
+  </Card>
+  
+  <Card title="Use Console" icon="terminal">
+Test JSONPath expressions in browser console with sample data.
+  </Card>
+  
+  <Card title="Check Types" icon="check">
+Use `typeof` or Flow Debugger to verify data types before filtering.
+  </Card>
+  
+  <Card title="Log Intermediate Results" icon="list-check">
+Create intermediate nodes to see transformation steps.
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card 
+    title="Examples" 
+    icon="lightbulb" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See real-world usage examples
+  </Card>
+  <Card 
+    title="Advanced Techniques" 
+    icon="graduation-cap" 
+    href="/advanced/variable-mapping/advanced-techniques"
+  >
+    Learn power user strategies
+  </Card>
+  <Card 
+    title="Filters & Expressions" 
+    icon="filter" 
+    href="/advanced/variable-mapping/filters-expressions"
+  >
+    Deep dive into filtering
+  </Card>
+  <Card 
+    title="Basic Syntax" 
+    icon="book-open" 
+    href="/advanced/variable-mapping/basic-syntax"
+  >
+    Review the fundamentals
+  </Card>
+</CardGroup>
+
+---
+
+## Quick Reference Card
+
+<Accordion title="Print-Friendly Quick Reference" icon="print">
+
+### JSONPath Cheat Sheet
+
+**Basic Syntax:**
+- `$.NODE.property` - Access property
+- `$.NODE.array[0]` - Array index
+- `$.NODE.array[*]` - All items
+- `$.NODE.array[0:3]` - Slice (first 3)
+- `$.NODE.array[-1]` - Last item
+- `$.NODE.array.length` - Array length
+
+**Filtering:**
+- `$.NODE[?(@.property)]` - Exists
+- `$.NODE[?(@.x===value)]` - Equals
+- `$.NODE[?(@.x>10)]` - Greater than
+- `$.NODE[?(@.a && @.b)]` - AND
+- `$.NODE[?(@.a || @.b)]` - OR
+
+**Pipe Operator (Custom):**
+- `Text|$.NODE.value` - Concatenate
+- `$.NODE.first| |$.NODE.last` - With space
+- `$.a|, |$.b|, |$.c` - Multiple pipes
+
+**Common Patterns:**
+- `$.NODE[?(@.active)][0]` - First active item
+- `$.NODE[*].property` - All properties
+- `$.NODE[?(@.price<100)].length` - Count filtered
+
+**Remember:**
+- Use `===` not `=`
+- Quote strings in filters
+- Always use `@` in filters
+- Array indexes start at 0
+- Negative indexes from end
+
+</Accordion>
+
+<Tip>
+**Bookmark this page!** This reference guide contains everything you need for JSONPath mapping in Microstrate flows.
+</Tip>

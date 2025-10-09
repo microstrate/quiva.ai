@@ -1,0 +1,871 @@
+---
+title: "Filters & Expressions"
+description: "Query and filter data with powerful conditional expressions"
+---
+
+Filters allow you to select specific items from arrays based on conditions. Using the `?()` operator, you can query data, perform conditional selection, and extract exactly what you need.
+
+<Info>
+Filters are a standard JSONPath feature that enables SQL-like querying of JSON data structures.
+</Info>
+
+## Filter Syntax
+
+Filters use the `?()` operator with conditional expressions:
+
+```
+$.array[?(expression)]
+```
+
+- **`?`** - Indicates a filter operation
+- **`(expression)`** - The condition to evaluate
+- **`@`** - References the current item being filtered
+
+<CodeGroup>
+```json Basic Filter
+{
+  "activeUsers": "$.users[?(@.active===true)]"
+}
+```
+
+```json With Data
+{
+  "users": [
+    {"name": "Alice", "active": true},
+    {"name": "Bob", "active": false},
+    {"name": "Charlie", "active": true}
+  ]
+}
+```
+
+```json Result
+{
+  "activeUsers": [
+    {"name": "Alice", "active": true},
+    {"name": "Charlie", "active": true}
+  ]
+}
+```
+</CodeGroup>
+
+<Warning>
+Filters **always return an array**, even if only one item matches. To get a single item, you can combine with array indexing: `$.users[?(@.active===true)][0]`
+</Warning>
+
+## The @ Symbol
+
+Inside filter expressions, `@` represents the current item being evaluated.
+
+<Tabs>
+  <Tab title="Basic @ Usage">
+    ```json Filter
+    {
+      "expensiveItems": "$.products[?(@.price>100)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "products": [
+        {"name": "Widget", "price": 29.99},
+        {"name": "Gadget", "price": 149.99},
+        {"name": "Doohickey", "price": 199.99}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "expensiveItems": [
+        {"name": "Gadget", "price": 149.99},
+        {"name": "Doohickey", "price": 199.99}
+      ]
+    }
+    ```
+    
+    `@` refers to each product object as it's evaluated.
+  </Tab>
+  
+  <Tab title="Nested Properties">
+    ```json Filter
+    {
+      "bostonUsers": "$.users[?(@.address.city===Boston)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "users": [
+        {"name": "Alice", "address": {"city": "Boston"}},
+        {"name": "Bob", "address": {"city": "New York"}},
+        {"name": "Charlie", "address": {"city": "Boston"}}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "bostonUsers": [
+        {"name": "Alice", "address": {"city": "Boston"}},
+        {"name": "Charlie", "address": {"city": "Boston"}}
+      ]
+    }
+    ```
+    
+    Use `@.property.nested` to access nested values.
+  </Tab>
+  
+  <Tab title="Property Existence">
+    ```json Filter
+    {
+      "withISBN": "$.books[?(@.isbn)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "books": [
+        {"title": "Book A", "isbn": "123"},
+        {"title": "Book B"},
+        {"title": "Book C", "isbn": "456"}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "withISBN": [
+        {"title": "Book A", "isbn": "123"},
+        {"title": "Book C", "isbn": "456"}
+      ]
+    }
+    ```
+    
+    `?(@.isbn)` checks if the property exists and is truthy.
+  </Tab>
+</Tabs>
+
+## Comparison Operators
+
+Use JavaScript comparison operators in filter expressions:
+
+<Tabs>
+  <Tab title="Equality">
+    ```json Filters
+    {
+      "admins": "$.users[?(@.role===admin)]",
+      "notAdmins": "$.users[?(@.role!==admin)]",
+      "active": "$.users[?(@.active===true)]",
+      "inactive": "$.users[?(@.active===false)]"
+    }
+    ```
+    
+    **Operators:**
+    - `===` - Strict equality (recommended)
+    - `!==` - Strict inequality
+    - `==` - Loose equality
+    - `!=` - Loose inequality
+  </Tab>
+  
+  <Tab title="Numeric Comparisons">
+    ```json Filters
+    {
+      "expensive": "$.products[?(@.price>100)]",
+      "affordable": "$.products[?(@.price<=50)]",
+      "inRange": "$.products[?(@.price>=20 && @.price<=100)]"
+    }
+    ```
+    
+    **Operators:**
+    - `>` - Greater than
+    - `<` - Less than
+    - `>=` - Greater than or equal
+    - `<=` - Less than or equal
+  </Tab>
+  
+  <Tab title="String Comparisons">
+    ```json Filters
+    {
+      "startsWithA": "$.users[?(@.name[0]===A)]",
+      "longNames": "$.users[?(@.name.length>10)]",
+      "hasEmail": "$.users[?(@.email)]"
+    }
+    ```
+    
+    You can access string properties like `length` and array index `[0]`.
+  </Tab>
+</Tabs>
+
+### Comparison Operators Reference
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `===` | Strict equal | `?(@.status===active)` |
+| `!==` | Strict not equal | `?(@.status!==deleted)` |
+| `==` | Loose equal | `?(@.count==5)` |
+| `!=` | Loose not equal | `?(@.count!=0)` |
+| `>` | Greater than | `?(@.price>100)` |
+| `<` | Less than | `?(@.age<18)` |
+| `>=` | Greater or equal | `?(@.score>=80)` |
+| `<=` | Less or equal | `?(@.quantity<=10)` |
+
+<Tip>
+**Use `===` (strict equality) instead of `==`** to avoid type coercion issues. For example, `5 == "5"` is true, but `5 === "5"` is false.
+</Tip>
+
+## Logical Operators
+
+Combine multiple conditions with logical operators:
+
+<Tabs>
+  <Tab title="AND (&&)">
+    ```json Filter
+    {
+      "premiumActive": "$.users[?(@.tier===premium && @.active===true)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "users": [
+        {"name": "Alice", "tier": "premium", "active": true},
+        {"name": "Bob", "tier": "premium", "active": false},
+        {"name": "Charlie", "tier": "basic", "active": true}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "premiumActive": [
+        {"name": "Alice", "tier": "premium", "active": true}
+      ]
+    }
+    ```
+    
+    Both conditions must be true.
+  </Tab>
+  
+  <Tab title="OR (||)">
+    ```json Filter
+    {
+      "highPriority": "$.tasks[?(@.priority===urgent || @.priority===high)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "tasks": [
+        {"title": "Task A", "priority": "urgent"},
+        {"title": "Task B", "priority": "low"},
+        {"title": "Task C", "priority": "high"}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "highPriority": [
+        {"title": "Task A", "priority": "urgent"},
+        {"title": "Task C", "priority": "high"}
+      ]
+    }
+    ```
+    
+    Either condition can be true.
+  </Tab>
+  
+  <Tab title="Complex Logic">
+    ```json Filter
+    {
+      "qualified": "$.candidates[?(@.experience>5 && (@.degree===Masters || @.degree===PhD))]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "candidates": [
+        {"name": "Alice", "experience": 7, "degree": "Masters"},
+        {"name": "Bob", "experience": 3, "degree": "PhD"},
+        {"name": "Charlie", "experience": 10, "degree": "Bachelors"}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "qualified": [
+        {"name": "Alice", "experience": 7, "degree": "Masters"}
+      ]
+    }
+    ```
+    
+    Combine multiple AND/OR conditions with parentheses.
+  </Tab>
+</Tabs>
+
+## Advanced Filter Variables
+
+JSONPath Plus provides special variables for accessing related data:
+
+<Tabs>
+  <Tab title="@root">
+    Access the root document from within a filter:
+    
+    ```json Filter
+    {
+      "matchingOrders": "$.orders[?(@.customerId===@root.trigger.customer_id)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "trigger": {
+        "customer_id": "CUST-123"
+      },
+      "orders": [
+        {"id": "ORD-1", "customerId": "CUST-123"},
+        {"id": "ORD-2", "customerId": "CUST-456"},
+        {"id": "ORD-3", "customerId": "CUST-123"}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "matchingOrders": [
+        {"id": "ORD-1", "customerId": "CUST-123"},
+        {"id": "ORD-3", "customerId": "CUST-123"}
+      ]
+    }
+    ```
+    
+    `@root` lets you compare array items against trigger data or other nodes.
+  </Tab>
+  
+  <Tab title="@parent">
+    Access the parent object of the current item:
+    
+    ```json Filter
+    {
+      "premiumProducts": "$.categories..products[?(@parent.tier===premium)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "categories": [
+        {
+          "name": "Electronics",
+          "tier": "premium",
+          "products": [{"name": "Laptop"}, {"name": "Phone"}]
+        },
+        {
+          "name": "Accessories",
+          "tier": "basic",
+          "products": [{"name": "Cable"}, {"name": "Case"}]
+        }
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "premiumProducts": [
+        {"name": "Laptop"},
+        {"name": "Phone"}
+      ]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="@property">
+    Access the property name or array index of the current item:
+    
+    ```json Filter
+    {
+      "notFirst": "$.items[?(@property!==0)]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "items": ["Apple", "Banana", "Cherry"]
+    }
+    ```
+    
+    ```json Result
+    {
+      "notFirst": ["Banana", "Cherry"]
+    }
+    ```
+    
+    `@property` is the index (`0`, `1`, `2`) for array items.
+  </Tab>
+  
+  <Tab title="@path">
+    Access the JSONPath string to the current item:
+    
+    ```json Filter
+    {
+      "notFirstBook": "$.store.book[?(@path!==\"$['store']['book'][0]\")]"
+    }
+    ```
+    
+    Useful for excluding specific paths or comparing locations.
+  </Tab>
+</Tabs>
+
+### Filter Variables Reference
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `@` | Current item | `?(@.price>10)` |
+| `@.property` | Item's property | `?(@.active===true)` |
+| `@root` | Root document | `?(@.id===@root.trigger.id)` |
+| `@parent` | Parent object | `?(@parent.category===premium)` |
+| `@property` | Property name/index | `?(@property!==0)` |
+| `@parentProperty` | Parent's property name | `?(@parentProperty!==hidden)` |
+| `@path` | JSONPath to item | `?(@path!==\"$[0]\")` |
+
+## Type Selectors in Filters
+
+Filter by data type using type selector operators:
+
+<Tabs>
+  <Tab title="Primitive Types">
+    ```json Filters
+    {
+      "stringValues": "$.data[*][?(@string())]",
+      "numberValues": "$.data[*][?(@number())]",
+      "booleanValues": "$.data[*][?(@boolean())]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "data": [
+        {"value": "text"},
+        {"value": 42},
+        {"value": true},
+        {"value": "another string"}
+      ]
+    }
+    ```
+    
+    Select items by their type.
+  </Tab>
+  
+  <Tab title="Complex Types">
+    ```json Filters
+    {
+      "arrays": "$.data[*][?(@array())]",
+      "objects": "$.data[*][?(@object())]",
+      "nullValues": "$.data[*][?(@null())]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "data": [
+        {"value": [1, 2, 3]},
+        {"value": {"nested": true}},
+        {"value": null},
+        {"value": "text"}
+      ]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Numeric Types">
+    ```json Filters
+    {
+      "integers": "$.data[*][?(@integer())]",
+      "allNumbers": "$.data[*][?(@number())]"
+    }
+    ```
+    
+    ```json Data
+    {
+      "data": [
+        {"value": 42},
+        {"value": 3.14},
+        {"value": 100},
+        {"value": "text"}
+      ]
+    }
+    ```
+    
+    ```json Result
+    {
+      "integers": [{"value": 42}, {"value": 100}],
+      "allNumbers": [{"value": 42}, {"value": 3.14}, {"value": 100}]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Type Selectors Reference
+
+| Selector | Matches | Example |
+|----------|---------|---------|
+| `@string()` | String values | `?(@string())` |
+| `@number()` | All numbers | `?(@number())` |
+| `@integer()` | Integer numbers only | `?(@integer())` |
+| `@boolean()` | true or false | `?(@boolean())` |
+| `@array()` | Arrays | `?(@array())` |
+| `@object()` | Objects | `?(@object())` |
+| `@null()` | null values | `?(@null())` |
+| `@scalar()` | Non-object/non-function | `?(@scalar())` |
+
+## Complex Filter Patterns
+
+<Tabs>
+  <Tab title="Range Filtering">
+    ```json Filter
+    {
+      "midRange": "$.products[?(@.price>=50 && @.price<=150)]"
+    }
+    ```
+    
+    Select items within a numeric range.
+  </Tab>
+  
+  <Tab title="Multiple Conditions">
+    ```json Filter
+    {
+      "qualified": "$.users[?(@.active===true && @.verified===true && @.score>=80)]"
+    }
+    ```
+    
+    Require multiple conditions to all be true.
+  </Tab>
+  
+  <Tab title="Exclusion Filtering">
+    ```json Filter
+    {
+      "notDeleted": "$.items[?(@.status!==deleted && @.status!==archived)]"
+    }
+    ```
+    
+    Exclude items with specific values.
+  </Tab>
+  
+  <Tab title="Nested Array Filtering">
+    ```json Filter
+    {
+      "hasHighPriorityTask": "$.users[?(@.tasks[?(@.priority===high)])]"
+    }
+    ```
+    
+    Filter based on nested array contents (users who have high-priority tasks).
+  </Tab>
+  
+  <Tab title="Cross-Reference">
+    ```json Filter
+    {
+      "matchingItems": "$.node.items[?(@.categoryId===@root.trigger.selected_category)]"
+    }
+    ```
+    
+    Filter array items against trigger data or other node values.
+  </Tab>
+</Tabs>
+
+## Real-World Examples
+
+<Tabs>
+  <Tab title="E-commerce Orders">
+    ```json Filters
+    {
+      "recentOrders": "$.orders[?(@.total>100 && @.status===completed)]",
+      "pendingHighValue": "$.orders[?(@.status===pending && @.total>500)]",
+      "freeShipping": "$.orders[?(@.total>=50)]",
+      "needsReview": "$.orders[?(@.total>1000 && @.verified===false)]"
+    }
+    ```
+    
+    Common e-commerce filtering patterns.
+  </Tab>
+  
+  <Tab title="User Management">
+    ```json Filters
+    {
+      "activeAdmins": "$.users[?(@.role===admin && @.active===true)]",
+      "suspendedUsers": "$.users[?(@.status===suspended)]",
+      "newUsers": "$.users[?(@.createdDays<30)]",
+      "premiumExpiring": "$.users[?(@.tier===premium && @.daysUntilExpiry<7)]"
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Inventory Management">
+    ```json Filters
+    {
+      "lowStock": "$.products[?(@.quantity<10)]",
+      "outOfStock": "$.products[?(@.quantity===0)]",
+      "needsReorder": "$.products[?(@.quantity<@.reorderPoint)]",
+      "highValue": "$.products[?(@.quantity*@.price>10000)]"
+    }
+    ```
+    
+    Inventory alerts and monitoring.
+  </Tab>
+  
+  <Tab title="Task Management">
+    ```json Filters
+    {
+      "urgent": "$.tasks[?(@.priority===urgent && @.status!==completed)]",
+      "overdue": "$.tasks[?(@.dueDate<@root.trigger.currentDate && @.status!==completed)]",
+      "myTasks": "$.tasks[?(@.assignedTo===@root.trigger.user_id)]",
+      "blockedTasks": "$.tasks[?(@.blockedBy)]"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Combining Filters with Other Operations
+
+<Tabs>
+  <Tab title="Filter + Array Index">
+    ```json Mapping
+    {
+      "firstActive": "$.users[?(@.active===true)][0]",
+      "lastPremium": "$.users[?(@.tier===premium)][-1]"
+    }
+    ```
+    
+    Get a single item from filtered results.
+  </Tab>
+  
+  <Tab title="Filter + Property Access">
+    ```json Mapping
+    {
+      "activeUserNames": "$.users[?(@.active===true)].name",
+      "premiumEmails": "$.users[?(@.tier===premium)].email"
+    }
+    ```
+    
+    Extract specific properties from filtered items.
+  </Tab>
+  
+  <Tab title="Filter + Pipe Operator">
+    ```json Mapping
+    {
+      "activeList": "Active users: |$.users[?(@.active===true)].name|",
+      "count": "Found |$.products[?(@.price>100)].length| expensive items"
+    }
+    ```
+    
+    Use filtered results in string concatenation.
+  </Tab>
+  
+  <Tab title="Multiple Filters">
+    ```json Mapping
+    {
+      "specific": "$.categories[?(@.name===Electronics)].products[?(@.price<100)]"
+    }
+    ```
+    
+    Chain filters to narrow down results progressively.
+  </Tab>
+</Tabs>
+
+## Common Pitfalls
+
+<AccordionGroup>
+  <Accordion title="Using = instead of ===" icon="equals">
+    **Wrong:**
+    ```json
+    "$.users[?(@.role=admin)]"  // ❌ Single = is assignment, not comparison
+    ```
+    
+    **Correct:**
+    ```json
+    "$.users[?(@.role===admin)]"  // ✅ Use === for comparison
+    ```
+  </Accordion>
+  
+  <Accordion title="Forgetting Quotes for Strings" icon="quote-left">
+    **Wrong:**
+    ```json
+    "$.users[?(@.status===active)]"  // ❌ Missing quotes around 'active'
+    ```
+    
+    **Correct:**
+    ```json
+    "$.users[?(@.status==='active')]"  // ✅ Strings need quotes
+    ```
+    
+    Note: In some implementations, quotes are optional, but it's best practice to include them.
+  </Accordion>
+  
+  <Accordion title="Filter Returns Array" icon="list">
+    **Issue:**
+    ```json
+    {"user": "$.users[?(@.id===123)]"}  // Returns array, not single object
+    ```
+    
+    **Solution:**
+    ```json
+    {"user": "$.users[?(@.id===123)][0]"}  // Add [0] to get first item
+    ```
+  </Accordion>
+  
+  <Accordion title="Property Doesn't Exist" icon="circle-exclamation">
+    **Issue:**
+    ```json
+    "$.users[?(@.middleName===Smith)]"  // What if middleName doesn't exist?
+    ```
+    
+    **Better:**
+    ```json
+    "$.users[?(@.middleName && @.middleName===Smith)]"  // Check existence first
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Performance Considerations
+
+<CardGroup cols={2}>
+  <Card title="Efficient Filters" icon="gauge-high">
+    ```json
+    // ✅ Simple conditions
+    "$.users[?(@.active===true)]"
+    
+    // ✅ Direct property checks
+    "$.items[?(@.price>100)]"
+    ```
+  </Card>
+  
+  <Card title="Slower Filters" icon="gauge-simple">
+    ```json
+    // ⚠️ Complex nested filters
+    "$.data[?(@.nested[?(@.x>5)])]"
+    
+    // ⚠️ Many conditions
+    "$.items[?(@.a && @.b && @.c && @.d)]"
+    ```
+  </Card>
+</CardGroup>
+
+<Tip>
+**Optimization tips:**
+- Filter early in your JSONPath expression to reduce data being processed
+- Use simple conditions when possible
+- Consider splitting complex filters into multiple steps
+- Test with realistic data sizes
+</Tip>
+
+## Building Complex Filters
+
+<Steps>
+  <Step title="Start Simple">
+    Begin with a basic filter:
+    ```json
+    {"filtered": "$.items[?(@.price>10)]"}
+    ```
+  </Step>
+  
+  <Step title="Add One Condition">
+    Add conditions incrementally:
+    ```json
+    {"filtered": "$.items[?(@.price>10 && @.active===true)]"}
+    ```
+  </Step>
+  
+  <Step title="Test Each Addition">
+    Verify the filter works after each change using the Flow Debugger
+  </Step>
+  
+  <Step title="Use Parentheses for Complex Logic">
+    Group conditions clearly:
+    ```json
+    {"filtered": "$.items[?(@.price>10 && (@.category===A || @.category===B))]"}
+    ```
+  </Step>
+  
+  <Step title="Consider Readability">
+    If the filter becomes too complex, consider:
+    - Breaking into multiple filters
+    - Using separate nodes for each filter step
+    - Adding comments in your flow documentation
+  </Step>
+</Steps>
+
+## Quick Reference
+
+<AccordionGroup>
+  <Accordion title="Filter Syntax" icon="code">
+    ```
+    $.array[?(expression)]
+    ```
+    - Always returns an array
+    - Use `@` for current item
+    - Combine with `[0]` for single item
+  </Accordion>
+  
+  <Accordion title="Comparison Operators" icon="not-equal">
+    ```
+    ===  !==  ==  !=  >  <  >=  <=
+    ```
+    Prefer `===` over `==` for type safety
+  </Accordion>
+  
+  <Accordion title="Logical Operators" icon="code-branch">
+    ```
+    &&  (AND)
+    ||  (OR)
+    ```
+    Use parentheses for complex logic
+  </Accordion>
+  
+  <Accordion title="Special Variables" icon="at">
+    ```
+    @           Current item
+    @root       Root document
+    @parent     Parent object
+    @property   Property name/index
+    @path       JSONPath to item
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card 
+    title="Advanced Techniques" 
+    icon="5" 
+    href="/advanced/variable-mapping/advanced-techniques"
+  >
+    Learn power user features and optimization strategies
+  </Card>
+  <Card 
+    title="Examples" 
+    icon="code" 
+    href="/advanced/variable-mapping/examples"
+  >
+    See comprehensive real-world examples
+  </Card>
+  <Card 
+    title="Reference" 
+    icon="book" 
+    href="/advanced/variable-mapping/reference"
+  >
+    Complete syntax tables and troubleshooting
+  </Card>
+  <Card 
+    title="Basic Syntax" 
+    icon="arrow-left" 
+    href="/advanced/variable-mapping/basic-syntax"
+  >
+    Review the fundamentals
+  </Card>
+</CardGroup>
+
+<Info>
+**Questions?** Check the [Reference](/advanced/variable-mapping/reference) or visit our [Help Center](/help).
+</Info>
