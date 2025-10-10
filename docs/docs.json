@@ -90,10 +90,13 @@
                 "icon": "gavel",
                 "pages": [
                   "advanced/rules/overview",
-                  "advanced/rules/creating-rules",
-                  "advanced/rules/rule-syntax",
+                  "advanced/rules/getting-started",
+                  "advanced/rules/core-concepts",
+                  "advanced/rules/operations-reference",
+                  "advanced/rules/common-patterns",
                   "advanced/rules/examples",
-                  "advanced/rules/best-practices"
+                  "advanced/rules/advanced-techniques",
+                  "advanced/rules/technical-reference"
                 ]
               },
               {

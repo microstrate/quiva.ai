@@ -1,0 +1,1369 @@
+---
+title: "Examples Library"
+description: "Complete real-world examples showing Rules in action across different industries"
+---
+
+## Overview
+
+These examples show how to use Rules for real business scenarios. Each example includes the complete facts, rules, and output, with explanations of key patterns used.
+
+<Tip>
+**Copy and customize:** These are production-ready examples. Copy the entire facts and rules objects, then modify them for your specific business needs.
+</Tip>
+
+---
+
+## E-commerce: Checkout Pricing
+
+Calculate final pricing for an e-commerce checkout with tiered discounts, shipping, and tax.
+
+### Business Context
+
+An online store needs to:
+- Apply volume discounts (5\% at \$50, 10\% at \$100, 15\% at \$200)
+- Calculate shipping (\$0 if order > \$50, otherwise \$7.99)
+- Apply state tax based on shipping location
+- Show formatted prices for display
+
+### Implementation
+
+<CodeGroup>
+```json Facts
+{
+  "cartItems.value": [
+    { "name": "Widget A", "price": 29.99, "quantity": 2 },
+    { "name": "Widget B", "price": 49.99, "quantity": 1 },
+    { "name": "Widget C", "price": 19.99, "quantity": 1 }
+  ],
+  "shippingState.value": "CA",
+  "customerTier.value": "silver"
+}
+```
+
+```json Rules
+{
+  "prices.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].price"]
+  },
+  "quantities.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].quantity"]
+  },
+  "lineTotals.value": {
+    "operator": "*",
+    "input": ["@fact:prices.value", "@fact:quantities.value"]
+  },
+  "subtotal.value": {
+    "operator": "+",
+    "input": "@fact:lineTotals.value"
+  },
+  "volumeDiscount.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:subtotal.value", 200]
+      },
+      "outcome": 0.15
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:subtotal.value", 100, 200, "INCLUSIVE_LEFT"]
+      },
+      "outcome": 0.10
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:subtotal.value", 50, 100, "INCLUSIVE_LEFT"]
+      },
+      "outcome": 0.05
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "tierDiscount.value": {
+    "operator": "map",
+    "input": [
+      "@fact:customerTier.value",
+      {
+        "bronze": 0,
+        "silver": 0.05,
+        "gold": 0.10,
+        "platinum": 0.15
+      },
+      0
+    ]
+  },
+  "bestDiscount.value": {
+    "operator": "max",
+    "input": ["@fact:volumeDiscount.value", "@fact:tierDiscount.value"]
+  },
+  "discountAmount.value": {
+    "operator": "*",
+    "input": ["@fact:subtotal.value", "@fact:bestDiscount.value"]
+  },
+  "subtotalAfterDiscount.value": {
+    "operator": "-",
+    "input": ["@fact:subtotal.value", "@fact:discountAmount.value"]
+  },
+  "shippingCost.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:subtotalAfterDiscount.value", 50]
+      },
+      "outcome": 0
+    },
+    {
+      "outcome": 7.99
+    }
+  ],
+  "taxRate.value": {
+    "operator": "map",
+    "input": [
+      "@fact:shippingState.value",
+      {
+        "CA": 0.0725,
+        "NY": 0.08,
+        "TX": 0.0625,
+        "FL": 0.06
+      },
+      0.05
+    ]
+  },
+  "taxAmount.value": {
+    "operator": "*",
+    "input": [
+      {"operator": "+", "input": ["@fact:subtotalAfterDiscount.value", "@fact:shippingCost.value"]},
+      "@fact:taxRate.value"
+    ]
+  },
+  "orderTotal.value": {
+    "operator": "+",
+    "input": [
+      "@fact:subtotalAfterDiscount.value",
+      "@fact:shippingCost.value",
+      "@fact:taxAmount.value"
+    ]
+  },
+  "displaySubtotal.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "${{1}}",
+      {"operator": "numberFormat", "input": ["@fact:subtotal.value", 2]}
+    ]
+  },
+  "displayDiscount.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "-${{1}}",
+      {"operator": "numberFormat", "input": ["@fact:discountAmount.value", 2]}
+    ]
+  },
+  "displayTotal.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "${{1}}",
+      {"operator": "numberFormat", "input": ["@fact:orderTotal.value", 2]}
+    ]
+  }
+}
+```
+
+```json Output
+{
+  "subtotal.value": 129.96,
+  "volumeDiscount.value": 0.10,
+  "tierDiscount.value": 0.05,
+  "bestDiscount.value": 0.10,
+  "discountAmount.value": 12.996,
+  "subtotalAfterDiscount.value": 116.964,
+  "shippingCost.value": 0,
+  "taxRate.value": 0.0725,
+  "taxAmount.value": 8.48,
+  "orderTotal.value": 125.44,
+  "displaySubtotal.value": "$129.96",
+  "displayDiscount.value": "-$13.00",
+  "displayTotal.value": "$125.44"
+}
+```
+</CodeGroup>
+
+### Key Patterns Used
+- **Array processing** with wildcards to calculate cart subtotal
+- **Tiered discounts** with conditional outcomes
+- **Lookup tables** for state tax rates
+- **Conditional logic** for free shipping threshold
+- **String formatting** for display values
+
+---
+
+## CRM: Lead Scoring & Qualification
+
+Score and qualify leads based on multiple criteria for sales prioritization.
+
+### Business Context
+
+A B2B SaaS company needs to:
+- Score leads based on company size, industry, and engagement
+- Determine if lead is qualified (SQL - Sales Qualified Lead)
+- Assign priority level for follow-up
+- Calculate days until follow-up is needed
+
+### Implementation
+
+<CodeGroup>
+```json Facts
+{
+  "companySize.value": "50-200",
+  "industry.value": "technology",
+  "jobTitle.value": "VP Engineering",
+  "emailOpens.value": 5,
+  "websiteVisits.value": 8,
+  "pricingPageViews.value": 3,
+  "demoRequested.value": true,
+  "annualRevenue.value": 5000000,
+  "createdDate.value": "2025-10-01T10:00:00Z"
+}
+```
+
+```json Rules
+{
+  "companySizeScore.value": {
+    "operator": "map",
+    "input": [
+      "@fact:companySize.value",
+      {
+        "1-10": 5,
+        "11-50": 10,
+        "50-200": 20,
+        "201-1000": 30,
+        "1000+": 25
+      },
+      0
+    ]
+  },
+  "industryScore.value": {
+    "operator": "map",
+    "input": [
+      "@fact:industry.value",
+      {
+        "technology": 20,
+        "healthcare": 15,
+        "finance": 15,
+        "manufacturing": 10,
+        "retail": 10
+      },
+      5
+    ]
+  },
+  "titleScore.value": [
+    {
+      "condition": {
+        "operator": "or",
+        "input": [
+          {"operator": "stringContains", "input": ["@fact:jobTitle.value", "VP"]},
+          {"operator": "stringContains", "input": ["@fact:jobTitle.value", "Director"]},
+          {"operator": "stringContains", "input": ["@fact:jobTitle.value", "Chief"]}
+        ]
+      },
+      "outcome": 20
+    },
+    {
+      "condition": {
+        "operator": "stringContains",
+        "input": ["@fact:jobTitle.value", "Manager"]
+      },
+      "outcome": 10
+    },
+    {
+      "outcome": 5
+    }
+  ],
+  "engagementScore.value": {
+    "operator": "+",
+    "input": [
+      {"operator": "*", "input": ["@fact:emailOpens.value", 2]},
+      {"operator": "*", "input": ["@fact:websiteVisits.value", 3]},
+      {"operator": "*", "input": ["@fact:pricingPageViews.value", 5]}
+    ]
+  },
+  "demoBonus.value": [
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:demoRequested.value", true]
+      },
+      "outcome": 30
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "totalScore.value": {
+    "operator": "+",
+    "input": [
+      "@fact:companySizeScore.value",
+      "@fact:industryScore.value",
+      "@fact:titleScore.value",
+      "@fact:engagementScore.value",
+      "@fact:demoBonus.value"
+    ]
+  },
+  "isQualified.value": {
+    "operator": "and",
+    "input": [
+      {"operator": ">=", "input": ["@fact:totalScore.value", 60]},
+      {"operator": ">=", "input": ["@fact:annualRevenue.value", 1000000]}
+    ]
+  },
+  "priority.value": [
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          "@fact:isQualified.value",
+          {"operator": ">=", "input": ["@fact:totalScore.value", 80]}
+        ]
+      },
+      "outcome": "Hot"
+    },
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          "@fact:isQualified.value",
+          {"operator": ">=", "input": ["@fact:totalScore.value", 60]}
+        ]
+      },
+      "outcome": "Warm"
+    },
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:totalScore.value", 40]
+      },
+      "outcome": "Nurture"
+    },
+    {
+      "outcome": "Cold"
+    }
+  ],
+  "followUpDays.value": {
+    "operator": "map",
+    "input": [
+      "@fact:priority.value",
+      {
+        "Hot": 1,
+        "Warm": 3,
+        "Nurture": 7,
+        "Cold": 14
+      },
+      7
+    ]
+  },
+  "followUpDate.value": {
+    "operator": "addDate",
+    "input": [
+      "@fact:createdDate.value",
+      "@fact:followUpDays.value",
+      "days"
+    ]
+  }
+}
+```
+
+```json Output
+{
+  "companySizeScore.value": 20,
+  "industryScore.value": 20,
+  "titleScore.value": 20,
+  "engagementScore.value": 49,
+  "demoBonus.value": 30,
+  "totalScore.value": 139,
+  "isQualified.value": true,
+  "priority.value": "Hot",
+  "followUpDays.value": 1,
+  "followUpDate.value": "2025-10-02T10:00:00Z"
+}
+```
+</CodeGroup>
+
+### Key Patterns Used
+- **Weighted scoring** from multiple criteria
+- **Lookup tables** for size and industry scores
+- **String matching** for job title evaluation
+- **Multi-condition qualification** with AND/OR logic
+- **Priority assignment** based on score thresholds
+- **Date calculations** for follow-up scheduling
+
+---
+
+## Customer Support: Ticket Routing & Prioritization
+
+Automatically route and prioritize support tickets based on content and customer data.
+
+### Business Context
+
+A customer support team needs to:
+- Determine ticket priority based on urgency words and customer tier
+- Calculate SLA deadline
+- Route to appropriate team
+- Flag tickets requiring manager attention
+
+### Implementation
+
+<CodeGroup>
+```json Facts
+{
+  "subject.value": "URGENT: Payment processing error on checkout",
+  "description.value": "Our customers cannot complete purchases. This is blocking all sales. Please help immediately.",
+  "customerTier.value": "enterprise",
+  "accountValue.value": 50000,
+  "issuesLast30Days.value": 1,
+  "category.value": "technical",
+  "createdDate.value": "2025-10-09T14:30:00Z"
+}
+```
+
+```json Rules
+{
+  "hasUrgentKeywords.value": {
+    "operator": "or",
+    "input": [
+      {"operator": "stringContains", "input": ["@fact:subject.value", "URGENT"]},
+      {"operator": "stringContains", "input": ["@fact:subject.value", "CRITICAL"]},
+      {"operator": "stringContains", "input": ["@fact:description.value", "blocking"]},
+      {"operator": "stringContains", "input": ["@fact:description.value", "down"]},
+      {"operator": "stringContains", "input": ["@fact:description.value", "immediately"]}
+    ]
+  },
+  "isHighValueCustomer.value": {
+    "operator": ">=",
+    "input": ["@fact:accountValue.value", 25000]
+  },
+  "isEnterpriseCustomer.value": {
+    "operator": "=",
+    "input": ["@fact:customerTier.value", "enterprise"]
+  },
+  "urgencyScore.value": {
+    "operator": "+",
+    "input": [
+      [
+        {
+          "condition": "@fact:hasUrgentKeywords.value",
+          "outcome": 40
+        },
+        {
+          "outcome": 0
+        }
+      ],
+      [
+        {
+          "condition": "@fact:isEnterpriseCustomer.value",
+          "outcome": 30
+        },
+        {
+          "outcome": 0
+        }
+      ],
+      [
+        {
+          "condition": "@fact:isHighValueCustomer.value",
+          "outcome": 20
+        },
+        {
+          "outcome": 0
+        }
+      ],
+      [
+        {
+          "condition": {
+            "operator": ">=",
+            "input": ["@fact:issuesLast30Days.value", 3]
+          },
+          "outcome": 10
+        },
+        {
+          "outcome": 0
+        }
+      ]
+    ]
+  },
+  "priority.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:urgencyScore.value", 60]
+      },
+      "outcome": "P1"
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:urgencyScore.value", 40, 60, "INCLUSIVE_LEFT"]
+      },
+      "outcome": "P2"
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:urgencyScore.value", 20, 40, "INCLUSIVE_LEFT"]
+      },
+      "outcome": "P3"
+    },
+    {
+      "outcome": "P4"
+    }
+  ],
+  "slaHours.value": {
+    "operator": "map",
+    "input": [
+      "@fact:priority.value",
+      {
+        "P1": 1,
+        "P2": 4,
+        "P3": 24,
+        "P4": 48
+      },
+      24
+    ]
+  },
+  "slaDueDate.value": {
+    "operator": "addDate",
+    "input": [
+      "@fact:createdDate.value",
+      "@fact:slaHours.value",
+      "hours"
+    ]
+  },
+  "routingTeam.value": {
+    "operator": "map",
+    "input": [
+      "@fact:category.value",
+      {
+        "technical": "Engineering",
+        "billing": "Finance",
+        "account": "Customer Success",
+        "product": "Product Team"
+      },
+      "General Support"
+    ]
+  },
+  "escalateToManager.value": {
+    "operator": "or",
+    "input": [
+      {"operator": "=", "input": ["@fact:priority.value", "P1"]},
+      {
+        "operator": "and",
+        "input": [
+          "@fact:isEnterpriseCustomer.value",
+          {"operator": ">=", "input": ["@fact:issuesLast30Days.value", 3]}
+        ]
+      }
+    ]
+  },
+  "tags.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        {"operator": "=", "input": ["@fact:priority.value", "P1"]},
+        "urgent"
+      ],
+      [
+        "@fact:isEnterpriseCustomer.value",
+        "enterprise"
+      ],
+      [
+        "@fact:escalateToManager.value",
+        "manager-review"
+      ],
+      [
+        {"operator": "stringContains", "input": ["@fact:subject.value", "payment"]},
+        "payment"
+      ],
+      [
+        {"operator": "stringContains", "input": ["@fact:subject.value", "checkout"]},
+        "checkout"
+      ]
+    ]
+  }
+}
+```
+
+```json Output
+{
+  "hasUrgentKeywords.value": true,
+  "isHighValueCustomer.value": true,
+  "isEnterpriseCustomer.value": true,
+  "urgencyScore.value": 90,
+  "priority.value": "P1",
+  "slaHours.value": 1,
+  "slaDueDate.value": "2025-10-09T15:30:00Z",
+  "routingTeam.value": "Engineering",
+  "escalateToManager.value": true,
+  "tags.value": ["urgent", "enterprise", "manager-review", "payment", "checkout"]
+}
+```
+</CodeGroup>
+
+### Key Patterns Used
+- **Text analysis** with string matching for urgency detection
+- **Weighted scoring** from multiple factors
+- **Priority calculation** with threshold-based assignment
+- **SLA deadline calculation** with date operations
+- **Dynamic routing** based on ticket category
+- **Automatic tagging** with generateArray pattern
+
+---
+
+## Marketing: Campaign Eligibility
+
+Determine which marketing campaigns a customer is eligible for based on their profile and behavior.
+
+### Business Context
+
+A marketing team needs to:
+- Check eligibility for multiple campaigns
+- Calculate discount offers
+- Generate personalized recommendations
+- Track campaign assignments
+
+### Implementation
+
+<CodeGroup>
+```json Facts
+{
+  "customerId.value": "C12345",
+  "totalPurchases.value": 8,
+  "lifetimeValue.value": 1250,
+  "daysSinceLastPurchase.value": 45,
+  "emailEngagementRate.value": 0.35,
+  "preferredCategory.value": "electronics",
+  "hasAppInstalled.value": false,
+  "birthdayMonth.value": 10,
+  "currentMonth.value": 10
+}
+```
+
+```json Rules
+{
+  "isLoyalCustomer.value": {
+    "operator": ">=",
+    "input": ["@fact:totalPurchases.value", 5]
+  },
+  "isHighValue.value": {
+    "operator": ">=",
+    "input": ["@fact:lifetimeValue.value", 1000]
+  },
+  "isAtRisk.value": {
+    "operator": ">=",
+    "input": ["@fact:daysSinceLastPurchase.value", 30]
+  },
+  "isEngaged.value": {
+    "operator": ">=",
+    "input": ["@fact:emailEngagementRate.value", 0.2]
+  },
+  "isBirthdayMonth.value": {
+    "operator": "=",
+    "input": ["@fact:birthdayMonth.value", "@fact:currentMonth.value"]
+  },
+  "eligibleLoyaltyReward.value": {
+    "operator": "and",
+    "input": [
+      "@fact:isLoyalCustomer.value",
+      "@fact:isHighValue.value"
+    ]
+  },
+  "eligibleWinBack.value": {
+    "operator": "and",
+    "input": [
+      "@fact:isAtRisk.value",
+      "@fact:isLoyalCustomer.value"
+    ]
+  },
+  "eligibleBirthdayOffer.value": "@fact:isBirthdayMonth.value",
+  "eligibleAppDownload.value": {
+    "operator": "and",
+    "input": [
+      {"operator": "not", "input": ["@fact:hasAppInstalled.value"]},
+      "@fact:isEngaged.value"
+    ]
+  },
+  "loyaltyDiscount.value": [
+    {
+      "condition": "@fact:eligibleLoyaltyReward.value",
+      "outcome": 0.20
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "winBackDiscount.value": [
+    {
+      "condition": "@fact:eligibleWinBack.value",
+      "outcome": 0.15
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "birthdayDiscount.value": [
+    {
+      "condition": "@fact:eligibleBirthdayOffer.value",
+      "outcome": 0.25
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "appDownloadBonus.value": [
+    {
+      "condition": "@fact:eligibleAppDownload.value",
+      "outcome": 10
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "bestDiscount.value": {
+    "operator": "max",
+    "input": [
+      "@fact:loyaltyDiscount.value",
+      "@fact:winBackDiscount.value",
+      "@fact:birthdayDiscount.value"
+    ]
+  },
+  "eligibleCampaigns.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        "@fact:eligibleLoyaltyReward.value",
+        "VIP Loyalty Program"
+      ],
+      [
+        "@fact:eligibleWinBack.value",
+        "We Miss You - Come Back Offer"
+      ],
+      [
+        "@fact:eligibleBirthdayOffer.value",
+        "Happy Birthday Special"
+      ],
+      [
+        "@fact:eligibleAppDownload.value",
+        "Download App & Get $10"
+      ]
+    ]
+  },
+  "recommendedProducts.value": {
+    "operator": "map",
+    "input": [
+      "@fact:preferredCategory.value",
+      {
+        "electronics": ["Smart Watch", "Wireless Earbuds", "Tablet"],
+        "clothing": ["Winter Jacket", "Designer Jeans", "Sneakers"],
+        "home": ["Coffee Maker", "Air Purifier", "Smart Thermostat"]
+      },
+      ["Popular Item 1", "Popular Item 2", "Popular Item 3"]
+    ]
+  },
+  "campaignMessage.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "Special offer: {{1}}\% off your next purchase! Plus {{2}} bonus.",
+      {"operator": "*", "input": ["@fact:bestDiscount.value", 100]},
+      [
+        {
+          "condition": {
+            "operator": ">",
+            "input": ["@fact:appDownloadBonus.value", 0]
+          },
+          "outcome": "$10 app download"
+        },
+        {
+          "outcome": "free shipping"
+        }
+      ]
+    ]
+  }
+}
+```
+
+```json Output
+{
+  "isLoyalCustomer.value": true,
+  "isHighValue.value": true,
+  "isAtRisk.value": true,
+  "isEngaged.value": true,
+  "isBirthdayMonth.value": true,
+  "eligibleLoyaltyReward.value": true,
+  "eligibleWinBack.value": true,
+  "eligibleBirthdayOffer.value": true,
+  "eligibleAppDownload.value": true,
+  "loyaltyDiscount.value": 0.20,
+  "winBackDiscount.value": 0.15,
+  "birthdayDiscount.value": 0.25,
+  "appDownloadBonus.value": 10,
+  "bestDiscount.value": 0.25,
+  "eligibleCampaigns.value": [
+    "VIP Loyalty Program",
+    "We Miss You - Come Back Offer",
+    "Happy Birthday Special",
+    "Download App & Get $10"
+  ],
+  "recommendedProducts.value": ["Smart Watch", "Wireless Earbuds", "Tablet"],
+  "campaignMessage.value": "Special offer: 25\% off your next purchase! Plus $10 app download bonus."
+}
+```
+</CodeGroup>
+
+### Key Patterns Used
+- **Multi-criteria eligibility** with boolean flags
+- **Multiple campaign evaluation** in parallel
+- **Best offer selection** using max operator
+- **Dynamic list generation** with generateArray
+- **Personalized messaging** with string templates
+- **Product recommendations** with category mapping
+
+---
+
+## Financial: Loan Approval Decision
+
+Evaluate loan applications based on credit score, income, and debt-to-income ratio.
+
+### Business Context
+
+A lending institution needs to:
+- Calculate debt-to-income ratio
+- Determine approval status
+- Set interest rate based on risk profile
+- Calculate maximum loan amount
+- Specify required documentation
+
+### Implementation
+
+<CodeGroup>
+```json Facts
+{
+  "applicantName.value": "John Smith",
+  "annualIncome.value": 75000,
+  "monthlyDebt.value": 1200,
+  "creditScore.value": 720,
+  "employmentYears.value": 5,
+  "requestedAmount.value": 250000,
+  "downPayment.value": 50000,
+  "propertyValue.value": 300000,
+  "hasCoApplicant.value": false
+}
+```
+
+```json Rules
+{
+  "monthlyIncome.value": {
+    "operator": "/",
+    "input": ["@fact:annualIncome.value", 12]
+  },
+  "debtToIncomeRatio.value": {
+    "operator": "/",
+    "input": ["@fact:monthlyDebt.value", "@fact:monthlyIncome.value"]
+  },
+  "loanToValueRatio.value": {
+    "operator": "/",
+    "input": ["@fact:requestedAmount.value", "@fact:propertyValue.value"]
+  },
+  "meetsCreditScore.value": {
+    "operator": ">=",
+    "input": ["@fact:creditScore.value", 620]
+  },
+  "meetsDTI.value": {
+    "operator": "<=",
+    "input": ["@fact:debtToIncomeRatio.value", 0.43]
+  },
+  "meetsLTV.value": {
+    "operator": "<=",
+    "input": ["@fact:loanToValueRatio.value", 0.95]
+  },
+  "meetsEmployment.value": {
+    "operator": ">=",
+    "input": ["@fact:employmentYears.value", 2]
+  },
+  "isApproved.value": {
+    "operator": "and",
+    "input": [
+      "@fact:meetsCreditScore.value",
+      "@fact:meetsDTI.value",
+      "@fact:meetsLTV.value",
+      "@fact:meetsEmployment.value"
+    ]
+  },
+  "riskTier.value": [
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          {"operator": ">=", "input": ["@fact:creditScore.value", 740]},
+          {"operator": "<=", "input": ["@fact:debtToIncomeRatio.value", 0.36]}
+        ]
+      },
+      "outcome": "Excellent"
+    },
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          {
+            "operator": "between",
+            "input": ["@fact:creditScore.value", 680, 740, "INCLUSIVE_LEFT"]
+          },
+          {"operator": "<=", "input": ["@fact:debtToIncomeRatio.value", 0.40]}
+        ]
+      },
+      "outcome": "Good"
+    },
+    {
+      "condition": "@fact:isApproved.value",
+      "outcome": "Fair"
+    },
+    {
+      "outcome": "Poor"
+    }
+  ],
+  "interestRate.value": {
+    "operator": "map",
+    "input": [
+      "@fact:riskTier.value",
+      {
+        "Excellent": 0.0325,
+        "Good": 0.0375,
+        "Fair": 0.0425,
+        "Poor": 0.0550
+      },
+      0.0550
+    ]
+  },
+  "maxLoanAmount.value": {
+    "operator": "*",
+    "input": [
+      "@fact:monthlyIncome.value",
+      0.28,
+      12,
+      30
+    ]
+  },
+  "meetsLoanAmount.value": {
+    "operator": "<=",
+    "input": ["@fact:requestedAmount.value", "@fact:maxLoanAmount.value"]
+  },
+  "finalDecision.value": [
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          "@fact:isApproved.value",
+          "@fact:meetsLoanAmount.value"
+        ]
+      },
+      "outcome": "Approved"
+    },
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          "@fact:isApproved.value",
+          {"operator": "not", "input": ["@fact:meetsLoanAmount.value"]}
+        ]
+      },
+      "outcome": "Approved with Reduced Amount"
+    },
+    {
+      "outcome": "Declined"
+    }
+  ],
+  "approvedAmount.value": [
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:finalDecision.value", "Approved"]
+      },
+      "outcome": "@fact:requestedAmount.value"
+    },
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:finalDecision.value", "Approved with Reduced Amount"]
+      },
+      "outcome": "@fact:maxLoanAmount.value"
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "monthlyPayment.value": [
+    {
+      "condition": {
+        "operator": ">",
+        "input": ["@fact:approvedAmount.value", 0]
+      },
+      "outcome": {
+        "operator": "/",
+        "input": [
+          {
+            "operator": "*",
+            "input": [
+              "@fact:approvedAmount.value",
+              "@fact:interestRate.value"
+            ]
+          },
+          12
+        ]
+      }
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "requiredDocuments.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        true,
+        "Photo ID"
+      ],
+      [
+        true,
+        "Proof of Income"
+      ],
+      [
+        true,
+        "Tax Returns (2 years)"
+      ],
+      [
+        "@fact:meetsEmployment.value",
+        "Employment Verification"
+      ],
+      [
+        {
+          "operator": "=",
+          "input": ["@fact:riskTier.value", "Fair"]
+        },
+        "Additional Credit References"
+      ],
+      [
+        "@fact:hasCoApplicant.value",
+        "Co-Applicant Documentation"
+      ]
+    ]
+  },
+  "declinedReasons.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        {"operator": "not", "input": ["@fact:meetsCreditScore.value"]},
+        "Credit score below minimum requirement (620)"
+      ],
+      [
+        {"operator": "not", "input": ["@fact:meetsDTI.value"]},
+        "Debt-to-income ratio too high (max 43\%)"
+      ],
+      [
+        {"operator": "not", "input": ["@fact:meetsLTV.value"]},
+        "Loan-to-value ratio too high (max 95\%)"
+      ],
+      [
+        {"operator": "not", "input": ["@fact:meetsEmployment.value"]},
+        "Insufficient employment history (min 2 years)"
+      ]
+    ]
+  }
+}
+```
+
+```json Output
+{
+  "monthlyIncome.value": 6250,
+  "debtToIncomeRatio.value": 0.192,
+  "loanToValueRatio.value": 0.833,
+  "meetsCreditScore.value": true,
+  "meetsDTI.value": true,
+  "meetsLTV.value": true,
+  "meetsEmployment.value": true,
+  "isApproved.value": true,
+  "riskTier.value": "Good",
+  "interestRate.value": 0.0375,
+  "maxLoanAmount.value": 525000,
+  "meetsLoanAmount.value": true,
+  "finalDecision.value": "Approved",
+  "approvedAmount.value": 250000,
+  "monthlyPayment.value": 781.25,
+  "requiredDocuments.value": [
+    "Photo ID",
+    "Proof of Income",
+    "Tax Returns (2 years)",
+    "Employment Verification"
+  ],
+  "declinedReasons.value": []
+}
+```
+</CodeGroup>
+
+### Key Patterns Used
+- **Financial ratio calculations** (DTI, LTV)
+- **Multi-criteria approval** with AND logic
+- **Risk-based tiering** with multiple conditions
+- **Dynamic document requirements** with generateArray
+- **Conditional calculations** for approved amounts
+- **Validation with feedback** showing decline reasons
+
+---
+
+## Inventory Management: Stock Reorder Decision
+
+Determine when to reorder inventory based on current stock, sales velocity, and lead times.
+
+### Business Context
+
+A warehouse needs to:
+- Calculate days of inventory remaining
+- Determine if reorder is needed
+- Calculate optimal reorder quantity
+- Set priority level for procurement
+- Estimate next stockout date
+
+### Implementation
+
+<CodeGroup>
+```json Facts
+{
+  "productId.value": "SKU-12345",
+  "currentStock.value": 150,
+  "avgDailySales.value": 12,
+  "supplierLeadTimeDays.value": 14,
+  "minStockLevel.value": 100,
+  "maxStockLevel.value": 500,
+  "orderCost.value": 50,
+  "unitCost.value": 25,
+  "isSeasonalItem.value": false,
+  "supplierReliability.value": "high"
+}
+```
+
+```json Rules
+{
+  "daysOfInventory.value": {
+    "operator": "/",
+    "input": ["@fact:currentStock.value", "@fact:avgDailySales.value"]
+  },
+  "safetyStockDays.value": {
+    "operator": "map",
+    "input": [
+      "@fact:supplierReliability.value",
+      {
+        "high": 3,
+        "medium": 7,
+        "low": 14
+      },
+      7
+    ]
+  },
+  "reorderPoint.value": {
+    "operator": "*",
+    "input": [
+      "@fact:avgDailySales.value",
+      {
+        "operator": "+",
+        "input": [
+          "@fact:supplierLeadTimeDays.value",
+          "@fact:safetyStockDays.value"
+        ]
+      }
+    ]
+  },
+  "needsReorder.value": {
+    "operator": "<=",
+    "input": ["@fact:currentStock.value", "@fact:reorderPoint.value"]
+  },
+  "stockoutRisk.value": [
+    {
+      "condition": {
+        "operator": "<=",
+        "input": ["@fact:daysOfInventory.value", "@fact:supplierLeadTimeDays.value"]
+      },
+      "outcome": "Critical"
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": [
+          "@fact:daysOfInventory.value",
+          "@fact:supplierLeadTimeDays.value",
+          {
+            "operator": "+",
+            "input": [
+              "@fact:supplierLeadTimeDays.value",
+              "@fact:safetyStockDays.value"
+            ]
+          },
+          "EXCLUSIVE_LEFT"
+        ]
+      },
+      "outcome": "High"
+    },
+    {
+      "condition": {
+        "operator": "<=",
+        "input": ["@fact:currentStock.value", "@fact:minStockLevel.value"]
+      },
+      "outcome": "Medium"
+    },
+    {
+      "outcome": "Low"
+    }
+  ],
+  "optimalOrderQty.value": [
+    {
+      "condition": "@fact:needsReorder.value",
+      "outcome": {
+        "operator": "-",
+        "input": [
+          "@fact:maxStockLevel.value",
+          "@fact:currentStock.value"
+        ]
+      }
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "orderValue.value": {
+    "operator": "*",
+    "input": ["@fact:optimalOrderQty.value", "@fact:unitCost.value"]
+  },
+  "totalOrderCost.value": {
+    "operator": "+",
+    "input": ["@fact:orderValue.value", "@fact:orderCost.value"]
+  },
+  "estimatedStockoutDate.value": [
+    {
+      "condition": {
+        "operator": ">",
+        "input": ["@fact:avgDailySales.value", 0]
+      },
+      "outcome": {
+        "operator": "addDate",
+        "input": [
+          {"operator": "now", "input": []},
+          {
+            "operator": "floor",
+            "input": ["@fact:daysOfInventory.value"]
+          },
+          "days"
+        ]
+      }
+    },
+    {
+      "outcome": null
+    }
+  ],
+  "procurementPriority.value": {
+    "operator": "map",
+    "input": [
+      "@fact:stockoutRisk.value",
+      {
+        "Critical": "Urgent - Rush Order",
+        "High": "High Priority",
+        "Medium": "Normal Priority",
+        "Low": "Low Priority"
+      },
+      "Normal Priority"
+    ]
+  },
+  "shouldExpedite.value": {
+    "operator": "=",
+    "input": ["@fact:stockoutRisk.value", "Critical"]
+  },
+  "recommendations.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        "@fact:needsReorder.value",
+        {
+          "operator": "stringTemplate",
+          "input": [
+            "Reorder {{1}} units (Cost: ${{2}})",
+            "@fact:optimalOrderQty.value",
+            {"operator": "numberFormat", "input": ["@fact:totalOrderCost.value", 2]}
+          ]
+        }
+      ],
+      [
+        "@fact:shouldExpedite.value",
+        "Consider expedited shipping"
+      ],
+      [
+        {
+          "operator": "and",
+          "input": [
+            "@fact:isSeasonalItem.value",
+            "@fact:needsReorder.value"
+          ]
+        },
+        "Adjust for seasonal demand patterns"
+      ]
+    ]
+  }
+}
+```
+
+```json Output
+{
+  "daysOfInventory.value": 12.5,
+  "safetyStockDays.value": 3,
+  "reorderPoint.value": 204,
+  "needsReorder.value": true,
+  "stockoutRisk.value": "High",
+  "optimalOrderQty.value": 350,
+  "orderValue.value": 8750,
+  "totalOrderCost.value": 8800,
+  "estimatedStockoutDate.value": "2025-10-21T14:30:00Z",
+  "procurementPriority.value": "High Priority",
+  "shouldExpedite.value": false,
+  "recommendations.value": [
+    "Reorder 350 units (Cost: $8,800.00)"
+  ]
+}
+```
+</CodeGroup>
+
+### Key Patterns Used
+- **Inventory calculations** (days of inventory, reorder points)
+- **Risk assessment** with tiered thresholds
+- **Dynamic reorder quantities** based on min/max levels
+- **Date projections** for stockout estimation
+- **Priority mapping** for procurement urgency
+- **Conditional recommendations** with string templates
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Rule Patterns" icon="puzzle-piece" href="/flows/steps/rules/patterns">
+    Learn the common patterns used in these examples
+  </Card>
+  <Card title="Operations Reference" icon="list-check" href="/flows/steps/rules/operations">
+    Detailed reference for all operators used
+  </Card>
+  <Card title="Core Concepts" icon="book" href="/flows/steps/rules/core-concepts">
+    Understand the fundamentals behind these examples
+  </Card>
+  <Card title="Getting Started" icon="rocket" href="/flows/steps/rules/getting-started">
+    Start building your own rules
+  </Card>
+</CardGroup>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>

@@ -1,0 +1,911 @@
+---
+title: "Common Patterns"
+description: "Proven patterns and best practices for common business logic scenarios"
+---
+
+## Overview
+
+This guide shows you battle-tested patterns for solving common business logic problems with Rules. Each pattern includes complete, copy-paste ready code and explains when to use it.
+
+<Tip>
+**Copy and adapt:** These patterns are designed to be copied and modified for your specific use case. Change the fact names, values, and logic to match your needs.
+</Tip>
+
+---
+
+## Tiered Calculations
+
+Apply different values based on thresholds - perfect for pricing, discounts, shipping rates, or service levels.
+
+### Pattern: Volume Discount
+
+Apply progressively larger discounts based on order size.
+
+<CodeGroup>
+```json Facts
+{
+  "orderTotal.value": 250
+}
+```
+
+```json Rules
+{
+  "discountRate.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:orderTotal.value", 200]
+      },
+      "outcome": 0.15
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:orderTotal.value", 100, 200, "INCLUSIVE_LEFT"]
+      },
+      "outcome": 0.10
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:orderTotal.value", 50, 100, "INCLUSIVE_LEFT"]
+      },
+      "outcome": 0.05
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "discountAmount.value": {
+    "operator": "*",
+    "input": ["@fact:orderTotal.value", "@fact:discountRate.value"]
+  },
+  "finalPrice.value": {
+    "operator": "-",
+    "input": ["@fact:orderTotal.value", "@fact:discountAmount.value"]
+  }
+}
+```
+
+```json Output
+{
+  "discountRate.value": 0.15,
+  "discountAmount.value": 37.5,
+  "finalPrice.value": 212.5
+}
+```
+</CodeGroup>
+
+<Note>
+**Key principle:** Order conditions from most specific (highest threshold) to least specific. Using `between` with `INCLUSIVE_LEFT` ensures exact values like \$100 or \$200 get the correct tier without ambiguity.
+</Note>
+
+**Use this pattern for:**
+- Volume discounts
+- Shipping rates by weight/distance
+- Service level pricing (Basic/Pro/Enterprise)
+- Progressive tax rates
+- Priority levels based on value
+
+### Pattern: Customer Tier Benefits
+
+Map customer tiers to different benefit levels.
+
+```json
+{
+  "tierDiscount.value": {
+    "operator": "map",
+    "input": [
+      "@fact:customerTier.value",
+      {
+        "bronze": 0.05,
+        "silver": 0.10,
+        "gold": 0.15,
+        "platinum": 0.20
+      },
+      0
+    ]
+  },
+  "freeShipping.value": {
+    "operator": "inArray",
+    "input": [
+      "@fact:customerTier.value",
+      ["gold", "platinum"]
+    ]
+  },
+  "prioritySupport.value": {
+    "operator": "=",
+    "input": ["@fact:customerTier.value", "platinum"]
+  }
+}
+```
+
+**Use this pattern for:**
+- Membership benefits
+- Access levels
+- Feature flags by plan
+- Support priority
+
+---
+
+## Validation Rules
+
+Check if data meets business requirements and provide clear feedback.
+
+### Pattern: Required Field Validation
+
+Ensure critical fields are completed.
+
+```json
+{
+  "hasEmail.value": {
+    "operator": "notEmpty",
+    "input": ["@fact:email.value"]
+  },
+  "hasPhone.value": {
+    "operator": "notEmpty",
+    "input": ["@fact:phone.value"]
+  },
+  "hasAddress.value": {
+    "operator": "and",
+    "input": [
+      {"operator": "notEmpty", "input": ["@fact:street.value"]},
+      {"operator": "notEmpty", "input": ["@fact:city.value"]},
+      {"operator": "notEmpty", "input": ["@fact:zipCode.value"]}
+    ]
+  },
+  "isValid.value": {
+    "operator": "and",
+    "input": [
+      "@fact:hasEmail.value",
+      "@fact:hasPhone.value",
+      "@fact:hasAddress.value"
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Form validation
+- Data quality checks
+- Required fields enforcement
+- Pre-submission verification
+
+### Pattern: Range Validation
+
+Check if values fall within acceptable ranges.
+
+```json
+{
+  "quantityValid.value": {
+    "operator": "between",
+    "input": ["@fact:quantity.value", 1, 100]
+  },
+  "priceValid.value": {
+    "operator": "and",
+    "input": [
+      {"operator": ">", "input": ["@fact:price.value", 0]},
+      {"operator": "<=", "input": ["@fact:price.value", 10000]}
+    ]
+  },
+  "ageValid.value": {
+    "operator": "between",
+    "input": ["@fact:age.value", 18, 120]
+  },
+  "allValid.value": {
+    "operator": "and",
+    "input": [
+      "@fact:quantityValid.value",
+      "@fact:priceValid.value",
+      "@fact:ageValid.value"
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Numeric range validation
+- Age verification
+- Date range checks
+- Inventory limits
+
+### Pattern: Validation with Error Messages
+
+Provide specific error messages for failed validations.
+
+```json
+{
+  "emailValid.value": {
+    "operator": "stringContains",
+    "input": ["@fact:email.value", "@"]
+  },
+  "passwordValid.value": {
+    "operator": ">=",
+    "input": [
+      {"operator": "stringLength", "input": ["@fact:password.value"]},
+      8
+    ]
+  },
+  "errors.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        {"operator": "not", "input": ["@fact:emailValid.value"]},
+        "Email must contain @"
+      ],
+      [
+        {"operator": "not", "input": ["@fact:passwordValid.value"]},
+        "Password must be at least 8 characters"
+      ]
+    ]
+  },
+  "isValid.value": {
+    "operator": "=",
+    "input": [
+      {"operator": "arrayLength", "input": ["@fact:errors.value"]},
+      0
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- User-friendly validation feedback
+- Multi-field validation
+- Form error messages
+- API request validation
+
+---
+
+## Lookup Tables & Mappings
+
+Map keys to values using lookup objects - perfect for state taxes, shipping zones, or category mappings.
+
+### Pattern: State Tax Lookup
+
+Map states to their tax rates with a default fallback.
+
+```json
+{
+  "taxRate.value": {
+    "operator": "map",
+    "input": [
+      "@fact:state.value",
+      {
+        "CA": 0.0725,
+        "NY": 0.08,
+        "TX": 0.0625,
+        "FL": 0.06,
+        "WA": 0.065,
+        "IL": 0.0625
+      },
+      0.05
+    ]
+  },
+  "taxAmount.value": {
+    "operator": "*",
+    "input": ["@fact:subtotal.value", "@fact:taxRate.value"]
+  },
+  "total.value": {
+    "operator": "+",
+    "input": ["@fact:subtotal.value", "@fact:taxAmount.value"]
+  }
+}
+```
+
+**Use this pattern for:**
+- Tax rates by location
+- Shipping costs by zone
+- Commission rates by region
+- Currency conversion rates
+
+### Pattern: Category-Based Rules
+
+Apply different rules based on product category.
+
+```json
+{
+  "shippingCost.value": {
+    "operator": "map",
+    "input": [
+      "@fact:category.value",
+      {
+        "electronics": 15.99,
+        "clothing": 7.99,
+        "books": 4.99,
+        "furniture": 49.99
+      },
+      9.99
+    ]
+  },
+  "returnWindow.value": {
+    "operator": "map",
+    "input": [
+      "@fact:category.value",
+      {
+        "electronics": 30,
+        "clothing": 60,
+        "books": 30,
+        "furniture": 14
+      },
+      30
+    ]
+  },
+  "requiresSignature.value": {
+    "operator": "inArray",
+    "input": [
+      "@fact:category.value",
+      ["electronics", "jewelry", "furniture"]
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Category-specific policies
+- Product type rules
+- Department-specific logic
+- Industry-specific calculations
+
+---
+
+## Array Processing
+
+Process lists of items with aggregations, filtering, and transformations using JSONPath queries.
+
+### Pattern: Cart Total Calculation
+
+Sum prices and quantities across cart items using jPath to query literal arrays.
+
+<CodeGroup>
+```json Facts
+{
+  "cartItems.value": [
+    { "name": "Widget", "price": 29.99, "quantity": 2 },
+    { "name": "Gadget", "price": 49.99, "quantity": 1 },
+    { "name": "Tool", "price": 19.99, "quantity": 3 }
+  ]
+}
+```
+
+```json Rules
+{
+  "prices.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].price"]
+  },
+  "quantities.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].quantity"]
+  },
+  "itemTotals.value": {
+    "operator": "*",
+    "input": ["@fact:prices.value", "@fact:quantities.value"]
+  },
+  "subtotal.value": {
+    "operator": "+",
+    "input": "@fact:itemTotals.value"
+  },
+  "itemCount.value": {
+    "operator": "+",
+    "input": "@fact:quantities.value"
+  }
+}
+```
+
+```json Output
+{
+  "prices.value": [29.99, 49.99, 19.99],
+  "quantities.value": [2, 1, 3],
+  "itemTotals.value": [59.98, 49.99, 59.97],
+  "subtotal.value": 169.94,
+  "itemCount.value": 6
+}
+```
+</CodeGroup>
+
+<Tip>
+**Working with arrays:** Use the `jPath` operator to extract values from literal array objects. The `$[*].propertyName` syntax extracts that property from each array element. When both inputs are arrays of the same length, math operators process them element-by-element.
+</Tip>
+
+<Note>
+**Alternative syntax:** Rules also support a wildcard syntax (`@fact:items/*/property`) for flattened key-value structures, but most users will work with literal JSON arrays as shown in this example.
+</Note>
+
+**Use this pattern for:**
+- Shopping cart totals
+- Invoice line items
+- Batch processing
+- Aggregate calculations
+
+### Pattern: Array Filtering and Selection
+
+Filter arrays based on conditions.
+
+```json
+{
+  "inStock.value": {
+    "operator": "jPath",
+    "input": ["@fact:items.value", "$[*].inStock"]
+  },
+  "quantities.value": {
+    "operator": "jPath",
+    "input": ["@fact:items.value", "$[*].quantity"]
+  },
+  "hasQuantity.value": {
+    "operator": ">=",
+    "input": ["@fact:quantities.value", 1]
+  },
+  "filterMask.value": {
+    "operator": "and",
+    "input": ["@fact:hasQuantity.value", "@fact:inStock.value"]
+  },
+  "eligibleItems.value": {
+    "operator": "arrayFilter",
+    "input": ["@fact:items.value", "@fact:filterMask.value"]
+  },
+  "eligiblePrices.value": {
+    "operator": "jPath",
+    "input": ["@fact:eligibleItems.value", "$[*].price"]
+  },
+  "eligibleTotal.value": {
+    "operator": "+",
+    "input": "@fact:eligiblePrices.value"
+  }
+}
+```
+
+**Use this pattern for:**
+- Filtering by criteria
+- Available items only
+- Conditional selections
+- Qualified subset processing
+
+### Pattern: Array Aggregations
+
+Calculate statistics from arrays.
+
+```json
+{
+  "orderAmounts.value": {
+    "operator": "jPath",
+    "input": ["@fact:orders.value", "$[*].amount"]
+  },
+  "totalRevenue.value": {
+    "operator": "+",
+    "input": "@fact:orderAmounts.value"
+  },
+  "orderCount.value": {
+    "operator": "jPath",
+    "input": ["@fact:orders.value", "$[*]"]
+  },
+  "averageOrderValue.value": {
+    "operator": "/",
+    "input": [
+      "@fact:totalRevenue.value",
+      {
+        "operator": "arrayLength",
+        "input": ["@fact:orderCount.value"]
+      }
+    ]
+  },
+  "maxOrder.value": {
+    "operator": "max",
+    "input": "@fact:orderAmounts.value"
+  },
+  "minOrder.value": {
+    "operator": "min",
+    "input": "@fact:orderAmounts.value"
+  }
+}
+```
+
+**Use this pattern for:**
+- Analytics calculations
+- Summary statistics
+- Dashboard metrics
+- Report generation
+
+---
+
+## Multi-Condition Logic
+
+Combine multiple conditions to make complex decisions.
+
+### Pattern: Eligibility Checks
+
+Determine if someone qualifies based on multiple criteria.
+
+```json
+{
+  "meetsAge.value": {
+    "operator": ">=",
+    "input": ["@fact:age.value", 18]
+  },
+  "meetsIncome.value": {
+    "operator": ">=",
+    "input": ["@fact:annualIncome.value", 30000]
+  },
+  "hasCreditHistory.value": {
+    "operator": ">=",
+    "input": ["@fact:creditScore.value", 600]
+  },
+  "isEligible.value": {
+    "operator": "and",
+    "input": [
+      "@fact:meetsAge.value",
+      "@fact:meetsIncome.value",
+      "@fact:hasCreditHistory.value"
+    ]
+  },
+  "eligibilityReasons.value": {
+    "operator": "generateArray",
+    "input": [
+      [
+        {"operator": "not", "input": ["@fact:meetsAge.value"]},
+        "Must be 18 or older"
+      ],
+      [
+        {"operator": "not", "input": ["@fact:meetsIncome.value"]},
+        "Minimum income requirement not met"
+      ],
+      [
+        {"operator": "not", "input": ["@fact:hasCreditHistory.value"]},
+        "Credit score below minimum"
+      ]
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Loan qualification
+- Program eligibility
+- Access control
+- Application approval
+
+### Pattern: Priority Scoring
+
+Calculate priority scores based on multiple weighted factors.
+
+```json
+{
+  "urgencyScore.value": {
+    "operator": "map",
+    "input": [
+      "@fact:urgency.value",
+      {"low": 1, "medium": 3, "high": 5, "critical": 10},
+      1
+    ]
+  },
+  "impactScore.value": {
+    "operator": "map",
+    "input": [
+      "@fact:impact.value",
+      {"individual": 1, "team": 3, "department": 5, "company": 10},
+      1
+    ]
+  },
+  "customerTierScore.value": {
+    "operator": "map",
+    "input": [
+      "@fact:customerTier.value",
+      {"bronze": 1, "silver": 2, "gold": 3, "platinum": 5},
+      1
+    ]
+  },
+  "totalScore.value": {
+    "operator": "+",
+    "input": [
+      {"operator": "*", "input": ["@fact:urgencyScore.value", 2]},
+      {"operator": "*", "input": ["@fact:impactScore.value", 1.5]},
+      "@fact:customerTierScore.value"
+    ]
+  },
+  "priority.value": [
+    {
+      "condition": {"operator": ">=", "input": ["@fact:totalScore.value", 30]},
+      "outcome": "P1"
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:totalScore.value", 20, 30, "INCLUSIVE_LEFT"]
+      },
+      "outcome": "P2"
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:totalScore.value", 10, 20, "INCLUSIVE_LEFT"]
+      },
+      "outcome": "P3"
+    },
+    {
+      "outcome": "P4"
+    }
+  ]
+}
+```
+
+**Use this pattern for:**
+- Ticket prioritization
+- Lead scoring
+- Risk assessment
+- Resource allocation
+
+---
+
+## String Formatting & Templates
+
+Format data for display or generate dynamic messages.
+
+### Pattern: Dynamic Message Generation
+
+Create personalized messages with data substitution.
+
+```json
+{
+  "welcomeMessage.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "Welcome back, {{1}}! You have {{2}} new messages and {{3}} pending tasks.",
+      "@fact:firstName.value",
+      "@fact:messageCount.value",
+      "@fact:taskCount.value"
+    ]
+  },
+  "orderConfirmation.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "Order #{{1}} confirmed! {{2}} items totaling {{3}} will ship to {{4}}.",
+      "@fact:orderNumber.value",
+      "@fact:itemCount.value",
+      {"operator": "numberFormat", "input": ["@fact:total.value", 2]},
+      "@fact:shippingCity.value"
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Email templates
+- Notification messages
+- Dynamic content
+- User communications
+
+### Pattern: Name Formatting
+
+Combine name parts in various formats.
+
+```json
+{
+  "fullName.value": {
+    "operator": "concat",
+    "input": ["@fact:firstName.value", " ", "@fact:lastName.value"]
+  },
+  "formalName.value": {
+    "operator": "concat",
+    "input": ["@fact:lastName.value", ", ", "@fact:firstName.value"]
+  },
+  "displayName.value": {
+    "operator": "concat",
+    "input": [
+      "@fact:firstName.value",
+      " ",
+      {"operator": "substring", "input": ["@fact:lastName.value", 0, 1]},
+      "."
+    ]
+  },
+  "initials.value": {
+    "operator": "concat",
+    "input": [
+      {"operator": "substring", "input": ["@fact:firstName.value", 0, 1]},
+      {"operator": "substring", "input": ["@fact:lastName.value", 0, 1]}
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Name display variations
+- User profiles
+- Report headers
+- Contact lists
+
+---
+
+## Date & Time Calculations
+
+Work with dates for deadlines, aging, and scheduling.
+
+### Pattern: Due Date Calculation
+
+Calculate deadlines based on creation date and urgency.
+
+```json
+{
+  "daysToComplete.value": {
+    "operator": "map",
+    "input": [
+      "@fact:priority.value",
+      {"critical": 1, "high": 3, "medium": 7, "low": 14},
+      7
+    ]
+  },
+  "dueDate.value": {
+    "operator": "addDate",
+    "input": [
+      "@fact:createdDate.value",
+      "@fact:daysToComplete.value",
+      "days"
+    ]
+  },
+  "formattedDueDate.value": {
+    "operator": "dateFormat",
+    "input": ["@fact:dueDate.value", "YYYY-MM-DD"]
+  }
+}
+```
+
+**Use this pattern for:**
+- SLA calculations
+- Payment terms
+- Project deadlines
+- Expiration dates
+
+### Pattern: Age & Overdue Calculations
+
+Determine how old something is or if it's overdue.
+
+```json
+{
+  "ageInDays.value": {
+    "operator": "dateDiff",
+    "input": [
+      {"operator": "now", "input": []},
+      "@fact:createdDate.value",
+      "days"
+    ]
+  },
+  "isOverdue.value": {
+    "operator": ">",
+    "input": [
+      {"operator": "now", "input": []},
+      "@fact:dueDate.value"
+    ]
+  },
+  "daysOverdue.value": [
+    {
+      "condition": "@fact:isOverdue.value",
+      "outcome": {
+        "operator": "dateDiff",
+        "input": [
+          {"operator": "now", "input": []},
+          "@fact:dueDate.value",
+          "days"
+        ]
+      }
+    },
+    {
+      "outcome": 0
+    }
+  ]
+}
+```
+
+**Use this pattern for:**
+- Overdue tracking
+- Aging reports
+- Time-based alerts
+- Compliance monitoring
+
+---
+
+## Conditional Calculations
+
+Perform different calculations based on conditions.
+
+### Pattern: Conditional Fees
+
+Apply fees only when certain conditions are met.
+
+```json
+{
+  "rushFee.value": [
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:isRush.value", true]
+      },
+      "outcome": 25
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "oversizeFee.value": [
+    {
+      "condition": {
+        "operator": ">",
+        "input": ["@fact:weight.value", 50]
+      },
+      "outcome": {
+        "operator": "*",
+        "input": [
+          {"operator": "-", "input": ["@fact:weight.value", 50]},
+          2
+        ]
+      }
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "totalFees.value": {
+    "operator": "+",
+    "input": [
+      "@fact:baseFee.value",
+      "@fact:rushFee.value",
+      "@fact:oversizeFee.value"
+    ]
+  }
+}
+```
+
+**Use this pattern for:**
+- Conditional charges
+- Dynamic pricing
+- Fee calculations
+- Surcharge logic
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Keep It Simple" icon="minimize">
+    Break complex logic into multiple small rules rather than one giant nested rule
+  </Card>
+  
+  <Card title="Use Descriptive Names" icon="tag">
+    Name rules clearly so their purpose is obvious: `qualifiesForFreeShipping` not `rule1`
+  </Card>
+  
+  <Card title="Provide Defaults" icon="shield">
+    Always include a default outcome in conditional rules to handle edge cases
+  </Card>
+  
+  <Card title="Test Incrementally" icon="flask">
+    Add one rule at a time and test it before adding the next
+  </Card>
+  
+  <Card title="Document Complex Logic" icon="comment">
+    For complex rules, add comments or use descriptive intermediate rule names
+  </Card>
+  
+  <Card title="Reuse Calculations" icon="recycle">
+    Calculate values once and reference them multiple times rather than recalculating
+  </Card>
+</CardGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Examples Library" icon="code" href="/flows/steps/rules/examples">
+    See complete real-world examples using these patterns
+  </Card>
+  <Card title="Operations Reference" icon="list-check" href="/flows/steps/rules/operations">
+    Detailed reference for all available operators
+  </Card>
+  <Card title="Core Concepts" icon="book" href="/flows/steps/rules/core-concepts">
+    Understand the fundamentals of how Rules work
+  </Card>
+  <Card title="Getting Started" icon="rocket" href="/flows/steps/rules/getting-started">
+    Build your first rule with step-by-step guidance
+  </Card>
+</CardGroup>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>

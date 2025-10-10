@@ -1,0 +1,382 @@
+---
+title: "Getting Started"
+description: "Build your first rule in 5 minutes - a step-by-step tutorial"
+---
+
+## Your First Rule
+
+Let's build a simple rule that calculates whether a customer qualifies for a discount. This tutorial will teach you the basics of facts, rules, and outcomes.
+
+<Info>
+**What you'll learn:** By the end of this guide, you'll understand how to create facts, write rules, and test your logic in the Flow Debugger.
+</Info>
+
+## Step 1: Understanding the Problem
+
+Imagine you run an online store with this discount policy:
+- Orders over $100 get 10\% off
+- Orders under $100 get no discount
+
+Let's build a rule to calculate this automatically.
+
+## Step 2: Define Your Facts
+
+Facts are your input data - the information your rules will evaluate. For our discount rule, we need to know the order total.
+
+```json
+{
+  "orderTotal.value": 120
+}
+```
+
+<Note>
+**Key concept:** Facts are a flat key-value object. The keys (like `"orderTotal.value"`) are what you'll reference in your rules using `@fact:`. The values can be static data or [variable mapping](/advanced/variable-mapping/overview) expressions like `"$.previous_step.data"` to pull data from other steps in your flow.
+</Note>
+
+### Facts with Variable Mapping
+
+In a real flow, you'd typically map facts from previous steps using [variable mapping](/advanced/variable-mapping/overview):
+
+```json
+{
+  "orderTotal.value": "$.checkout_step.total",
+  "customerTier.value": "$.customer_lookup.tier",
+  "orderItems.value": "$.cart_step.items"
+}
+```
+
+When the Rules step runs, these variable mapping expressions are resolved to actual values before rules are evaluated.
+
+## Step 3: Write Your Rule
+
+Now let's create a rule that checks if the order qualifies for a discount:
+
+```json
+{
+  "qualifiesForDiscount.value": {
+    "operator": ">=",
+    "input": ["@fact:orderTotal.value", 100]
+  }
+}
+```
+
+### Breaking Down the Rule
+
+<Steps>
+  <Step title="Rule Name">
+    `qualifiesForDiscount.value` - The full unique name for this rule. The `.value` suffix is just a naming convention to create unique keys
+  </Step>
+  <Step title="Operator">
+    `>=` means "greater than or equal to"
+  </Step>
+  <Step title="Input">
+    Compare `@fact:orderTotal.value` (120) against 100
+  </Step>
+  <Step title="Result">
+    Returns `true` if condition is met, `false` otherwise
+  </Step>
+</Steps>
+
+<Tip>
+**The @fact: syntax** is how you reference data from your facts. Think of it as saying "grab the value from the orderTotal fact".
+</Tip>
+
+## Step 4: Add the Rules Step to Your Flow
+
+1. Open your flow in the Flow Builder
+2. Click **Add Step** 
+3. Select **Rules** from the available steps
+4. Configure the step:
+   - **Facts**: Map from a previous step using `$.previous_step_id` or paste your test facts
+   - **Rules**: Paste the rule JSON above
+
+<Frame>
+  <img src="/images/rules-step-config.png" alt="Rules step configuration" />
+</Frame>
+
+## Step 5: Test Your Rule
+
+Use the Flow Debugger to test with different values:
+
+<Tabs>
+  <Tab title="Test Case 1: $120 Order">
+    **Input Facts:**
+    ```json
+    {
+      "orderTotal.value": 120
+    }
+    ```
+    
+    **Expected Output:**
+    ```json
+    {
+      "qualifiesForDiscount.value": true
+    }
+    ```
+    ✅ Order total is ≥ $100, so discount applies
+  </Tab>
+  
+  <Tab title="Test Case 2: $75 Order">
+    **Input Facts:**
+    ```json
+    {
+      "orderTotal.value": 75
+    }
+    ```
+    
+    **Expected Output:**
+    ```json
+    {
+      "qualifiesForDiscount.value": false
+    }
+    ```
+    ❌ Order total is < $100, so no discount
+  </Tab>
+  
+  <Tab title="Test Case 3: Exactly $100">
+    **Input Facts:**
+    ```json
+    {
+      "orderTotal.value": 100
+    }
+    ```
+    
+    **Expected Output:**
+    ```json
+    {
+      "qualifiesForDiscount.value": true
+    }
+    ```
+    ✅ Order total equals $100, and we used `>=` (greater than or equal)
+  </Tab>
+</Tabs>
+
+## Step 6: Calculate the Discount Amount
+
+Now let's extend our rule to calculate the actual discount amount using conditional logic:
+
+```json
+{
+  "qualifiesForDiscount.value": {
+    "operator": ">=",
+    "input": ["@fact:orderTotal.value", 100]
+  },
+  "discountAmount.value": [
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:qualifiesForDiscount.value", true]
+      },
+      "outcome": {
+        "operator": "*",
+        "input": ["@fact:orderTotal.value", 0.10]
+      }
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "finalPrice.value": {
+    "operator": "-",
+    "input": [
+      "@fact:orderTotal.value",
+      "@fact:discountAmount.value"
+    ]
+  }
+}
+```
+
+<Note>
+**Notice how rules reference each other:** The `discountAmount` rule uses `@fact:qualifiesForDiscount.value` to check the outcome of the first rule. The `.value` is part of the rule's unique name, not a special property.
+</Note>
+
+### Understanding Conditional Rules
+
+The `discountAmount` rule uses the **conditional format** - an array of condition/outcome pairs:
+
+<Steps>
+  <Step title="First condition">
+    If `qualifiesForDiscount` is true, calculate 10\% of order total
+  </Step>
+  <Step title="Default outcome">
+    If no conditions match, return 0 (no discount)
+  </Step>
+</Steps>
+
+### Test the Complete Rule
+
+**Input:**
+```json
+{
+  "orderTotal.value": 120
+}
+```
+
+**Output:**
+```json
+{
+  "qualifiesForDiscount.value": true,
+  "discountAmount.value": 12,
+  "finalPrice.value": 108
+}
+```
+
+Perfect! \$120 order gets \$12 off (10\%), resulting in a final price of \$108.
+
+## Common Patterns You Just Learned
+
+<CardGroup cols={2}>
+  <Card title="Comparison" icon="greater-than">
+    Using operators like `>=`, `<`, `=` to compare values
+  </Card>
+  <Card title="Conditional Logic" icon="code-branch">
+    If-then-else using condition/outcome arrays
+  </Card>
+  <Card title="Calculations" icon="calculator">
+    Math operations like `*` and `-`
+  </Card>
+  <Card title="Rule References" icon="link">
+    Rules can reference other rules with `@fact:ruleName.property` where the property is part of the unique name
+  </Card>
+</CardGroup>
+
+## Common Beginner Mistakes
+
+<Warning>
+**Forgetting the @fact: prefix**
+```json
+// ❌ Wrong
+"input": ["orderTotal.value", 100]
+
+// ✅ Correct
+"input": ["@fact:orderTotal.value", 100]
+```
+</Warning>
+
+<Warning>
+**Inconsistent property naming**
+```json
+// ❌ Confusing - mixing naming conventions
+"qualifiesForDiscount": { ... }
+"discountAmount.value": { ... }
+
+// ✅ Better - consistent naming convention
+"qualifiesForDiscount.value": { ... }
+"discountAmount.value": { ... }
+```
+Using consistent property suffixes (like `.value`) makes your rules easier to read and maintain.
+</Warning>
+
+<Warning>
+**Using "inputs" instead of "input"**
+```json
+// ❌ Wrong
+"inputs": ["@fact:orderTotal.value", 100]
+
+// ✅ Correct
+"input": ["@fact:orderTotal.value", 100]
+```
+</Warning>
+
+<Warning>
+**Forgetting default outcome in conditional rules**
+```json
+// ❌ Incomplete - no default
+"discount.value": [
+  {
+    "condition": { ... },
+    "outcome": 0.1
+  }
+]
+
+// ✅ Complete - has default
+"discount.value": [
+  {
+    "condition": { ... },
+    "outcome": 0.1
+  },
+  {
+    "outcome": 0
+  }
+]
+```
+</Warning>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Core Concepts" icon="book" href="/flows/steps/rules/core-concepts">
+    Deep dive into facts, rules, operators, and how the engine works
+  </Card>
+  <Card title="Operations Reference" icon="list-check" href="/flows/steps/rules/operations">
+    Explore all available operators by category
+  </Card>
+  <Card title="Rule Patterns" icon="puzzle-piece" href="/flows/steps/rules/patterns">
+    Learn common patterns like validation, lookups, and array processing
+  </Card>
+  <Card title="Examples Library" icon="code" href="/flows/steps/rules/examples">
+    See complete examples for e-commerce, CRM, support, and more
+  </Card>
+</CardGroup>
+
+## Quick Reference
+
+### Simple Rule Structure
+
+```json
+{
+  "ruleName.value": {
+    "operator": "operatorName",
+    "input": [/* values to evaluate */]
+  }
+}
+```
+
+### Conditional Rule Structure
+
+```json
+{
+  "ruleName.value": [
+    {
+      "condition": {
+        "operator": "operatorName",
+        "input": [...]
+      },
+      "outcome": "result if condition is true"
+    },
+    {
+      "outcome": "default result"
+    }
+  ]
+}
+```
+
+### Referencing Facts and Rules
+
+```json
+"@fact:factName.value"        // Reference a fact (value is part of fact name)
+"@fact:ruleName.value"        // Reference another rule's outcome
+"@fact:orderTotal.formatted"  // Different property = different unique key
+```
+
+The property suffix (like `.value`, `.formatted`) is just part of the unique name - use different suffixes when you want multiple calculations from the same data.
+
+### Common Operators
+
+| Operator | Purpose | Example |
+|----------|---------|---------|
+| `=` | Equals | `{"operator": "=", "input": ["@fact:status.value", "active"]}` |
+| `>=` | Greater than or equal | `{"operator": ">=", "input": ["@fact:age.value", 18]}` |
+| `<` | Less than | `{"operator": "<", "input": ["@fact:price.value", 100]}` |
+| `+` | Addition | `{"operator": "+", "input": [10, 20]}` |
+| `*` | Multiplication | `{"operator": "*", "input": ["@fact:price.value", 0.9]}` |
+| `and` | Boolean AND | `{"operator": "and", "input": [condition1, condition2]}` |
+| `or` | Boolean OR | `{"operator": "or", "input": [condition1, condition2]}` |
+
+<Tip>
+**Pro tip:** Start with simple rules and test them individually before combining into complex logic. Use consistent property naming (like `.value`) throughout your rules for clarity.
+</Tip>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>

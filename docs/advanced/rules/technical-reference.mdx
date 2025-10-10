@@ -1,0 +1,727 @@
+---
+title: "Technical Reference"
+description: "Input/output schemas, data types, and technical specifications for the Rules step"
+---
+
+## Overview
+
+This technical reference documents the Rules step's input/output format, data types, and behavior specifications. Use this as a reference when building integrations or debugging rule execution.
+
+---
+
+## Input Schema
+
+The Rules step accepts two required inputs: `facts` and `rules`.
+
+### Facts Input
+
+**Type:** `Object<string, any>`
+
+A flat key-value object where keys are fact identifiers and values are either static data or [variable mapping](/advanced/variable-mapping/overview) expressions.
+
+```typescript
+{
+  [factKey: string]: any | string // static value or variable mapping expression
+}
+```
+
+**Example:**
+```json
+{
+  "orderTotal.value": 150,
+  "customerTier.value": "gold",
+  "cartItems.value": [
+    { "name": "Item 1", "price": 50 }
+  ],
+  "createdDate.value": "$.previous_step.timestamp"
+}
+```
+
+**Constraints:**
+- Keys must be valid JSON strings
+- Keys are case-sensitive
+- Duplicate keys will be overwritten (last one wins)
+- Values can be any valid JSON type or variable mapping expression
+
+---
+
+### Rules Input
+
+**Type:** `Object<string, Rule>`
+
+An object where each key is a rule name (the output key) and each value defines how to calculate that rule.
+
+```typescript
+{
+  [ruleName: string]: SimpleRule | ConditionalRule
+}
+```
+
+#### Simple Rule Format
+
+Direct calculation without conditions:
+
+```typescript
+{
+  operator: string,
+  input: any | any[]
+}
+```
+
+**Example:**
+```json
+{
+  "total.value": {
+    "operator": "+",
+    "input": [100, 50]
+  }
+}
+```
+
+#### Conditional Rule Format
+
+Array of condition/outcome pairs evaluated top-to-bottom:
+
+```typescript
+Array<{
+  condition?: {
+    operator: string,
+    input: any | any[]
+  },
+  outcome: any
+}>
+```
+
+**Example:**
+```json
+{
+  "discount.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:total.value", 100]
+      },
+      "outcome": 0.10
+    },
+    {
+      "outcome": 0
+    }
+  ]
+}
+```
+
+**Constraints:**
+- At least one outcome object required
+- Last outcome typically has no condition (default case)
+- First matching condition determines the result
+- Conditions evaluated strictly in order
+
+---
+
+## Output Schema
+
+The Rules step returns a flat object with outcomes for each rule.
+
+**Type:** `Object<string, any>`
+
+```typescript
+{
+  [ruleName: string]: any
+}
+```
+
+**Example Input:**
+```json
+{
+  "facts": {
+    "price.value": 100
+  },
+  "rules": {
+    "discount.value": {
+      "operator": "*",
+      "input": ["@fact:price.value", 0.1]
+    },
+    "finalPrice.value": {
+      "operator": "-",
+      "input": ["@fact:price.value", "@fact:discount.value"]
+    }
+  }
+}
+```
+
+**Example Output:**
+```json
+{
+  "discount.value": 10,
+  "finalPrice.value": 90
+}
+```
+
+---
+
+## Data Types
+
+The Rules engine works with standard JSON data types and performs automatic type coercion where appropriate.
+
+### Supported Types
+
+<AccordionGroup>
+  <Accordion title="Number" icon="hashtag">
+    Floating-point numbers following JSON number specification.
+    
+    **Examples:**
+    ```json
+    42
+    3.14159
+    -17.5
+    1.23e-4
+    ```
+    
+    **Operations:** All math operators
+    
+    **Coercion:** Strings containing numbers are auto-converted in math operations
+  </Accordion>
+  
+  <Accordion title="String" icon="quote-left">
+    UTF-8 text strings.
+    
+    **Examples:**
+    ```json
+    "Hello World"
+    "user@example.com"
+    "2025-10-09"
+    ""
+    ```
+    
+    **Operations:** String operators, comparison operators
+    
+    **Note:** Empty string `""` is truthy in boolean context
+  </Accordion>
+  
+  <Accordion title="Boolean" icon="toggle-on">
+    True or false values.
+    
+    **Examples:**
+    ```json
+    true
+    false
+    ```
+    
+    **Operations:** Logic operators, comparison operators
+    
+    **Coercion:**
+    - Truthy: `true`, non-zero numbers, non-empty strings, non-empty arrays, objects
+    - Falsy: `false`, `0`, `null`, `undefined`
+  </Accordion>
+  
+  <Accordion title="Null" icon="ban">
+    Represents absence of value.
+    
+    **Example:**
+    ```json
+    null
+    ```
+    
+    **Behavior:**
+    - Falsy in boolean context
+    - Treated as `0` in numeric operations
+    - Treated as empty string in string operations
+  </Accordion>
+  
+  <Accordion title="Array" icon="list">
+    Ordered collection of values.
+    
+    **Examples:**
+    ```json
+    [1, 2, 3]
+    ["red", "green", "blue"]
+    [{ "id": 1 }, { "id": 2 }]
+    []
+    ```
+    
+    **Operations:** Array operators, aggregation functions
+    
+    **Note:** Empty array `[]` is truthy
+  </Accordion>
+  
+  <Accordion title="Object" icon="brackets-curly">
+    Key-value collections.
+    
+    **Examples:**
+    ```json
+    { "name": "John", "age": 30 }
+    { "items": [1, 2, 3] }
+    {}
+    ```
+    
+    **Operations:** Lookup operators, JSON operators
+    
+    **Note:** Empty object `{}` is truthy
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Fact Referencing
+
+Reference facts in rules using the `@fact:` prefix followed by the exact fact key.
+
+### Syntax
+
+```
+@fact:factKey
+```
+
+**Examples:**
+```json
+"@fact:orderTotal.value"
+"@fact:customer.tier"
+"@fact:items.value"
+```
+
+### Resolution Order
+
+1. **Check facts object** - Look for exact key match in facts
+2. **Check prior rules** - If not found in facts, check rule outcomes
+3. **Error if not found** - Undefined references cause rule evaluation to fail
+
+### Nested References
+
+Rules can reference other rules, creating a dependency chain:
+
+```json
+{
+  "subtotal.value": {
+    "operator": "+",
+    "input": [100, 50]
+  },
+  "tax.value": {
+    "operator": "*",
+    "input": ["@fact:subtotal.value", 0.08]
+  },
+  "total.value": {
+    "operator": "+",
+    "input": ["@fact:subtotal.value", "@fact:tax.value"]
+  }
+}
+```
+
+The engine automatically determines the correct evaluation order: `subtotal` → `tax` → `total`
+
+---
+
+## Operator Input Types
+
+Different operators expect different input formats.
+
+### Single Value
+
+Operators that work on one value:
+
+```json
+{
+  "operator": "round",
+  "input": [3.7]
+}
+```
+
+### Two Values
+
+Binary operators:
+
+```json
+{
+  "operator": "+",
+  "input": [10, 20]
+}
+```
+
+### Multiple Values
+
+Operators accepting variable arguments:
+
+```json
+{
+  "operator": "+",
+  "input": [10, 20, 30, 40]
+}
+```
+
+### Array Input
+
+Operators that process arrays:
+
+```json
+{
+  "operator": "max",
+  "input": [[10, 25, 15, 30]]
+}
+```
+
+Or extracted from facts:
+
+```json
+{
+  "operator": "max",
+  "input": [
+    {
+      "operator": "jPath",
+      "input": ["@fact:items.value", "$[*].price"]
+    }
+  ]
+}
+```
+
+### Nested Operations
+
+Operators can be nested as input values:
+
+```json
+{
+  "operator": "-",
+  "input": [
+    "@fact:total.value",
+    {
+      "operator": "*",
+      "input": ["@fact:total.value", 0.1]
+    }
+  ]
+}
+```
+
+---
+
+## Evaluation Process
+
+Understanding how the Rules engine processes your rules:
+
+<Steps>
+  <Step title="1. Variable Mapping Resolution">
+    All facts containing variable mapping expressions (starting with `$`) are resolved by fetching data from previous steps in the flow
+  </Step>
+  
+  <Step title="2. Dependency Analysis">
+    The engine analyzes which rules reference which facts and other rules, building a dependency graph
+  </Step>
+  
+  <Step title="3. Topological Sort">
+    Rules are ordered so dependencies are evaluated before dependents (rules that need them)
+  </Step>
+  
+  <Step title="4. Rule Evaluation">
+    Each rule is evaluated in dependency order:
+    - For simple rules: operator is applied to inputs
+    - For conditional rules: conditions checked top-to-bottom until match found
+  </Step>
+  
+  <Step title="5. Output Generation">
+    All rule outcomes are collected into a flat output object with keys matching rule names
+  </Step>
+</Steps>
+
+### Circular Dependencies
+
+The engine detects circular dependencies and will fail with an error:
+
+❌ **Invalid (circular):**
+```json
+{
+  "a.value": {
+    "operator": "+",
+    "input": ["@fact:b.value", 10]
+  },
+  "b.value": {
+    "operator": "*",
+    "input": ["@fact:a.value", 2]
+  }
+}
+```
+
+**Error:** `Circular dependency detected: a.value → b.value → a.value`
+
+---
+
+## Performance Characteristics
+
+Understanding performance implications of rule design:
+
+### Time Complexity
+
+| Operation Type | Complexity | Notes |
+|---------------|------------|-------|
+| Simple rule evaluation | O(1) | Direct calculation |
+| Conditional rule | O(n) | n = number of conditions |
+| Dependency resolution | O(n + m) | n = rules, m = dependencies |
+| Array operations | O(k) | k = array length |
+| JSONPath queries | O(k) | k = array length |
+
+### Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Minimize Conditions" icon="minimize">
+    Use `between` operator instead of multiple `>=` conditions when possible
+  </Card>
+  
+  <Card title="Reuse Calculations" icon="recycle">
+    Calculate once and reference multiple times rather than recalculating
+  </Card>
+  
+  <Card title="Limit Nesting" icon="layer-group">
+    Deep nesting reduces readability and debuggability - break into multiple rules
+  </Card>
+  
+  <Card title="Optimize Array Operations" icon="gauge-high">
+    Extract array values once with jPath, then reuse the extracted arrays
+  </Card>
+</CardGroup>
+
+### Memory Considerations
+
+- **Facts:** Stored in memory during execution
+- **Intermediate results:** Each rule outcome stored for potential reuse
+- **Arrays:** Large arrays (>10,000 elements) may impact performance
+
+---
+
+## Error Handling
+
+Common error scenarios and their meanings:
+
+### Undefined Reference
+
+**Error:** `Undefined fact reference: @fact:nonexistent.value`
+
+**Cause:** Referenced a fact or rule that doesn't exist
+
+**Solution:** Check spelling, ensure fact is defined, or that dependent rule is defined
+
+### Invalid Operator
+
+**Error:** `Unknown operator: invalidOp`
+
+**Cause:** Used an operator name that doesn't exist
+
+**Solution:** Check [Operations Reference](/flows/steps/rules/operations) for valid operators
+
+### Type Mismatch
+
+**Error:** `Type error: cannot perform 'add' on string and number`
+
+**Cause:** Operator received incompatible types
+
+**Solution:** Ensure operands are correct types or use type conversion operators
+
+### Circular Dependency
+
+**Error:** `Circular dependency detected: rule1 → rule2 → rule1`
+
+**Cause:** Rules reference each other in a loop
+
+**Solution:** Restructure rules to eliminate circular references
+
+### Malformed Rule
+
+**Error:** `Invalid rule format for 'ruleName.value'`
+
+**Cause:** Rule doesn't match simple or conditional format
+
+**Solution:** Ensure rule has `operator` and `input` fields, or is an array of condition/outcome objects
+
+---
+
+## Debugging Tips
+
+<AccordionGroup>
+  <Accordion title="Use Flow Debugger" icon="bug">
+    The Flow Debugger shows:
+    - Input facts after variable mapping resolution
+    - Each rule's outcome
+    - Evaluation order
+    - Errors with context
+    
+    Test rules incrementally, adding one at a time.
+  </Accordion>
+  
+  <Accordion title="Simplify Complex Rules" icon="scissors">
+    Break complex rules into smaller steps:
+    
+    ❌ **Hard to debug:**
+    ```json
+    {
+      "result.value": {
+        "operator": "+",
+        "input": [
+          {
+            "operator": "*",
+            "input": [
+              {
+                "operator": "jPath",
+                "input": ["@fact:items.value", "$[*].price"]
+              },
+              {
+                "operator": "jPath",
+                "input": ["@fact:items.value", "$[*].quantity"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+    ```
+    
+    ✅ **Easy to debug:**
+    ```json
+    {
+      "prices.value": {
+        "operator": "jPath",
+        "input": ["@fact:items.value", "$[*].price"]
+      },
+      "quantities.value": {
+        "operator": "jPath",
+        "input": ["@fact:items.value", "$[*].quantity"]
+      },
+      "lineTotals.value": {
+        "operator": "*",
+        "input": ["@fact:prices.value", "@fact:quantities.value"]
+      },
+      "result.value": {
+        "operator": "+",
+        "input": "@fact:lineTotals.value"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Check Variable Mapping" icon="link">
+    Ensure variable mapping expressions in facts are valid:
+    - Use correct `$.step_id.property` syntax
+    - Referenced step must execute before Rules step
+    - Property path must exist in step output
+    
+    Test variable mapping separately before adding to rules.
+  </Accordion>
+  
+  <Accordion title="Verify Data Types" icon="check">
+    Common type issues:
+    - Strings that should be numbers: `"100"` vs `100`
+    - Null/undefined values in calculations
+    - Empty arrays in aggregations
+    
+    Add validation rules to check input types.
+  </Accordion>
+  
+  <Accordion title="Test Edge Cases" icon="flask">
+    Test with boundary values:
+    - Empty arrays `[]`
+    - Zero values `0`
+    - Null values `null`
+    - Empty strings `""`
+    - Large numbers
+    - Negative numbers
+    
+    Ensure rules handle all cases gracefully.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Integration Patterns
+
+### Using Rules Step Output
+
+Access rule outcomes in subsequent flow steps using [variable mapping](/advanced/variable-mapping/overview):
+
+```json
+{
+  "nextStepInput": "$.rules_step_id.finalPrice.value"
+}
+```
+
+### Passing Arrays
+
+When passing arrays to subsequent steps, the entire array is available:
+
+**Rules output:**
+```json
+{
+  "eligibleItems.value": [
+    { "id": 1, "name": "Item 1" },
+    { "id": 2, "name": "Item 2" }
+  ]
+}
+```
+
+**Next step can access:**
+```json
+"$.rules_step_id.eligibleItems.value[0].name"  // "Item 1"
+"$.rules_step_id.eligibleItems.value[*].id"    // [1, 2]
+```
+
+### Conditional Flow Routing
+
+Use rule outcomes to determine flow paths:
+
+```json
+{
+  "rules": {
+    "shouldApprove.value": {
+      "operator": "and",
+      "input": [
+        {"operator": ">=", "input": ["@fact:score.value", 75]},
+        {"operator": "=", "input": ["@fact:verified.value", true]}
+      ]
+    }
+  }
+}
+```
+
+Then in a subsequent condition step:
+```json
+{
+  "condition": "$.rules_step.shouldApprove.value",
+  "ifTrue": "approval_branch",
+  "ifFalse": "rejection_branch"
+}
+```
+
+---
+
+## Limits & Constraints
+
+Be aware of these limitations:
+
+| Constraint | Limit | Notes |
+|-----------|-------|-------|
+| Max rules per step | 1,000 | Performance degrades beyond this |
+| Max fact size | 10 MB | Total size of all facts |
+| Max rule depth (nesting) | 50 | Nested operator depth |
+| Max array length | 100,000 | Individual array processing |
+| Execution timeout | 30 seconds | Total rule evaluation time |
+| Max conditions per rule | 100 | Conditional rule branches |
+
+<Warning>
+Exceeding these limits may cause performance degradation or execution failures. Break large rule sets into multiple Rules steps if needed.
+</Warning>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="rocket" href="/flows/steps/rules/getting-started">
+    Build your first rule with step-by-step guidance
+  </Card>
+  <Card title="Core Concepts" icon="book" href="/flows/steps/rules/core-concepts">
+    Understand how the Rules engine works
+  </Card>
+  <Card title="Operations Reference" icon="list-check" href="/flows/steps/rules/operations">
+    Complete reference for all available operators
+  </Card>
+  <Card title="Examples Library" icon="code" href="/flows/steps/rules/examples">
+    Real-world examples with complete code
+  </Card>
+</CardGroup>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>

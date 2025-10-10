@@ -1,0 +1,1566 @@
+---
+title: "Advanced Techniques"
+description: "Sophisticated patterns, optimization strategies, and best practices for complex rule implementations"
+---
+
+## Overview
+
+This guide covers advanced techniques for building sophisticated, performant, and maintainable rule systems. These patterns are for experienced users tackling complex business logic.
+
+<Warning>
+**Prerequisites:** Before diving into these advanced techniques, ensure you're comfortable with the concepts in [Core Concepts](/flows/steps/rules/core-concepts), [Operations Reference](/flows/steps/rules/operations), and [Common Patterns](/flows/steps/rules/patterns).
+</Warning>
+
+---
+
+## Nested Operations in Outcomes
+
+Outcomes can contain operations or literal data structures, enabling sophisticated conditional logic.
+
+### Pattern: Outcome as Operation
+
+When an outcome is an object with `operator` and `input`, it's evaluated as an operation:
+
+```json
+{
+  "facts": {
+    "customerType.value": "premium",
+    "orderAmount.value": 1200,
+    "yearsAsMember.value": 3
+  },
+  "rules": {
+    "baseDiscount.value": [
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:customerType.value", "premium"]
+        },
+        "outcome": {
+          "_comment": "For premium customers, discount depends on order amount",
+          "operator": ">=",
+          "input": ["@fact:orderAmount.value", 1000]
+        }
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:customerType.value", "standard"]
+        },
+        "outcome": {
+          "_comment": "For standard customers, check membership duration",
+          "operator": ">=",
+          "input": ["@fact:yearsAsMember.value", 2]
+        }
+      },
+      {
+        "outcome": false
+      }
+    ],
+    "discountRate.value": [
+      {
+        "condition": "@fact:baseDiscount.value",
+        "outcome": {
+          "_comment": "Calculate discount based on customer type and amount",
+          "operator": "*",
+          "input": [
+            {
+              "operator": "map",
+              "input": [
+                "@fact:customerType.value",
+                {"premium": 0.15, "standard": 0.10},
+                0.05
+              ]
+            },
+            {
+              "operator": ">=",
+              "input": ["@fact:orderAmount.value", 500]
+            }
+          ]
+        }
+      },
+      {
+        "outcome": 0
+      }
+    ]
+  }
+}
+```
+
+**Use cases:**
+- Multi-level conditional calculations
+- Different calculation methods based on type
+- Dynamic threshold evaluation
+- Cascading business logic
+
+### Pattern: Outcome as Literal Array
+
+When an outcome is an array of data objects, it returns that literal array:
+
+```json
+{
+  "facts": {
+    "userRole.value": "admin",
+    "department.value": "engineering"
+  },
+  "rules": {
+    "availableActions.value": [
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:userRole.value", "admin"]
+        },
+        "outcome": [
+          {"action": "create", "label": "Create Resource", "order": 1},
+          {"action": "edit", "label": "Edit Resource", "order": 2},
+          {"action": "delete", "label": "Delete Resource", "order": 3},
+          {"action": "approve", "label": "Approve Changes", "order": 4}
+        ]
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:userRole.value", "editor"]
+        },
+        "outcome": [
+          {"action": "create", "label": "Create Resource", "order": 1},
+          {"action": "edit", "label": "Edit Resource", "order": 2}
+        ]
+      },
+      {
+        "outcome": [
+          {"action": "view", "label": "View Resource", "order": 1}
+        ]
+      }
+    ],
+    "navigationItems.value": [
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:department.value", "engineering"]
+        },
+        "outcome": [
+          {"path": "/dashboard", "icon": "home", "label": "Dashboard"},
+          {"path": "/projects", "icon": "folder", "label": "Projects"},
+          {"path": "/deployments", "icon": "rocket", "label": "Deployments"},
+          {"path": "/settings", "icon": "cog", "label": "Settings"}
+        ]
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:department.value", "sales"]
+        },
+        "outcome": [
+          {"path": "/dashboard", "icon": "home", "label": "Dashboard"},
+          {"path": "/leads", "icon": "users", "label": "Leads"},
+          {"path": "/reports", "icon": "chart", "label": "Reports"}
+        ]
+      },
+      {
+        "outcome": [
+          {"path": "/dashboard", "icon": "home", "label": "Dashboard"}
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Use cases:**
+- Dynamic UI menus or navigation
+- Permission-based action lists
+- Workflow step definitions
+- Configuration objects per user type
+- Form field definitions
+
+### Important Distinction
+
+<Warning>
+**Cannot nest condition/outcome arrays:** Unlike operations, you cannot have a conditional rule array as an outcome. If the outcome is an array, it's treated as literal data, not as a conditional to evaluate.
+
+❌ **This doesn't work:**
+```json
+{
+  "outcome": [
+    {"condition": {...}, "outcome": "value1"},
+    {"outcome": "value2"}
+  ]
+}
+```
+
+✅ **Instead, flatten conditions or use operations:**
+```json
+{
+  "outcome": {
+    "operator": "gte",
+    "input": ["@fact:value.value", 100]
+  }
+}
+```
+</Warning>
+
+### Combining Both Patterns
+
+You can mix these patterns in a single rule set:
+
+```json
+{
+  "rules": {
+    "eligibleForBonus.value": [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": "=", "input": ["@fact:status.value", "active"]},
+            {"operator": ">=", "input": ["@fact:performance.value", 90]}
+          ]
+        },
+        "outcome": {
+          "_comment": "Calculate bonus as operation",
+          "operator": "*",
+          "input": ["@fact:salary.value", 0.15]
+        }
+      },
+      {
+        "outcome": 0
+      }
+    ],
+    "bonusDetails.value": [
+      {
+        "condition": {
+          "operator": ">",
+          "input": ["@fact:eligibleForBonus.value", 0]
+        },
+        "outcome": [
+          {
+            "amount": "@fact:eligibleForBonus.value",
+            "type": "performance",
+            "taxable": true,
+            "paymentDate": "2025-12-15"
+          }
+        ]
+      },
+      {
+        "outcome": []
+      }
+    ]
+  }
+}
+```
+
+This pattern allows you to:
+1. Calculate a value using operations (eligibleForBonus)
+2. Return structured data based on that calculation (bonusDetails)
+
+---
+
+## Complex Multi-Stage Calculations
+
+Break down complex calculations into logical stages for maintainability and debuggability.
+
+### Pattern: Staged Pipeline Processing
+
+Process data through multiple transformation stages. There are several approaches to organizing and documenting complex multi-stage rules:
+
+#### Approach 1: Self-Documenting Rule Names (Recommended)
+
+Use descriptive prefixes in rule names to indicate stage and purpose:
+
+```json
+{
+  "facts": {
+    "rawData.value": [
+      { "amount": 100, "type": "A", "region": "North" },
+      { "amount": 150, "type": "B", "region": "South" },
+      { "amount": 200, "type": "A", "region": "North" }
+    ]
+  },
+  "rules": {
+    "stage1_extractAmounts.value": {
+      "operator": "jPath",
+      "input": ["@fact:rawData.value", "$[*].amount"]
+    },
+    "stage1_extractTypes.value": {
+      "operator": "jPath",
+      "input": ["@fact:rawData.value", "$[*].type"]
+    },
+    "stage1_validAmounts.value": {
+      "operator": ">=",
+      "input": ["@fact:stage1_extractAmounts.value", 0]
+    },
+    "stage2_typeMultipliers.value": {
+      "operator": "map",
+      "input": [
+        "@fact:stage1_extractTypes.value",
+        { "A": 1.2, "B": 1.5, "C": 1.0 },
+        1.0
+      ]
+    },
+    "stage2_adjustedAmounts.value": {
+      "operator": "*",
+      "input": [
+        "@fact:stage1_extractAmounts.value",
+        "@fact:stage2_typeMultipliers.value"
+      ]
+    },
+    "stage3_filteredAmounts.value": {
+      "operator": "arrayFilter",
+      "input": [
+        "@fact:stage2_adjustedAmounts.value",
+        "@fact:stage1_validAmounts.value"
+      ]
+    },
+    "stage3_totalAmount.value": {
+      "operator": "+",
+      "input": "@fact:stage3_filteredAmounts.value"
+    },
+    "stage3_averageAmount.value": {
+      "operator": "/",
+      "input": [
+        "@fact:stage3_totalAmount.value",
+        {
+          "operator": "arrayLength",
+          "input": ["@fact:stage3_filteredAmounts.value"]
+        }
+      ]
+    },
+    "stage4_classification.value": [
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:stage3_averageAmount.value", 200]
+        },
+        "outcome": "High Value"
+      },
+      {
+        "condition": {
+          "operator": "between",
+          "input": ["@fact:stage3_averageAmount.value", 100, 200, "INCLUSIVE_LEFT"]
+        },
+        "outcome": "Medium Value"
+      },
+      {
+        "outcome": "Low Value"
+      }
+    ]
+  }
+}
+```
+
+<Tip>
+**Best Practice:** Prefix rule names with stage numbers (e.g., `stage1_`, `stage2_`) to make the processing flow obvious. This also makes debugging easier as you can see which stage a rule belongs to.
+</Tip>
+
+#### Approach 2: Inline Comments within Rules
+
+Add a `_comment` field inside individual rules for complex logic:
+
+```json
+{
+  "typeMultipliers.value": {
+    "_comment": "Apply multipliers based on type: A=1.2x, B=1.5x, C=1.0x",
+    "operator": "map",
+    "input": [
+      "@fact:types.value",
+      { "A": 1.2, "B": 1.5, "C": 1.0 },
+      1.0
+    ]
+  }
+}
+```
+
+<Note>
+The `_comment` field is ignored by the Rules engine but stays with the rule definition. Use underscore prefix to indicate it's metadata.
+</Note>
+
+#### Approach 3: Separate Rules Steps (For Very Complex Logic)
+
+Split stages into separate Rules steps in your flow:
+
+<Steps>
+  <Step title="Rules Step 1: Extract & Validate">
+    Extract raw data and validate inputs
+  </Step>
+  <Step title="Rules Step 2: Apply Business Logic">
+    Apply multipliers and transformations
+  </Step>
+  <Step title="Rules Step 3: Aggregate & Filter">
+    Calculate totals and filter results
+  </Step>
+  <Step title="Rules Step 4: Classify">
+    Determine final classification
+  </Step>
+</Steps>
+
+**When to use separate steps:**
+- Each stage has 20+ rules
+- Stages need independent testing
+- Different team members own different stages
+- Need to conditionally skip stages based on earlier results
+
+**Benefits of all approaches:**
+- Clear separation of concerns
+- Easy to test individual stages
+- Simple to add new stages
+- Obvious where problems occur
+
+<Warning>
+**Avoid comment-only rules:** Rules like `"// Comment": null` appear in documentation but aren't reliable in production because JSON objects are unordered. The comment might not stay with the related rules.
+</Warning>
+
+---
+
+## Performance Optimization
+
+Techniques for optimizing rule execution speed and memory usage.
+
+### Cache Expensive Calculations
+
+Store results of expensive operations and reuse them:
+
+❌ **Inefficient (recalculates):**
+```json
+{
+  "rule1.value": {
+    "operator": "+",
+    "input": {
+      "operator": "jPath",
+      "input": ["@fact:largeArray.value", "$[*].complexProperty"]
+    }
+  },
+  "rule2.value": {
+    "operator": "*",
+    "input": [
+      {
+        "operator": "jPath",
+        "input": ["@fact:largeArray.value", "$[*].complexProperty"]
+      },
+      2
+    ]
+  }
+}
+```
+
+✅ **Efficient (calculates once):**
+```json
+{
+  "extractedValues.value": {
+    "operator": "jPath",
+    "input": ["@fact:largeArray.value", "$[*].complexProperty"]
+  },
+  "rule1.value": {
+    "operator": "+",
+    "input": "@fact:extractedValues.value"
+  },
+  "rule2.value": {
+    "operator": "*",
+    "input": ["@fact:extractedValues.value", 2]
+  }
+}
+```
+
+### Minimize Array Iterations
+
+Extract all needed properties in one pass:
+
+❌ **Multiple iterations:**
+```json
+{
+  "prices.value": {
+    "operator": "jPath",
+    "input": ["@fact:items.value", "$[*].price"]
+  },
+  "quantities.value": {
+    "operator": "jPath",
+    "input": ["@fact:items.value", "$[*].quantity"]
+  },
+  "names.value": {
+    "operator": "jPath",
+    "input": ["@fact:items.value", "$[*].name"]
+  }
+}
+```
+
+✅ **Single extraction (when possible):**
+```json
+{
+  "itemData.value": {
+    "operator": "jPath",
+    "input": ["@fact:items.value", "$[*].[price,quantity,name]"]
+  }
+}
+```
+
+### Use Efficient Operators
+
+Choose operators optimized for your use case:
+
+| Instead of | Use | Why |
+|-----------|-----|-----|
+| Multiple `>=` checks | `between` with inclusivity | Single operation vs multiple comparisons |
+| `and` with many inputs | Pre-filter with intermediate rules | Reduces complexity |
+| Nested `if` operators | Conditional rule format | Optimized evaluation path |
+| `jPath` for simple access | Direct reference | Avoids JSON parsing overhead |
+
+### Early Exit Patterns
+
+Structure conditions to fail fast:
+
+```json
+{
+  "isEligible.value": {
+    "operator": "and",
+    "input": [
+      {"operator": "notEmpty", "input": ["@fact:email.value"]},
+      {"operator": ">=", "input": ["@fact:age.value", 18]},
+      {"operator": "=", "input": ["@fact:verified.value", true]},
+      {
+        "operator": ">=",
+        "input": ["@fact:complexScoreCalculation.value", 75]
+      }
+    ]
+  }
+}
+```
+
+<Note>
+Put cheap checks (like `notEmpty`) before expensive ones (like complex calculations). The `and` operator short-circuits on first `false`.
+</Note>
+
+---
+
+## Advanced Array Processing
+
+Sophisticated techniques for working with collections.
+
+### Parallel Array Processing
+
+Process multiple related arrays simultaneously:
+
+```json
+{
+  "facts": {
+    "orders.value": [
+      { "id": 1, "total": 100, "status": "completed" },
+      { "id": 2, "total": 150, "status": "pending" },
+      { "id": 3, "total": 200, "status": "completed" }
+    ]
+  },
+  "rules": {
+    "totals.value": {
+      "operator": "jPath",
+      "input": ["@fact:orders.value", "$[*].total"]
+    },
+    "statuses.value": {
+      "operator": "jPath",
+      "input": ["@fact:orders.value", "$[*].status"]
+    },
+    "isCompleted.value": {
+      "operator": "=",
+      "input": ["@fact:statuses.value", "completed"]
+    },
+    "completedTotals.value": {
+      "operator": "arrayFilter",
+      "input": ["@fact:totals.value", "@fact:isCompleted.value"]
+    },
+    "completedRevenue.value": {
+      "operator": "+",
+      "input": "@fact:completedTotals.value"
+    },
+    "completedCount.value": {
+      "operator": "+",
+      "input": {
+        "operator": "*",
+        "input": ["@fact:isCompleted.value", 1]
+      }
+    },
+    "averageCompletedOrder.value": {
+      "operator": "/",
+      "input": ["@fact:completedRevenue.value", "@fact:completedCount.value"]
+    }
+  }
+}
+```
+
+### Nested Data Extraction
+
+Extract from deeply nested structures:
+
+```json
+{
+  "facts": {
+    "response.value": {
+      "data": {
+        "customers": [
+          {
+            "name": "Alice",
+            "orders": [
+              { "id": 1, "total": 100 },
+              { "id": 2, "total": 150 }
+            ]
+          },
+          {
+            "name": "Bob",
+            "orders": [
+              { "id": 3, "total": 200 }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "rules": {
+    "customers.value": {
+      "operator": "jPath",
+      "input": ["@fact:response.value", "$.data.customers"]
+    },
+    "allOrders.value": {
+      "operator": "jPath",
+      "input": ["@fact:customers.value", "$[*].orders[*]"]
+    },
+    "orderTotals.value": {
+      "operator": "jPath",
+      "input": ["@fact:allOrders.value", "$[*].total"]
+    },
+    "grandTotal.value": {
+      "operator": "+",
+      "input": "@fact:orderTotals.value"
+    }
+  }
+}
+```
+
+### Dynamic Array Generation
+
+Build arrays based on complex conditions:
+
+```json
+{
+  "facts": {
+    "features.value": {
+      "hasCamera": true,
+      "hasGPS": false,
+      "hasBluetooth": true,
+      "hasNFC": true,
+      "has5G": false
+    }
+  },
+  "rules": {
+    "criticalFeatures.value": {
+      "operator": "generateArray",
+      "input": [
+        [
+          "@fact:features.value.hasCamera",
+          "High-Resolution Camera"
+        ],
+        [
+          "@fact:features.value.hasGPS",
+          "GPS Navigation"
+        ]
+      ]
+    },
+    "enhancedFeatures.value": {
+      "operator": "generateArray",
+      "input": [
+        [
+          "@fact:features.value.hasBluetooth",
+          "Bluetooth 5.0"
+        ],
+        [
+          "@fact:features.value.hasNFC",
+          "NFC Payments"
+        ],
+        [
+          "@fact:features.value.has5G",
+          "5G Connectivity"
+        ]
+      ]
+    },
+    "allFeatures.value": {
+      "operator": "concatArray",
+      "input": [
+        "@fact:criticalFeatures.value",
+        "@fact:enhancedFeatures.value"
+      ]
+    },
+    "featureCount.value": {
+      "operator": "arrayLength",
+      "input": ["@fact:allFeatures.value"]
+    },
+    "featureSummary.value": {
+      "operator": "jPath",
+      "input": ["@fact:allFeatures.value", "$[*]", ", "]
+    }
+  }
+}
+```
+
+---
+
+## Complex Business Logic Patterns
+
+Advanced patterns for sophisticated decision-making.
+
+### Multi-Dimensional Scoring
+
+Score based on multiple independent dimensions:
+
+```json
+{
+  "facts": {
+    "candidate.value": {
+      "education": "masters",
+      "experience": 8,
+      "skills": ["Python", "JavaScript", "SQL"],
+      "certifications": 3,
+      "references": 4
+    },
+    "requirements.value": {
+      "minEducation": "bachelors",
+      "minExperience": 5,
+      "requiredSkills": ["Python", "JavaScript"],
+      "minCertifications": 2
+    }
+  },
+  "rules": {
+    "educationLevels.value": {
+      "bachelors": 1,
+      "masters": 2,
+      "phd": 3
+    },
+    "candidateEducationLevel.value": {
+      "operator": "map",
+      "input": [
+        "@fact:candidate.value.education",
+        "@fact:educationLevels.value",
+        0
+      ]
+    },
+    "requiredEducationLevel.value": {
+      "operator": "map",
+      "input": [
+        "@fact:requirements.value.minEducation",
+        "@fact:educationLevels.value",
+        0
+      ]
+    },
+    "meetsEducation.value": {
+      "operator": ">=",
+      "input": [
+        "@fact:candidateEducationLevel.value",
+        "@fact:requiredEducationLevel.value"
+      ]
+    },
+    "educationScore.value": [
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:candidateEducationLevel.value", 3]
+        },
+        "outcome": 30
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:candidateEducationLevel.value", 2]
+        },
+        "outcome": 20
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:candidateEducationLevel.value", 1]
+        },
+        "outcome": 10
+      },
+      {
+        "outcome": 0
+      }
+    ],
+    "experienceScore.value": [
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:candidate.value.experience", 10]
+        },
+        "outcome": 30
+      },
+      {
+        "condition": {
+          "operator": "between",
+          "input": ["@fact:candidate.value.experience", 5, 10, "INCLUSIVE_LEFT"]
+        },
+        "outcome": 20
+      },
+      {
+        "condition": {
+          "operator": "between",
+          "input": ["@fact:candidate.value.experience", 2, 5, "INCLUSIVE_LEFT"]
+        },
+        "outcome": 10
+      },
+      {
+        "outcome": 0
+      }
+    ],
+    "hasRequiredSkills.value": {
+      "operator": "isSubset",
+      "input": [
+        "@fact:requirements.value.requiredSkills",
+        "@fact:candidate.value.skills"
+      ]
+    },
+    "skillCount.value": {
+      "operator": "arrayLength",
+      "input": ["@fact:candidate.value.skills"]
+    },
+    "skillScore.value": [
+      {
+        "condition": "@fact:hasRequiredSkills.value",
+        "outcome": {
+          "operator": "*",
+          "input": ["@fact:skillCount.value", 5]
+        }
+      },
+      {
+        "outcome": 0
+      }
+    ],
+    "certificationScore.value": {
+      "operator": "*",
+      "input": ["@fact:candidate.value.certifications", 5]
+    },
+    "totalScore.value": {
+      "operator": "+",
+      "input": [
+        "@fact:educationScore.value",
+        "@fact:experienceScore.value",
+        "@fact:skillScore.value",
+        "@fact:certificationScore.value"
+      ]
+    },
+    "rating.value": [
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:totalScore.value", 80]
+        },
+        "outcome": "Excellent"
+      },
+      {
+        "condition": {
+          "operator": "between",
+          "input": ["@fact:totalScore.value", 60, 80, "INCLUSIVE_LEFT"]
+        },
+        "outcome": "Good"
+      },
+      {
+        "condition": {
+          "operator": "between",
+          "input": ["@fact:totalScore.value", 40, 60, "INCLUSIVE_LEFT"]
+        },
+        "outcome": "Fair"
+      },
+      {
+        "outcome": "Poor"
+      }
+    ]
+  }
+}
+```
+
+### State Machine Implementation
+
+Implement state transitions with validation:
+
+```json
+{
+  "facts": {
+    "currentState.value": "draft",
+    "action.value": "submit",
+    "hasApproval.value": true,
+    "isComplete.value": true
+  },
+  "rules": {
+    "validTransitions.value": {
+      "draft": ["submit", "cancel"],
+      "submitted": ["approve", "reject", "cancel"],
+      "approved": ["publish", "cancel"],
+      "published": ["archive"],
+      "cancelled": [],
+      "archived": []
+    },
+    "allowedActions.value": {
+      "operator": "map",
+      "input": [
+        "@fact:currentState.value",
+        "@fact:validTransitions.value",
+        []
+      ]
+    },
+    "isValidTransition.value": {
+      "operator": "inArray",
+      "input": [
+        "@fact:action.value",
+        "@fact:allowedActions.value"
+      ]
+    },
+    "requiresApproval.value": {
+      "operator": "inArray",
+      "input": [
+        "@fact:action.value",
+        ["approve", "publish"]
+      ]
+    },
+    "canExecute.value": {
+      "operator": "and",
+      "input": [
+        "@fact:isValidTransition.value",
+        [
+          {
+            "condition": "@fact:requiresApproval.value",
+            "outcome": "@fact:hasApproval.value"
+          },
+          {
+            "outcome": true
+          }
+        ]
+      ]
+    },
+    "nextState.value": [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            "@fact:canExecute.value",
+            {
+              "operator": "=",
+              "input": ["@fact:action.value", "submit"]
+            }
+          ]
+        },
+        "outcome": "submitted"
+      },
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            "@fact:canExecute.value",
+            {
+              "operator": "=",
+              "input": ["@fact:action.value", "approve"]
+            }
+          ]
+        },
+        "outcome": "approved"
+      },
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            "@fact:canExecute.value",
+            {
+              "operator": "=",
+              "input": ["@fact:action.value", "publish"]
+            }
+          ]
+        },
+        "outcome": "published"
+      },
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            "@fact:canExecute.value",
+            {
+              "operator": "=",
+              "input": ["@fact:action.value", "cancel"]
+            }
+          ]
+        },
+        "outcome": "cancelled"
+      },
+      {
+        "outcome": "@fact:currentState.value"
+      }
+    ],
+    "errorMessage.value": [
+      {
+        "condition": {
+          "operator": "not",
+          "input": ["@fact:isValidTransition.value"]
+        },
+        "outcome": {
+          "operator": "stringTemplate",
+          "input": [
+            "Invalid transition: cannot '{{1}}' from state '{{2}}'",
+            "@fact:action.value",
+            "@fact:currentState.value"
+          ]
+        }
+      },
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            "@fact:requiresApproval.value",
+            {
+              "operator": "not",
+              "input": ["@fact:hasApproval.value"]
+            }
+          ]
+        },
+        "outcome": "Action requires approval"
+      },
+      {
+        "outcome": null
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Error Handling & Validation
+
+Defensive programming techniques for robust rules.
+
+### Comprehensive Input Validation
+
+Validate all inputs before processing:
+
+```json
+{
+  "rules": {
+    "input_has_email.value": {
+      "operator": "notEmpty",
+      "input": ["@fact:email.value"]
+    },
+    "input_has_amount.value": {
+      "operator": "notEmpty",
+      "input": ["@fact:amount.value"]
+    },
+    "input_amount_is_number.value": {
+      "operator": "and",
+      "input": [
+        "@fact:input_has_amount.value",
+        {
+          "operator": ">=",
+          "input": ["@fact:amount.value", 0]
+        }
+      ]
+    },
+    "validation_errors.value": {
+      "operator": "generateArray",
+      "input": [
+        [
+          {
+            "operator": "not",
+            "input": ["@fact:input_has_email.value"]
+          },
+          "Email is required"
+        ],
+        [
+          {
+            "operator": "not",
+            "input": ["@fact:input_has_amount.value"]
+          },
+          "Amount is required"
+        ],
+        [
+          {
+            "operator": "and",
+            "input": [
+              "@fact:input_has_amount.value",
+              {
+                "operator": "not",
+                "input": ["@fact:input_amount_is_number.value"]
+              }
+            ]
+          },
+          "Amount must be a valid positive number"
+        ]
+      ]
+    },
+    "validation_is_valid.value": {
+      "operator": "=",
+      "input": [
+        {
+          "operator": "arrayLength",
+          "input": ["@fact:validation_errors.value"]
+        },
+        0
+      ]
+    },
+    "calc_processed_amount.value": {
+      "_comment": "Only process if validation passes",
+      "operator": "array",
+      "input": [
+        {
+          "condition": "@fact:validation_is_valid.value",
+          "outcome": {
+            "operator": "*",
+            "input": ["@fact:amount.value", 1.1]
+          }
+        },
+        {
+          "outcome": 0
+        }
+      ]
+    }
+  }
+}
+```
+
+### Safe Division & Null Handling
+
+Avoid division by zero and null references:
+
+```json
+{
+  "rules": {
+    "denominator.value": "@fact:count.value",
+    "safeAverage.value": [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {
+              "operator": "notEmpty",
+              "input": ["@fact:total.value"]
+            },
+            {
+              "operator": ">",
+              "input": ["@fact:denominator.value", 0]
+            }
+          ]
+        },
+        "outcome": {
+          "operator": "/",
+          "input": ["@fact:total.value", "@fact:denominator.value"]
+        }
+      },
+      {
+        "outcome": 0
+      }
+    ]
+  }
+}
+```
+
+### Graceful Degradation
+
+Provide fallback values when data is unavailable:
+
+```json
+{
+  "rules": {
+    "primaryValue.value": [
+      {
+        "condition": {
+          "operator": "notEmpty",
+          "input": ["@fact:preferred.value"]
+        },
+        "outcome": "@fact:preferred.value"
+      },
+      {
+        "condition": {
+          "operator": "notEmpty",
+          "input": ["@fact:alternate.value"]
+        },
+        "outcome": "@fact:alternate.value"
+      },
+      {
+        "outcome": "@fact:default.value"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Testing Strategies
+
+Approaches for thoroughly testing complex rule systems.
+
+### Test Data Sets
+
+Create comprehensive test scenarios:
+
+```json
+{
+  "testCases": [
+    {
+      "name": "Happy path - qualified customer",
+      "facts": {
+        "age.value": 25,
+        "income.value": 50000,
+        "creditScore.value": 720
+      },
+      "expected": {
+        "isEligible.value": true,
+        "tier.value": "gold"
+      }
+    },
+    {
+      "name": "Edge case - exactly minimum",
+      "facts": {
+        "age.value": 18,
+        "income.value": 30000,
+        "creditScore.value": 600
+      },
+      "expected": {
+        "isEligible.value": true,
+        "tier.value": "bronze"
+      }
+    },
+    {
+      "name": "Boundary - just below threshold",
+      "facts": {
+        "age.value": 17,
+        "income.value": 29999,
+        "creditScore.value": 599
+      },
+      "expected": {
+        "isEligible.value": false,
+        "tier.value": null
+      }
+    },
+    {
+      "name": "Null handling",
+      "facts": {
+        "age.value": null,
+        "income.value": 50000,
+        "creditScore.value": 720
+      },
+      "expected": {
+        "isEligible.value": false,
+        "validationErrors.value": ["Age is required"]
+      }
+    }
+  ]
+}
+```
+
+### Incremental Testing
+
+Test rules progressively:
+
+<Steps>
+  <Step title="Test individual rules">
+    Start with simple calculations, verify each rule independently
+  </Step>
+  <Step title="Test rule chains">
+    Verify rules that depend on other rules
+  </Step>
+  <Step title="Test conditions">
+    Check all condition branches execute correctly
+  </Step>
+  <Step title="Test edge cases">
+    Verify boundary conditions, nulls, empty arrays
+  </Step>
+  <Step title="Test integration">
+    Verify rules work with variable mapping from previous steps
+  </Step>
+</Steps>
+
+---
+
+## Maintainability Best Practices
+
+Techniques for keeping rule systems maintainable as they grow.
+
+### Naming Conventions
+
+Establish consistent naming patterns that make rules self-documenting:
+
+```json
+{
+  "rules": {
+    "extracted_prices.value": {
+      "_comment": "Extract prices from items array",
+      "operator": "jPath",
+      "input": ["@fact:items.value", "$[*].price"]
+    },
+    "is_valid.value": {
+      "_comment": "Check if all validation rules pass",
+      "operator": "and",
+      "input": ["@fact:has_email.value", "@fact:has_amount.value"]
+    },
+    "has_errors.value": {
+      "operator": "not",
+      "input": ["@fact:is_valid.value"]
+    },
+    "total_amount.value": {
+      "operator": "+",
+      "input": "@fact:extracted_prices.value"
+    },
+    "discount_rate.value": {
+      "operator": "map",
+      "input": ["@fact:tier.value", {"gold": 0.1, "silver": 0.05}, 0]
+    },
+    "should_approve.value": {
+      "operator": ">=",
+      "input": ["@fact:score.value", 75]
+    },
+    "can_proceed.value": {
+      "operator": "and",
+      "input": ["@fact:is_valid.value", "@fact:should_approve.value"]
+    },
+    "eligible_items.value": {
+      "operator": "arrayFilter",
+      "input": ["@fact:items.value", "@fact:is_active_mask.value"]
+    },
+    "validation_errors.value": {
+      "operator": "generateArray",
+      "input": [
+        [{"operator": "not", "input": ["@fact:has_email.value"]}, "Email required"]
+      ]
+    }
+  }
+}
+```
+
+**Naming Patterns:**
+- `extracted_*` - Data extraction operations
+- `is_*` or `has_*` - Boolean validation checks  
+- `total_*`, `*_amount`, `*_rate` - Calculated values
+- `should_*`, `can_*` - Decision flags
+- Plural nouns for arrays (`eligible_items`, `validation_errors`)
+- Use underscores for readability: `total_amount` not `totalAmount`
+
+### Logical Grouping
+
+Organize related rules using consistent prefixes:
+
+**Option 1: Stage Prefixes**
+```json
+{
+  "rules": {
+    "input_has_required_fields.value": true,
+    "input_validation_errors.value": [],
+    "extract_prices.value": [],
+    "extract_quantities.value": [],
+    "calc_subtotal.value": 0,
+    "calc_tax.value": 0,
+    "output_display_total.value": "\$0.00",
+    "output_formatted_date.value": "2025-10-09"
+  }
+}
+```
+
+**Option 2: Domain Prefixes**
+```json
+{
+  "rules": {
+    "validation_has_email.value": true,
+    "validation_has_amount.value": true,
+    "validation_errors.value": [],
+    "pricing_subtotal.value": 0,
+    "pricing_discount.value": 0,
+    "pricing_tax.value": 0,
+    "shipping_cost.value": 0,
+    "shipping_method.value": "standard",
+    "totals_grand_total.value": 0
+  }
+}
+```
+
+**Option 3: Separate Rules Steps**
+
+For very large rule sets (50+ rules), split into multiple Rules steps in your flow:
+- **Step 1 - Validation Rules**: Input validation and error checking
+- **Step 2 - Calculation Rules**: Core business calculations
+- **Step 3 - Formatting Rules**: Output formatting and display values
+
+This provides natural boundaries and makes each step more manageable.
+
+### Documentation Within Rules
+
+For complex logic that needs explanation, add inline documentation:
+
+**Using _comment field:**
+```json
+{
+  "rules": {
+    "volume_discount.value": {
+      "_comment": "Calculate volume discount based on order total. Tiers: 5\% at $50+, 10\% at $100+, 15\% at $200+. Customer always gets best available tier.",
+      "_last_updated": "2025-10-09",
+      "_owner": "pricing-team",
+      "operator": "array",
+      "input": [
+        {
+          "condition": {
+            "operator": ">=",
+            "input": ["@fact:total.value", 200]
+          },
+          "outcome": 0.15
+        },
+        {
+          "condition": {
+            "operator": "between",
+            "input": ["@fact:total.value", 100, 200, "INCLUSIVE_LEFT"]
+          },
+          "outcome": 0.10
+        },
+        {
+          "condition": {
+            "operator": "between",
+            "input": ["@fact:total.value", 50, 100, "INCLUSIVE_LEFT"]
+          },
+          "outcome": 0.05
+        },
+        {
+          "outcome": 0
+        }
+      ]
+    },
+    "final_discount.value": {
+      "_comment": "Apply the better of volume discount or tier discount. Never apply both - customer gets best deal only.",
+      "_see_also": ["volume_discount.value", "tier_discount.value"],
+      "operator": "max",
+      "input": ["@fact:volume_discount.value", "@fact:tier_discount.value"]
+    }
+  }
+}
+```
+
+**Benefits of inline documentation:**
+- Documentation stays with the rule (not separated)
+- Can include metadata like owner, last updated, related rules
+- Underscore prefix indicates these are metadata fields
+- Easy to see documentation when viewing/editing rules
+
+**Alternative: External documentation file**
+
+For very complex systems, maintain separate documentation:
+```markdown
+# Rules Documentation
+
+## volume_discount.value
+**Purpose:** Calculate tiered volume discounts
+**Tiers:** 
+- 5\% discount: \$50-\$99.99
+- 10\% discount: \$100-\$199.99  
+- 15\% discount: \$200+
+**Business Rules:** Customer receives highest applicable tier only
+**Owner:** Pricing Team
+**Last Updated:** 2025-10-09
+```
+
+---
+
+## Migration Strategies
+
+Moving existing business logic to Rules.
+
+### From Spreadsheet Formulas
+
+Convert Excel formulas to rules:
+
+**Excel:**
+```
+=IF(A1>=100, A1*0.9, A1)
+```
+
+**Rules:**
+```json
+{
+  "finalPrice.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:price.value", 100]
+      },
+      "outcome": {
+        "operator": "*",
+        "input": ["@fact:price.value", 0.9]
+      }
+    },
+    {
+      "outcome": "@fact:price.value"
+    }
+  ]
+}
+```
+
+### From Code Logic
+
+Convert programmatic logic:
+
+**JavaScript:**
+```javascript
+let discount = 0;
+if (total >= 200) {
+  discount = 0.15;
+} else if (total >= 100) {
+  discount = 0.10;
+} else if (total >= 50) {
+  discount = 0.05;
+}
+const finalPrice = total * (1 - discount);
+```
+
+**Rules:**
+```json
+{
+  "discount.value": [
+    {
+      "condition": {"operator": ">=", "input": ["@fact:total.value", 200]},
+      "outcome": 0.15
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:total.value", 100, 200, "INCLUSIVE_LEFT"]
+      },
+      "outcome": 0.10
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:total.value", 50, 100, "INCLUSIVE_LEFT"]
+      },
+      "outcome": 0.05
+    },
+    {
+      "outcome": 0
+    }
+  ],
+  "finalPrice.value": {
+    "operator": "*",
+    "input": [
+      "@fact:total.value",
+      {
+        "operator": "-",
+        "input": [1, "@fact:discount.value"]
+      }
+    ]
+  }
+}
+```
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Examples Library" icon="code" href="/flows/steps/rules/examples">
+    See these techniques applied in complete real-world examples
+  </Card>
+  <Card title="Technical Reference" icon="brackets-curly" href="/flows/steps/rules/api-reference">
+    Deep dive into performance characteristics and limits
+  </Card>
+  <Card title="Rule Patterns" icon="puzzle-piece" href="/flows/steps/rules/patterns">
+    Review fundamental patterns before tackling advanced techniques
+  </Card>
+  <Card title="Operations Reference" icon="list-check" href="/flows/steps/rules/operations">
+    Complete reference for all available operators
+  </Card>
+</CardGroup>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>

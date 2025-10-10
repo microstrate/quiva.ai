@@ -1,0 +1,1785 @@
+---
+title: "Operations Reference"
+description: "Complete reference for all available operators in the Rules engine"
+---
+
+## Overview
+
+This reference documents all available operators in the Rules engine, organized by category. Each operator includes syntax, parameters, and practical examples.
+
+<Tip>
+**Quick search tip:** Use `Ctrl+F` (or `Cmd+F` on Mac) to search for specific operators on this page.
+</Tip>
+
+---
+
+## Math Operations
+
+Perform arithmetic calculations and number formatting.
+
+### Basic Arithmetic
+
+<AccordionGroup>
+  <Accordion title="+ / add - Addition" icon="plus">
+    Add two or more numbers together.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "+",
+      "input": [number1, number2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "total.value": {
+        "operator": "+",
+        "input": [10, 20, 30]
+      }
+    }
+    // Result: 60
+    ```
+  </Accordion>
+  
+  <Accordion title="- / subtract - Subtraction" icon="minus">
+    Subtract the second number from the first.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "-",
+      "input": [number1, number2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "discount.value": {
+        "operator": "-",
+        "input": ["@fact:price.value", 10]
+      }
+    }
+    // If price is 50, result: 40
+    ```
+  </Accordion>
+  
+  <Accordion title="* / multiply - Multiplication" icon="xmark">
+    Multiply two or more numbers.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "*",
+      "input": [number1, number2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "lineTotal.value": {
+        "operator": "*",
+        "input": ["@fact:price.value", "@fact:quantity.value"]
+      }
+    }
+    // If price=25, quantity=4, result: 100
+    ```
+  </Accordion>
+  
+  <Accordion title="/ / divide - Division" icon="divide">
+    Divide the first number by the second.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "/",
+      "input": [number1, number2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "averagePrice.value": {
+        "operator": "/",
+        "input": ["@fact:totalPrice.value", "@fact:itemCount.value"]
+      }
+    }
+    // If totalPrice=100, itemCount=4, result: 25
+    ```
+  </Accordion>
+  
+  <Accordion title="^ / power - Exponentiation" icon="superscript">
+    Raise the first number to the power of the second.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "^",
+      "input": [base, exponent]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "squared.value": {
+        "operator": "^",
+        "input": ["@fact:number.value", 2]
+      }
+    }
+    // If number=5, result: 25
+    ```
+  </Accordion>
+  
+  <Accordion title="% / modulo - Remainder" icon="percent">
+    Get the remainder after division.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "%",
+      "input": [number1, number2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isEven.value": {
+        "operator": "=",
+        "input": [
+          {
+            "operator": "%",
+            "input": ["@fact:number.value", 2]
+          },
+          0
+        ]
+      }
+    }
+    // Checks if number is even
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Rounding & Formatting
+
+<AccordionGroup>
+  <Accordion title="round - Round to nearest integer" icon="circle-half-stroke">
+    Round a number to the nearest whole number.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "round",
+      "input": [number]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "rounded.value": {
+        "operator": "round",
+        "input": [3.7]
+      }
+    }
+    // Result: 4
+    ```
+  </Accordion>
+  
+  <Accordion title="ceil - Round up" icon="arrow-up">
+    Round up to the nearest integer.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "ceil",
+      "input": [number]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "roundedUp.value": {
+        "operator": "ceil",
+        "input": [3.2]
+      }
+    }
+    // Result: 4
+    ```
+  </Accordion>
+  
+  <Accordion title="floor - Round down" icon="arrow-down">
+    Round down to the nearest integer.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "floor",
+      "input": [number]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "roundedDown.value": {
+        "operator": "floor",
+        "input": [3.9]
+      }
+    }
+    // Result: 3
+    ```
+  </Accordion>
+  
+  <Accordion title="trunc - Truncate decimal" icon="scissors">
+    Remove decimal part, keeping only the integer.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "trunc",
+      "input": [number]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "truncated.value": {
+        "operator": "trunc",
+        "input": [3.9]
+      }
+    }
+    // Result: 3
+    ```
+  </Accordion>
+  
+  <Accordion title="toFixed - Format decimal places" icon="hashtag">
+    Format a number to a specific number of decimal places.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "toFixed",
+      "input": [number, decimalPlaces]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "formatted.value": {
+        "operator": "toFixed",
+        "input": [3.14159, 2]
+      }
+    }
+    // Result: "3.14"
+    ```
+  </Accordion>
+  
+  <Accordion title="numberFormat - Locale formatting" icon="globe">
+    Format a number according to locale settings.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "numberFormat",
+      "input": [number, decimalPlaces]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "displayPrice.value": {
+        "operator": "numberFormat",
+        "input": ["@fact:price.value", 2]
+      }
+    }
+    // If price=1234.5, result: "1,234.50"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Advanced Math
+
+<AccordionGroup>
+  <Accordion title="min - Minimum value" icon="down-long">
+    Find the smallest value from a list of numbers.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "min",
+      "input": [number1, number2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "lowestPrice.value": {
+        "operator": "min",
+        "input": [29.99, 19.99, 39.99]
+      }
+    }
+    // Result: 19.99
+    ```
+  </Accordion>
+  
+  <Accordion title="max - Maximum value" icon="up-long">
+    Find the largest value from a list of numbers.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "max",
+      "input": [number1, number2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "bestDiscount.value": {
+        "operator": "max",
+        "input": ["@fact:memberDiscount.value", "@fact:volumeDiscount.value"]
+      }
+    }
+    // Returns the better discount
+    ```
+  </Accordion>
+  
+  <Accordion title="log - Natural logarithm" icon="square-root-variable">
+    Calculate the natural logarithm (base e).
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "log",
+      "input": [number]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "logarithm.value": {
+        "operator": "log",
+        "input": [10]
+      }
+    }
+    // Result: ~2.303
+    ```
+  </Accordion>
+  
+  <Accordion title="baseLog - Logarithm with custom base" icon="square-root-variable">
+    Calculate logarithm with a specified base.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "baseLog",
+      "input": [number, base]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "log2.value": {
+        "operator": "baseLog",
+        "input": [8, 2]
+      }
+    }
+    // Result: 3 (because 2^3 = 8)
+    ```
+  </Accordion>
+  
+  <Accordion title="e - Euler's number" icon="infinity">
+    Returns Euler's number (approximately 2.718).
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "e",
+      "input": []
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "eulerNumber.value": {
+        "operator": "e",
+        "input": []
+      }
+    }
+    // Result: 2.718281828459045
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Big Number Operations
+
+For high-precision calculations that avoid floating-point errors.
+
+<AccordionGroup>
+  <Accordion title="addBig - High-precision addition" icon="plus">
+    Add numbers with arbitrary precision.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "addBig",
+      "input": [number1, number2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "preciseTotal.value": {
+        "operator": "addBig",
+        "input": ["0.1", "0.2"]
+      }
+    }
+    // Result: "0.3" (exact, not 0.30000000000000004)
+    ```
+  </Accordion>
+  
+  <Accordion title="subtractBig - High-precision subtraction" icon="minus">
+    Subtract numbers with arbitrary precision.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "subtractBig",
+      "input": [number1, number2]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="multiplyBig - High-precision multiplication" icon="xmark">
+    Multiply numbers with arbitrary precision.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "multiplyBig",
+      "input": [number1, number2]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="divideBig - High-precision division" icon="divide">
+    Divide numbers with arbitrary precision.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "divideBig",
+      "input": [number1, number2]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Comparison Operations
+
+Compare values to make decisions.
+
+<AccordionGroup>
+  <Accordion title="= / equal - Equality" icon="equals">
+    Check if two values are equal.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "=",
+      "input": [value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isActive.value": {
+        "operator": "=",
+        "input": ["@fact:status.value", "active"]
+      }
+    }
+    // Returns true if status is "active"
+    ```
+  </Accordion>
+  
+  <Accordion title="!= / notEqual - Inequality" icon="not-equal">
+    Check if two values are not equal.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "!=",
+      "input": [value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "needsReview.value": {
+        "operator": "!=",
+        "input": ["@fact:status.value", "approved"]
+      }
+    }
+    // Returns true if status is not "approved"
+    ```
+  </Accordion>
+  
+  <Accordion title="> / greaterThan - Greater than" icon="greater-than">
+    Check if first value is greater than second.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": ">",
+      "input": [value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isPremium.value": {
+        "operator": ">",
+        "input": ["@fact:orderTotal.value", 100]
+      }
+    }
+    // Returns true if order total exceeds $100
+    ```
+  </Accordion>
+  
+  <Accordion title=">= / greaterThanOrEqual - Greater than or equal" icon="greater-than-equal">
+    Check if first value is greater than or equal to second.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": ">=",
+      "input": [value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "qualifies.value": {
+        "operator": ">=",
+        "input": ["@fact:age.value", 18]
+      }
+    }
+    // Returns true if age is 18 or older
+    ```
+  </Accordion>
+  
+  <Accordion title="< / lessThan - Less than" icon="less-than">
+    Check if first value is less than second.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "<",
+      "input": [value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "needsMoreInventory.value": {
+        "operator": "<",
+        "input": ["@fact:stock.value", 10]
+      }
+    }
+    // Returns true if stock is below 10
+    ```
+  </Accordion>
+  
+  <Accordion title="<= / lessThanOrEqual - Less than or equal" icon="less-than-equal">
+    Check if first value is less than or equal to second.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "<=",
+      "input": [value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isBudget.value": {
+        "operator": "<=",
+        "input": ["@fact:price.value", 50]
+      }
+    }
+    // Returns true if price is $50 or less
+    ```
+  </Accordion>
+  
+  <Accordion title="between - Value in range" icon="arrows-left-right">
+    Check if a value falls within a range.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "between",
+      "input": [value, min, max, inclusivity]
+    }
+    ```
+    
+    **Parameters:**
+    - `value` - The value to check
+    - `min` - Minimum value
+    - `max` - Maximum value
+    - `inclusivity` (optional) - One of:
+      - `"INCLUSIVE"` (default) - Both boundaries included
+      - `"EXCLUSIVE"` - Both boundaries excluded
+      - `"INCLUSIVE_LEFT"` - Only left boundary included
+      - `"EXCLUSIVE_LEFT"` - Only left boundary excluded
+      - `"INCLUSIVE_RIGHT"` - Only right boundary included
+      - `"EXCLUSIVE_RIGHT"` - Only right boundary excluded
+    
+    **Examples:**
+    ```json
+    {
+      "isMiddleAge.value": {
+        "operator": "between",
+        "input": ["@fact:age.value", 30, 50, "INCLUSIVE"]
+      }
+    }
+    // Returns true if age is between 30 and 50 (both inclusive)
+    ```
+    
+    ```json
+    {
+      "inRange.value": {
+        "operator": "between",
+        "input": ["@fact:price.value", 100, 200, "EXCLUSIVE_LEFT"]
+      }
+    }
+    // Returns true if 100 < price <= 200
+    ```
+  </Accordion>
+  
+  <Accordion title="notBetween - Value outside range" icon="arrows-left-right">
+    Check if a value falls outside a range.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "notBetween",
+      "input": [value, min, max]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "needsSpecialHandling.value": {
+        "operator": "notBetween",
+        "input": ["@fact:temperature.value", 32, 100]
+      }
+    }
+    // Returns true if temperature is below 32 or above 100
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Logic Operations
+
+Combine conditions with boolean logic.
+
+<AccordionGroup>
+  <Accordion title="and - Logical AND" icon="circle-check">
+    Check if all conditions are true.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "and",
+      "input": [condition1, condition2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "eligible.value": {
+        "operator": "and",
+        "input": [
+          {
+            "operator": ">=",
+            "input": ["@fact:age.value", 18]
+          },
+          {
+            "operator": "=",
+            "input": ["@fact:hasLicense.value", true]
+          }
+        ]
+      }
+    }
+    // True only if age >= 18 AND hasLicense is true
+    ```
+  </Accordion>
+  
+  <Accordion title="or - Logical OR" icon="circle">
+    Check if any condition is true.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "or",
+      "input": [condition1, condition2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "freeShipping.value": {
+        "operator": "or",
+        "input": [
+          {
+            "operator": ">=",
+            "input": ["@fact:orderTotal.value", 50]
+          },
+          {
+            "operator": "=",
+            "input": ["@fact:isPremium.value", true]
+          }
+        ]
+      }
+    }
+    // True if order >= $50 OR customer is premium
+    ```
+  </Accordion>
+  
+  <Accordion title="not - Logical NOT" icon="ban">
+    Invert a boolean value.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "not",
+      "input": [condition]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isInactive.value": {
+        "operator": "not",
+        "input": ["@fact:isActive.value"]
+      }
+    }
+    // Returns opposite of isActive
+    ```
+  </Accordion>
+  
+  <Accordion title="empty - Check if empty" icon="square">
+    Check if a value is empty, null, or undefined.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "empty",
+      "input": [value]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "needsInput.value": {
+        "operator": "empty",
+        "input": ["@fact:userInput.value"]
+      }
+    }
+    // True if userInput is empty, null, or undefined
+    ```
+  </Accordion>
+  
+  <Accordion title="notEmpty - Check if not empty" icon="square-check">
+    Check if a value has content.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "notEmpty",
+      "input": [value]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "hasEmail.value": {
+        "operator": "notEmpty",
+        "input": ["@fact:email.value"]
+      }
+    }
+    // True if email has a value
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## String Operations
+
+Manipulate and search text.
+
+<AccordionGroup>
+  <Accordion title="concat - Concatenate strings" icon="link">
+    Join multiple strings together.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "concat",
+      "input": [string1, string2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "fullName.value": {
+        "operator": "concat",
+        "input": ["@fact:firstName.value", " ", "@fact:lastName.value"]
+      }
+    }
+    // If firstName="John", lastName="Smith", result: "John Smith"
+    ```
+  </Accordion>
+  
+  <Accordion title="join - Join with comma" icon="list">
+    Join values with commas.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "join",
+      "input": [arrayOrValues]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "tags.value": {
+        "operator": "join",
+        "input": [["red", "large", "sale"]]
+      }
+    }
+    // Result: "red,large,sale"
+    ```
+  </Accordion>
+  
+  <Accordion title="substring - Extract substring" icon="scissors">
+    Extract part of a string.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "substring",
+      "input": [string, start, length]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "firstThree.value": {
+        "operator": "substring",
+        "input": ["@fact:code.value", 0, 3]
+      }
+    }
+    // If code="ABC123", result: "ABC"
+    ```
+  </Accordion>
+  
+  <Accordion title="stringTemplate - Format template" icon="brackets-curly">
+    Replace placeholders in a template string.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "stringTemplate",
+      "input": ["template with {{1}}, {{2}}", value1, value2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "message.value": {
+        "operator": "stringTemplate",
+        "input": [
+          "Hello {{1}}, your order #{{2}} is ready!",
+          "@fact:customerName.value",
+          "@fact:orderNumber.value"
+        ]
+      }
+    }
+    // Result: "Hello John, your order #12345 is ready!"
+    ```
+  </Accordion>
+  
+  <Accordion title="split - Split string into array" icon="scissors">
+    Split a string into an array using a delimiter.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "split",
+      "input": [string, delimiter]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "parts.value": {
+        "operator": "split",
+        "input": ["@fact:csvLine.value", ","]
+      }
+    }
+    // If csvLine="red,blue,green", result: ["red", "blue", "green"]
+    ```
+  </Accordion>
+  
+  <Accordion title="startsWith - Check prefix" icon="arrow-right">
+    Check if string starts with a specific prefix.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "startsWith",
+      "input": [string, prefix]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isHttps.value": {
+        "operator": "startsWith",
+        "input": ["@fact:url.value", "https://"]
+      }
+    }
+    // True if URL starts with "https://"
+    ```
+  </Accordion>
+  
+  <Accordion title="endsWith - Check suffix" icon="arrow-left">
+    Check if string ends with a specific suffix.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "endsWith",
+      "input": [string, suffix]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isImage.value": {
+        "operator": "endsWith",
+        "input": ["@fact:filename.value", ".jpg"]
+      }
+    }
+    // True if filename ends with ".jpg"
+    ```
+  </Accordion>
+  
+  <Accordion title="stringContains - Check if contains" icon="magnifying-glass">
+    Check if string contains a substring.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "stringContains",
+      "input": [string, substring]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "hasKeyword.value": {
+        "operator": "stringContains",
+        "input": ["@fact:description.value", "urgent"]
+      }
+    }
+    // True if description contains "urgent"
+    ```
+  </Accordion>
+  
+  <Accordion title="stringNotContains - Check if doesn't contain" icon="magnifying-glass">
+    Check if string does not contain a substring.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "stringNotContains",
+      "input": [string, substring]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isClean.value": {
+        "operator": "stringNotContains",
+        "input": ["@fact:comment.value", "spam"]
+      }
+    }
+    // True if comment doesn't contain "spam"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Array Operations
+
+Work with lists and collections.
+
+<AccordionGroup>
+  <Accordion title="arrayContains - Check if array contains value" icon="list-check">
+    Check if an array includes a specific value.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "arrayContains",
+      "input": [array, value]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "hasRed.value": {
+        "operator": "arrayContains",
+        "input": ["@fact:colors.value", "red"]
+      }
+    }
+    // True if colors array contains "red"
+    ```
+  </Accordion>
+  
+  <Accordion title="arrayNotContains - Check if array doesn't contain value" icon="list">
+    Check if an array does not include a specific value.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "arrayNotContains",
+      "input": [array, value]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="inArray - Check if value in array" icon="circle-check">
+    Check if a value exists in an array (same as arrayContains, different parameter order).
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "inArray",
+      "input": [value, array]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isValidStatus.value": {
+        "operator": "inArray",
+        "input": ["@fact:status.value", ["pending", "approved", "shipped"]]
+      }
+    }
+    // True if status is one of the valid values
+    ```
+  </Accordion>
+  
+  <Accordion title="notInArray - Check if value not in array" icon="circle">
+    Check if a value does not exist in an array.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "notInArray",
+      "input": [value, array]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="concatArray - Combine arrays" icon="layer-group">
+    Merge multiple arrays into one.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "concatArray",
+      "input": [array1, array2, ...]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "allItems.value": {
+        "operator": "concatArray",
+        "input": ["@fact:cartItems.value", "@fact:wishlistItems.value"]
+      }
+    }
+    // Combines cart and wishlist into single array
+    ```
+  </Accordion>
+  
+  <Accordion title="generateArray - Create array from conditions" icon="wand-magic-sparkles">
+    Create an array from condition/value pairs, including only items where condition is true.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "generateArray",
+      "input": [
+        [condition1, value1],
+        [condition2, value2],
+        ...
+      ]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "selectedFeatures.value": {
+        "operator": "generateArray",
+        "input": [
+          [{"operator": "=", "input": ["@fact:hasCamera.value", true]}, "Camera"],
+          [{"operator": "=", "input": ["@fact:hasGPS.value", true]}, "GPS"],
+          [{"operator": "=", "input": ["@fact:hasBluetooth.value", true]}, "Bluetooth"]
+        ]
+      }
+    }
+    // Returns array like ["Camera", "GPS"] for selected features
+    ```
+  </Accordion>
+  
+  <Accordion title="sort - Sort numbers" icon="arrow-down-1-9">
+    Sort an array of numbers in ascending order.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "sort",
+      "input": [array]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "sortedPrices.value": {
+        "operator": "sort",
+        "input": [[49.99, 19.99, 29.99]]
+      }
+    }
+    // Result: [19.99, 29.99, 49.99]
+    ```
+  </Accordion>
+  
+  <Accordion title="sortString - Sort strings" icon="arrow-down-a-z">
+    Sort an array of strings alphabetically.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "sortString",
+      "input": [array]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "sortedNames.value": {
+        "operator": "sortString",
+        "input": [["Charlie", "Alice", "Bob"]]
+      }
+    }
+    // Result: ["Alice", "Bob", "Charlie"]
+    ```
+  </Accordion>
+  
+  <Accordion title="arrayFilter - Filter with boolean mask" icon="filter">
+    Filter an array using a boolean mask array.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "arrayFilter",
+      "input": [array, booleanMaskArray]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "activeItems.value": {
+        "operator": "arrayFilter",
+        "input": [
+          "@fact:items.value",
+          "@fact:items.value/*/isActive"
+        ]
+      }
+    }
+    // Keeps only items where isActive is true
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Set Operations
+
+Perform mathematical set operations on arrays.
+
+<AccordionGroup>
+  <Accordion title="isSubset - Check if subset" icon="circle-nodes">
+    Check if first array is a subset of second array.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "isSubset",
+      "input": [subset, superset]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "hasRequiredSkills.value": {
+        "operator": "isSubset",
+        "input": [
+          ["JavaScript", "React"],
+          "@fact:candidateSkills.value"
+        ]
+      }
+    }
+    // True if candidate has all required skills
+    ```
+  </Accordion>
+  
+  <Accordion title="isNotSubset - Check if not subset" icon="circle-nodes">
+    Check if first array is not a subset of second array.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "isNotSubset",
+      "input": [subset, superset]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="setUnion - Union of sets" icon="object-group">
+    Combine two arrays, removing duplicates.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "setUnion",
+      "input": [array1, array2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "allTags.value": {
+        "operator": "setUnion",
+        "input": [
+          ["red", "blue"],
+          ["blue", "green"]
+        ]
+      }
+    }
+    // Result: ["red", "blue", "green"]
+    ```
+  </Accordion>
+  
+  <Accordion title="setIntersection - Intersection of sets" icon="circle-half-stroke">
+    Find common elements between two arrays.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "setIntersection",
+      "input": [array1, array2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "commonSkills.value": {
+        "operator": "setIntersection",
+        "input": [
+          "@fact:requiredSkills.value",
+          "@fact:candidateSkills.value"
+        ]
+      }
+    }
+    // Returns skills that appear in both arrays
+    ```
+  </Accordion>
+  
+  <Accordion title="setDifference - Difference of sets" icon="minus">
+    Find elements in first array that are not in second array.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "setDifference",
+      "input": [array1, array2]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "missingSkills.value": {
+        "operator": "setDifference",
+        "input": [
+          "@fact:requiredSkills.value",
+          "@fact:candidateSkills.value"
+        ]
+      }
+    }
+    // Returns required skills the candidate doesn't have
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Lookup & Mapping
+
+Map values and check membership.
+
+<AccordionGroup>
+  <Accordion title="map / lookup - Key-value mapping" icon="table">
+    Map a key to a value using a lookup object, with optional default.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "map",
+      "input": [key, lookupObject, defaultValue]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "stateTax.value": {
+        "operator": "map",
+        "input": [
+          "@fact:state.value",
+          {
+            "CA": 0.0725,
+            "NY": 0.08,
+            "TX": 0.0625
+          },
+          0.05
+        ]
+      }
+    }
+    // Returns tax rate for state, or 0.05 if not found
+    ```
+  </Accordion>
+  
+  <Accordion title="inOptions / options-in - Check if value in options" icon="list-check">
+    Check if a value exists in an options list.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "inOptions",
+      "input": [value, optionsArray]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "isValidSize.value": {
+        "operator": "inOptions",
+        "input": [
+          "@fact:selectedSize.value",
+          ["S", "M", "L", "XL"]
+        ]
+      }
+    }
+    // True if selected size is valid
+    ```
+  </Accordion>
+  
+  <Accordion title="in - General membership check" icon="circle-check">
+    Check if value exists in array or object keys.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "in",
+      "input": [value, arrayOrObject]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="notIn - General non-membership check" icon="circle">
+    Check if value doesn't exist in array or object keys.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "notIn",
+      "input": [value, arrayOrObject]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Date Operations
+
+Work with dates and times.
+
+<AccordionGroup>
+  <Accordion title="today - Current date" icon="calendar">
+    Get today's date (without time).
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "today",
+      "input": []
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "currentDate.value": {
+        "operator": "today",
+        "input": []
+      }
+    }
+    // Returns today's date
+    ```
+  </Accordion>
+  
+  <Accordion title="now - Current datetime" icon="clock">
+    Get current date and time.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "now",
+      "input": []
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="timeNow - Current timestamp" icon="stopwatch">
+    Get current Unix timestamp.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "timeNow",
+      "input": []
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="addDate - Add time period" icon="plus">
+    Add days, months, or years to a date.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "addDate",
+      "input": [date, amount, unit]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "dueDate.value": {
+        "operator": "addDate",
+        "input": ["@fact:orderDate.value", 30, "days"]
+      }
+    }
+    // Adds 30 days to order date
+    ```
+  </Accordion>
+  
+  <Accordion title="subtractDate - Subtract time period" icon="minus">
+    Subtract days, months, or years from a date.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "subtractDate",
+      "input": [date, amount, unit]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="dateDiff - Calculate date difference" icon="calendar-days">
+    Calculate difference between two dates.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "dateDiff",
+      "input": [date1, date2, unit]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "daysOverdue.value": {
+        "operator": "dateDiff",
+        "input": [
+          {"operator": "now", "input": []},
+          "@fact:dueDate.value",
+          "days"
+        ]
+      }
+    }
+    // Returns number of days between now and due date
+    ```
+  </Accordion>
+  
+  <Accordion title="dateFormat - Format date" icon="calendar-check">
+    Format a date as a string.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "dateFormat",
+      "input": [date, format]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "displayDate.value": {
+        "operator": "dateFormat",
+        "input": ["@fact:orderDate.value", "YYYY-MM-DD"]
+      }
+    }
+    // Formats date as "2025-10-09"
+    ```
+  </Accordion>
+  
+  <Accordion title="toISO - Convert to ISO format" icon="calendar">
+    Convert date to ISO 8601 string.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "toISO",
+      "input": [date]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## JSON Operations
+
+Parse and query JSON data.
+
+<AccordionGroup>
+  <Accordion title="jsonParse - Parse JSON string" icon="code">
+    Convert JSON string to object.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "jsonParse",
+      "input": [jsonString]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "parsedData.value": {
+        "operator": "jsonParse",
+        "input": ["@fact:jsonString.value"]
+      }
+    }
+    // Converts '{"name":"John"}' to object
+    ```
+  </Accordion>
+  
+  <Accordion title="jsonStringify - Convert to JSON string" icon="brackets-curly">
+    Convert object to JSON string.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "jsonStringify",
+      "input": [object]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "jsonOutput.value": {
+        "operator": "jsonStringify",
+        "input": ["@fact:dataObject.value"]
+      }
+    }
+    // Converts object to JSON string
+    ```
+  </Accordion>
+  
+  <Accordion title="jPath - JSONPath query" icon="magnifying-glass">
+    Query JSON data using JSONPath syntax.
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "jPath",
+      "input": [data, path, delimiter]
+    }
+    ```
+    
+    **Example:**
+    ```json
+    {
+      "firstItemName.value": {
+        "operator": "jPath",
+        "input": [
+          "@fact:cartItems.value",
+          "$.0.name"
+        ]
+      }
+    }
+    // Extracts name from first item
+    ```
+    
+    **With delimiter for joining results:**
+    ```json
+    {
+      "allNames.value": {
+        "operator": "jPath",
+        "input": [
+          "@fact:items.value",
+          "$[*].name",
+          ", "
+        ]
+      }
+    }
+    // Returns "Item1, Item2, Item3"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## System Operations
+
+Special system-level operations.
+
+<AccordionGroup>
+  <Accordion title="fact - Reference another fact" icon="link">
+    Explicitly reference a fact (usually `@fact:` syntax is used instead).
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "fact",
+      "input": [factName]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="expression - Evaluate expression" icon="calculator">
+    Evaluate a mathematical expression (advanced use).
+    
+    **Syntax:**
+    ```json
+    {
+      "operator": "expression",
+      "input": [expressionString]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Rule Patterns" icon="puzzle-piece" href="/flows/steps/rules/patterns">
+    Learn common patterns for using these operators effectively
+  </Card>
+  <Card title="Examples Library" icon="code" href="/flows/steps/rules/examples">
+    See real-world examples using multiple operators together
+  </Card>
+  <Card title="Core Concepts" icon="book" href="/flows/steps/rules/core-concepts">
+    Understand how operators fit into the bigger picture
+  </Card>
+  <Card title="Getting Started" icon="rocket" href="/flows/steps/rules/getting-started">
+    Build your first rule with step-by-step guidance
+  </Card>
+</CardGroup>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>

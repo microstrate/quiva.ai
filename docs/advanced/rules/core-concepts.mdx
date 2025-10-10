@@ -1,0 +1,520 @@
+---
+title: "Core Concepts"
+description: "Deep dive into facts, rules, operators, and how the Rules work"
+---
+
+## Understanding Facts
+
+Facts are the input data for your rules - a flat key-value object where keys are unique identifiers and values are the data to evaluate.
+
+### Fact Structure
+
+```json
+{
+  "factKey": "value or variable mapping expression"
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="Static Facts" icon="hashtag">
+    Hard-coded values that don't change
+  </Card>
+  <Card title="Dynamic Facts" icon="link">
+    Values pulled from previous steps using variable mapping
+  </Card>
+</CardGroup>
+
+### Static Facts
+
+Static facts have hard-coded values:
+
+```json
+{
+  "minAge.value": 18,
+  "shippingThreshold.value": 50,
+  "defaultTier.value": "bronze",
+  "isActive.value": true
+}
+```
+
+### Dynamic Facts with Variable Mapping
+
+Most facts in real flows pull data from previous steps using [variable mapping](/advanced/variable-mapping/overview):
+
+```json
+{
+  "orderTotal.value": "$.NODE_ID.checkout.total", // from previous step
+  "customerEmail.value": "$.trigger.email" // from trigger event
+}
+```
+
+<Note>
+When the Rules step executes, all variable mapping expressions are resolved first, converting your facts into actual values before any rules are evaluated. Learn more about [variable mapping](/advanced/variable-mapping/overview)
+</Note>
+
+### Fact Naming Conventions
+
+Fact keys can be any valid JSON key, but we recommend using descriptive names with a property suffix:
+
+```json
+{
+  "orderTotal.value": 150,
+  "orderTotal.formatted": "$150.00",
+  "orderTotal.withTax": 165,
+  "customer.firstName": "John",
+  "customer.lastName": "Smith"
+}
+```
+
+<Tip>
+**Why use property suffixes?** Using consistent suffixes like `.value` makes your rules more readable and allows you to create multiple related calculations from the same base concept.
+</Tip>
+
+### Referencing Facts in Rules
+
+Reference facts in your rules using the `@fact:` prefix followed by the exact fact key:
+
+```json
+{
+  "discount.value": {
+    "operator": "*",
+    "input": ["@fact:orderTotal.value", 0.10]
+  }
+}
+```
+
+## Understanding Rules
+
+Rules define the logic for calculating outcomes based on your facts. Rules are structured as key-value pairs where the key is the rule name and the value defines how to calculate it.
+
+### Simple Rule Format
+
+Use simple format for direct calculations without conditions:
+
+```json
+{
+  "ruleName.property": {
+    "operator": "operatorName",
+    "input": [param1, param2, ...]
+  }
+}
+```
+
+**Example - Calculate total:**
+```json
+{
+  "total.value": {
+    "operator": "+",
+    "input": ["@fact:subtotal.value", "@fact:tax.value"]
+  }
+}
+```
+
+### Conditional Rule Format
+
+Use conditional format when the outcome depends on conditions - an array of condition/outcome pairs evaluated top to bottom:
+
+```json
+{
+  "ruleName.property": [
+    {
+      "condition": {
+        "operator": "operatorName",
+        "input": [...]
+      },
+      "outcome": "value if condition is true"
+    },
+    {
+      "condition": {
+        "operator": "operatorName",
+        "input": [...]
+      },
+      "outcome": "value if condition is true"
+    },
+    {
+      "outcome": "default value"
+    }
+  ]
+}
+```
+
+**Example - Tiered discount:**
+```json
+{
+  "discount.value": [
+    {
+      "condition": {
+        "operator": ">=",
+        "input": ["@fact:orderTotal.value", 200]
+      },
+      "outcome": 0.15
+    },
+    {
+      "condition": {
+        "operator": "between",
+        "input": ["@fact:orderTotal.value", 100, 199]
+      },
+      "outcome": 0.10
+    },
+    {
+      "outcome": 0
+    }
+  ]
+}
+```
+
+<Warning>
+**Conditions are evaluated top to bottom:** The first matching condition wins and its outcome is returned. Always put more specific conditions before general ones, and include a default outcome without a condition at the end.
+</Warning>
+
+### Nested Operations
+
+You can nest operations within the `input` array to create complex calculations:
+
+```json
+{
+  "finalPrice.value": {
+    "operator": "-",
+    "input": [
+      "@fact:orderTotal.value",
+      {
+        "operator": "*",
+        "input": [
+          "@fact:orderTotal.value",
+          "@fact:discountRate.value"
+        ]
+      }
+    ]
+  }
+}
+```
+
+This calculates: `orderTotal - (orderTotal * discountRate)`
+
+### Rules Referencing Rules
+
+Rules can reference the outcomes of other rules using `@fact:ruleName`:
+
+```json
+{
+  "subtotal.value": {
+    "operator": "+",
+    "input": [
+        "@fact:item1.value",
+        "@fact:item2.value"
+    ]
+  },
+  "tax.value": {
+    "operator": "*",
+    "input": ["@fact:subtotal.value", 0.08]
+  },
+  "total.value": {
+    "operator": "+",
+    "input": ["@fact:subtotal.value", "@fact:tax.value"]
+  }
+}
+```
+
+<Tip>
+**Rule order doesn't matter!** The Rules engine automatically determines the correct evaluation order based on dependencies. You can define rules in any sequence.
+</Tip>
+
+## Operators
+
+Operators are the functions that manipulate your data. The Rules engine includes operators for math, comparisons, logic, strings, arrays, dates, and more.
+
+### Operator Categories
+
+<AccordionGroup>
+  <Accordion title="Math Operations" icon="calculator">
+    **Basic:** `+`, `-`, `*`, `/`, `^`, `%`  
+    **Rounding:** `round`, `ceil`, `floor`, `trunc`, `toFixed`  
+    **Advanced:** `min`, `max`, `log`, `baseLog`, `numberFormat`  
+    **Big Numbers:** `addBig`, `subtractBig`, `multiplyBig`, `divideBig`
+  </Accordion>
+  
+  <Accordion title="Comparison Operations" icon="equals">
+    **Equality:** `=` (equal), `!=` (notEqual)  
+    **Magnitude:** `>`, `>=`, `<`, `<=`  
+    **Range:** `between`, `notBetween`
+  </Accordion>
+  
+  <Accordion title="Logic Operations" icon="diagram-project">
+    **Boolean:** `and`, `or`, `not`  
+    **Existence:** `empty`, `notEmpty`
+  </Accordion>
+  
+  <Accordion title="String Operations" icon="text">
+    **Manipulation:** `concat`, `join`, `substring`, `split`  
+    **Formatting:** `stringTemplate`, `numberFormat`  
+    **Searching:** `startsWith`, `endsWith`, `stringContains`, `stringNotContains`
+  </Accordion>
+  
+  <Accordion title="Array Operations" icon="list">
+    **Creation:** `generateArray`, `concatArray`  
+    **Searching:** `arrayContains`, `arrayNotContains`, `inArray`, `notInArray`  
+    **Transformation:** `sort`, `sortString`, `arrayFilter`  
+    **Processing:** Use wildcards like `@fact:items.value/*/price`
+  </Accordion>
+  
+  <Accordion title="Date Operations" icon="calendar">
+    **Current:** `today`, `now`, `timeNow`  
+    **Calculation:** `addDate`, `subtractDate`, `dateDiff`  
+    **Formatting:** `dateFormat`, `toISO`
+  </Accordion>
+  
+  <Accordion title="Lookup & Mapping" icon="table">
+    **Key-Value:** `map` / `lookup`  
+    **Membership:** `inOptions` / `options-in`, `in`, `notIn`  
+    **Sets:** `isSubset`, `isNotSubset`, `setUnion`, `setIntersection`, `setDifference`
+  </Accordion>
+  
+  <Accordion title="JSON Operations" icon="brackets-curly">
+    **Parsing:** `jsonParse`, `jsonStringify`  
+    **Querying:** `jPath` for JSONPath queries like `$.items[0].name`
+  </Accordion>
+</AccordionGroup>
+
+<Card title="Full Operations Reference" icon="book" href="/advanced/rules/operations-reference">
+  See the complete operations reference with syntax, parameters, and examples for every operator
+</Card>
+
+## Array Processing with JSONPath
+
+The Rules engine supports processing arrays using JSONPath queries via the `jPath` operator.
+
+<Card title="Learn more about JSONPath" icon="book" href="/advanced/variable-mapping/overview">
+  Learn about variable mapping with JSONPath and other data transformations using jPath references and queries
+</Card>
+
+### JSONPath Syntax
+
+Use `jPath` to extract values from literal array objects:
+
+```json
+{
+  "operator": "jPath",
+  "input": [arrayData, jsonPathQuery]
+}
+```
+
+### Example: Extract Array Values
+
+Extract prices from a cart items array:
+
+```json
+{
+  "cartItems.value": [
+    { "name": "Widget", "price": 29.99, "quantity": 2 },
+    { "name": "Gadget", "price": 49.99, "quantity": 1 }
+  ]
+}
+```
+
+**Rules:**
+```json
+{
+  "prices.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].price"]
+  },
+  "totalPrice.value": {
+    "operator": "+",
+    "input": "@fact:prices.value"
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "prices.value": [29.99, 49.99],
+  "totalPrice.value": 79.98
+}
+```
+
+### Example: Element-by-Element Operations
+
+Calculate line totals by multiplying price × quantity for each item:
+
+```json
+{
+  "prices.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].price"]
+  },
+  "quantities.value": {
+    "operator": "jPath",
+    "input": ["@fact:cartItems.value", "$[*].quantity"]
+  },
+  "lineTotals.value": {
+    "operator": "*",
+    "input": ["@fact:prices.value", "@fact:quantities.value"]
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "prices.value": [29.99, 49.99],
+  "quantities.value": [2, 1],
+  "lineTotals.value": [59.98, 49.99]
+}
+```
+
+<Note>
+When both inputs to a math operator are arrays of the same length, they're processed element-by-element: `prices[0] * quantities[0]`, `prices[1] * quantities[1]`, etc.
+</Note>
+
+### Common JSONPath Patterns
+
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| `$[*]` | All array elements | Get entire array |
+| `$[*].propertyName` | Property from all elements | `$[*].price` |
+| `$.0` or `$[0]` | First element | Get first item |
+| `$[-1]` | Last element | Get last item |
+| `$[0:3]` | Array slice | First 3 items |
+
+### Alternative: Wildcard Syntax
+
+<Accordion title="Wildcard Syntax for Flattened Data (Advanced)" icon="asterisk">
+Rules also support a wildcard syntax (`@fact:items/*/property`) for working with flattened key-value structures. This is an advanced feature most users won't need.
+
+**Flattened structure:**
+```json
+{
+  "cartItems": "Widget,Gadget,Tool",
+  "cartItems/Widget/price": 29.99,
+  "cartItems/Widget/quantity": 2,
+  "cartItems/Gadget/price": 49.99,
+  "cartItems/Gadget/quantity": 1
+}
+```
+
+**Using wildcard:**
+```json
+{
+  "totalQuantity.value": {
+    "operator": "+",
+    "input": "@fact:cartItems/*/quantity"
+  }
+}
+```
+
+Most users should use literal arrays with `jPath` queries instead, as shown in the primary examples above.
+</Accordion>
+
+## Data Flow & Evaluation
+
+Understanding how the Rules engine processes your facts and rules:
+
+<Steps>
+  <Step title="Variable Mapping Resolution">
+    All facts with variable mapping expressions are resolved first, pulling data from previous steps in your flow
+  </Step>
+  
+  <Step title="Dependency Analysis">
+    The engine analyzes which rules depend on which facts and other rules
+  </Step>
+  
+  <Step title="Evaluation Order">
+    Rules are evaluated in dependency order - a rule that references another rule's outcome waits for that rule to complete first
+  </Step>
+  
+  <Step title="Condition Evaluation">
+    For conditional rules, conditions are checked top to bottom, and the first matching condition's outcome is returned
+  </Step>
+  
+  <Step title="Output Generation">
+    All rule outcomes are collected into a flat object matching your rule names
+  </Step>
+</Steps>
+
+### Example Flow
+
+```json
+// Facts (after variable mapping resolution)
+{
+  "price.value": 100,
+  "quantity.value": 3
+}
+
+// Rules
+{
+  "subtotal.value": {
+    "operator": "*",
+    "input": ["@fact:price.value", "@fact:quantity.value"]
+  },
+  "tax.value": {
+    "operator": "*",
+    "input": ["@fact:subtotal.value", 0.08]
+  },
+  "total.value": {
+    "operator": "+",
+    "input": ["@fact:subtotal.value", "@fact:tax.value"]
+  }
+}
+
+// Evaluation order (automatic)
+// 1. subtotal.value = 100 * 3 = 300
+// 2. tax.value = 300 * 0.08 = 24
+// 3. total.value = 300 + 24 = 324
+
+// Output
+{
+  "subtotal.value": 300,
+  "tax.value": 24,
+  "total.value": 324
+}
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Descriptive Names" icon="tag">
+    Name facts and rules clearly: `customerAge.value` not `ca`
+  </Card>
+  
+  <Card title="Be Consistent" icon="check">
+    Use the same property suffixes throughout: always `.value`, not mixing `.value` and `.val`
+  </Card>
+  
+  <Card title="Keep Rules Simple" icon="minimize">
+    Break complex logic into multiple small rules rather than one giant rule
+  </Card>
+  
+  <Card title="Add Comments" icon="comment">
+    Use descriptive rule names as self-documentation: `qualifiesForPremiumDiscount` explains itself
+  </Card>
+  
+  <Card title="Test Incrementally" icon="flask">
+    Add rules one at a time and test each in the Flow Debugger
+  </Card>
+  
+  <Card title="Provide Defaults" icon="shield">
+    Always include a default outcome in conditional rules to handle unexpected cases
+  </Card>
+</CardGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Operations Reference" icon="list-check" href="/flows/steps/rules/operations">
+    Complete reference for all available operators with syntax and examples
+  </Card>
+  <Card title="Rule Patterns" icon="puzzle-piece" href="/flows/steps/rules/patterns">
+    Common patterns and best practices for real-world scenarios
+  </Card>
+  <Card title="Examples Library" icon="code" href="/flows/steps/rules/examples">
+    Complete working examples for e-commerce, CRM, support, and more
+  </Card>
+  <Card title="Variable Mapping" icon="arrows-left-right" href="/advanced/variable-mapping/overview">
+    Learn how to map data from previous steps into your facts
+  </Card>
+</CardGroup>
+
+<Info>
+**Need Help?** Visit our [Help Center](https://microstrate.io/help.html) or join the [Community](/community) for support.
+</Info>
