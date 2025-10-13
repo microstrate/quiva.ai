@@ -422,6 +422,69 @@
           }
         }
       }
+    },
+    "/trigger/object-store": {
+      "post": {
+        "summary": "Create a Object Store trigger",
+        "description": "Creates a new Object Store trigger for data processing and routing.",
+        "operationId": "createObjectStoreTrigger",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.post.obj",
+        "tags": [
+          "Object Store Triggers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObjectStoreTriggerRequest"
+              },
+              "example": {
+                "name": "my-object-store-trigger",
+                "collection": "my-collection",
+                "description": "Object Store data processing trigger",
+                "trigger_type": "obj"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Object Store trigger created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectStoreTriggerResponse"
+                },
+                "example": {
+                  "body": {
+                    "name": "my-object-store-trigger",
+                    "collection": "my-collection",
+                    "description": "Object Store data processing trigger",
+                    "bucket": {
+                      "bucket": "flow-upload-123"
+                    },
+                    "subject": "ms.trigger.obj.my-object-store-trigger",
+                    "trigger_type": "obj",
+                    "type": "created"
+                  },
+                  "status_code": 201
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -483,6 +546,43 @@
           },
           "target": {
             "$ref": "#/components/schemas/TriggerTarget"
+          }
+        }
+      },
+      "StorageType": {
+        "type": "string",
+        "enum": [
+          "file",
+          "memory"
+        ]
+      },
+      "TriggerObjectStoreBucket": {
+        "type": "object",
+        "required": [
+          "bucket"
+        ],
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "description": "Name of the bucket to create"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the bucket"
+          },
+          "max_bytes": {
+            "type": "integer",
+            "description": "Maximum size of the bucket in bytes",
+            "minimum": 1
+          },
+          "replicas": {
+            "type": "integer",
+            "description": "Number of replicas",
+            "minimum": 1,
+            "default": 1
+          },
+          "storage": {
+            "$ref": "#/components/schemas/StorageType"
           }
         }
       },
@@ -892,6 +992,92 @@
                 "type": "string",
                 "description": "Specific type identifier providing additional classification information.",
                 "example": "stream-trigger"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the operation.",
+            "example": 201
+          }
+        }
+      },
+      "ObjectStoreTriggerRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "trigger_type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+            "example": "my-object-store-trigger"
+          },
+          "collection": {
+            "type": "string",
+            "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+            "example": "my-collection"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description explaining the trigger's purpose and function.",
+            "example": "Object Store data processing trigger"
+          },
+          "trigger_type": {
+            "type": "string",
+            "enum": [
+              "obj"
+            ],
+            "description": "Must be 'obj' for this endpoint. Determines the trigger's behavior and available properties.",
+            "example": "obj"
+          },
+          "bucket": {
+            "$ref": "#/components/schemas/TriggerObjectStoreBucket"
+          }
+        }
+      },
+      "ObjectStoreTriggerResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+                "example": "my-object-store-trigger"
+              },
+              "collection": {
+                "type": "string",
+                "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+                "example": "my-collection"
+              },
+              "description": {
+                "type": "string",
+                "description": "Human-readable description explaining the trigger's purpose and function.",
+                "example": "Object Store data processing trigger"
+              },
+              "bucket": {
+                "$ref": "#/components/schemas/TriggerObjectStoreBucket"
+              },
+              "subject": {
+                "type": "string",
+                "description": "Full subject identifier for the trigger, following the pattern \"ms.trigger.obj.[name]\".",
+                "example": "ms.trigger.obj.my-object-store-trigger"
+              },
+              "trigger_type": {
+                "type": "string",
+                "enum": [
+                  "obj"
+                ],
+                "description": "Type of trigger, always 'obj' for object store triggers.",
+                "example": "obj"
+              },
+              "type": {
+                "type": "string",
+                "description": "Specific type identifier providing additional classification information.",
+                "example": "object-store-trigger"
               }
             }
           },
