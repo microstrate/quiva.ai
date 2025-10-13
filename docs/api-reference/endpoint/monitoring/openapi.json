@@ -6,12 +6,12 @@
         "version": "1.0.0",
         "contact": {
             "name": "Microstrate Support",
-            "url": "https://app.microstrate.io"
+            "url": "https://app.microstrate.ai"
         }
     },
     "servers": [
         {
-            "url": "https://api.microstrate.io",
+            "url": "https://api.microstrate.ai",
             "description": "Production API server"
         }
     ],

@@ -5,13 +5,13 @@
     "description": "A comprehensive interface for managing key-value stores, object stores, streams, and search indexing",
     "contact": {
       "name": "Microstrate Support",
-      "url": "https://microstrate.io/support"
+      "url": "https://microstrate.ai/support"
     },
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.microstrate.io",
+      "url": "https://api.microstrate.ai",
       "description": "Production API server"
     }
   ],

@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://api.microstrate.io",
+      "url": "https://api.microstrate.ai",
       "description": "Production API server"
     }
   ],

@@ -4,7 +4,7 @@
     "title": "Microstrate Gateway",
     "description": "API service for managing compute resources including collections, functions, containers, and their assets",
     "contact": {
-      "email": "support@microstrate.io"
+      "email": "support@microstrate.ai"
     },
     "license": {
       "name": "Proprietary"
@@ -13,7 +13,7 @@
   },
   "servers": [
     {
-      "url": "https://api.microstrate.io",
+      "url": "https://api.microstrate.ai",
       "description": "Production API server"
     }
   ],

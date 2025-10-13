@@ -34,29 +34,6 @@ When enabling MFA, you'll receive a set of recovery codes:
 - If you lose access to your MFA device, these codes provide emergency account access
 - If you have used all recovery codes, you can contact an admin to issue new recovery codes for your account if needed.
 
-### Single Sign-On (SSO)
-
-Enterprise customers can configure SSO with their identity provider:
-
-1. Navigate to **Account Settings → Security → Single Sign-On**
-2. Select your identity provider (Okta, Azure AD, Google Workspace, etc.)
-3. Configure the connection using the provided instructions
-4. Test the integration before enforcing it company-wide
-
-### IP Restrictions
-
-Limit account access to specific IP addresses or ranges:
-
-1. Navigate to **Account Settings → Security → Network Security**
-2. Enable "IP Restriction"
-3. Add allowed IP addresses or CIDR ranges
-4. Choose to apply restrictions to:
-   - All users
-   - Specific roles
-   - Individual users
-
-> **Note:** Always add your current IP address before enabling restrictions to avoid locking yourself out.
-
 ### Session Management
 
 Control how users interact with your account:
@@ -74,10 +51,7 @@ Control how users interact with your account:
 Secure your programmatic access to Microstrate:
 
 1. Navigate to **Account Settings → API → Keys**
-2. Create appropriately scoped API keys:
-   - **Full Access**: Administrative capabilities (use sparingly)
-   - **Read-Only**: For monitoring and reporting tools
-   - **Service-Specific**: Limit to specific Microstrate services
+2. Keys are scoped to the user that generates them
 3. Set appropriate expiration dates for all keys
 
 ### Secop Models
@@ -103,7 +77,7 @@ Microstrate implements Secop (Secure Operation) security models throughout the p
 If you've forgotten your password, Microstrate provides a secure recovery process:
 
 1. **Initiating Password Recovery**
-   - Visit the Microstrate login page at [https://app.staging.microstrate.io/en/login](https://app.staging.microstrate.io/en/login)
+   - Visit the Microstrate login page at [https://app.staging.microstrate.ai/en/login](https://app.staging.microstrate.ai/en/login)
    - Click "Forgot password?" below the login form
    - Enter the email address associated with your account
    - Click "Send Recovery Email"
@@ -218,7 +192,7 @@ If you believe your account has been compromised, take these immediate steps in 
    - Consider implementing SSO with stricter controls
 
 6. **Report the Incident**
-   - Contact Microstrate security team at [security@microstrate.io](mailto:security@microstrate.io)
+   - Contact Microstrate security team at [security@microstrate.ai](mailto:security@microstrate.ai)
    - Call the emergency response line at the number provided in your account portal
    - Provide all collected evidence and timeline of events
    - Follow guidance from the security team for further actions
@@ -241,7 +215,7 @@ For urgent security assistance:
 3. Select "Security Incident" from the dropdown menu
 4. Provide brief details about the suspected compromise
 
-Report security incidents to [security@microstrate.io](mailto:security@microstrate.io) or call the emergency response line at the number provided in your account portal.
+Report security incidents to [security@microstrate.ai](mailto:security@microstrate.ai) or call the emergency response line at the number provided in your account portal.
 
 ## Security Compliance
 
@@ -275,7 +249,7 @@ View detailed compliance information:
 
 ## Security Resources
 
-- [Microstrate Security Whitepaper](https://docs.microstrate.io/security/whitepaper)
-- [Security Best Practices Guide](https://docs.microstrate.io/security/best-practices)
-- [Compliance Documentation](https://docs.microstrate.io/security/compliance)
-- [Security Changelog](https://docs.microstrate.io/security/updates)
+- [Microstrate Security Whitepaper](https://docs.microstrate.ai/security/whitepaper)
+- [Security Best Practices Guide](https://docs.microstrate.ai/security/best-practices)
+- [Compliance Documentation](https://docs.microstrate.ai/security/compliance)
+- [Security Changelog](https://docs.microstrate.ai/security/updates)

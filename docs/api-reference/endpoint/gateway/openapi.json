@@ -6,12 +6,12 @@
     "version": "1.0.0",
     "contact": {
       "name": "Microstrate Support",
-      "email": "support@microstrate.io"
+      "email": "support@microstrate.ai"
     }
   },
   "servers": [
     {
-      "url": "https://api.microstrate.io",
+      "url": "https://api.microstrate.ai",
       "description": "Production API server"
     }
   ],
@@ -79,7 +79,7 @@
                   "body": {
                     "name": "My API Gateway",
                     "description": "Gateway for my service APIs",
-                    "url": "https://abc123.microstrate.io",
+                    "url": "https://abc123.microstrate.ai",
                     "subject": "ms.gateway.abcdef123456.gateway",
                     "active": true,
                     "timeout": 30000,
@@ -130,7 +130,7 @@
                   "body": {
                     "name": "My API Gateway",
                     "description": "Gateway for my service APIs",
-                    "url": "https://abc123.microstrate.io",
+                    "url": "https://abc123.microstrate.ai",
                     "subject": "ms.gateway.abcdef123456.gateway",
                     "active": true,
                     "timeout": 30000,
@@ -1293,7 +1293,7 @@
           "url": {
             "type": "string",
             "description": "URL of the gateway",
-            "example": "https://abc123.microstrate.io"
+            "example": "https://abc123.microstrate.ai"
           },
           "subject": {
             "type": "string",

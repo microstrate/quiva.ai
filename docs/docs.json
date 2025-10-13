@@ -188,12 +188,12 @@
       "anchors": [
         {
           "anchor": "Community",
-          "href": "https://microstrate.io/community",
+          "href": "https://microstrate.ai/community",
           "icon": "slack"
         },
         {
           "anchor": "Support",
-          "href": "https://microstrate.io/support",
+          "href": "https://microstrate.ai/support",
           "icon": "headset"
         }
       ]
@@ -213,13 +213,13 @@
     "links": [
       {
         "label": "Log in",
-        "href": "https://app.microstrate.io/en/login"
+        "href": "https://app.microstrate.ai/en/login"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Try for free",
-      "href": "https://app.microstrate.io/en/signup"
+      "href": "https://app.microstrate.ai/en/signup"
     }
   },
   "footer": {
