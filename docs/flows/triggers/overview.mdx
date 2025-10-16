@@ -1,0 +1,719 @@
+---
+title: "Triggers Overview"
+description: "Understanding how to start your flows with various trigger types"
+icon: "bolt"
+---
+
+# Triggers Overview
+
+Triggers are the starting point for every flow. They define how and when your flow executes, what data it receives, and how it responds. Think of triggers as the "on switch" that activates your intelligent agents and automation.
+
+## What is a Trigger?
+
+A trigger is an event that starts your flow execution. When the trigger fires, it:
+
+1. **Starts the flow** - Initiates the execution
+2. **Provides data** - Passes information to the first step
+3. **Determines response mode** - Synchronous or asynchronous
+4. **Handles the response** - Returns results to the caller (if applicable)
+
+<img 
+  src="/images/flows/trigger-diagram.png" 
+  alt="Trigger Flow Diagram"
+  className="rounded-lg"
+/>
+
+## Trigger Types
+
+Microstrate offers several trigger types to suit different use cases:
+
+<CardGroup cols={2}>
+  <Card title="Embed Triggers" icon="window-maximize" href="/flows/triggers/embed-triggers">
+    **Button, Form, Chat**
+    
+    Embed in your website or web app:
+    - Button: Click to trigger
+    - Form: Collect data and submit
+    - Chat: Interactive conversation
+    
+    **Use for:** Customer-facing interfaces
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/triggers/http-request">
+    **Custom API Endpoint**
+    
+    Trigger via HTTP POST request:
+    - Custom endpoint URL
+    - Send JSON data
+    - Receive JSON response
+    
+    **Use for:** API integrations, webhooks from your app
+  </Card>
+  
+  <Card title="Webhook" icon="link" href="/flows/triggers/webhook">
+    **Receive External Events**
+    
+    Accept webhooks from other services:
+    - Stripe payments
+    - GitHub events
+    - Slack messages
+    - Any webhook-enabled service
+    
+    **Use for:** External service integrations
+  </Card>
+  
+  <Card title="Schedule" icon="clock" href="/flows/triggers/schedule">
+    **Run on Schedule**
+    
+    Execute at specific times or intervals:
+    - One-time execution
+    - Recurring: hourly, daily, weekly, monthly
+    - Cron-like scheduling
+    
+    **Use for:** Reports, maintenance, batch processing
+  </Card>
+  
+  <Card title="Upload" icon="upload" href="/flows/triggers/upload">
+    **Document Upload**
+    
+    Trigger when files are uploaded:
+    - PDFs, images, documents
+    - Direct upload to endpoint
+    - Process documents automatically
+    
+    **Use for:** Document processing, OCR, data extraction
+  </Card>
+  
+  <Card title="Email" icon="envelope" href="/flows/triggers/email">
+    **Incoming Email**
+    
+    Trigger when email arrives:
+    - Unique email address per flow
+    - Full email content and attachments
+    - Process automatically
+    
+    **Use for:** Email automation, support tickets
+  </Card>
+  
+  <Card title="Stream Triggers" icon="stream" href="/flows/triggers/stream-triggers">
+    **Real-time Messages** (Advanced)
+    
+    Trigger on stream messages:
+    - Low-latency event processing
+    - Message filtering by subject
+    - High-throughput streams
+    
+    **Use for:** Real-time data processing, event-driven architecture
+  </Card>
+</CardGroup>
+
+---
+
+## Choosing the Right Trigger
+
+### Decision Framework
+
+<Card title="How to Choose a Trigger Type" icon="question-circle">
+**Ask yourself:**
+
+1. **Who/what starts the flow?**
+   - User on website → Embed (Button/Form/Chat)
+   - External service → Webhook
+   - Your application → HTTP Request
+   - Time-based → Schedule
+   - User uploads file → Upload
+   - User sends email → Email
+   - Internal system event → Stream Triggers
+
+2. **Is it user-facing?**
+   - Yes, users interact directly → Embed Triggers
+   - No, system-to-system → HTTP Request, Webhook, Stream
+
+3. **Does it need immediate response?**
+   - Yes → Embed, HTTP Request, Webhook
+   - No → Schedule, Upload, Email (can be async)
+
+4. **How often does it run?**
+   - Continuously (on-demand) → Embed, HTTP, Webhook, Upload, Email
+   - Scheduled → Schedule trigger
+   - Event-driven → Webhook, Stream
+
+5. **What data format?**
+   - Form fields → Form Embed
+   - JSON → HTTP Request, Webhook
+   - File → Upload
+   - Email → Email trigger
+   - Stream message → Stream triggers
+</Card>
+
+### Common Use Cases by Trigger
+
+<AccordionGroup>
+  <Accordion title="Customer Service Automation" icon="headset">
+    **Best triggers:**
+    
+    **Chat Embed** (Primary)
+    - Embed chat widget on website
+    - Customers interact in real-time
+    - Agent responds immediately
+    - Natural conversation flow
+    
+    **Email** (Secondary)
+    - customers@company.com
+    - Email triggers support flow
+    - Agent processes and responds
+    - Good for async support
+    
+    **Example:**
+    ```
+    Trigger: Chat Embed
+    ↓
+    Customer Service Agent
+    - Tools: Knowledge Base, Order Lookup
+    ↓
+    Respond to customer in chat
+    ```
+  </Accordion>
+
+  <Accordion title="Lead Qualification" icon="user-check">
+    **Best triggers:**
+    
+    **Form Embed** (Primary)
+    - Contact form on website
+    - Collect name, email, company, message
+    - Agent qualifies immediately
+    - Show "Thank you" message
+    
+    **HTTP Request** (Secondary)
+    - Integrate with landing page builder
+    - Send form data via API
+    - Process in background
+    - Update CRM automatically
+    
+    **Example:**
+    ```
+    Trigger: Form Embed
+    Fields: Name, Email, Company, Message
+    ↓
+    Lead Qualification Agent
+    - Tools: Company Lookup, CRM, Lead Scoring
+    ↓
+    Condition: Qualified?
+    - Yes → Book Meeting
+    - No → Add to Nurture Campaign
+    ```
+  </Accordion>
+
+  <Accordion title="Content Generation" icon="pen">
+    **Best triggers:**
+    
+    **Schedule** (Primary)
+    - Daily at 9am
+    - Generate social posts for the day
+    - Post to social media
+    - Update content calendar
+    
+    **HTTP Request** (Secondary)
+    - Trigger from your CMS
+    - Generate content on-demand
+    - Return formatted content
+    - Publish automatically
+    
+    **Example:**
+    ```
+    Trigger: Schedule (Daily 9am)
+    ↓
+    Content Generation Agent
+    - Tools: Brand Guidelines, Performance Metrics
+    ↓
+    Post to Social Media APIs
+    ↓
+    Update Content Calendar
+    ```
+  </Accordion>
+
+  <Accordion title="Document Processing" icon="file">
+    **Best triggers:**
+    
+    **Upload** (Primary)
+    - User uploads invoice/document
+    - Flow triggers automatically
+    - Extract data
+    - Validate and process
+    
+    **Email** (Secondary)
+    - invoices@company.com
+    - Email with PDF attachment
+    - Extract and process
+    - Send confirmation
+    
+    **Example:**
+    ```
+    Trigger: Upload
+    ↓
+    Document Processing Agent
+    - Extract data (OCR if needed)
+    - Validate against rules
+    ↓
+    Condition: Valid?
+    - Yes → Update ERP
+    - No → Human Review
+    ```
+  </Accordion>
+
+  <Accordion title="External Service Integration" icon="plug">
+    **Best triggers:**
+    
+    **Webhook** (Primary)
+    - Stripe: payment.succeeded
+    - GitHub: push event
+    - Slack: message posted
+    - Any webhook-enabled service
+    
+    **Example:**
+    ```
+    Trigger: Webhook
+    Source: Stripe payment.succeeded
+    ↓
+    Process Payment Agent
+    - Update customer account
+    - Send confirmation email
+    - Update analytics
+    ```
+  </Accordion>
+
+  <Accordion title="Scheduled Reports" icon="chart-line">
+    **Best triggers:**
+    
+    **Schedule** (Primary)
+    - Weekly on Monday 8am
+    - Monthly on 1st at 9am
+    - Generate report
+    - Email to team
+    
+    **Example:**
+    ```
+    Trigger: Schedule (Monday 8am)
+    ↓
+    Report Generation Agent
+    - Query database
+    - Analyze metrics
+    - Generate insights
+    ↓
+    Email Report to Team
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Trigger Configuration Basics
+
+### Common Settings
+
+While each trigger type has specific settings, most triggers share these common configurations:
+
+<AccordionGroup>
+  <Accordion title="Trigger Name" icon="tag">
+    Give your trigger a descriptive name.
+    
+    **Good names:**
+    - "Contact Form - Homepage"
+    - "Stripe Payment Webhook"
+    - "Daily Sales Report Schedule"
+    - "Invoice Upload Processor"
+    
+    **Bad names:**
+    - "Trigger 1"
+    - "Test"
+    - "My Trigger"
+    
+    Clear names help you identify triggers in flows with multiple triggers.
+  </Accordion>
+
+  <Accordion title="Response Mode" icon="bolt">
+    How should the flow execute?
+    
+    **Wait for Completion:**
+    - Flow completes before responding
+    - User/caller waits for result
+    - Best for: User-facing interactions, APIs returning data
+    
+    **Run in Background:**
+    - Responds immediately
+    - Flow runs asynchronously
+    - Best for: Long-running tasks, scheduled jobs, email processing
+    
+    *See individual trigger pages for specific recommendations.*
+  </Accordion>
+
+  <Accordion title="Security" icon="lock">
+    How to secure your trigger?
+    
+    **Public (No Security):**
+    - Anyone with URL can trigger
+    - Best for: Public forms, general website interactions
+    
+    **API Key:**
+    - Requires API key in request
+    - Best for: Server-to-server, internal APIs
+    - Generate key in trigger configuration
+    
+    **OAuth (Future):**
+    - User authentication required
+    - Best for: User-specific actions
+    
+    *Availability varies by trigger type.*
+  </Accordion>
+
+  <Accordion title="Rate Limiting" icon="gauge">
+    Prevent abuse and control costs.
+    
+    **Set limits on:**
+    - Requests per minute
+    - Requests per hour
+    - Requests per day
+    
+    **Recommended limits:**
+    - Public endpoints: 100/hour
+    - Internal APIs: 1,000/hour
+    - Scheduled: Not applicable
+    
+    *Configure in trigger settings.*
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Trigger Data Flow
+
+### How Data Flows from Trigger to Steps
+
+When a trigger fires, it passes data to the flow. This data is accessible in all subsequent steps using variable mapping.
+
+**Example: Form Embed Trigger**
+
+```json
+// Data from form submission
+{
+  "trigger": {
+    "type": "embed_form",
+    "form": {
+      "name": "John Smith",
+      "email": "john@example.com",
+      "company": "Acme Corp",
+      "message": "Interested in Enterprise plan"
+    },
+    "timestamp": "2025-10-14T10:30:00Z"
+  }
+}
+```
+
+**Accessing in Agent Step:**
+
+```
+Prompt: ${trigger.form.message}
+
+Agent receives: "Interested in Enterprise plan"
+```
+
+**Accessing in HTTP Request Step:**
+
+```json
+Request Body:
+{
+  "name": "${trigger.form.name}",
+  "email": "${trigger.form.email}",
+  "source": "website_form"
+}
+```
+
+### Multiple Triggers in One Flow
+
+Flows can have multiple triggers:
+
+```
+Flow: Lead Processing
+├─ Trigger 1: Form Embed (Website contact form)
+├─ Trigger 2: HTTP Request (Landing page API)
+└─ Trigger 3: Webhook (CRM integration)
+
+All three trigger the same flow, but with different data sources.
+```
+
+**Use cases:**
+- Accept leads from multiple sources
+- Process payments from different channels
+- Unified handling with varied inputs
+
+---
+
+## Testing Triggers
+
+### Test Before Deploying
+
+Always test triggers before going live:
+
+<Steps>
+  <Step title="Configure Trigger">
+    Set up your trigger with all required settings
+  </Step>
+  
+  <Step title="Save Flow">
+    Save your flow (no need to deploy yet)
+  </Step>
+  
+  <Step title="Use Test Panel">
+    Click **Test** in flow builder
+    - Simulates trigger with test data
+    - Shows complete flow execution
+    - Validates configuration
+  </Step>
+  
+  <Step title="Test Real Trigger">
+    For certain triggers, test the real endpoint:
+    - **Embed**: Use preview URL
+    - **HTTP**: Call endpoint with curl/Postman
+    - **Webhook**: Use webhook testing tools
+    - **Schedule**: Set near-term test time
+    - **Upload**: Upload test file
+    - **Email**: Send test email
+  </Step>
+  
+  <Step title="Verify Results">
+    Check that:
+    - Flow triggered correctly
+    - Data passed as expected
+    - Agent processed correctly
+    - Response returned (if applicable)
+  </Step>
+  
+  <Step title="Deploy">
+    Once testing succeeds, deploy your flow
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Name triggers descriptively" icon="tag">
+    Clear names help you manage flows with multiple triggers.
+    
+    ✅ **Good:**
+    - "Homepage Contact Form"
+    - "Stripe Payment Success"
+    - "Weekly Report - Mondays 8am"
+    
+    ❌ **Bad:**
+    - "Trigger 1"
+    - "Test"
+    - "Form"
+  </Accordion>
+
+  <Accordion title="Secure public endpoints" icon="lock">
+    If your trigger is publicly accessible:
+    - Add rate limiting
+    - Use CAPTCHA for forms (when available)
+    - Monitor for abuse
+    - Set spending alerts
+    - Consider API keys for non-public use
+  </Accordion>
+
+  <Accordion title="Set appropriate response modes" icon="bolt">
+    **Use "Wait for Completion" when:**
+    - Users expect immediate response
+    - API returns data
+    - Real-time interactions
+    
+    **Use "Run in Background" when:**
+    - Long-running processes (> 30 seconds)
+    - Scheduled tasks
+    - Email processing
+    - No immediate response needed
+  </Accordion>
+
+  <Accordion title="Handle errors gracefully" icon="shield-check">
+    Triggers can fail. Plan for it:
+    - Validate input data
+    - Set timeouts appropriately
+    - Log failed triggers
+    - Implement retries for critical flows
+    - Monitor error rates
+  </Accordion>
+
+  <Accordion title="Test with realistic data" icon="flask">
+    Don't just test happy paths:
+    - Missing fields
+    - Invalid data
+    - Edge cases
+    - Malformed requests
+    - Large payloads
+    - Rate limit scenarios
+  </Accordion>
+
+  <Accordion title="Monitor trigger performance" icon="chart-line">
+    Track key metrics:
+    - Trigger count per day/week
+    - Success vs. failure rate
+    - Average execution time
+    - Cost per trigger
+    - Response times
+    
+    Set alerts for anomalies.
+  </Accordion>
+
+  <Accordion title="Version your flows" icon="code-branch">
+    When changing triggers in production:
+    - Test thoroughly in development
+    - Consider creating new flow version
+    - Use phased rollout for major changes
+    - Keep previous version active temporarily
+    - Monitor closely after deployment
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting Common Issues
+
+<AccordionGroup>
+  <Accordion title="Trigger not firing" icon="question">
+    **Check:**
+    - Is flow deployed? (not just saved)
+    - Is trigger enabled?
+    - Are credentials correct? (for secure triggers)
+    - Is endpoint URL correct?
+    - Any rate limits hit?
+    
+    **Solutions:**
+    - Deploy the flow
+    - Check trigger status
+    - Verify configuration
+    - Test with curl/Postman
+    - Check execution logs
+  </Accordion>
+
+  <Accordion title="Data not passing to steps" icon="arrow-right">
+    **Check:**
+    - Variable mapping syntax correct?
+    - Data exists in trigger output?
+    - Field names match exactly?
+    - JSON structure correct?
+    
+    **Solutions:**
+    - Review trigger output in logs
+    - Test variable mappings in test panel
+    - Check for typos in field names
+    - Use JSONPath correctly
+  </Accordion>
+
+  <Accordion title="Trigger timing out" icon="clock">
+    **Causes:**
+    - Flow takes too long (> 30 seconds)
+    - Heavy processing in flow
+    - External API delays
+    - Large data processing
+    
+    **Solutions:**
+    - Use "Run in Background" mode
+    - Optimize agent/step performance
+    - Add timeout handling
+    - Split into multiple flows
+  </Accordion>
+
+  <Accordion title="Rate limit errors" icon="ban">
+    **If hitting rate limits:**
+    - Check trigger limit settings
+    - Review request volume
+    - Identify source of excess traffic
+    - Implement request queuing
+    - Increase limits if legitimate
+    - Add CAPTCHA if spam
+  </Accordion>
+
+  <Accordion title="Security issues" icon="shield-exclamation">
+    **If trigger is being abused:**
+    - Add/tighten rate limits immediately
+    - Require API key authentication
+    - Review and block malicious IPs
+    - Add input validation
+    - Monitor logs for patterns
+    - Consider moving to private endpoint
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Trigger Comparison Table
+
+Quick reference for choosing the right trigger:
+
+| Trigger Type | User-Facing | Real-Time | Security | Best For |
+|--------------|-------------|-----------|----------|----------|
+| **Button Embed** | ✅ Yes | ✅ Yes | Public/API Key | Simple actions, one-click triggers |
+| **Form Embed** | ✅ Yes | ✅ Yes | Public/API Key | Data collection, lead capture |
+| **Chat Embed** | ✅ Yes | ✅ Yes | Public/API Key | Conversations, support |
+| **HTTP Request** | ❌ No | ✅ Yes | API Key | API integrations, server-to-server |
+| **Webhook** | ❌ No | ✅ Yes | API Key/Secret | External service events |
+| **Schedule** | ❌ No | ❌ No | N/A | Recurring tasks, reports |
+| **Upload** | ✅ Yes | ⚠️ Depends | Public/API Key | Document processing |
+| **Email** | ✅ Yes | ❌ No | Email address | Email automation |
+| **Stream** | ❌ No | ✅ Yes | Internal | Real-time event processing |
+
+---
+
+## Next Steps
+
+Dive deeper into specific trigger types:
+
+<CardGroup cols={2}>
+  <Card title="Embed Triggers" icon="window-maximize" href="/flows/triggers/embed-triggers">
+    Button, Form, and Chat embeds for your website
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/triggers/http-request">
+    Create custom API endpoints
+  </Card>
+  
+  <Card title="Webhook" icon="link" href="/flows/triggers/webhook">
+    Receive events from external services
+  </Card>
+  
+  <Card title="Schedule" icon="clock" href="/flows/triggers/schedule">
+    Run flows on a schedule
+  </Card>
+  
+  <Card title="Upload" icon="upload" href="/flows/triggers/upload">
+    Process uploaded documents
+  </Card>
+  
+  <Card title="Email" icon="envelope" href="/flows/triggers/email">
+    Automate email processing
+  </Card>
+  
+  <Card title="Stream Triggers" icon="stream" href="/flows/triggers/stream-triggers">
+    Real-time message processing (Advanced)
+  </Card>
+  
+  <Card title="Flow Steps" icon="list-check" href="/flows/steps/overview">
+    What happens after the trigger
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Community" icon="users" href="https://community.microstrate.ai">
+    Ask questions and share flows
+  </Card>
+  
+  <Card title="Support" icon="life-ring" href="/support">
+    Get help from our team
+  </Card>
+  
+  <Card title="Examples" icon="book" href="/examples">
+    Browse trigger examples
+  </Card>
+</CardGroup>

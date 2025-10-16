@@ -1,0 +1,1447 @@
+---
+title: "Provider Settings"
+description: "Configure AI models, providers, and output formatting for your agents"
+icon: "sliders"
+---
+
+# Provider Settings
+
+The Provider tab controls which AI model your agent uses, how it connects, and how responses are formatted. These settings directly impact agent performance, cost, and capabilities.
+
+<img 
+  src="/images/agents/provider-tab.png" 
+  alt="Provider Settings Tab"
+  className="rounded-lg"
+/>
+
+## Provider Selection
+
+Choose the AI model provider that powers your agent.
+
+### Available Providers
+
+<Tabs>
+  <Tab title="Workforce (Recommended)">
+    <div className="space-y-4">
+      <p><strong>Microstrate's custom model</strong> optimized for business automation and agent workflows.</p>
+      
+      **Best for:**
+      - Getting started quickly (no API key needed)
+      - Cost-effective automation
+      - Standard business use cases
+      - Testing and prototyping
+      
+      **Advantages:**
+      - ✅ Included in all plans (no additional API costs)
+      - ✅ Optimized for Microstrate's agent architecture
+      - ✅ Balanced performance and cost
+      - ✅ No external API key management
+      - ✅ Predictable pricing
+      
+      **Limitations:**
+      - ⚠️ Less customization than bringing your own models
+      - ⚠️ May not have cutting-edge features of latest GPT-4 or Claude releases
+    </div>
+  </Tab>
+  
+  <Tab title="OpenAI">
+    <div className="space-y-4">
+      <p><strong>OpenAI's GPT models</strong> - Industry-leading language models with broad capabilities.</p>
+      
+      **Best for:**
+      - Complex reasoning tasks
+      - Creative content generation
+      - Advanced problem-solving
+      - When you need GPT-4's latest features
+      
+      **Advantages:**
+      - ✅ GPT-4 is most capable model available
+      - ✅ Extensive training on diverse data
+      - ✅ Strong general intelligence
+      - ✅ Excellent for creative tasks
+      - ✅ Fast inference (especially GPT-3.5)
+      
+      **Considerations:**
+      - ⚠️ Requires OpenAI API key
+      - ⚠️ GPT-4 is more expensive than alternatives
+      - ⚠️ Costs based on token usage
+      - ⚠️ Rate limits apply to your API key
+      
+      <Info>
+      Get your OpenAI API key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+      </Info>
+    </div>
+  </Tab>
+  
+  <Tab title="Claude (Anthropic)">
+    <div className="space-y-4">
+      <p><strong>Anthropic's Claude models</strong> - Known for instruction-following, long context, and safety.</p>
+      
+      **Best for:**
+      - Long document processing
+      - Complex instructions
+      - High-accuracy tasks
+      - Safety-critical applications
+      
+      **Advantages:**
+      - ✅ Excellent at following detailed instructions
+      - ✅ Handles very long contexts (200K+ tokens)
+      - ✅ Strong reasoning and analysis
+      - ✅ Good for document processing
+      - ✅ High reliability
+      
+      **Considerations:**
+      - ⚠️ Requires Anthropic API key
+      - ⚠️ Opus model is premium-priced
+      - ⚠️ Costs based on token usage
+      - ⚠️ May be slower than GPT-3.5 for simple tasks
+      
+      <Info>
+      Get your Anthropic API key at [console.anthropic.com](https://console.anthropic.com/)
+      </Info>
+    </div>
+  </Tab>
+  
+  <Tab title="Gemini (Google)">
+    <div className="space-y-4">
+      <p><strong>Google's Gemini models</strong> - Multimodal capabilities with strong performance.</p>
+      
+      **Best for:**
+      - Multimodal tasks (text + images)
+      - Google ecosystem integration
+      - Cost-effective alternatives
+      - Diverse use cases
+      
+      **Advantages:**
+      - ✅ Native multimodal support
+      - ✅ Google's latest AI technology
+      - ✅ Competitive pricing
+      - ✅ Fast inference
+      - ✅ Growing capabilities
+      
+      **Considerations:**
+      - ⚠️ Requires Google Cloud API key
+      - ⚠️ Newer models (less battle-tested)
+      - ⚠️ Costs based on token usage
+      - ⚠️ May not match GPT-4 on complex reasoning
+      
+      <Info>
+      Get your Google AI API key at [ai.google.dev](https://ai.google.dev)
+      </Info>
+    </div>
+  </Tab>
+</Tabs>
+
+### Provider Comparison
+
+| Feature | Workforce | OpenAI | Claude | Gemini |
+|---------|-----------|---------|---------|---------|
+| **Setup** | Instant | API Key | API Key | API Key |
+| **Cost** | Included | Usage-based | Usage-based | Usage-based |
+| **Best at** | Business automation | General intelligence | Long context | Multimodal |
+| **Speed** | Fast | Fast | Moderate | Fast |
+| **Context** | 50K-100K | 128K | 200K | 32K-128K |
+| **Learning Curve** | Low | Low | Low | Moderate |
+
+<Tip>
+**Start with Workforce** for simplicity. Upgrade to external providers when you need specific capabilities or have exhausted included usage.
+</Tip>
+
+---
+
+## AI Model Selection
+
+Once you've selected a provider, choose the specific model version.
+
+### OpenAI Models
+
+<AccordionGroup>
+  <Accordion title="GPT-4 (gpt-4)" icon="brain">
+    **Most capable OpenAI model**
+    
+    - **Use for:** Complex reasoning, creative writing, advanced problem-solving
+    - **Context:** 8K tokens (gpt-4) or 128K tokens (gpt-4-turbo)
+    - **Speed:** Slower than GPT-3.5
+    - **Cost:** Higher (more expensive per token)
+    
+    **Best for:**
+    - Complex customer service scenarios
+    - Content generation requiring creativity
+    - Multi-step reasoning tasks
+    - When accuracy is critical
+    
+    **Example use cases:**
+    - Legal document analysis
+    - Complex troubleshooting
+    - Strategic planning
+    - Creative content creation
+  </Accordion>
+
+  <Accordion title="GPT-4 Turbo (gpt-4-turbo)" icon="bolt">
+    **Faster, cheaper GPT-4 with larger context**
+    
+    - **Use for:** Most production workloads requiring GPT-4 quality
+    - **Context:** 128K tokens
+    - **Speed:** Faster than GPT-4
+    - **Cost:** Lower than GPT-4, higher than GPT-3.5
+    
+    **Best for:**
+    - Production deployments
+    - Long document processing
+    - High-volume workflows
+    - Cost-sensitive advanced tasks
+  </Accordion>
+
+  <Accordion title="GPT-3.5 Turbo (gpt-3.5-turbo)" icon="gauge-high">
+    **Fast, cost-effective model**
+    
+    - **Use for:** Simple, straightforward tasks at scale
+    - **Context:** 16K tokens
+    - **Speed:** Very fast
+    - **Cost:** Lowest
+    
+    **Best for:**
+    - Simple classification
+    - Basic customer service
+    - Data extraction
+    - High-volume, simple workflows
+    
+    **Not ideal for:**
+    - Complex reasoning
+    - Creative tasks
+    - Nuanced decision-making
+  </Accordion>
+</AccordionGroup>
+
+### Claude Models
+
+<AccordionGroup>
+  <Accordion title="Claude Opus (claude-3-opus)" icon="crown">
+    **Most capable Claude model**
+    
+    - **Use for:** Highest-accuracy, most complex tasks
+    - **Context:** 200K tokens
+    - **Speed:** Moderate
+    - **Cost:** Highest tier
+    
+    **Best for:**
+    - Long document analysis
+    - Complex instruction following
+    - High-stakes decisions
+    - Research and analysis
+    
+    **Example use cases:**
+    - Legal contract review
+    - Research synthesis
+    - Complex data analysis
+    - High-value customer interactions
+  </Accordion>
+
+  <Accordion title="Claude Sonnet (claude-3-sonnet)" icon="balance-scale">
+    **Balanced performance and cost**
+    
+    - **Use for:** Production workloads needing good quality
+    - **Context:** 200K tokens
+    - **Speed:** Fast
+    - **Cost:** Mid-tier
+    
+    **Best for:**
+    - Most production use cases
+    - Customer service
+    - Content generation
+    - Data processing
+    
+    **Sweet spot:** Best balance of capability and cost for most tasks.
+  </Accordion>
+
+  <Accordion title="Claude Haiku (claude-3-haiku)" icon="feather">
+    **Fastest, most cost-effective Claude**
+    
+    - **Use for:** Simple, high-volume tasks
+    - **Context:** 200K tokens
+    - **Speed:** Very fast
+    - **Cost:** Lowest tier
+    
+    **Best for:**
+    - Simple classification
+    - Basic processing
+    - High-volume workflows
+    - Cost-sensitive applications
+  </Accordion>
+</AccordionGroup>
+
+### Gemini Models
+
+<AccordionGroup>
+  <Accordion title="Gemini Pro (gemini-pro)" icon="gem">
+    **Google's most capable model**
+    
+    - **Use for:** Complex tasks, multimodal applications
+    - **Context:** 32K tokens (expanding to 128K)
+    - **Speed:** Fast
+    - **Cost:** Competitive
+    
+    **Best for:**
+    - Multimodal tasks (text + images)
+    - General intelligence tasks
+    - Google ecosystem integration
+    - Cost-effective alternative to GPT-4
+  </Accordion>
+
+  <Accordion title="Gemini Pro Vision (gemini-pro-vision)" icon="eye">
+    **Multimodal model with vision**
+    
+    - **Use for:** Tasks requiring image understanding
+    - **Context:** Handles images + text
+    - **Speed:** Fast
+    - **Cost:** Similar to Gemini Pro
+    
+    **Best for:**
+    - Document processing with images
+    - Visual content analysis
+    - Multimodal customer service
+    - Screenshot analysis
+  </Accordion>
+</AccordionGroup>
+
+### Model Selection Guide
+
+<Card title="How to Choose a Model" icon="question-circle">
+**Ask yourself:**
+
+1. **How complex is the task?**
+   - Simple → GPT-3.5, Claude Haiku, or Workforce
+   - Moderate → GPT-4 Turbo, Claude Sonnet
+   - Complex → GPT-4, Claude Opus
+
+2. **How much context is needed?**
+   - Short (< 16K tokens) → Any model
+   - Long (16K-128K) → GPT-4 Turbo, Claude models
+   - Very long (> 128K) → Claude Opus/Sonnet
+
+3. **How critical is speed?**
+   - Must be fast → GPT-3.5, Claude Haiku, Gemini
+   - Moderate → GPT-4 Turbo, Claude Sonnet
+   - Can be slower → GPT-4, Claude Opus
+
+4. **What's your budget?**
+   - Minimal → Workforce, GPT-3.5, Claude Haiku
+   - Moderate → GPT-4 Turbo, Claude Sonnet, Gemini
+   - Premium → GPT-4, Claude Opus
+
+5. **Do you need multimodal?**
+   - Yes → Gemini Pro Vision, GPT-4 Vision
+   - No → Any text model
+</Card>
+
+---
+
+## API Key Configuration
+
+For OpenAI, Claude, and Gemini, you need to provide an API key from the respective provider. This section provides detailed, step-by-step instructions for obtaining and configuring API keys for each provider.
+
+<Info>
+**Why do I need an API key?** API keys authenticate your requests to the AI provider and allow them to track usage and bill accordingly. Keys are encrypted and securely stored in Microstrate.
+</Info>
+
+---
+
+### Getting an OpenAI API Key
+
+OpenAI provides access to GPT-4, GPT-4 Turbo, and GPT-3.5 Turbo models.
+
+<Steps>
+  <Step title="Create an OpenAI Account">
+    1. Visit [platform.openai.com/signup](https://platform.openai.com/signup)
+    2. Click **Sign up** in the top right corner
+    3. Choose your sign-up method:
+       - Continue with Google
+       - Continue with Microsoft Account
+       - Continue with Apple
+       - Or use your email address
+    4. If using email:
+       - Enter your email address
+       - Create a strong password
+       - Click **Continue**
+       - Check your email for verification link
+       - Click the verification link to confirm your email
+    5. Complete your profile:
+       - Enter your first and last name
+       - Optionally add your organization name
+       - Accept OpenAI's Terms of Service and Privacy Policy
+       - Click **Continue**
+    6. Verify your phone number:
+       - Select your country code
+       - Enter your phone number
+       - Click **Send code**
+       - Enter the 6-digit verification code sent via SMS
+       - Click **Verify**
+    
+    <Info>
+    **Free trial:** New accounts receive $5 in free credits valid for 3 months. After the trial, you'll need to add payment information to continue using the API.
+    </Info>
+  </Step>
+  
+  <Step title="Set Up Billing (Required for API Access)">
+    Before you can create API keys, you must set up billing:
+    
+    1. In the OpenAI dashboard, click your profile icon in the top right
+    2. Select **Manage account** from the dropdown
+    3. In the left sidebar, click **Billing**
+    4. Click **Add payment method**
+    5. Enter your payment information:
+       - Credit or debit card number
+       - Expiration date
+       - CVV security code
+       - Billing address (name, address, city, state, ZIP, country)
+    6. Click **Add payment method** to save
+    7. Set up usage limits (highly recommended):
+       - Click **Usage limits** in the Billing section
+       - Set a **Hard limit** (e.g., $50/month) - API will stop working when reached
+       - Set a **Soft limit** (e.g., $40/month) - You'll receive an email notification
+       - Click **Save**
+    
+    <Warning>
+    **Set spending limits immediately** to avoid unexpected charges. Without limits, costs can escalate quickly if something goes wrong.
+    </Warning>
+  </Step>
+  
+  <Step title="Create Your API Key">
+    1. From the main dashboard, click **API keys** in the left sidebar
+       - Or navigate directly to [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+    2. Click the **+ Create new secret key** button
+    3. In the popup dialog:
+       - **Name**: Give your key a descriptive name (e.g., "Microstrate Production" or "Microstrate Development")
+       - **Project**: Select "Default project" (or create a new project if you want to organize by use case)
+       - **Permissions**: Leave as "All" for full access, or select "Restricted" if you want to limit specific endpoints
+    4. Click **Create secret key**
+    5. **CRITICAL:** Copy your API key immediately
+       - The key will look like: `sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+       - Click the **Copy** button or manually select and copy the entire key
+       - Store it securely in a password manager or secure notes
+       - This is the ONLY time you'll see this key - it cannot be retrieved later
+    6. Click **Done** once you've saved the key
+    
+    <Warning>
+    **Never share your API key** or commit it to code repositories. If your key is exposed, delete it immediately from the OpenAI dashboard and create a new one.
+    </Warning>
+    
+    <img 
+      src="/images/agents/openai-api-key.png" 
+      alt="OpenAI API Key Creation"
+      className="rounded-lg"
+    />
+  </Step>
+  
+  <Step title="Add Key to Microstrate">
+    1. In Microstrate, open your agent configuration
+    2. Click the **Provider** tab
+    3. Select **OpenAI** from the Provider dropdown
+    4. Choose your desired model (GPT-4, GPT-4 Turbo, or GPT-3.5 Turbo)
+    5. In the **API Key** field:
+       - Paste your OpenAI API key
+       - The field will show `sk-proj-xxxxx...` (masked for security)
+    6. Click outside the field or press Enter to save
+    7. The key is now encrypted and securely stored
+    8. Test your configuration by running a test query
+    
+    <Tip>
+    **Best practice:** Use separate API keys for development and production environments. This allows you to:
+    - Track usage separately
+    - Set different spending limits
+    - Revoke development keys without affecting production
+    </Tip>
+  </Step>
+  
+  <Step title="Monitor Your Usage">
+    Regularly check your OpenAI usage to avoid surprises:
+    
+    1. Visit [platform.openai.com/usage](https://platform.openai.com/usage)
+    2. View your daily and monthly usage
+    3. Check costs by model type
+    4. Review your current spend against limits
+    5. Set up email notifications for usage alerts
+    
+    **Usage monitoring tips:**
+    - Check usage weekly, especially when first deploying
+    - Look for unexpected spikes that might indicate issues
+    - Understand which agents/models cost the most
+    - Adjust limits as needed based on actual usage
+  </Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="Troubleshooting OpenAI API Keys" icon="wrench">
+    **"Invalid API key" error:**
+    - Verify you copied the entire key including `sk-proj-` prefix
+    - Ensure no extra spaces at the beginning or end
+    - Check the key hasn't been deleted in OpenAI dashboard
+    - Confirm billing is set up (API won't work without payment method)
+    
+    **"Insufficient quota" error:**
+    - You've hit your usage limit
+    - Add more credits or increase your usage limit
+    - Check your billing page for current balance
+    
+    **"Rate limit exceeded" error:**
+    - You're making too many requests too quickly
+    - Implement rate limiting in your application
+    - Consider upgrading to a higher tier
+    - Space out your API calls
+    
+    **Can't find billing page:**
+    - Some accounts require organization membership
+    - Ask your organization admin to add you
+    - Or create your own organization
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Getting an Anthropic API Key (Claude)
+
+Anthropic provides access to Claude 3 models: Opus, Sonnet, and Haiku.
+
+<Steps>
+  <Step title="Create an Anthropic Account">
+    1. Visit [console.anthropic.com](https://console.anthropic.com)
+    2. Click **Sign Up** in the top right corner
+    3. Enter your email address
+    4. Create a strong password
+    5. Click **Continue**
+    6. Check your email for a verification message from Anthropic
+    7. Click the **Verify Email** link in the email
+    8. You'll be redirected back to the Anthropic Console
+    9. Complete your profile:
+       - Enter your full name
+       - Optionally add company/organization name
+       - Select your use case from the dropdown:
+         - Research
+         - Education
+         - Personal/Hobby
+         - Business/Production
+       - Accept Anthropic's Terms of Service and Privacy Policy
+    10. Click **Complete Setup**
+    
+    <Info>
+    **Getting started:** Anthropic provides $5 in free credits for new accounts. After the trial, you'll need to add payment information.
+    </Info>
+  </Step>
+  
+  <Step title="Set Up Billing">
+    1. In the Anthropic Console, click **Billing** in the left sidebar
+       - Or navigate to [console.anthropic.com/settings/billing](https://console.anthropic.com/settings/billing)
+    2. Click **Add payment method**
+    3. Enter your payment information:
+       - Card number
+       - Expiration date (MM/YY)
+       - CVC security code
+       - Cardholder name
+       - Billing address (street, city, state/province, postal code, country)
+    4. Click **Add card**
+    5. Set budget limits (recommended):
+       - Click **Usage limits** tab
+       - Set **Monthly budget** (e.g., $100)
+       - Set **Email notification threshold** (e.g., 80% of budget)
+       - Click **Save limits**
+    6. Verify your payment method is active:
+       - You should see your card listed with last 4 digits
+       - Status should show "Active"
+    
+    <Warning>
+    **Set a monthly budget** to prevent unexpected charges. Claude API costs can add up quickly with high-volume usage or large context windows.
+    </Warning>
+  </Step>
+  
+  <Step title="Create Your API Key">
+    1. In the left sidebar, click **API Keys**
+       - Or navigate to [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+    2. Click **Create Key** button
+    3. In the dialog that appears:
+       - **Name**: Enter a descriptive name for your key
+         - Examples: "Microstrate Production", "Customer Service Agent", "Development Testing"
+       - **Workspace**: Leave as default (or select specific workspace if you have multiple)
+    4. Click **Create Key**
+    5. **CRITICAL:** Copy your API key immediately
+       - The key will look like: `sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+       - Click the **Copy to clipboard** icon
+       - Or manually select and copy the entire key
+       - Store it securely - this is the only time you'll see it
+    6. Check the confirmation box: "I have saved this key somewhere safe"
+    7. Click **Done**
+    
+    <Tip>
+    **Name your keys clearly** - Use names that indicate their purpose and environment. This makes it easier to manage multiple keys and revoke the right one if needed.
+    </Tip>
+    
+    <img 
+      src="/images/agents/anthropic-api-key.png" 
+      alt="Anthropic API Key Creation"
+      className="rounded-lg"
+    />
+  </Step>
+  
+  <Step title="Add Key to Microstrate">
+    1. In Microstrate, open your agent configuration
+    2. Navigate to the **Provider** tab
+    3. Select **Claude** from the Provider dropdown
+    4. Choose your desired model:
+       - **Claude 3 Opus** - Most capable, highest cost
+       - **Claude 3 Sonnet** - Balanced performance and cost (recommended)
+       - **Claude 3 Haiku** - Fast and cost-effective
+    5. In the **API Key** field:
+       - Paste your Anthropic API key (starts with `sk-ant-`)
+       - The field will mask the key for security
+    6. Press Enter or click outside the field to save
+    7. Microstrate encrypts and securely stores your key
+    8. Test your configuration:
+       - Click **Test** in the flow builder
+       - Run a sample query
+       - Verify the agent responds correctly
+    
+    <Info>
+    **Model selection tip:** Start with Claude 3 Sonnet for most use cases. It offers excellent performance at a reasonable cost. Upgrade to Opus only if you need maximum capability.
+    </Info>
+  </Step>
+  
+  <Step title="Monitor Your Usage">
+    Track your Claude API usage to manage costs:
+    
+    1. Visit the Anthropic Console: [console.anthropic.com](https://console.anthropic.com)
+    2. Click **Usage** in the left sidebar
+    3. View your usage dashboard:
+       - **Current month costs** - Total spend so far
+       - **Daily usage graph** - See usage trends
+       - **Usage by model** - Compare costs across Claude models
+       - **Requests and tokens** - Volume metrics
+    4. Set up usage alerts:
+       - Go to **Billing** → **Usage limits**
+       - Configure email notifications
+       - Get alerts at 50%, 80%, and 100% of budget
+    
+    **Monitoring best practices:**
+    - Review usage weekly
+    - Compare costs across different agents/models
+    - Look for unexpected spikes
+    - Optimize prompts and context to reduce token usage
+    - Consider switching to Sonnet or Haiku if Opus costs are high
+  </Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="Troubleshooting Anthropic API Keys" icon="wrench">
+    **"Invalid authentication" error:**
+    - Confirm you copied the complete key including `sk-ant-` prefix
+    - Check for extra spaces at start or end of key
+    - Verify the key hasn't been deleted in Anthropic Console
+    - Ensure billing is set up (required for API access)
+    
+    **"Rate limit exceeded" error:**
+    - You're sending requests too quickly
+    - Anthropic has rate limits per tier
+    - Wait a moment before retrying
+    - Consider spreading requests over time
+    - Check if you need to request a rate limit increase
+    
+    **"Insufficient funds" error:**
+    - Your account balance is too low
+    - Add more credits to your account
+    - Check your billing page for current balance
+    - Verify your payment method is valid
+    
+    **"Model not found" error:**
+    - Verify you're using the correct model name
+    - Check model availability for your account tier
+    - Some models require specific access
+    
+    **Keys not working after creation:**
+    - Wait 1-2 minutes for key to propagate
+    - Clear your browser cache
+    - Try copying the key again
+    - Create a new key if issues persist
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Getting a Google AI API Key (Gemini)
+
+Google provides access to Gemini Pro and Gemini Pro Vision models.
+
+<Steps>
+  <Step title="Create a Google Account (if needed)">
+    If you don't have a Google account:
+    
+    1. Visit [accounts.google.com/signup](https://accounts.google.com/signup)
+    2. Fill in the sign-up form:
+       - First and last name
+       - Username (will be your email: username@gmail.com)
+       - Password (create a strong password)
+       - Confirm password
+    3. Click **Next**
+    4. Enter verification information:
+       - Phone number (for account recovery)
+       - Recovery email address (optional but recommended)
+       - Date of birth
+       - Gender
+    5. Click **Next**
+    6. Review and accept Google's Terms of Service and Privacy Policy
+    7. Click **I agree**
+    
+    If you already have a Google account, simply sign in.
+  </Step>
+  
+  <Step title="Access Google AI Studio">
+    1. Visit [ai.google.dev](https://ai.google.dev)
+    2. Click **Get started** or **Sign in** in the top right
+    3. Sign in with your Google account
+    4. Click **Get API Key** or navigate to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+    5. You'll see the API Keys page in Google AI Studio
+    
+    <Info>
+    **Google AI Studio** is the web-based tool for accessing Google's AI models. It provides a playground for testing and API key management.
+    </Info>
+  </Step>
+  
+  <Step title="Create a Google Cloud Project">
+    Google AI API keys are associated with Google Cloud projects:
+    
+    1. On the API Keys page, you'll be prompted to create or select a project
+    2. If you don't have a project:
+       - Click **Create a new project** in the dropdown
+       - Or click **Create a new Google Cloud project**
+    3. You'll be redirected to Google Cloud Console
+    4. Create your project:
+       - Enter a **Project name** (e.g., "Microstrate Agents", "AI Development")
+       - **Project ID** will auto-generate (you can customize it)
+       - **Location**: Select your organization (or leave as "No organization")
+    5. Click **Create**
+    6. Wait for the project to be created (takes 10-30 seconds)
+    7. You'll be redirected back to Google AI Studio
+    
+    <Tip>
+    **Project naming:** Use descriptive names that indicate the project's purpose. You can create multiple projects to organize different environments (dev, staging, production).
+    </Tip>
+  </Step>
+  
+  <Step title="Enable Google AI API">
+    1. Once your project is created, you need to enable the API:
+    2. In Google AI Studio, you'll see a prompt to enable the API
+    3. Click **Enable API** or **Enable Google AI for [Your Project]**
+    4. This activates the Gemini API for your project
+    5. Wait for the API to be enabled (usually instant)
+    
+    <Info>
+    **Billing:** Google provides free quota for Gemini API. You'll be notified if you exceed free limits and need to enable billing.
+    </Info>
+  </Step>
+  
+  <Step title="Create Your API Key">
+    1. On the API Keys page in Google AI Studio, click **Create API Key**
+    2. In the dialog:
+       - **Select a Google Cloud project**: Choose the project you just created
+       - If you only have one project, it will be auto-selected
+    3. Click **Create API key in existing project**
+    4. Your API key will be generated immediately
+       - The key will look like: `AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+    5. **CRITICAL:** Copy your API key immediately
+       - Click the **Copy** icon next to the key
+       - Or manually select and copy the entire key
+       - Store it securely in a password manager
+    6. The key will remain visible in the API Keys list for future reference
+    
+    <Warning>
+    **API key security:** While Google AI Studio displays keys for reference, treat them as sensitive credentials. Anyone with your key can use your quota and potentially incur charges.
+    </Warning>
+    
+    <img 
+      src="/images/agents/google-ai-key.png" 
+      alt="Google AI API Key Creation"
+      className="rounded-lg"
+    />
+  </Step>
+  
+  <Step title="Add Key to Microstrate">
+    1. In Microstrate, open your agent configuration
+    2. Go to the **Provider** tab
+    3. Select **Gemini** from the Provider dropdown
+    4. Choose your desired model:
+       - **Gemini Pro** - Best for text tasks
+       - **Gemini Pro Vision** - For multimodal (text + images)
+    5. In the **API Key** field:
+       - Paste your Google AI API key (starts with `AIza`)
+       - The field will mask most of the key for security
+    6. Press Enter or click outside the field to save
+    7. The key is encrypted and stored securely
+    8. Test your setup:
+       - Run a test query in the flow builder
+       - Verify the agent responds using Gemini
+    
+    <Tip>
+    **Model choice:** Use Gemini Pro for most text-based tasks. Only select Gemini Pro Vision if you specifically need image understanding capabilities.
+    </Tip>
+  </Step>
+  
+  <Step title="Set Up Billing (Optional)">
+    Google provides generous free quota, but for production use you may want to enable billing:
+    
+    1. Visit [console.cloud.google.com/billing](https://console.cloud.google.com/billing)
+    2. Select your project from the dropdown at the top
+    3. Click **Link a billing account**
+    4. If you don't have a billing account:
+       - Click **Create billing account**
+       - Enter your information:
+         - Account name
+         - Country
+         - Currency
+       - Add payment method (credit/debit card)
+       - Complete billing address
+       - Accept terms and click **Submit and enable billing**
+    5. Link the billing account to your project
+    6. Set up budget alerts (highly recommended):
+       - Go to **Billing** → **Budgets & alerts**
+       - Click **Create budget**
+       - Set budget amount (e.g., $50/month)
+       - Configure alert thresholds (50%, 90%, 100%)
+       - Add email recipients for alerts
+       - Click **Finish**
+    
+    <Info>
+    **Free tier:** Google provides free quota that's sufficient for testing and moderate production use. You'll only be charged if you exceed the free tier limits.
+    </Info>
+  </Step>
+  
+  <Step title="Monitor Your Usage">
+    Track your Google AI API usage:
+    
+    1. Visit Google Cloud Console: [console.cloud.google.com](https://console.cloud.google.com)
+    2. Select your project from the dropdown
+    3. Navigate to **APIs & Services** → **Dashboard**
+    4. Find **Generative Language API** in the list
+    5. Click on it to view:
+       - **Requests** - Number of API calls
+       - **Quota usage** - Percentage of free tier used
+       - **Errors** - Any failed requests
+    6. For detailed usage:
+       - Go to **Billing** → **Reports**
+       - Filter by service: "Generative Language API"
+       - View costs over time (if billing enabled)
+    
+    **Usage monitoring tips:**
+    - Check weekly to understand usage patterns
+    - Monitor quota usage to avoid hitting limits
+    - Set up billing alerts before hitting free tier limits
+    - Optimize prompts to reduce token usage
+  </Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="Troubleshooting Google AI API Keys" icon="wrench">
+    **"API key not valid" error:**
+    - Confirm you copied the complete key starting with `AIza`
+    - Remove any spaces at the start or end
+    - Verify the key hasn't been deleted or restricted
+    - Check that the API is enabled for your project
+    
+    **"Project not found" error:**
+    - Ensure the project exists in Google Cloud Console
+    - Verify the API key is associated with the correct project
+    - Check that you have permission to access the project
+    
+    **"API not enabled" error:**
+    - Go to Google Cloud Console
+    - Navigate to **APIs & Services** → **Library**
+    - Search for "Generative Language API"
+    - Click on it and click **Enable**
+    - Wait a few minutes for changes to propagate
+    
+    **"Quota exceeded" error:**
+    - You've hit your free tier or quota limits
+    - Wait for the quota to reset (usually daily)
+    - Enable billing to increase limits
+    - Or request a quota increase
+    
+    **"Permission denied" error:**
+    - Check that your Google account has permission to use the API
+    - Verify the API key has not been restricted
+    - Ensure billing is set up if required
+    
+    **Keys showing but not working:**
+    - API enablement can take a few minutes
+    - Wait 5-10 minutes after creating key
+    - Try creating a new key
+    - Check Google Cloud Console for service status
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Adding Your API Key to Microstrate
+
+Once you have an API key from any provider, follow these steps to add it to Microstrate:
+
+<Steps>
+  <Step title="Open Agent Configuration">
+    1. Navigate to **Hub** in the left sidebar
+    2. Open the flow containing your agent
+    3. Click on your agent step to open configuration
+    4. Select the **Provider** tab
+  </Step>
+  
+  <Step title="Select Provider and Model">
+    1. Choose your provider from the **Provider** dropdown:
+       - OpenAI
+       - Claude (Anthropic)
+       - Gemini (Google)
+    2. Select your desired **Model** from the model dropdown
+    3. The API Key field will appear below
+  </Step>
+  
+  <Step title="Enter Your API Key">
+    1. Click in the **API Key** field
+    2. Paste your API key:
+       - OpenAI: Starts with `sk-proj-`
+       - Claude: Starts with `sk-ant-`
+       - Gemini: Starts with `AIza`
+    3. The field will automatically mask the key for security
+       - You'll see something like: `sk-proj-xxxxxxxxxxxx...`
+    4. Press **Enter** or click outside the field
+    5. The key is now saved and encrypted
+  </Step>
+  
+  <Step title="Test Your Configuration">
+    1. Click the **Save** button to save your agent configuration
+    2. Click **Test** in the top right of the flow builder
+    3. Enter a test prompt in the trigger body
+    4. Click **Run Test**
+    5. Verify the agent responds successfully using your chosen model
+    6. If you see an error, check the troubleshooting section for your provider
+  </Step>
+  
+  <Step title="Deploy">
+    Once testing is successful:
+    1. Click **Deploy** in the top right
+    2. Your agent is now live and will use your configured API key
+    3. Monitor usage on the provider's dashboard
+  </Step>
+</Steps>
+
+<Warning>
+**Security Best Practices:**
+- ✅ Never share API keys with anyone
+- ✅ Don't commit keys to code repositories (like GitHub)
+- ✅ Use separate keys for development and production
+- ✅ Rotate keys every 90 days for security
+- ✅ Monitor usage for unexpected activity
+- ✅ Set spending limits on provider platforms
+- ✅ Delete keys immediately if compromised
+- ✅ Use Secrets Manager for team environments
+</Warning>
+
+### Managing Multiple Keys
+
+You can use different API keys for different agents:
+
+**Strategy 1: Shared Key**
+- Use one key across all agents
+- Simpler management
+- All agents share rate limits
+- Combined billing
+
+**Strategy 2: Per-Agent Keys**
+- Different key for each agent or use case
+- Isolated rate limits
+- Easier cost tracking
+- More granular control
+
+**Strategy 3: Environment-Based**
+- Development key for testing
+- Production key for live agents
+- Prevents test agents from consuming production quota
+
+<Tip>
+Start with one shared key. Create separate keys when you need isolated rate limits or cost tracking.
+</Tip>
+
+---
+
+## Output Schema
+
+Define the exact structure your agent must return. When configured, the agent will automatically validate its output and retry if it doesn't match.
+
+### What is an Output Schema?
+
+An output schema is a JSON Schema definition that specifies:
+- Required fields
+- Field types (string, number, boolean, object, array)
+- Field descriptions (which guide the agent)
+- Validation rules
+
+### When to Use Output Schemas
+
+<Tabs>
+  <Tab title="Use Output Schema" icon="check">
+    **When you need:**
+    - Structured data extraction
+    - Integration with other systems
+    - Consistent field names and types
+    - Automated processing of results
+    - Validation of agent responses
+    
+    **Example use cases:**
+    - Lead qualification (return structured lead data)
+    - Invoice processing (extract specific fields)
+    - Data entry (populate database fields)
+    - API responses (return JSON for webhooks)
+    - Multi-step flows (pass structured data between steps)
+  </Tab>
+  
+  <Tab title="Skip Output Schema" icon="times">
+    **When you want:**
+    - Natural language responses
+    - Flexible, conversational outputs
+    - Human-readable text
+    - Creative content
+    - Simple pass-through responses
+    
+    **Example use cases:**
+    - Customer service chatbots
+    - Email responses
+    - Content generation
+    - General conversation
+    - Exploratory analysis
+  </Tab>
+</Tabs>
+
+### Defining an Output Schema
+
+Use natural language JSON Schema format:
+
+**Simple Example:**
+
+```json
+{
+  "lead_name": "The full name of the lead (string)",
+  "lead_email": "Email address of the lead (string)",
+  "company": "Company name (string)",
+  "qualified": "Whether the lead is qualified based on ICP (boolean)",
+  "score": "Lead qualification score from 0-100 (number)"
+}
+```
+
+**Complex Example:**
+
+```json
+{
+  "customer_name": "Full name of the customer (string)",
+  "order_number": "Order number if mentioned (string or null)",
+  "issue_category": "Category of the issue - one of: billing, shipping, product, technical, other (string)",
+  "issue_summary": "Brief summary of the customer's issue (string)",
+  "sentiment": "Customer sentiment - one of: positive, neutral, negative, angry (string)",
+  "requires_escalation": "Whether this issue needs human escalation (boolean)",
+  "suggested_actions": "List of suggested actions to resolve the issue (array of strings)",
+  "next_steps": {
+    "action": "What action to take next (string)",
+    "assigned_to": "Who to assign to - one of: bot, support_team, billing_team, technical_team (string)",
+    "priority": "Priority level - one of: low, medium, high, urgent (string)"
+  }
+}
+```
+
+### Schema Features
+
+<AccordionGroup>
+  <Accordion title="Field Types" icon="list">
+    Specify the type in the description:
+    
+    ```json
+    {
+      "text_field": "Description of field (string)",
+      "number_field": "Description of field (number)",
+      "boolean_field": "Description of field (boolean)",
+      "object_field": {
+        "nested": "Nested field (string)"
+      },
+      "array_field": "Description of field (array of strings)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Optional Fields" icon="question">
+    Use "or null" to make fields optional:
+    
+    ```json
+    {
+      "required_field": "This must be provided (string)",
+      "optional_field": "This can be null (string or null)",
+      "order_number": "Order number if mentioned, null otherwise (string or null)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Enums / Allowed Values" icon="list-check">
+    Specify allowed values using "one of":
+    
+    ```json
+    {
+      "status": "Status - one of: pending, approved, rejected (string)",
+      "priority": "Priority - one of: low, medium, high (string)",
+      "category": "Category - one of: bug, feature, question (string)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Nested Objects" icon="sitemap">
+    Define complex nested structures:
+    
+    ```json
+    {
+      "customer": {
+        "name": "Customer name (string)",
+        "email": "Customer email (string)",
+        "address": {
+          "street": "Street address (string)",
+          "city": "City (string)",
+          "country": "Country code (string)"
+        }
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Arrays" icon="table-list">
+    Specify arrays of items:
+    
+    ```json
+    {
+      "tags": "List of relevant tags (array of strings)",
+      "line_items": "Array of line items (array of objects)",
+      "scores": "Numeric scores (array of numbers)"
+    }
+    ```
+    
+    For arrays of objects:
+    ```json
+    {
+      "products": [
+        {
+          "name": "Product name (string)",
+          "quantity": "Quantity ordered (number)",
+          "price": "Price per unit (number)"
+        }
+      ]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Field Descriptions as Instructions" icon="lightbulb">
+    Descriptions guide the agent on what to include:
+    
+    ```json
+    {
+      "summary": "A concise 1-2 sentence summary of the customer's issue (string)",
+      "tone": "The customer's emotional tone - assess from their language (string)",
+      "urgency": "How urgent is this issue - consider keywords like 'ASAP', 'immediately' (string)",
+      "extracted_date": "Any date mentioned by customer in ISO format YYYY-MM-DD (string or null)"
+    }
+    ```
+    
+    The more specific your descriptions, the better the agent performs.
+  </Accordion>
+</AccordionGroup>
+
+### Auto-Correction and Validation
+
+When an output schema is defined:
+
+1. **Agent generates response** based on your instructions
+2. **Automatic validation** checks if response matches schema
+3. **If invalid:** Agent automatically retries with corrections
+4. **If valid:** Response is returned to the flow
+5. **Max retries:** 3 attempts before marking as error
+
+<Info>
+The validation and auto-correction happen automatically. You don't need to implement any additional logic.
+</Info>
+
+### Output Schema Examples
+
+<AccordionGroup>
+  <Accordion title="Lead Qualification" icon="user-check">
+    ```json
+    {
+      "lead_name": "Full name of the lead (string)",
+      "company": "Company name (string)",
+      "email": "Email address (string)",
+      "phone": "Phone number if provided (string or null)",
+      "company_size": "Estimated company size - one of: 1-10, 11-50, 51-200, 201-500, 500+ (string)",
+      "industry": "Industry or sector (string)",
+      "use_case": "What they want to use our product for (string)",
+      "timeline": "Their buying timeline - one of: immediate, 1-3 months, 3-6 months, 6+ months, exploring (string)",
+      "budget_range": "Their budget range if mentioned (string or null)",
+      "qualified": "Whether this lead matches our ICP (boolean)",
+      "qualification_score": "Score from 0-100 based on ICP fit (number)",
+      "next_action": "Recommended next action - one of: book_demo, send_info, nurture, disqualify (string)",
+      "notes": "Additional notes or context (string)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Invoice Processing" icon="file-invoice">
+    ```json
+    {
+      "invoice_number": "Invoice number from document (string)",
+      "invoice_date": "Date on invoice in YYYY-MM-DD format (string)",
+      "due_date": "Payment due date in YYYY-MM-DD format (string)",
+      "vendor_name": "Name of the vendor (string)",
+      "vendor_address": "Vendor address (string or null)",
+      "total_amount": "Total invoice amount as number (number)",
+      "currency": "Currency code like USD, EUR, GBP (string)",
+      "line_items": [
+        {
+          "description": "Item description (string)",
+          "quantity": "Quantity (number)",
+          "unit_price": "Price per unit (number)",
+          "total": "Line item total (number)"
+        }
+      ],
+      "tax_amount": "Tax amount if shown (number or null)",
+      "payment_terms": "Payment terms like Net 30 (string or null)",
+      "purchase_order": "PO number if referenced (string or null)",
+      "validation_status": "Whether invoice passes validation - one of: valid, invalid, needs_review (string)",
+      "validation_issues": "List of any validation problems (array of strings)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Customer Service Triage" icon="headset">
+    ```json
+    {
+      "customer_name": "Customer name (string or null)",
+      "issue_category": "Category - one of: order, shipping, return, billing, technical, product, other (string)",
+      "issue_summary": "One-sentence summary of the issue (string)",
+      "sentiment": "Customer sentiment - one of: happy, neutral, frustrated, angry (string)",
+      "urgency": "Urgency level - one of: low, medium, high, critical (string)",
+      "can_automate": "Whether this can be handled automatically (boolean)",
+      "suggested_response": "Suggested response to customer (string)",
+      "requires_human": "Whether human agent is needed (boolean)",
+      "assign_to": "Team to assign to - one of: bot, tier1, tier2, billing, technical, manager (string)",
+      "estimated_resolution_time": "Estimated time to resolve in minutes (number)",
+      "related_order": "Order number if mentioned (string or null)",
+      "follow_up_needed": "Whether follow-up is needed (boolean)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Content Analysis" icon="file-lines">
+    ```json
+    {
+      "title": "Title or main heading (string)",
+      "summary": "2-3 sentence summary (string)",
+      "key_points": "List of main points (array of strings)",
+      "sentiment": "Overall sentiment - one of: positive, negative, neutral, mixed (string)",
+      "topics": "List of topics covered (array of strings)",
+      "entities": {
+        "people": "People mentioned (array of strings)",
+        "companies": "Companies mentioned (array of strings)",
+        "locations": "Locations mentioned (array of strings)"
+      },
+      "word_count": "Approximate word count (number)",
+      "reading_level": "Reading level - one of: elementary, middle_school, high_school, college, advanced (string)",
+      "tone": "Tone - one of: formal, informal, technical, conversational, academic (string)",
+      "call_to_action": "Any CTA present (string or null)",
+      "target_audience": "Who this content is for (string)"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+**Pro tip:** Start simple. Add more fields as you discover what data you need. You can always expand the schema later.
+</Tip>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Choose the right model for the task" icon="brain">
+    **Don't use a sledgehammer to crack a nut:**
+    - Simple classification → GPT-3.5, Claude Haiku, Workforce
+    - Standard workflows → GPT-4 Turbo, Claude Sonnet, Gemini
+    - Complex reasoning → GPT-4, Claude Opus
+    
+    Using GPT-4 for simple tasks wastes money. Using GPT-3.5 for complex tasks wastes time with poor results.
+  </Accordion>
+
+  <Accordion title="Start with Workforce, upgrade when needed" icon="arrow-up">
+    Use Workforce for:
+    - Initial development and testing
+    - Simple to moderate complexity tasks
+    - Cost-conscious production workloads
+    
+    Upgrade when:
+    - You need specific provider features
+    - Task complexity exceeds Workforce capability
+    - You've exhausted included usage
+    - Performance requirements demand it
+  </Accordion>
+
+  <Accordion title="Test models before committing" icon="flask">
+    When choosing between models:
+    1. Try 5-10 test cases with each
+    2. Compare accuracy, speed, and cost
+    3. Consider edge cases
+    4. Calculate projected monthly costs
+    5. Choose based on data, not assumptions
+  </Accordion>
+
+  <Accordion title="Use output schemas for structured data" icon="table">
+    **Always use schemas when:**
+    - Extracting specific fields from documents
+    - Integrating with other systems
+    - Populating databases
+    - Passing data between flow steps
+    - Building APIs
+    
+    **Skip schemas when:**
+    - Generating natural language responses
+    - Creating conversational experiences
+    - Writing creative content
+    - Providing human-readable explanations
+  </Accordion>
+
+  <Accordion title="Write descriptive schema fields" icon="pen">
+    Don't just name fields - guide the agent:
+    
+    ❌ Bad:
+    ```json
+    {
+      "date": "Date (string)",
+      "status": "Status (string)"
+    }
+    ```
+    
+    ✅ Good:
+    ```json
+    {
+      "order_date": "The date the order was placed in YYYY-MM-DD format (string)",
+      "status": "Current order status - one of: pending, shipped, delivered, cancelled (string)"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Secure your API keys" icon="lock">
+    **Best practices:**
+    - Never commit keys to repositories
+    - Use separate keys for dev/prod
+    - Rotate keys periodically (every 90 days)
+    - Set spending limits on provider platforms
+    - Monitor usage for anomalies
+    - Revoke compromised keys immediately
+    - Use read-only keys when possible
+  </Accordion>
+
+  <Accordion title="Monitor costs and usage" icon="chart-line">
+    **Track:**
+    - Tokens per request
+    - Requests per day
+    - Cost per agent
+    - Total monthly spend
+    
+    **Optimize:**
+    - Switch to cheaper models for simple tasks
+    - Reduce token limits if possible
+    - Use Smart Context to minimize memory
+    - Batch similar requests when appropriate
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="API key not working" icon="key">
+    **Check:**
+    - Is the key copied correctly (no extra spaces)?
+    - Is the key active on provider platform?
+    - Have you exceeded rate limits?
+    - Is billing set up on provider account?
+    - Is the key for the correct provider?
+    
+    **Fix:**
+    - Generate a new key
+    - Check provider dashboard for issues
+    - Ensure billing is configured
+    - Wait a few minutes and retry
+  </Accordion>
+
+  <Accordion title="Output doesn't match schema" icon="xmark">
+    **Reasons:**
+    - Schema is too complex or ambiguous
+    - Field descriptions aren't clear enough
+    - Required data isn't in the input
+    - Agent instructions conflict with schema
+    
+    **Fix:**
+    - Simplify the schema
+    - Add clearer field descriptions
+    - Make optional fields nullable
+    - Update agent instructions to mention schema fields
+    - Test with various inputs
+  </Accordion>
+
+  <Accordion title="Agent responses are inconsistent" icon="shuffle">
+    **Possible causes:**
+    - Model temperature too high (if configurable)
+    - Instructions too vague
+    - Not enough context provided
+    - No output schema to enforce structure
+    
+    **Fix:**
+    - Add output schema for structured tasks
+    - Make instructions more specific
+    - Include examples in instructions
+    - Provide more context in prompts
+    - Consider using a more capable model
+  </Accordion>
+
+  <Accordion title="Costs higher than expected" icon="dollar-sign">
+    **Check:**
+    - Are you using the most expensive model?
+    - Are token limits set too high?
+    - Is Smart Context disabled?
+    - Are you making unnecessary API calls?
+    
+    **Optimize:**
+    - Switch to Workforce or cheaper models
+    - Reduce token limits
+    - Enable Smart Context
+    - Cache common responses
+    - Batch requests when possible
+    - Use output schemas to reduce retries
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Context Settings" icon="brain" href="/agents/configuration/context-settings">
+    Configure memory and reasoning limits
+  </Card>
+  
+  <Card title="Tools & Connectors" icon="plug" href="/agents/tools-and-connectors">
+    Connect data sources and APIs
+  </Card>
+  
+  <Card title="Information Settings" icon="info-circle" href="/agents/configuration/information-settings">
+    Configure agent identity and behavior
+  </Card>
+  
+  <Card title="Best Practices" icon="star" href="/agents/best-practices">
+    Optimize agent performance
+  </Card>
+</CardGroup>

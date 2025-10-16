@@ -1,0 +1,872 @@
+---
+title: 'HTTP Request'
+description: 'Call external APIs and web services from your flows'
+icon: 'globe'
+---
+
+# HTTP Request Step
+
+The HTTP Request step calls external APIs and web services. Use it to fetch data, send notifications, update external systems, or integrate with any service that has a REST API. Unlike agent tools (which agents use intelligently), HTTP Request gives you explicit control over API calls.
+
+<Info>
+**When to use HTTP Request vs. Agent Tools**: Use HTTP Request when you need explicit control over the API call (specific endpoint, exact parameters, precise error handling). Use Agent Tools when you want the agent to intelligently decide when and how to call APIs.
+</Info>
+
+---
+
+## How HTTP Requests Work
+
+HTTP Requests send data to external endpoints and return responses that subsequent steps can use:
+
+<CodeGroup>
+```text Simple GET Request
+Trigger: User requests data
+↓
+HTTP Request: GET https://api.example.com/users/123
+↓
+Response: User data
+↓
+Agent: Format response for user
+```
+
+```text POST with Data
+Agent: Generate content
+↓
+HTTP Request: POST https://api.cms.com/articles
+  Body: ${agent.output.article}
+↓
+Response: Published article URL
+↓
+Return: Success message
+```
+
+```text With Error Handling
+HTTP Request: Call payment API
+↓
+Condition: Check status code
+├─ If 200 → Success flow
+├─ If 4xx → Client error handling
+└─ If 5xx → Retry or escalate
+```
+</CodeGroup>
+
+---
+
+## Configuration
+
+### Request Settings
+
+<ParamField path="method" type="enum" required>
+  HTTP method
+  
+  **Options**:
+  - `GET` - Retrieve data (most common)
+  - `POST` - Create new resource or submit data
+  - `PUT` - Update existing resource (replace)
+  - `PATCH` - Update existing resource (modify)
+  - `DELETE` - Remove resource
+  - `HEAD` - Get headers only (no body)
+  - `OPTIONS` - Check allowed methods
+  
+  **Examples**:
+  - GET: Fetch user profile, list orders
+  - POST: Create customer, send notification
+  - PUT: Update entire record
+  - PATCH: Update specific fields
+  - DELETE: Remove item, cancel subscription
+</ParamField>
+
+<ParamField path="url" type="string" required>
+  API endpoint URL
+  
+  Can include variables from previous steps:
+  ```
+  https://api.example.com/users/${trigger.user_id}
+  https://api.crm.com/contacts/${agent.email}
+  ```
+  
+  **Best practices**:
+  - Always use HTTPS (not HTTP)
+  - Include API version in URL if available
+  - Verify URL is correct before deploying
+</ParamField>
+
+<ParamField path="headers" type="object">
+  Request headers
+  
+  Common headers:
+  ```json
+  {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer ${api_key}",
+    "User-Agent": "Microstrate-Flow/1.0",
+    "Accept": "application/json"
+  }
+  ```
+  
+  **Can include variables**:
+  ```json
+  {
+    "X-Customer-ID": "${customer.id}",
+    "X-Request-ID": "${flow.execution_id}"
+  }
+  ```
+</ParamField>
+
+<ParamField path="body" type="object">
+  Request body (for POST, PUT, PATCH)
+  
+  **JSON body**:
+  ```json
+  {
+    "name": "${form.name}",
+    "email": "${form.email}",
+    "data": {
+      "source": "microstrate",
+      "timestamp": "${now}"
+    }
+  }
+  ```
+  
+  **Can reference entire objects**:
+  ```json
+  ${agent.output}
+  ```
+  
+  **Note**: Body is automatically JSON-encoded. For form-data or other formats, use appropriate Content-Type header.
+</ParamField>
+
+<ParamField path="queryParams" type="object">
+  URL query parameters
+  
+  **Example**:
+  ```json
+  {
+    "page": "1",
+    "limit": "50",
+    "filter": "active",
+    "sort": "created_desc"
+  }
+  ```
+  
+  Automatically appended to URL:
+  ```
+  https://api.example.com/items?page=1&limit=50&filter=active&sort=created_desc
+  ```
+  
+  **Can use variables**:
+  ```json
+  {
+    "customer_id": "${customer.id}",
+    "date_from": "${start_date}"
+  }
+  ```
+</ParamField>
+
+---
+
+## Authentication
+
+<ParamField path="authentication" type="object">
+  Authentication configuration
+  
+  **Types**:
+  
+  <Tabs>
+    <Tab title="Bearer Token">
+      Most common for modern APIs
+      
+      ```json
+      {
+        "type": "bearer",
+        "token": "${secrets.api_key}"
+      }
+      ```
+      
+      Adds header: `Authorization: Bearer <token>`
+    </Tab>
+    
+    <Tab title="API Key">
+      Key in header or query param
+      
+      ```json
+      {
+        "type": "api_key",
+        "key": "${secrets.api_key}",
+        "location": "header",
+        "name": "X-API-Key"
+      }
+      ```
+      
+      Or in query:
+      ```json
+      {
+        "type": "api_key",
+        "key": "${secrets.api_key}",
+        "location": "query",
+        "name": "api_key"
+      }
+      ```
+    </Tab>
+    
+    <Tab title="Basic Auth">
+      Username and password
+      
+      ```json
+      {
+        "type": "basic",
+        "username": "${secrets.username}",
+        "password": "${secrets.password}"
+      }
+      ```
+      
+      Adds header: `Authorization: Basic <base64(username:password)>`
+    </Tab>
+    
+    <Tab title="OAuth 2.0">
+      OAuth token flow
+      
+      ```json
+      {
+        "type": "oauth2",
+        "access_token": "${secrets.access_token}",
+        "refresh_token": "${secrets.refresh_token}"
+      }
+      ```
+      
+      Automatically handles token refresh when expired.
+    </Tab>
+    
+    <Tab title="Custom">
+      Custom authentication logic
+      
+      ```json
+      {
+        "type": "custom",
+        "headers": {
+          "X-Custom-Auth": "${secrets.custom_token}",
+          "X-Signature": "${computed_signature}"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</ParamField>
+
+<Warning>
+**Security**: Store API keys and secrets in Secrets Manager, not directly in flows. Reference them with `${secrets.key_name}`.
+</Warning>
+
+---
+
+## Response Handling
+
+### Response Structure
+
+HTTP Request returns:
+
+```json
+{
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "content-type": "application/json",
+    "x-rate-limit-remaining": "99"
+  },
+  "body": {
+    // Parsed response body
+  },
+  "rawBody": "...", // Raw response text
+  "duration": 145 // Request duration in ms
+}
+```
+
+### Accessing Response Data
+
+Reference response in subsequent steps:
+
+```javascript
+// Status code
+${http_request.status}
+
+// Response body (entire object)
+${http_request.body}
+
+// Specific fields
+${http_request.body.data.id}
+${http_request.body.results[0].name}
+
+// Headers
+${http_request.headers.x-rate-limit-remaining}
+
+// Request duration
+${http_request.duration}
+```
+
+---
+
+## Error Handling
+
+<ParamField path="retryConfig" type="object">
+  Automatic retry configuration
+  
+  ```json
+  {
+    "enabled": true,
+    "maxRetries": 3,
+    "retryDelay": 1000,
+    "retryOn": [500, 502, 503, 504],
+    "backoffMultiplier": 2
+  }
+  ```
+  
+  **Settings**:
+  - `maxRetries`: Number of retry attempts
+  - `retryDelay`: Initial delay between retries (ms)
+  - `retryOn`: Status codes that trigger retry
+  - `backoffMultiplier`: Increase delay each retry (exponential backoff)
+  
+  **Example**: First retry after 1s, second after 2s, third after 4s
+</ParamField>
+
+<ParamField path="timeout" type="number" default="30000">
+  Request timeout in milliseconds
+  
+  Request fails if no response within timeout period.
+  
+  **Recommendations**:
+  - Fast APIs: 5000ms (5 seconds)
+  - Standard APIs: 30000ms (30 seconds)
+  - Slow APIs: 60000ms (60 seconds)
+  - Long operations: 120000ms+ (2+ minutes)
+</ParamField>
+
+<ParamField path="failOn" type="array">
+  Status codes that should be treated as failures
+  
+  ```json
+  [400, 401, 403, 404, 500, 502, 503]
+  ```
+  
+  By default, only 5xx codes fail. Use this to also fail on specific 4xx codes.
+</ParamField>
+
+### Error Response
+
+When request fails:
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Request failed with status 404",
+    "status": 404,
+    "statusText": "Not Found",
+    "body": {
+      // Error response from API
+    }
+  }
+}
+```
+
+Access in conditions:
+```javascript
+${http_request.success} == false
+${http_request.error.status} == 404
+```
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Fetch Data for Agent" icon="download">
+    Get external data before agent processes
+    
+    ```text
+    Trigger: User inquiry
+    ↓
+    HTTP Request: GET customer data from CRM
+      URL: https://api.crm.com/customers/${trigger.customer_id}
+    ↓
+    Agent: Personalize response using customer data
+      Context: ${http_request.body}
+    ```
+    
+    **Use when**: Agent needs context from external systems
+  </Accordion>
+
+  <Accordion title="Send Agent Output to API" icon="upload">
+    Agent generates content, HTTP sends to external system
+    
+    ```text
+    Agent: Generate article content
+    ↓
+    HTTP Request: POST to CMS
+      URL: https://api.cms.com/articles
+      Body: ${agent.output}
+    ↓
+    Response: Published article URL
+    ```
+    
+    **Use when**: Agent creates content for external systems
+  </Accordion>
+
+  <Accordion title="Sequential API Calls" icon="list-ol">
+    Chain multiple API calls using previous responses
+    
+    ```text
+    HTTP Request 1: GET user ID by email
+    ↓
+    HTTP Request 2: GET user orders
+      URL: https://api.shop.com/users/${http_1.body.id}/orders
+    ↓
+    HTTP Request 3: GET order details
+      URL: https://api.shop.com/orders/${http_2.body.orders[0].id}
+    ```
+    
+    **Use when**: Need data from multiple endpoints
+  </Accordion>
+
+  <Accordion title="Parallel API Calls" icon="arrows-split-up-and-left">
+    Call multiple APIs simultaneously (not sequential)
+    
+    ```text
+    Trigger
+    ↓
+    ├─ HTTP Request 1: Get user profile
+    ├─ HTTP Request 2: Get order history  
+    └─ HTTP Request 3: Get preferences
+    ↓
+    Agent: Combine all data and respond
+    ```
+    
+    **Use when**: Need data from multiple sources, order doesn't matter
+    
+    **Note**: Configure parallel execution in flow settings
+  </Accordion>
+
+  <Accordion title="Webhook Response" icon="webhook">
+    Respond to webhook with HTTP call
+    
+    ```text
+    Webhook Trigger: Payment received
+    ↓
+    HTTP Request: Acknowledge to payment provider
+      URL: ${trigger.body.callback_url}
+      Body: {"status": "received"}
+    ↓
+    Agent: Process payment data
+    ```
+    
+    **Use when**: Webhook requires acknowledgment
+  </Accordion>
+
+  <Accordion title="Error Handling with Retry" icon="rotate">
+    Retry failed requests with backoff
+    
+    ```text
+    HTTP Request: Call external API
+      Retry: 3 attempts, exponential backoff
+    ↓
+    Condition: Check success
+    ├─ If success → Continue
+    └─ If failed → Notify admin + Alternative flow
+    ```
+    
+    **Use when**: External APIs may have temporary failures
+  </Accordion>
+
+  <Accordion title="Rate Limit Handling" icon="gauge">
+    Check and respect rate limits
+    
+    ```text
+    HTTP Request: Call API
+    ↓
+    Condition: Check rate limit header
+    ├─ If ${http.headers.x-rate-limit-remaining} < 10
+    │   ↓
+    │   Delay: Wait 60 seconds
+    └─ Else → Continue normally
+    ```
+    
+    **Use when**: API has rate limits you need to respect
+  </Accordion>
+
+  <Accordion title="Pagination Handling" icon="list">
+    Iterate through paginated results
+    
+    ```text
+    HTTP Request 1: Get page 1
+    ↓
+    Map: Process page 1 items
+    ↓
+    Condition: Has next page?
+    ├─ If ${http_1.body.next_page} exists
+    │   ↓
+    │   HTTP Request 2: Get next page
+    │   ↓
+    │   Map: Process page 2 items
+    │   ↓
+    │   (Repeat as needed)
+    └─ Else → Complete
+    ```
+    
+    **Use when**: API returns paginated results
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Real-World Examples
+
+### Example 1: CRM Contact Creation
+
+**Scenario**: Create or update contact in CRM after agent qualifies lead
+
+```text
+Agent: Qualify lead
+  Output: {qualified: true, contact: {...}}
+↓
+Condition: Is qualified?
+↓ (true)
+HTTP Request: POST to CRM
+  URL: https://api.crm.com/contacts
+  Headers: {
+    "Authorization": "Bearer ${secrets.crm_api_key}",
+    "Content-Type": "application/json"
+  }
+  Body: {
+    "name": "${agent.output.contact.name}",
+    "email": "${agent.output.contact.email}",
+    "company": "${agent.output.contact.company}",
+    "score": ${agent.output.contact.score},
+    "source": "microstrate",
+    "custom_fields": {
+      "qualification_notes": "${agent.output.notes}"
+    }
+  }
+↓
+Response: Contact created with ID
+↓
+Agent: Send confirmation email
+```
+
+---
+
+### Example 2: Slack Notification
+
+**Scenario**: Send notification to Slack when high-value order placed
+
+```text
+Trigger: Order received
+↓
+Condition: Amount > $10,000?
+↓ (true)
+HTTP Request: POST to Slack
+  URL: https://hooks.slack.com/services/${secrets.slack_webhook}
+  Body: {
+    "text": "🎉 High-value order received!",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*Order Details*\nAmount: $${trigger.amount}\nCustomer: ${trigger.customer_name}\nOrder ID: ${trigger.order_id}"
+        }
+      }
+    ]
+  }
+```
+
+---
+
+### Example 3: Email via SendGrid
+
+**Scenario**: Send personalized email after agent generates content
+
+```text
+Agent: Generate welcome email
+  Output: {subject: "...", body: "..."}
+↓
+HTTP Request: POST to SendGrid
+  URL: https://api.sendgrid.com/v3/mail/send
+  Headers: {
+    "Authorization": "Bearer ${secrets.sendgrid_api_key}",
+    "Content-Type": "application/json"
+  }
+  Body: {
+    "personalizations": [
+      {
+        "to": [{"email": "${customer.email}"}],
+        "subject": "${agent.output.subject}"
+      }
+    ],
+    "from": {"email": "hello@company.com"},
+    "content": [
+      {
+        "type": "text/html",
+        "value": "${agent.output.body}"
+      }
+    ]
+  }
+```
+
+---
+
+### Example 4: Database Query via API
+
+**Scenario**: Query database for customer order history
+
+```text
+Trigger: Customer inquiry
+↓
+HTTP Request: GET order history
+  URL: https://api.company.com/orders
+  Query Params: {
+    "customer_id": "${trigger.customer_id}",
+    "limit": "10",
+    "sort": "created_desc"
+  }
+  Headers: {
+    "Authorization": "Bearer ${secrets.api_key}"
+  }
+↓
+Agent: Answer customer question using order data
+  Context: "Customer orders: ${http_request.body.orders}"
+```
+
+---
+
+### Example 5: Payment Processing
+
+**Scenario**: Process payment through Stripe
+
+```text
+Agent: Validate payment details
+  Output: {valid: true, amount: 99.99}
+↓
+Condition: Payment valid?
+↓ (true)
+HTTP Request: POST to Stripe
+  URL: https://api.stripe.com/v1/payment_intents
+  Headers: {
+    "Authorization": "Bearer ${secrets.stripe_secret_key}",
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
+  Body: {
+    "amount": ${agent.output.amount * 100},
+    "currency": "usd",
+    "customer": "${customer.stripe_id}",
+    "metadata": {
+      "order_id": "${trigger.order_id}"
+    }
+  }
+↓
+Condition: Payment successful?
+├─ If status == 200 → Confirmation email
+└─ If failed → Retry or notify customer
+```
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use HTTPS" icon="lock">
+    Always use HTTPS endpoints (not HTTP) for security. API keys and data are encrypted in transit.
+  </Card>
+  
+  <Card title="Store Secrets Securely" icon="key">
+    Never hardcode API keys. Use Secrets Manager and reference with `${secrets.key_name}`.
+  </Card>
+  
+  <Card title="Handle Errors" icon="triangle-exclamation">
+    Always add error handling with Conditions. Check status codes and have fallback flows.
+  </Card>
+  
+  <Card title="Set Appropriate Timeouts" icon="clock">
+    Set timeouts based on expected API response time. Don't leave default if API is slow.
+  </Card>
+  
+  <Card title="Use Retry for Transient Failures" icon="rotate">
+    Enable retry for 5xx errors and network issues. Use exponential backoff to avoid overwhelming APIs.
+  </Card>
+  
+  <Card title="Validate Responses" icon="check">
+    Check that response has expected structure before using data. Use Conditions to verify.
+  </Card>
+  
+  <Card title="Respect Rate Limits" icon="gauge">
+    Check rate limit headers. Add delays if approaching limits.
+  </Card>
+  
+  <Card title="Log for Debugging" icon="file-lines">
+    Monitor HTTP requests in flow execution logs. Review failures to improve error handling.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock">
+    **Causes**:
+    - API key missing or incorrect
+    - Token expired
+    - Wrong authentication type
+    
+    **Solutions**:
+    - Verify API key in Secrets Manager
+    - Check authentication configuration
+    - Regenerate API key if needed
+    - For OAuth, check token expiration
+  </Accordion>
+
+  <Accordion title="404 Not Found" icon="magnifying-glass">
+    **Causes**:
+    - Wrong URL or endpoint
+    - Resource doesn't exist
+    - Variable in URL not populated
+    
+    **Solutions**:
+    - Double-check URL spelling
+    - Verify endpoint in API docs
+    - Check variable references: `${trigger.id}` not `${id}`
+    - Test URL manually in browser/Postman
+  </Accordion>
+
+  <Accordion title="500 Server Error" icon="server">
+    **Causes**:
+    - API is down
+    - Invalid request body
+    - Server-side bug
+    
+    **Solutions**:
+    - Check API status page
+    - Verify request body structure
+    - Enable retries for transient failures
+    - Contact API provider if persistent
+  </Accordion>
+
+  <Accordion title="Timeout" icon="clock">
+    **Causes**:
+    - API too slow
+    - Timeout too short
+    - Network issues
+    
+    **Solutions**:
+    - Increase timeout setting
+    - Check API performance/status
+    - Optimize API call (reduce data)
+    - Use async/background processing if possible
+  </Accordion>
+
+  <Accordion title="Can't access response data" icon="database">
+    **Causes**:
+    - Wrong variable path
+    - Response not JSON
+    - API returned error
+    
+    **Solutions**:
+    - Check execution logs for actual response
+    - Verify response is JSON (`Content-Type: application/json`)
+    - Check for error response instead of success
+    - Try `${http.rawBody}` to see exact response
+  </Accordion>
+
+  <Accordion title="CORS Error" icon="globe">
+    **Note**: CORS errors don't apply to Microstrate flows (server-side). If you see CORS errors:
+    
+    - You're likely testing from browser console
+    - Flows run server-side and don't have CORS restrictions
+    - The API might not allow your testing origin
+    
+    **Solution**: CORS won't affect production flows. Ignore when testing server-side.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="API Key Management" icon="key">
+    **Do**:
+    - Store keys in Secrets Manager
+    - Rotate keys regularly (every 90 days)
+    - Use separate keys for dev/staging/prod
+    - Revoke immediately if compromised
+    - Monitor key usage
+    
+    **Don't**:
+    - Hardcode keys in flows
+    - Share keys in chat or email
+    - Use same key across environments
+    - Commit keys to version control
+  </Accordion>
+
+  <Accordion title="Input Validation" icon="shield-check">
+    Always validate and sanitize user input before including in API calls:
+    
+    ```text
+    Agent: Validate input
+      - Check data types
+      - Sanitize strings
+      - Validate email format
+      - Check value ranges
+    ↓
+    Condition: Valid?
+    ↓ (true)
+    HTTP Request: Use validated data
+    ```
+    
+    **Never** pass raw user input directly to APIs without validation.
+  </Accordion>
+
+  <Accordion title="Rate Limiting" icon="gauge">
+    Implement your own rate limiting:
+    
+    - Track API calls per user/session
+    - Add delays if approaching limits
+    - Cache responses when possible
+    - Use webhooks instead of polling
+  </Accordion>
+
+  <Accordion title="Error Message Sanitization" icon="comment-slash">
+    Don't expose sensitive information in errors:
+    
+    **Bad**:
+    ```
+    "Error: API key abc123xyz is invalid"
+    ```
+    
+    **Good**:
+    ```
+    "Error: Authentication failed"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Handle HTTP response with conditions
+  </Card>
+  
+  <Card title="Map Step" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Transform API responses
+  </Card>
+  
+  <Card title="Agent Tools" icon="wrench" href="/flows/steps/agents#tools-tab">
+    Let agents call APIs intelligently
+  </Card>
+  
+  <Card title="Secrets Manager" icon="key" href="/security/secrets">
+    Store API keys securely
+  </Card>
+</CardGroup>

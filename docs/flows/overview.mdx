@@ -1,0 +1,326 @@
+---
+title: "Flows Overview"
+description: "Build intelligent workflows with AI agents, automation, and business logic"
+icon: "diagram-project"
+---
+
+# Understanding Flows
+
+Flows are the foundation of automation in Microstrate. They allow you to build intelligent workflows that combine AI agents, business logic, data transformation, and integrations to automate complex business processes.
+
+## What is a Flow?
+
+A flow is a sequence of connected steps that execute in response to a trigger. Think of it as a recipe for automation:
+
+- **Triggers** start your flow (webhooks, schedules, form submissions, etc.)
+- **Steps** perform actions (run AI agents, make decisions, transform data, call APIs)
+- **Connections** pass data between steps using variable mappings
+
+<img 
+  src="/images/flows/flow-diagram.png" 
+  alt="Flow Architecture"
+  className="rounded-lg"
+/>
+
+## Core Concepts
+
+### Agent-Centric Design
+
+Microstrate flows are designed around **AI agents** as the primary intelligence layer. While traditional automation requires you to program every step, agent-centric flows allow you to:
+
+- Define what you want to accomplish, not how to accomplish it
+- Let agents make intelligent decisions based on context
+- Handle exceptions and edge cases naturally through reasoning
+- Use tools and connectors dynamically based on the situation
+
+<Card title="Example: Customer Service Flow" icon="headset">
+**Traditional Automation**: If email contains "refund" → Send to refunds team. If email contains "technical" → Send to support team. Else → Send to general inbox.
+
+**Agent-Centric Flow**: Trigger on new email → Agent reads email, understands intent, checks order history, applies policies, and either resolves immediately or routes to appropriate team with context.
+
+The agent handles nuance, multiple topics, and exceptions without explicit programming.
+</Card>
+
+### Trigger → Agent → Tools Pattern
+
+The optimal flow pattern in Microstrate:
+
+1. **Trigger** - Start the flow (form submission, schedule, webhook, etc.)
+2. **Agent** - Process the trigger with intelligence and reasoning
+3. **Tools** - Give the agent access to your data and systems (connectors)
+
+This pattern allows maximum flexibility while maintaining simplicity.
+
+<Steps>
+  <Step title="Add a Trigger">
+    Choose how your flow starts (form, API, schedule, etc.)
+  </Step>
+  <Step title="Create an Agent">
+    Define the agent's role and capabilities
+  </Step>
+  <Step title="Attach Tools">
+    Connect your CRM, database, APIs, and other services
+  </Step>
+  <Step title="Deploy">
+    Activate your flow and let it run
+  </Step>
+</Steps>
+
+## Flow Components
+
+### Triggers
+
+Triggers define how and when your flow starts. Every flow needs at least one trigger.
+
+<CardGroup cols={2}>
+  <Card title="Embed Triggers" icon="window-maximize" href="/flows/triggers/embed-triggers">
+    Buttons, forms, and chat windows embedded in your website
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/triggers/http-request">
+    Custom API endpoints to trigger flows programmatically
+  </Card>
+  
+  <Card title="Webhook" icon="link" href="/flows/triggers/webhook">
+    Receive events from external applications
+  </Card>
+  
+  <Card title="Schedule" icon="clock" href="/flows/triggers/schedule">
+    Run flows on a recurring schedule
+  </Card>
+  
+  <Card title="Upload" icon="upload" href="/flows/triggers/upload">
+    Trigger when documents are uploaded
+  </Card>
+  
+  <Card title="Email" icon="envelope" href="/flows/triggers/email">
+    Process incoming emails automatically
+  </Card>
+  
+  <Card title="Stream Triggers" icon="stream" href="/flows/triggers/stream-triggers">
+    Real-time message processing (Advanced mode)
+  </Card>
+  
+  <Card title="View All Triggers" icon="arrow-right" href="/flows/triggers/overview">
+    Complete trigger reference
+  </Card>
+</CardGroup>
+
+### Steps
+
+Steps are the building blocks of your flow. They perform actions, make decisions, and transform data.
+
+<CardGroup cols={2}>
+  <Card title="Agents" icon="robot" href="/flows/steps/agents">
+    AI agents that reason, use tools, and make decisions
+  </Card>
+  
+  <Card title="Condition" icon="code-branch" href="/flows/steps/condition">
+    Branch your flow based on logic and rules
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
+    Call external APIs and services
+  </Card>
+  
+  <Card title="Map" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Transform and reshape data structures
+  </Card>
+  
+  <Card title="Rules" icon="gavel" href="/flows/steps/rules">
+    Apply business logic and calculations
+  </Card>
+  
+  <Card title="Human in the Loop" icon="user-check" href="/flows/steps/human-in-the-loop">
+    Request human approval or input
+  </Card>
+  
+  <Card title="Functions" icon="function" href="/flows/steps/functions">
+    Use utility functions and storage operations
+  </Card>
+  
+  <Card title="View All Steps" icon="arrow-right" href="/flows/steps/overview">
+    Complete steps reference
+  </Card>
+</CardGroup>
+
+## Common Flow Patterns
+
+### Customer Service Automation
+
+```
+Email Trigger → Customer Service Agent → 
+  - Tool: Search Knowledge Base
+  - Tool: Get Order History
+  - Tool: Apply Return Policy
+→ Condition → 
+  - Can Resolve → Send Response
+  - Needs Human → Human in the Loop
+```
+
+### Lead Qualification
+
+```
+Form Trigger → Lead Qualification Agent →
+  - Tool: Search CRM
+  - Tool: Company Data API
+  - Tool: Scoring Rules
+→ Condition →
+  - Qualified → Add to CRM + Notify Sales
+  - Not Qualified → Add to Nurture Campaign
+```
+
+### Content Generation
+
+```
+Schedule Trigger → Content Creation Agent →
+  - Tool: Get Brand Guidelines
+  - Tool: Get Customer Data
+  - Tool: Get Performance Metrics
+→ Map (Format for Channels) →
+→ Multiple HTTP Requests →
+  - Post to Social Media
+  - Send to Email Platform
+  - Update Content Calendar
+```
+
+### Invoice Processing
+
+```
+Upload Trigger → Invoice Processing Agent →
+  - Tool: Extract Data (OCR)
+  - Tool: Get Purchase Orders
+  - Tool: Validate Against Rules
+→ Condition →
+  - Valid → Approve + Update ERP
+  - Invalid → Human in the Loop + Flag Issues
+```
+
+## Flow Execution
+
+### Response Modes
+
+Flows can run in two modes:
+
+<Tabs>
+  <Tab title="Wait for Completion">
+    The trigger waits for the entire flow to complete before responding. Best for:
+    - API endpoints that need to return results
+    - Form submissions that show confirmation
+    - Chat interactions that need immediate responses
+  </Tab>
+  <Tab title="Run in Background">
+    The trigger responds immediately and the flow runs asynchronously. Best for:
+    - Long-running processes
+    - Scheduled workflows
+    - Email processing
+    - Webhook handlers
+  </Tab>
+</Tabs>
+
+### Variable Mapping
+
+Data flows between steps using **variable mapping**. Each step can access:
+
+- Trigger data: `$.trigger.email`, `$.trigger.form.name`
+- Previous step outputs: `$.step_id.response`, `$.step_id.data`
+- Secrets: `SECRET::API_KEY::`
+- Transformations: Filters, JSONPath, pipes
+
+<Info>
+Learn more about variable mapping in our [Advanced Variable Mapping Guide](/advanced/variable-mapping/overview)
+</Info>
+
+## Building Your First Flow
+
+Ready to get started? Follow these guides:
+
+<CardGroup cols={2}>
+  <Card title="Create a Customer Service Agent" icon="headset" href="/guides/customer-service-flow">
+    Build an agent that handles customer inquiries
+  </Card>
+  
+  <Card title="Automate Lead Qualification" icon="users" href="/guides/lead-qualification-flow">
+    Qualify and route leads automatically
+  </Card>
+  
+  <Card title="Schedule Content Creation" icon="calendar" href="/guides/content-creation-flow">
+    Generate and publish content on schedule
+  </Card>
+  
+  <Card title="Process Documents" icon="file" href="/guides/document-processing-flow">
+    Extract and validate data from uploads
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start Simple, Then Add Complexity" icon="seedling">
+    Begin with a trigger and a single agent. Test thoroughly. Then add conditions, additional steps, and error handling as needed.
+  </Accordion>
+
+  <Accordion title="Use Agents for Intelligence, Steps for Logic" icon="brain">
+    Let agents handle reasoning and decision-making. Use condition steps for branching based on clear outcomes. Don't try to program intelligence into conditions.
+  </Accordion>
+
+  <Accordion title="Give Agents the Right Tools" icon="toolbox">
+    Connect relevant data sources and APIs. The more context an agent has, the better decisions it can make.
+  </Accordion>
+
+  <Accordion title="Handle Errors Gracefully" icon="shield">
+    Add human-in-the-loop steps for critical decisions. Use condition steps to catch errors and provide fallback paths.
+  </Accordion>
+
+  <Accordion title="Test with Real Data" icon="flask">
+    Use actual customer emails, form submissions, and edge cases when testing. Agents perform best when trained on realistic scenarios.
+  </Accordion>
+
+  <Accordion title="Monitor and Iterate" icon="chart-line">
+    Review flow execution logs regularly. Refine agent instructions and tools based on actual performance.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Triggers" icon="bolt" href="/flows/triggers/overview">
+    Learn about all trigger types
+  </Card>
+  
+  <Card title="Steps" icon="list-check" href="/flows/steps/overview">
+    Explore available step types
+  </Card>
+  
+  <Card title="Agents" icon="robot" href="/agents/overview">
+    Deep dive into AI agents
+  </Card>
+  
+  <Card title="Variable Mapping" icon="arrow-right-arrow-left" href="/advanced/variable-mapping/overview">
+    Master data transformations
+  </Card>
+  
+  <Card title="Rules Engine" icon="gavel" href="/advanced/rules/overview">
+    Build business logic
+  </Card>
+  
+  <Card title="Best Practices" icon="star" href="/flows/best-practices">
+    Flow design patterns
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Community" icon="users" href="https://community.microstrate.ai">
+    Ask questions and share flows
+  </Card>
+  
+  <Card title="Support" icon="life-ring" href="/support">
+    Get help from our team
+  </Card>
+  
+  <Card title="Examples" icon="code" href="/examples">
+    Browse flow templates
+  </Card>
+</CardGroup>

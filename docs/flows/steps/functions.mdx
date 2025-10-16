@@ -1,0 +1,683 @@
+---
+title: 'Functions'
+description: 'Access platform services and data transformation utilities'
+icon: 'function'
+---
+
+# Functions Step
+
+The Functions step provides access to Microstrate platform services (streams, storage) and data transformation utilities (encoding, merging, templating). Use Functions to interact with real-time streams, persist data, and transform formats.
+
+<Info>
+**Platform Integration**: Functions connect your flows to Microstrate's infrastructure for real-time streaming, persistent storage, and data transformation.
+</Info>
+
+---
+
+## How Functions Work
+
+Functions take input, execute an operation (platform service or transformation), and return the result:
+
+<CodeGroup>
+```text Stream Publishing
+Agent: Generates event data
+↓
+Functions: Publish to stream
+  Function: publish-message-to-stream
+  Stream: "user-events"
+  Message: ${agent.output}
+↓
+Event published to real-time stream
+```
+
+```text Data Storage
+Form: User preferences
+↓
+Functions: Store in KV bucket
+  Function: put-kv-item
+  Bucket: "user-prefs"
+  Key: ${user.id}
+  Value: ${form.data}
+↓
+Data persisted
+```
+
+```text Data Transformation
+HTTP Request: Returns base64 data
+↓
+Functions: Decode
+  Function: base64-decode
+  Input: ${http.body.encoded}
+↓
+Decoded data
+```
+</CodeGroup>
+
+---
+
+## When to Use Functions
+
+| Use Functions When | Use Alternative When |
+|-------------------|---------------------|
+| Need real-time streaming | Batch processing (use HTTP/database) |
+| Persist configuration/state | Temporary data in flow |
+| Store files/media | External storage service preferred |
+| Transform data formats (JSON/XML/Base64) | Complex custom logic (use Eval) |
+| Merge complex data structures | Simple field extraction (use Map) |
+
+**Examples**:
+
+✅ **Use Functions**: Publish events to stream for real-time analytics  
+❌ **Use HTTP instead**: Send to external webhook
+
+✅ **Use Functions**: Store user preferences in KV storage  
+❌ **Pass in flow**: Temporary data that doesn't need persistence
+
+✅ **Use Functions**: Decode Base64 encoded data  
+❌ **Use Eval instead**: Complex custom encoding algorithm
+
+---
+
+## Function Categories
+
+Microstrate provides functions across multiple categories:
+
+<CardGroup cols={2}>
+  <Card title="Stream Functions" icon="stream" href="/flows/functions/streams">
+    Real-time data streaming
+  </Card>
+  
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    Fast KV storage operations
+  </Card>
+  
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Large file/object storage
+  </Card>
+  
+  <Card title="Data Transformation Utilities" icon="shuffle" href="/flows/functions/utilities">
+    Transform, encode, and manipulate data
+  </Card>
+</CardGroup>
+
+---
+
+## Configuration
+
+### Function Selection
+
+<ParamField path="function" type="string" required>
+  Which function to execute
+  
+  **Examples**:
+  ```
+  publish-message-to-stream
+  put-kv-item
+  base64-encode
+  deep-merge-objects
+  ```
+</ParamField>
+
+### Function Inputs
+
+<ParamField path="inputs" type="object" required>
+  Input parameters for the function
+  
+  Can reference previous steps:
+  ```json
+  {
+    "text": "${trigger.body.message}",
+    "maxLength": 100
+  }
+  ```
+  
+  Each function has specific input requirements (see function documentation)
+</ParamField>
+
+---
+
+## Quick Examples by Category
+
+### Stream Functions
+
+<CodeGroup>
+```json Publish Event
+{
+  "function": "publish-message-to-stream",
+  "inputs": {
+    "stream": "user-events",
+    "message": {
+      "event": "purchase",
+      "user_id": "${customer.id}",
+      "amount": "${order.total}",
+      "timestamp": "${now}"
+    }
+  }
+}
+```
+
+```json Get Stream Item
+{
+  "function": "get-item-from-stream",
+  "inputs": {
+    "stream": "user-events",
+    "key": "${event.id}"
+  }
+}
+```
+
+```json Search Stream
+{
+  "function": "search-stream-items",
+  "inputs": {
+    "stream": "user-events",
+    "key": "user_${customer.id}",
+    "timestamp": "${start_time}"
+  }
+}
+```
+</CodeGroup>
+
+### Key-Value Storage
+
+<CodeGroup>
+```json Store Configuration
+{
+  "function": "put-kv-item",
+  "inputs": {
+    "bucket": "app-config",
+    "key": "feature-flags",
+    "value": {
+      "new_ui": true,
+      "beta_features": false
+    }
+  }
+}
+```
+
+```json Retrieve Setting
+{
+  "function": "get-kv-bucket-item",
+  "inputs": {
+    "bucket": "app-config",
+    "key": "feature-flags"
+  }
+}
+```
+
+```json List Buckets
+{
+  "function": "list-key-value-buckets"
+}
+```
+</CodeGroup>
+
+### Object Storage
+
+<CodeGroup>
+```json Store File
+{
+  "function": "put-object-by-key",
+  "inputs": {
+    "bucket": "user-uploads",
+    "key": "documents/${user.id}/${filename}",
+    "object": "${file_data}"
+  }
+}
+```
+
+```json Retrieve File
+{
+  "function": "get-object-from-bucket",
+  "inputs": {
+    "bucket": "user-uploads",
+    "key": "documents/${user.id}/${filename}"
+  }
+}
+```
+
+```json List Files
+{
+  "function": "list-object-keys",
+  "inputs": {
+    "bucket": "user-uploads",
+    "prefix": "documents/${user.id}/"
+  }
+}
+```
+</CodeGroup>
+
+### Data Transformation Utilities
+
+<CodeGroup>
+```json Base64 Encode
+{
+  "function": "base64-encode",
+  "inputs": {
+    "text": "${data}"
+  }
+}
+```
+
+```json Base64 Decode
+{
+  "function": "base64-decode",
+  "inputs": {
+    "encoded": "${http.body.data}"
+  }
+}
+```
+
+```json Deep Merge Objects
+{
+  "function": "deep-merge-objects",
+  "inputs": {
+    "objects": [
+      "${user_profile}",
+      "${preferences}",
+      "${settings}"
+    ]
+  }
+}
+```
+
+```json JSON to XML
+{
+  "function": "JSON-XML",
+  "inputs": {
+    "json": "${data}",
+    "rootElement": "response"
+  }
+}
+```
+
+```json Handlebars Template
+{
+  "function": "Handlebars Template",
+  "inputs": {
+    "template": "Hello {{name}}, your order #{{order_id}} total is ${{total}}",
+    "data": {
+      "name": "${customer.name}",
+      "order_id": "${order.id}",
+      "total": "${order.total}"
+    }
+  }
+}
+```
+
+```json Group By
+{
+  "function": "group-by",
+  "inputs": {
+    "array": "${orders}",
+    "property": "status"
+  }
+}
+```
+
+```json JSON Path Mapping
+{
+  "function": "Mapping",
+  "inputs": {
+    "data": "${complex_object}",
+    "path": "$.users[*].profile.email"
+  }
+}
+```
+
+```json Set Operations
+{
+  "function": "set-operations",
+  "inputs": {
+    "a": "${list1}",
+    "b": "${list2}",
+    "operation": "union"
+  }
+}
+```
+
+```json Get Secret
+{
+  "function": "secret-key-get-node",
+  "inputs": {
+    "key_name": "stripe_api_key"
+  }
+}
+```
+</CodeGroup>
+
+---
+
+## Complete Function Documentation
+
+For detailed documentation of all available functions with syntax, parameters, and examples:
+
+<CardGroup cols={2}>
+  <Card title="Functions Overview" icon="book" href="/flows/functions/overview">
+    Complete list of all available functions
+  </Card>
+  
+  <Card title="Stream Functions" icon="stream" href="/flows/functions/streams">
+    Real-time streaming operations
+  </Card>
+  
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    KV bucket storage operations
+  </Card>
+  
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Object storage operations
+  </Card>
+  
+  <Card title="Data Transformation Utilities" icon="shuffle" href="/flows/functions/utilities">
+    Encoding, merging, templating, and utilities
+  </Card>
+</CardGroup>
+
+---
+
+## Common Flow Patterns
+
+<AccordionGroup>
+  <Accordion title="Event Tracking Pipeline" icon="stream">
+    Track user events in real-time stream
+    
+    ```text
+    Trigger: User action
+    ↓
+    Agent: Enrich event data
+    ↓
+    Functions: Publish to stream
+      Function: publish-message-to-stream
+      Stream: "user-events"
+      Message: ${agent.output}
+    ↓
+    Functions: Store in KV for quick access
+      Function: put-kv-item
+      Bucket: "recent-events"
+      Key: ${user.id}
+      Value: ${agent.output}
+    ```
+    
+    **Use when**: Need real-time event processing and analytics
+  </Accordion>
+
+  <Accordion title="Configuration Management" icon="gear">
+    Store and retrieve app configuration
+    
+    ```text
+    Trigger: Config update request
+    ↓
+    Functions: Save configuration
+      Function: put-kv-item
+      Bucket: "app-config"
+      Key: ${config.key}
+      Value: ${config.value}
+    ↓
+    (Later) Flow needs config
+    ↓
+    Functions: Retrieve configuration
+      Function: get-kv-bucket-item
+      Bucket: "app-config"
+      Key: "feature-flags"
+    ↓
+    Agent: Use configuration
+    ```
+    
+    **Use when**: Need persistent configuration across flows
+  </Accordion>
+
+  <Accordion title="File Upload & Storage" icon="upload">
+    Handle file uploads with object storage
+    
+    ```text
+    Form: File upload
+    ↓
+    Functions: Encode file
+      Function: base64-encode
+      Input: ${form.file}
+    ↓
+    Functions: Store file
+      Function: put-object-by-key
+      Bucket: "uploads"
+      Key: "files/${user.id}/${filename}"
+      Object: ${encoded_file}
+    ↓
+    Agent: Send confirmation with file URL
+    ```
+    
+    **Use when**: Need to store files/media
+  </Accordion>
+
+  <Accordion title="Data Format Conversion" icon="arrows-rotate">
+    Convert between data formats
+    
+    ```text
+    HTTP Request: Receives JSON data
+    ↓
+    Functions: Convert to XML
+      Function: JSON-XML
+      JSON: ${http.body}
+      RootElement: "data"
+    ↓
+    Functions: Encode for transmission
+      Function: base64-encode
+      Text: ${xml_data}
+    ↓
+    HTTP Request: Send to legacy system
+    ```
+    
+    **Use when**: Integrating systems with different formats
+  </Accordion>
+
+  <Accordion title="Complex Data Merging" icon="code-merge">
+    Merge data from multiple sources
+    
+    ```text
+    HTTP Request 1: Get user profile
+    ↓
+    HTTP Request 2: Get preferences  
+    ↓
+    Functions: Get cached data
+      Function: get-kv-bucket-item
+      Bucket: "user-cache"
+      Key: ${user.id}
+    ↓
+    Functions: Deep merge all data
+      Function: deep-merge-objects
+      Objects: [${profile}, ${preferences}, ${cached}]
+    ↓
+    Agent: Use complete user data
+    ```
+    
+    **Use when**: Need to combine nested data structures
+  </Accordion>
+
+  <Accordion title="Dynamic Template Rendering" icon="wand-magic-sparkles">
+    Generate dynamic content from templates
+    
+    ```text
+    Agent: Prepare email data
+    ↓
+    Functions: Render template
+      Function: Handlebars Template
+      Template: "Hello {{name}}, your order {{order_id}}..."
+      Data: ${agent.output}
+    ↓
+    HTTP Request: Send email via SendGrid
+    ```
+    
+    **Use when**: Need dynamic content generation
+  </Accordion>
+
+  <Accordion title="Data Organization & Grouping" icon="table">
+    Organize data for analysis
+    
+    ```text
+    Database: Get all orders
+    ↓
+    Functions: Group by customer
+      Function: group-by
+      Array: ${orders}
+      Property: "customer_id"
+    ↓
+    Map: Calculate per-customer totals
+    ↓
+    Functions: Store aggregated data
+      Function: put-kv-item
+      Bucket: "analytics"
+      Key: "customer-totals"
+    ```
+    
+    **Use when**: Need to organize data by property
+  </Accordion>
+
+  <Accordion title="Stream Analytics" icon="chart-line">
+    Aggregate and analyze stream data
+    
+    ```text
+    Trigger: Schedule (hourly)
+    ↓
+    Functions: Aggregate stream items
+      Function: aggregate-stream-items
+      Stream: "user-events"
+      Key: "event_type"
+      TimeWindow: "1h"
+    ↓
+    Agent: Generate insights report
+    ↓
+    Functions: Store insights
+      Function: put-kv-item
+      Bucket: "analytics"
+      Key: "hourly-summary-${timestamp}"
+    ```
+    
+    **Use when**: Need to analyze streaming data
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Platform Functions" icon="thumbs-up">
+    Use Microstrate's platform functions for streams and storage rather than external services when possible.
+  </Card>
+  
+  <Card title="Persist Important Data" icon="database">
+    Use KV or Object storage for data that needs to persist across flow executions.
+  </Card>
+  
+  <Card title="Stream Real-Time Events" icon="stream">
+    Use streams for event tracking, analytics, and real-time processing.
+  </Card>
+  
+  <Card title="Transform Before Agent" icon="arrows-rotate">
+    Clean and transform data with Functions before passing to agents.
+  </Card>
+  
+  <Card title="Name Steps Clearly" icon="tag">
+    Use descriptive names: "Store User Preferences" not "Function 1"
+  </Card>
+  
+  <Card title="Handle Errors" icon="shield-check">
+    Check function results and handle errors appropriately.
+  </Card>
+</CardGroup>
+
+---
+
+## Functions vs. Alternatives
+
+**Use Functions when**:
+- Need Microstrate platform services (streams, storage)
+- Need data transformation (encoding, merging, templates)
+- Want built-in, tested operations
+- Need to persist data across flows
+
+**Use Map when**:
+- Need to transform data structure
+- Extracting/restructuring objects
+- Functions don't fit your use case
+
+**Use Eval when**:
+- Need custom algorithms
+- Complex logic not available
+- Combining multiple operations uniquely
+
+**Use External Services when**:
+- Specialized service required (e.g., Twilio for SMS)
+- Already using external provider
+- Need features not in Microstrate
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Function not found" icon="magnifying-glass">
+    **Causes**:
+    - Wrong function name
+    - Typo in function name
+    
+    **Solutions**:
+    - Check function documentation for exact name
+    - Verify function exists: `publish-message-to-stream` not `publish-to-stream`
+  </Accordion>
+
+  <Accordion title="Invalid parameters" icon="circle-exclamation">
+    **Causes**:
+    - Missing required parameter
+    - Wrong parameter format
+    
+    **Solutions**:
+    - Review function documentation
+    - Check parameter names and types
+    - Verify variable references
+  </Accordion>
+
+  <Accordion title="Stream/bucket not found" icon="database">
+    **Causes**:
+    - Stream or bucket doesn't exist
+    - Wrong name
+    
+    **Solutions**:
+    - Create stream/bucket first
+    - Verify exact name
+    - Check account has access
+  </Accordion>
+
+  <Accordion title="Can't access output" icon="link-slash">
+    **Causes**:
+    - Wrong variable path
+    - Function didn't execute
+    
+    **Solutions**:
+    - Use `${step_name.result}`
+    - Check execution logs
+    - Verify step name matches
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Explore All Functions" icon="book" href="/flows/functions/overview">
+    Browse complete function library
+  </Card>
+  
+  <Card title="Map Step" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Custom data transformations
+  </Card>
+  
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    Custom JavaScript for complex logic
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
+    Call external APIs
+  </Card>
+</CardGroup>

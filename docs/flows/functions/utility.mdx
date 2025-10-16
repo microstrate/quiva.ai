@@ -1,0 +1,1289 @@
+---
+title: 'Data Transformation Utilities'
+description: 'Transform, format, and manipulate data in your flows'
+icon: 'shuffle'
+---
+
+# Data Transformation Utilities
+
+Utility functions for common data operations like encoding, merging, grouping, and formatting. These functions help you transform data between steps in your flows.
+
+<Info>
+**Quick Data Transformation**: These utilities handle common data manipulation tasks without needing custom code. Use them for encoding, merging objects, formatting templates, and more.
+</Info>
+
+---
+
+## Function List
+
+<CardGroup cols={3}>
+  <Card title="base64-encode" icon="lock" href="#base64-encode">
+    Encode to base64
+  </Card>
+  
+  <Card title="base64-decode" icon="unlock" href="#base64-decode">
+    Decode from base64
+  </Card>
+  
+  <Card title="JSON-XML" icon="code" href="#json-xml">
+    Convert JSON to XML
+  </Card>
+  
+  <Card title="deep-merge-objects" icon="object-group" href="#deep-merge-objects">
+    Deeply merge objects
+  </Card>
+  
+  <Card title="merge-arrays" icon="layer-group" href="#merge-arrays">
+    Combine multiple arrays
+  </Card>
+  
+  <Card title="group-by" icon="table-cells" href="#group-by">
+    Group objects by property
+  </Card>
+  
+  <Card title="Handlebars Template" icon="file-code" href="#handlebars-template">
+    Dynamic templates
+  </Card>
+  
+  <Card title="Mapping" icon="route" href="#mapping">
+    JSON path data mapping
+  </Card>
+  
+  <Card title="multiply-large-numbers" icon="calculator" href="#multiply-large-numbers">
+    Multiply very large numbers
+  </Card>
+  
+  <Card title="set-operations" icon="diagram-venn" href="#set-operations">
+    Set operations (union, diff, etc)
+  </Card>
+  
+  <Card title="secret-key-get-node" icon="key" href="#secret-key-get-node">
+    Retrieve secret keys
+  </Card>
+</CardGroup>
+
+---
+
+## base64-encode
+
+Encode data to base64 format. Useful for encoding binary data, files, or text for transmission or storage.
+
+### Parameters
+
+<ParamField path="data" type="string" required>
+  The data to encode. Can be text, binary data, or any string content.
+</ParamField>
+
+<ParamField path="encoding" type="string" default="utf8">
+  Input encoding. Options: utf8, ascii, binary, hex.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "encoded": "SGVsbG8gV29ybGQh",
+  "original_length": 12,
+  "encoded_length": 16
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Encode Text
+{
+  "function": "base64-encode",
+  "params": {
+    "data": "Hello World!"
+  }
+}
+```
+
+```json Encode File Content
+{
+  "function": "base64-encode",
+  "params": {
+    "data": "${$.trigger.file_content}",
+    "encoding": "binary"
+  }
+}
+```
+
+```text In Flow
+HTTP Request: Get image file
+↓
+Functions: Encode image
+  Function: base64-encode
+  Data: ${http_request.response}
+↓
+Store or transmit encoded image
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Encode Files for API" icon="paper-plane">
+    Encode files before sending to APIs
+    
+    ```
+    Get file from storage
+    Encode to base64
+    Send in HTTP request body
+    API receives and decodes
+    ```
+  </Accordion>
+  
+  <Accordion title="Store Binary Data" icon="database">
+    Store binary content as text
+    
+    ```
+    Receive binary file
+    Encode to base64
+    Store in database or KV storage
+    Decode when retrieved
+    ```
+  </Accordion>
+  
+  <Accordion title="Embed Images in HTML" icon="image">
+    Create data URLs for images
+    
+    ```
+    Get image file
+    Encode to base64
+    Create data URL: data:image/png;base64,{encoded}
+    Use in HTML or email
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## base64-decode
+
+Decode base64-encoded data back to its original format.
+
+### Parameters
+
+<ParamField path="data" type="string" required>
+  The base64-encoded string to decode.
+</ParamField>
+
+<ParamField path="output_encoding" type="string" default="utf8">
+  Output encoding. Options: utf8, ascii, binary, hex.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "decoded": "Hello World!",
+  "encoded_length": 16,
+  "decoded_length": 12
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Decode Text
+{
+  "function": "base64-decode",
+  "params": {
+    "data": "SGVsbG8gV29ybGQh"
+  }
+}
+```
+
+```json Decode File
+{
+  "function": "base64-decode",
+  "params": {
+    "data": "${$.encoded_file}",
+    "output_encoding": "binary"
+  }
+}
+```
+
+```text In Flow
+Trigger: Receive base64-encoded file
+↓
+Functions: Decode file
+  Function: base64-decode
+  Data: ${trigger.encoded_data}
+↓
+Agent: Process decoded file content
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Receive Encoded Files" icon="inbox">
+    Decode files received from APIs
+    
+    ```
+    HTTP Request: Receive base64 file
+    Decode from base64
+    Store or process decoded file
+    ```
+  </Accordion>
+  
+  <Accordion title="Retrieve Stored Binary" icon="download">
+    Decode stored binary data
+    
+    ```
+    Get base64 string from storage
+    Decode to binary
+    Use original file
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## JSON-XML
+
+Transform JSON data to XML format. Useful for integrating with systems that require XML.
+
+### Parameters
+
+<ParamField path="json_data" type="object" required>
+  The JSON object to convert to XML.
+</ParamField>
+
+<ParamField path="root_element" type="string" default="root">
+  Name of the root XML element.
+</ParamField>
+
+<ParamField path="declaration" type="boolean" default="true">
+  Include XML declaration at the top.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><name>John</name><age>30</age></root>"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Convert JSON to XML
+{
+  "function": "JSON-XML",
+  "params": {
+    "json_data": {
+      "customer": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "orders": [
+          {"id": "001", "total": 150},
+          {"id": "002", "total": 200}
+        ]
+      }
+    },
+    "root_element": "customer_data"
+  }
+}
+```
+
+```text In Flow
+Agent: Generate order data (JSON)
+↓
+Functions: Convert to XML
+  Function: JSON-XML
+  Data: ${agent.order_data}
+  Root: "order"
+↓
+HTTP Request: Send XML to legacy system
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Legacy System Integration" icon="server">
+    Send data to XML-only systems
+    
+    ```
+    Collect data in JSON format
+    Convert to XML
+    Send to SOAP API or legacy system
+    ```
+  </Accordion>
+  
+  <Accordion title="XML File Generation" icon="file-code">
+    Generate XML files for export
+    
+    ```
+    Build data structure in JSON
+    Convert to XML
+    Store as .xml file
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## deep-merge-objects
+
+Deeply merge multiple objects into a single object, recursively combining nested properties. Later objects override earlier ones.
+
+### Parameters
+
+<ParamField path="objects" type="array" required>
+  Array of objects to merge. Objects are merged in order, with later objects overriding earlier ones.
+</ParamField>
+
+<ParamField path="merge_arrays" type="boolean" default="false">
+  Whether to merge arrays or replace them. If false, arrays in later objects replace arrays in earlier objects. If true, arrays are concatenated.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "merged": {
+    "name": "John Doe",
+    "age": 30,
+    "address": {
+      "street": "123 Main St",
+      "city": "San Francisco",
+      "state": "CA"
+    },
+    "preferences": {
+      "theme": "dark",
+      "language": "en",
+      "notifications": true
+    }
+  }
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Merge User Data
+{
+  "function": "deep-merge-objects",
+  "params": {
+    "objects": [
+      {
+        "name": "John",
+        "age": 30,
+        "address": {"city": "SF"}
+      },
+      {
+        "name": "John Doe",
+        "address": {"city": "San Francisco", "state": "CA"}
+      },
+      {
+        "preferences": {"theme": "dark"}
+      }
+    ]
+  }
+}
+```
+
+```text In Flow
+Functions: Get default config
+Functions: Get user config
+Functions: Get session overrides
+↓
+Functions: Merge all configs
+  Function: deep-merge-objects
+  Objects: [default, user, session]
+↓
+Agent: Use merged configuration
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Configuration Merging" icon="sliders">
+    Combine default, user, and runtime configs
+    
+    ```
+    Default config (base settings)
+    + User preferences (customizations)
+    + Session overrides (temporary changes)
+    = Final configuration
+    ```
+  </Accordion>
+  
+  <Accordion title="User Profile Building" icon="user">
+    Build complete user profile from multiple sources
+    
+    ```
+    Base profile from database
+    + Additional data from CRM
+    + Real-time session data
+    = Complete user profile
+    ```
+  </Accordion>
+  
+  <Accordion title="Data Enrichment" icon="sparkles">
+    Enrich base data with additional sources
+    
+    ```
+    Base customer data
+    + Order history
+    + Support tickets
+    + Analytics data
+    = Enriched customer record
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## merge-arrays
+
+Merge multiple arrays into a single array, concatenating all elements.
+
+### Parameters
+
+<ParamField path="arrays" type="array" required>
+  Array of arrays to merge. All arrays will be concatenated in order.
+</ParamField>
+
+<ParamField path="remove_duplicates" type="boolean" default="false">
+  Remove duplicate values from the merged array.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "merged": [1, 2, 3, 4, 5, 6],
+  "original_count": 8,
+  "merged_count": 6,
+  "duplicates_removed": 2
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Merge Arrays
+{
+  "function": "merge-arrays",
+  "params": {
+    "arrays": [
+      [1, 2, 3],
+      [3, 4, 5],
+      [5, 6]
+    ],
+    "remove_duplicates": true
+  }
+}
+```
+
+```text In Flow
+HTTP Request: Get users from API 1
+HTTP Request: Get users from API 2
+HTTP Request: Get users from API 3
+↓
+Functions: Combine all users
+  Function: merge-arrays
+  Arrays: [api1_users, api2_users, api3_users]
+  Remove duplicates: true
+↓
+Agent: Process combined user list
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Combine Data from Multiple Sources" icon="database">
+    Merge results from multiple API calls
+    
+    ```
+    Get data from source 1
+    Get data from source 2
+    Get data from source 3
+    Merge all arrays into one
+    ```
+  </Accordion>
+  
+  <Accordion title="Build Complete Lists" icon="list">
+    Combine partial lists into complete dataset
+    
+    ```
+    Page 1 results
+    + Page 2 results
+    + Page 3 results
+    = Complete dataset
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## group-by
+
+Group an array of objects by a specified property. Creates an object where keys are the unique values of the grouping property.
+
+### Parameters
+
+<ParamField path="array" type="array" required>
+  Array of objects to group.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  The property name to group by. Use dot notation for nested properties.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "grouped": {
+    "electronics": [
+      {"id": 1, "name": "Phone", "category": "electronics"},
+      {"id": 3, "name": "Laptop", "category": "electronics"}
+    ],
+    "clothing": [
+      {"id": 2, "name": "Shirt", "category": "clothing"}
+    ]
+  },
+  "group_count": 2
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Group by Category
+{
+  "function": "group-by",
+  "params": {
+    "array": [
+      {"id": 1, "name": "Phone", "category": "electronics", "price": 599},
+      {"id": 2, "name": "Shirt", "category": "clothing", "price": 29},
+      {"id": 3, "name": "Laptop", "category": "electronics", "price": 1299}
+    ],
+    "key": "category"
+  }
+}
+```
+
+```json Group by Nested Property
+{
+  "function": "group-by",
+  "params": {
+    "array": [
+      {"name": "John", "address": {"city": "SF"}},
+      {"name": "Jane", "address": {"city": "LA"}},
+      {"name": "Bob", "address": {"city": "SF"}}
+    ],
+    "key": "address.city"
+  }
+}
+```
+
+```text In Flow
+HTTP Request: Get all orders
+↓
+Functions: Group orders by customer
+  Function: group-by
+  Array: ${http_request.orders}
+  Key: "customer_id"
+↓
+Agent: Analyze orders per customer
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Sales Analysis" icon="chart-bar">
+    Group sales data for analysis
+    
+    ```
+    Group orders by customer
+    Group orders by product category
+    Group orders by date (year-month)
+    Calculate totals per group
+    ```
+  </Accordion>
+  
+  <Accordion title="Data Organization" icon="folder-tree">
+    Organize data by classification
+    
+    ```
+    Group tickets by status
+    Group users by role
+    Group products by category
+    Process each group separately
+    ```
+  </Accordion>
+  
+  <Accordion title="Aggregation Prep" icon="calculator">
+    Prepare data for aggregation
+    
+    ```
+    Group transactions by account
+    Count items per group
+    Sum amounts per group
+    Generate summary report
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Handlebars Template
+
+Use Handlebars templating engine to create dynamic templates with variables that are replaced at runtime.
+
+### Parameters
+
+<ParamField path="template" type="string" required>
+  The Handlebars template string with variables in double curly braces.
+</ParamField>
+
+<ParamField path="data" type="object" required>
+  The data object containing values to replace in the template.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "output": "Hello John Doe, your order #12345 for $150.00 has been confirmed!"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Email Template
+{
+  "function": "Handlebars Template",
+  "params": {
+    "template": "Hello {{customer.name}}, your order #{{order.id}} for ${{order.total}} has been confirmed!",
+    "data": {
+      "customer": {
+        "name": "John Doe"
+      },
+      "order": {
+        "id": "12345",
+        "total": "150.00"
+      }
+    }
+  }
+}
+```
+
+```json Conditional Template
+{
+  "function": "Handlebars Template",
+  "params": {
+    "template": "{{#if premium}}Premium{{else}}Standard{{/if}} customer {{name}}",
+    "data": {
+      "name": "John",
+      "premium": true
+    }
+  }
+}
+```
+
+```text In Flow
+Agent: Gather customer data
+↓
+Functions: Generate personalized email
+  Function: Handlebars Template
+  Template: Email body with {{variables}}
+  Data: ${agent.customer_data}
+↓
+HTTP Request: Send email
+```
+</CodeGroup>
+
+### Template Features
+
+<AccordionGroup>
+  <Accordion title="Variables" icon="brackets-curly">
+    Insert dynamic values
+    
+    ```handlebars
+    Hello {{name}}, you have {{count}} new messages.
+    ```
+  </Accordion>
+  
+  <Accordion title="Nested Properties" icon="sitemap">
+    Access nested object properties
+    
+    ```handlebars
+    {{user.profile.firstName}} {{user.profile.lastName}}
+    Email: {{user.contact.email}}
+    ```
+  </Accordion>
+  
+  <Accordion title="Conditionals" icon="code-branch">
+    Show content based on conditions
+    
+    ```handlebars
+    {{#if isPremium}}
+      Thank you for being a premium member!
+    {{else}}
+      Upgrade to premium for more features.
+    {{/if}}
+    ```
+  </Accordion>
+  
+  <Accordion title="Loops" icon="arrows-rotate">
+    Iterate over arrays
+    
+    ```handlebars
+    Your orders:
+    {{#each orders}}
+      - Order {{this.id}}: ${{this.total}}
+    {{/each}}
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Email Generation" icon="envelope">
+    Create personalized emails
+    
+    ```
+    Email template with variables
+    + Customer data
+    = Personalized email content
+    ```
+  </Accordion>
+  
+  <Accordion title="Report Generation" icon="file-chart-column">
+    Generate dynamic reports
+    
+    ```
+    Report template
+    + Data from multiple sources
+    = Formatted report
+    ```
+  </Accordion>
+  
+  <Accordion title="Notification Messages" icon="bell">
+    Create dynamic notifications
+    
+    ```
+    Message template
+    + Event data
+    = Personalized notification
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Mapping
+
+Use JSON path expressions to select and map data into a new structure. Powerful for data transformation and restructuring.
+
+### Parameters
+
+<ParamField path="source" type="object" required>
+  The source data object to map from.
+</ParamField>
+
+<ParamField path="mapping" type="object" required>
+  The mapping definition. Keys are the target field names, values are JSON path expressions.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "result": {
+    "customerName": "John Doe",
+    "orderTotal": 150.00,
+    "itemCount": 3
+  }
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Simple Mapping
+{
+  "function": "Mapping",
+  "params": {
+    "source": {
+      "user": {
+        "firstName": "John",
+        "lastName": "Doe"
+      },
+      "order": {
+        "total": 150.00,
+        "items": [1, 2, 3]
+      }
+    },
+    "mapping": {
+      "customerName": "$.user.firstName| |$.user.lastName",
+      "orderTotal": "$.order.total",
+      "itemCount": "$.order.items.length"
+    }
+  }
+}
+```
+
+```text In Flow
+HTTP Request: Get customer data
+↓
+Functions: Restructure data
+  Function: Mapping
+  Source: ${http_request.response}
+  Mapping: {desired structure}
+↓
+Agent: Use restructured data
+```
+</CodeGroup>
+
+### JSON Path Features
+
+<AccordionGroup>
+  <Accordion title="Property Access" icon="arrow-pointer">
+    Access nested properties
+    
+    ```
+    $.user.profile.name
+    $.order.items[0].price
+    ```
+  </Accordion>
+  
+  <Accordion title="Array Operations" icon="list">
+    Work with arrays
+    
+    ```
+    $.items.length - Get array length
+    $.items[*].name - Get all names
+    $.items[0] - First item
+    ```
+  </Accordion>
+  
+  <Accordion title="String Concatenation" icon="plus">
+    Combine strings
+    
+    ```
+    $.firstName| |$.lastName
+    Result: "John Doe"
+    ```
+  </Accordion>
+  
+  <Accordion title="Filters" icon="filter">
+    Filter arrays
+    
+    ```
+    $.items[?(@.price > 100)]
+    Get items where price > 100
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="API Response Transformation" icon="rotate">
+    Transform API responses to your format
+    
+    ```
+    External API format
+    → Map to internal format
+    → Use in your system
+    ```
+  </Accordion>
+  
+  <Accordion title="Data Extraction" icon="magnifying-glass">
+    Extract specific fields from complex objects
+    
+    ```
+    Large complex object
+    → Extract only needed fields
+    → Simplified object for processing
+    ```
+  </Accordion>
+  
+  <Accordion title="Format Conversion" icon="repeat">
+    Convert between data formats
+    
+    ```
+    Source format A
+    → Map fields to format B
+    → Compatible with target system
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## multiply-large-numbers
+
+Multiply very large numbers that exceed JavaScript's safe integer limit. Useful for financial calculations and precise arithmetic.
+
+### Parameters
+
+<ParamField path="number1" type="string" required>
+  First number as a string. Can be any size.
+</ParamField>
+
+<ParamField path="number2" type="string" required>
+  Second number as a string. Can be any size.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "result": "123456789012345678901234567890",
+  "number1": "1234567890123456789",
+  "number2": "100000000000"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Multiply Large Numbers
+{
+  "function": "multiply-large-numbers",
+  "params": {
+    "number1": "999999999999999999",
+    "number2": "888888888888888888"
+  }
+}
+```
+
+```text In Flow
+Agent: Calculate large financial amount
+  Shares: "999999999999"
+  Price per share: "123456789"
+↓
+Functions: Multiply precisely
+  Function: multiply-large-numbers
+  Number1: ${shares}
+  Number2: ${price_per_share}
+↓
+Result: Exact total value
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Financial Calculations" icon="dollar-sign">
+    Precise calculations for finance
+    
+    ```
+    Large transaction amounts
+    × Currency conversions
+    = Precise results without rounding errors
+    ```
+  </Accordion>
+  
+  <Accordion title="Scientific Computing" icon="flask">
+    Handle very large numbers
+    
+    ```
+    Large dataset sizes
+    × Calculation factors
+    = Accurate results
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## set-operations
+
+Perform set operations (union, intersection, difference) on two arrays.
+
+### Parameters
+
+<ParamField path="a" type="array" required>
+  First set (array).
+</ParamField>
+
+<ParamField path="b" type="array" required>
+  Second set (array).
+</ParamField>
+
+<ParamField path="operation" type="string" required>
+  The operation to perform. Options: union, intersection, diff (difference: items in A but not in B).
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "operation": "union",
+  "result": [1, 2, 3, 4, 5, 6],
+  "a_count": 4,
+  "b_count": 4,
+  "result_count": 6
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Union (Combine)
+{
+  "function": "set-operations",
+  "params": {
+    "a": [1, 2, 3, 4],
+    "b": [3, 4, 5, 6],
+    "operation": "union"
+  }
+}
+```
+
+```json Intersection (Common)
+{
+  "function": "set-operations",
+  "params": {
+    "a": [1, 2, 3, 4],
+    "b": [3, 4, 5, 6],
+    "operation": "intersection"
+  }
+}
+```
+
+```json Difference (Unique to A)
+{
+  "function": "set-operations",
+  "params": {
+    "a": [1, 2, 3, 4],
+    "b": [3, 4, 5, 6],
+    "operation": "diff"
+  }
+}
+```
+</CodeGroup>
+
+### Operations Explained
+
+<AccordionGroup>
+  <Accordion title="Union" icon="circle-plus">
+    Combine both sets, removing duplicates
+    
+    ```
+    A: [1, 2, 3]
+    B: [3, 4, 5]
+    Union: [1, 2, 3, 4, 5]
+    ```
+  </Accordion>
+  
+  <Accordion title="Intersection" icon="circle-half-stroke">
+    Find common elements
+    
+    ```
+    A: [1, 2, 3]
+    B: [3, 4, 5]
+    Intersection: [3]
+    ```
+  </Accordion>
+  
+  <Accordion title="Difference" icon="circle-minus">
+    Find elements in A but not in B
+    
+    ```
+    A: [1, 2, 3]
+    B: [3, 4, 5]
+    Difference: [1, 2]
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="List Comparison" icon="list-check">
+    Compare two lists of IDs
+    
+    ```
+    Current subscribers
+    vs New subscribers
+    = Who's new, who stayed, who left
+    ```
+  </Accordion>
+  
+  <Accordion title="Access Control" icon="shield-halved">
+    Check permissions
+    
+    ```
+    User permissions
+    intersect Required permissions
+    = Can user access?
+    ```
+  </Accordion>
+  
+  <Accordion title="Data Deduplication" icon="copy">
+    Find unique items across sources
+    
+    ```
+    Source A items
+    diff Source B items
+    = Items only in A
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## secret-key-get-node
+
+Retrieve secret keys stored in Microstrate's secret manager. Use this to access API keys, tokens, and other sensitive configuration.
+
+### Parameters
+
+<ParamField path="key_name" type="string" required>
+  The name of the secret key to retrieve.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "key_name": "stripe_api_key",
+  "value": "sk_live_abc123...",
+  "created_at": "2025-09-01T10:00:00Z",
+  "last_accessed": "2025-10-16T10:30:00Z"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Get API Key
+{
+  "function": "secret-key-get-node",
+  "params": {
+    "key_name": "stripe_api_key"
+  }
+}
+```
+
+```text In Flow
+Functions: Get API key from secrets
+  Function: secret-key-get-node
+  Key: "external_api_key"
+↓
+HTTP Request: Call external API
+  Authorization: Bearer ${secret_value}
+↓
+Process API response
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="API Authentication" icon="key">
+    Securely access API keys for external services
+    
+    ```
+    Get secret API key
+    Use in HTTP request
+    Keep key secure, never in code
+    ```
+  </Accordion>
+  
+  <Accordion title="Database Connections" icon="database">
+    Retrieve database credentials
+    
+    ```
+    Get database password
+    Connect to database
+    Execute queries securely
+    ```
+  </Accordion>
+  
+  <Accordion title="Third-Party Services" icon="plug">
+    Access service tokens
+    
+    ```
+    Get OAuth token
+    Get webhook secret
+    Use for integrations
+    ```
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+**Security Best Practice**: Never hardcode secrets in flows. Always use the secret manager and retrieve secrets at runtime using this function.
+</Warning>
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Encoding for Binary" icon="file-binary">
+    Always base64-encode binary data before storing or transmitting
+  </Card>
+  
+  <Card title="Deep Merge for Configs" icon="layer-group">
+    Use deep-merge-objects for combining configurations safely
+  </Card>
+  
+  <Card title="Template Dynamic Content" icon="wand-magic-sparkles">
+    Use Handlebars for emails, notifications, and reports
+  </Card>
+  
+  <Card title="Restructure with Mapping" icon="diagram-project">
+    Use Mapping to transform API responses to your format
+  </Card>
+  
+  <Card title="Group Before Aggregating" icon="object-group">
+    Use group-by before calculating totals or summaries
+  </Card>
+  
+  <Card title="Store Secrets Securely" icon="lock">
+    Always use secret manager for sensitive data
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Stream Functions" icon="water" href="/flows/functions/streams">
+    Real-time event processing
+  </Card>
+  
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    Fast key-based storage
+  </Card>
+  
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Store large files
+  </Card>
+  
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Using Functions in flows
+  </Card>
+</CardGroup>

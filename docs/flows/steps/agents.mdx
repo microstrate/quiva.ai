@@ -1,0 +1,771 @@
+---
+title: 'Agents'
+description: 'Run intelligent AI agents with tools, context, and guardrails'
+icon: 'robot'
+---
+
+# Agents Step
+
+The Agents step runs AI agents within your flow. Unlike traditional automation that follows rigid rules, agents think, reason, and make decisions. Give them tools to access data and perform tasks, provide context to guide their behavior, and set boundaries to ensure safe, reliable execution.
+
+<Info>
+**Agent-Centric Flows**: Start here. Most Microstrate flows begin with an Agent step. Attach tools (connectors) to let agents access your systems, and add other steps only when you need explicit control over branching, transformations, or integrations.
+</Info>
+
+---
+
+## How Agents Work
+
+Agents receive input (from triggers or previous steps), process it using their instructions and context, use tools to access data or perform actions, and return responses.
+
+<CodeGroup>
+```text Simple Flow
+Trigger: Customer inquiry received
+↓
+Agent Step:
+  - Tools: Knowledge base, Order history
+  - Context: Company policies, Product info
+  - Makes decision: Answer or escalate
+↓
+Response sent
+```
+
+```text Complex Flow
+Trigger: Support ticket created
+↓
+Agent Step 1: Analyze ticket
+  - Tools: Knowledge base, Ticket history
+  - Outputs: category, urgency, sentiment
+↓
+Condition: If urgency = "high"
+↓
+Agent Step 2: Generate solution
+  - Tools: Order system, Refund API
+  - Context: Customer tier, Purchase history
+  - Executes action: Process refund
+↓
+Response sent
+```
+</CodeGroup>
+
+---
+
+## Configuration Tabs
+
+Configure your agent across these tabs:
+
+<CardGroup cols={3}>
+  <Card title="Information" icon="circle-info" href="#information-tab">
+    Name, description, execution mode
+  </Card>
+  
+  <Card title="Provider" icon="cloud" href="#provider-tab">
+    LLM provider, model, API key
+  </Card>
+  
+  <Card title="Instructions" icon="message-lines" href="#agent-instructions">
+    Role, personality, capabilities
+  </Card>
+  
+  <Card title="Prompt" icon="comment-dots" href="#prompt">
+    Input text for agent to process
+  </Card>
+  
+  <Card title="Tools" icon="wrench" href="#tools-tab">
+    MCP servers and connectors
+  </Card>
+  
+  <Card title="Context" icon="book" href="#context-tab">
+    Knowledge, files, descriptions
+  </Card>
+  
+  <Card title="Advanced" icon="sliders" href="#advanced-tab">
+    Output schema, temperature, tokens
+  </Card>
+  
+  <Card title="Safety" icon="shield-check" href="#safety-guardrails">
+    Validation and boundaries
+  </Card>
+  
+  <Card title="Memories" icon="brain" href="#memories">
+    Persistent conversation memory
+  </Card>
+</CardGroup>
+
+---
+
+## Information Tab
+
+Basic agent settings and execution behavior.
+
+<ParamField path="name" type="string" required>
+  Agent name (used to reference in flow)
+  
+  **Example**: `Customer Support Agent`
+</ParamField>
+
+<ParamField path="description" type="string">
+  What this agent does (for documentation)
+  
+  **Example**: `Handles customer inquiries, searches knowledge base, and escalates complex issues`
+</ParamField>
+
+<ParamField path="responseMode" type="enum" required>
+  How the flow should handle agent execution
+  
+  **Options**:
+  - `wait_for_completion` - Flow waits for agent to finish (default)
+  - `run_in_background` - Flow continues immediately, agent runs async
+  
+  **Use run_in_background when**: Agent performs non-critical tasks (logging, analytics) or long-running operations that don't affect flow logic
+</ParamField>
+
+<Tip>
+Use descriptive names like "Analyze Customer Request" rather than generic names like "Agent 1" - makes flows self-documenting.
+</Tip>
+
+---
+
+## Provider Tab
+
+Select your LLM provider and model.
+
+<ParamField path="provider" type="enum" required>
+  LLM provider
+  
+  **Options**:
+  - `Workforce` - Microstrate's custom model (recommended)
+  - `OpenAI` - ChatGPT models
+  - `Anthropic` - Claude models
+  - `Google` - Gemini models
+  
+  <Tip>Workforce is optimized for Microstrate and includes built-in cost optimization</Tip>
+</ParamField>
+
+<ParamField path="model" type="string" required>
+  Specific model version
+  
+  **Examples**:
+  - OpenAI: `gpt-4-turbo`, `gpt-3.5-turbo`
+  - Anthropic: `claude-3-opus`, `claude-3-sonnet`
+  - Google: `gemini-pro`, `gemini-ultra`
+  
+  Different models offer varying capabilities, speeds, and costs. Newer models generally provide better performance.
+</ParamField>
+
+<ParamField path="apiKey" type="string" required>
+  Your API key from the provider
+  
+  API keys are encrypted and securely stored. Never share keys publicly.
+  
+  **Get keys**:
+  - [Anthropic API key](https://console.anthropic.com/) 
+  - [OpenAI API key](https://platform.openai.com/api-keys)
+  
+  <Warning>Rotate API keys regularly (every 90 days) and use separate keys for dev/prod environments</Warning>
+</ParamField>
+
+---
+
+## Agent Instructions
+
+Define your agent's role, personality, and capabilities. This is the foundation for how your agent responds and behaves across all interactions.
+
+<ParamField path="instructions" type="text" required>
+  Core behavioral instructions for the agent
+  
+  **Be specific about**:
+  - Role and purpose
+  - Communication style and personality
+  - What tasks it should handle
+  - What it should NOT do
+  - When to escalate or defer
+  
+  **Example**:
+  ```text
+  You are a customer support agent for Acme Corp. You help customers with 
+  order tracking, returns, and product questions. You're friendly, professional, 
+  and always try to resolve issues on the first interaction.
+  
+  For order tracking: Search order history and provide status.
+  For returns: Check policy and guide through return process.
+  For product questions: Search knowledge base and provide accurate information.
+  
+  If you cannot resolve the issue, escalate to a human agent rather than 
+  providing uncertain information.
+  ```
+</ParamField>
+
+<Tip>
+The better your instructions, the better your agent performs. Include:
+- ✅ Clear examples of expected behavior
+- ✅ Specific dos and don'ts
+- ✅ Escalation criteria
+- ✅ Tone and style guidelines
+</Tip>
+
+---
+
+## Prompt
+
+The input text for the agent to process. This can come from the trigger automatically or be set manually.
+
+<ParamField path="prompt" type="text">
+  Text for the agent to process
+  
+  **Automatic from trigger**: If this agent is directly connected to a trigger (Embed, HTTP, Webhook), the prompt is automatically passed from the trigger input. You don't need to set it manually.
+  
+  **Manual prompt**: Set manually when:
+  - Agent is not first step in flow
+  - Need to transform trigger input
+  - Want to provide specific instructions per execution
+  
+  **Use variables**: Reference previous steps
+  ```
+  ${trigger.user_message}
+  ${previous_agent.response}
+  ${http_request.body.data}
+  ```
+</ParamField>
+
+<CodeGroup>
+```text Automatic (Direct from Trigger)
+Trigger: Chat embed receives user message
+↓
+Agent: [prompt automatically populated]
+```
+
+```text Manual (Using Variables)
+Trigger: HTTP POST with order data
+↓
+Agent: prompt = "Analyze this order: ${trigger.body.order}"
+```
+</CodeGroup>
+
+---
+
+## Tools Tab
+
+Attach MCP servers (connectors) to give your agent access to data and the ability to perform actions.
+
+<Info>
+**Tools = Connectors**: In Microstrate, tools and connectors are the same thing - MCP servers that agents can use. Find them in the Marketplace or create custom ones.
+</Info>
+
+### Adding Tools
+
+1. Click **Add Tool** in the Tools tab
+2. Choose from:
+   - **Marketplace MCP servers** - Pre-built integrations (CRM, databases, APIs)
+   - **Your custom MCP servers** - Deploy from OpenAPI specs or Postman collections
+3. Configure authentication if required
+4. Tool is now available to agent
+
+### How Agents Use Tools
+
+Agents intelligently decide when and how to use tools based on:
+- The user's request
+- Available tools
+- Agent instructions
+- Tool capabilities
+
+**Example**: Customer asks "What's my order status?"
+1. Agent recognizes it needs order information
+2. Agent sees "Order System" tool is available
+3. Agent calls tool with customer ID
+4. Agent receives order data
+5. Agent formats response for customer
+
+<Tip>
+**Best Practice**: Give agents only the tools they need. Too many tools can confuse the agent or slow response time.
+</Tip>
+
+### Tool Authentication
+
+Many tools require authentication. Configure in tool settings:
+
+<ParamField path="authentication" type="object">
+  Tool authentication credentials
+  
+  **Types**:
+  - API Key
+  - OAuth 2.0
+  - Basic Auth
+  - Custom headers
+  
+  <Warning>Credentials are encrypted and stored securely</Warning>
+</ParamField>
+
+---
+
+## Context Tab
+
+Provide additional context to improve agent responses.
+
+### Knowledge
+
+<ParamField path="knowledge" type="text">
+  Background information, policies, or guidelines
+  
+  **Use for**:
+  - Company policies
+  - Product information
+  - Process guidelines
+  - FAQs
+  
+  **Example**:
+  ```text
+  Return Policy: Customers can return items within 30 days with receipt.
+  Free return shipping on orders over $50.
+  Refunds processed within 5-7 business days.
+  ```
+</ParamField>
+
+### Files
+
+<ParamField path="files" type="file[]">
+  Upload files for agent reference
+  
+  **Supported formats**:
+  - PDF documents
+  - Text files (.txt, .md)
+  - Spreadsheets (.csv, .xlsx)
+  - JSON files
+  
+  Agents can search and reference uploaded files when responding.
+</ParamField>
+
+### Descriptions
+
+<ParamField path="descriptions" type="text">
+  Descriptions of external resources or data
+  
+  **Use when**: Agent needs to understand external data structures, API responses, or system behaviors that aren't covered in tools or knowledge.
+</ParamField>
+
+<Tip>
+**Context vs. Tools**: 
+- Use **Context** for static information (policies, guidelines)
+- Use **Tools** for dynamic data (CRM lookups, API calls)
+</Tip>
+
+---
+
+## Advanced Tab
+
+Fine-tune agent behavior and output.
+
+### Output Schema
+
+<ParamField path="outputSchema" type="json">
+  Define structured output format
+  
+  **Use when**: You need consistent, structured data from the agent (not just text response)
+  
+  **Example**:
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "decision": {"type": "string", "enum": ["approve", "reject", "escalate"]},
+      "reason": {"type": "string"},
+      "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+    },
+    "required": ["decision", "reason"]
+  }
+  ```
+  
+  Agent output will conform to this schema, making it easy to use in Conditions or other steps.
+</ParamField>
+
+### Model Parameters
+
+<ParamField path="temperature" type="number" default="0.7">
+  Creativity vs. consistency (0-2)
+  
+  - `0` - Deterministic, consistent (good for structured tasks)
+  - `0.7` - Balanced (default)
+  - `1.5+` - Creative, varied (good for content generation)
+</ParamField>
+
+<ParamField path="maxTokens" type="number">
+  Maximum response length
+  
+  Limits how long the response can be. Higher = more detailed but slower and more expensive.
+</ParamField>
+
+<ParamField path="topP" type="number" default="1">
+  Nucleus sampling (0-1)
+  
+  Alternative to temperature. Lower values = more focused responses.
+</ParamField>
+
+<ParamField path="frequencyPenalty" type="number" default="0">
+  Reduce repetition (-2 to 2)
+  
+  Positive values discourage repeating the same phrases.
+</ParamField>
+
+<ParamField path="presencePenalty" type="number" default="0">
+  Encourage topic diversity (-2 to 2)
+  
+  Positive values encourage discussing new topics.
+</ParamField>
+
+<ParamField path="stopSequences" type="string[]">
+  Sequences that stop generation
+  
+  Agent stops generating when it encounters these strings.
+  
+  **Example**: `["END", "---", "STOP"]`
+</ParamField>
+
+<Note>
+Most users don't need to adjust these parameters. Default values work well for most use cases. Adjust only if you have specific requirements.
+</Note>
+
+---
+
+## Safety & Guardrails
+
+Production-ready validation and safety features.
+
+### Output Validation
+
+<ParamField path="outputValidation" type="boolean" default="true">
+  Automatically validate and correct agent output
+  
+  When enabled:
+  - Checks output against schema (if defined)
+  - Validates data types and formats
+  - Automatically requests corrections if invalid
+  - Retries up to 3 times
+  
+  <Tip>Keep this enabled for production flows</Tip>
+</ParamField>
+
+### Boundaries
+
+<ParamField path="boundaries" type="object">
+  Define what the agent can and cannot do
+  
+  **Examples**:
+  ```json
+  {
+    "maxRefundAmount": 500,
+    "allowedActions": ["search", "read", "suggest"],
+    "forbiddenTopics": ["medical advice", "legal advice"],
+    "escalateWhen": ["user is angry", "request exceeds limits"]
+  }
+  ```
+  
+  Include boundary rules in Agent Instructions for enforcement.
+</ParamField>
+
+### Human-in-the-Loop Triggers
+
+<ParamField path="humanInLoopTriggers" type="string[]">
+  Conditions that pause for human approval
+  
+  **Examples**:
+  - `"refund amount > $100"`
+  - `"sentiment = negative"`
+  - `"confidence < 0.7"`
+  - `"action = delete"`
+  
+  When triggered, flow pauses and sends approval request to designated reviewers.
+</ParamField>
+
+<Warning>
+Always define boundaries for production agents, especially when they can:
+- Access sensitive data
+- Perform actions (refunds, deletions, emails)
+- Make decisions with business impact
+</Warning>
+
+---
+
+## Memories
+
+Enable persistent conversation memory across interactions.
+
+<ParamField path="memories" type="boolean" default="false">
+  Remember previous interactions with this user
+  
+  When enabled:
+  - Agent remembers past conversations
+  - Provides personalized responses based on history
+  - Maintains context across sessions
+  
+  **Use cases**:
+  - Customer support (remember customer preferences)
+  - Sales agents (build on previous conversations)
+  - Personalized assistants
+  
+  **Privacy**: Memories are scoped per user and encrypted. Users can request memory deletion.
+</ParamField>
+
+<CodeGroup>
+```text Without Memory
+User: "What's my order status?"
+Agent: "Sure, what's your order number?"
+
+[Next conversation]
+User: "Any updates?"
+Agent: "Sure, what's your order number?" ❌
+```
+
+```text With Memory
+User: "What's my order status?"
+Agent: "Sure, what's your order number?"
+User: "Order #12345"
+Agent: "Your order ships tomorrow!"
+
+[Next conversation]
+User: "Any updates?"
+Agent: "Your order #12345 was delivered this morning!" ✅
+```
+</CodeGroup>
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Customer Support Agent" icon="headset">
+    **Configuration**:
+    - Provider: Workforce (cost-effective)
+    - Tools: Knowledge Base, Order System, Support Tickets
+    - Context: Return policy, shipping info, FAQs
+    - Output Schema: `{action: string, response: string, escalate: boolean}`
+    
+    **Instructions**:
+    ```text
+    You are a customer support agent. Help with orders, returns, and products.
+    Always search knowledge base first. If unsure, escalate to human.
+    Be friendly, professional, and resolve on first contact when possible.
+    ```
+  </Accordion>
+
+  <Accordion title="Lead Qualification Agent" icon="filter">
+    **Configuration**:
+    - Provider: OpenAI GPT-4 (strong reasoning)
+    - Tools: CRM, Company Database
+    - Context: Ideal customer profile, pricing tiers
+    - Output Schema: `{score: number, category: string, reasons: string[]}`
+    
+    **Instructions**:
+    ```text
+    You qualify sales leads based on company size, budget, and needs.
+    Score 1-10. Above 7 = qualified. Search CRM for existing relationship.
+    Extract: company name, employee count, budget, use case, timeline.
+    ```
+  </Accordion>
+
+  <Accordion title="Content Generation Agent" icon="pen-to-square">
+    **Configuration**:
+    - Provider: Anthropic Claude (strong writing)
+    - Tools: Brand Guidelines, Past Content, Customer Data
+    - Context: Brand voice, style guide, approved messaging
+    - Temperature: 0.9 (more creative)
+    
+    **Instructions**:
+    ```text
+    You create marketing content matching our brand voice.
+    Reference brand guidelines for tone and style.
+    Personalize based on customer segment and industry.
+    ```
+  </Accordion>
+
+  <Accordion title="Data Analysis Agent" icon="chart-line">
+    **Configuration**:
+    - Provider: OpenAI GPT-4 (strong analysis)
+    - Tools: Database, Analytics API
+    - Context: Key metrics, business goals
+    - Output Schema: `{insights: string[], recommendations: string[], data: object}`
+    
+    **Instructions**:
+    ```text
+    You analyze data and provide actionable insights.
+    Query database for trends, calculate metrics, identify anomalies.
+    Provide specific recommendations backed by data.
+    ```
+  </Accordion>
+
+  <Accordion title="Approval Router Agent" icon="code-branch">
+    **Configuration**:
+    - Provider: Workforce
+    - Tools: Policy Database, User Directory
+    - Output Schema: `{approved: boolean, approver: string, reason: string}`
+    - Human-in-the-Loop: When `approved = false` or amount > threshold
+    
+    **Instructions**:
+    ```text
+    You route approval requests to appropriate approvers.
+    Check policy database for approval rules.
+    Auto-approve within limits, escalate outside boundaries.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testing Your Agent
+
+<Steps>
+  <Step title="Configure basic settings">
+    Set provider, model, and instructions
+  </Step>
+  
+  <Step title="Add tools if needed">
+    Attach MCP servers for data access
+  </Step>
+  
+  <Step title="Test with sample input">
+    Use Test Mode to try different scenarios
+  </Step>
+  
+  <Step title="Review responses">
+    Check accuracy, tone, and tool usage
+  </Step>
+  
+  <Step title="Refine instructions">
+    Adjust based on test results
+  </Step>
+  
+  <Step title="Add guardrails">
+    Enable validation, set boundaries
+  </Step>
+  
+  <Step title="Deploy">
+    Connect to trigger and go live
+  </Step>
+</Steps>
+
+<Tip>
+**Test Mode**: Available in Test Mode (top right). Send test inputs without executing real actions or consuming API credits.
+</Tip>
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Clear Instructions" icon="message-lines">
+    Be specific about what the agent should and shouldn't do. Include examples of expected behavior.
+  </Card>
+  
+  <Card title="Right-Size Tools" icon="wrench">
+    Give agents only the tools they need. Too many tools can confuse or slow the agent.
+  </Card>
+  
+  <Card title="Structure Output" icon="table">
+    Use output schemas when you need structured data for Conditions or other steps.
+  </Card>
+  
+  <Card title="Set Boundaries" icon="shield-check">
+    Define clear boundaries for production agents, especially when they can perform actions.
+  </Card>
+  
+  <Card title="Test Edge Cases" icon="vial">
+    Test with unexpected inputs, errors, and boundary conditions before deploying.
+  </Card>
+  
+  <Card title="Monitor Performance" icon="chart-line">
+    Track response quality, tool usage, and error rates. Refine instructions based on results.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent not using tools" icon="wrench">
+    **Possible causes**:
+    - Tool not properly configured
+    - Authentication failed
+    - Instructions don't mention tool usage
+    - Agent doesn't understand when to use tool
+    
+    **Solutions**:
+    - Verify tool authentication
+    - Check tool is enabled
+    - Update instructions to explicitly mention tool usage
+    - Test tool independently
+  </Accordion>
+
+  <Accordion title="Inconsistent responses" icon="dice">
+    **Possible causes**:
+    - Temperature too high
+    - Instructions too vague
+    - Missing context or examples
+    
+    **Solutions**:
+    - Lower temperature (try 0.3-0.5)
+    - Make instructions more specific
+    - Add examples of expected behavior
+    - Use output schema for structured responses
+  </Accordion>
+
+  <Accordion title="Agent not respecting boundaries" icon="shield">
+    **Possible causes**:
+    - Boundaries not clearly stated in instructions
+    - No validation enabled
+    - Model doesn't follow instructions well
+    
+    **Solutions**:
+    - Make boundaries explicit in instructions with examples
+    - Enable output validation
+    - Add human-in-the-loop for critical actions
+    - Try different model (GPT-4 or Claude for better instruction following)
+  </Accordion>
+
+  <Accordion title="Slow responses" icon="clock">
+    **Possible causes**:
+    - Tool calls taking too long
+    - Model too large for task
+    - Too much context
+    
+    **Solutions**:
+    - Optimize tool endpoints
+    - Try smaller/faster model
+    - Reduce context size
+    - Use run_in_background for non-critical operations
+  </Accordion>
+
+  <Accordion title="High costs" icon="dollar-sign">
+    **Possible causes**:
+    - Using expensive model unnecessarily
+    - Too many tool calls
+    - Large context or responses
+    
+    **Solutions**:
+    - Switch to Workforce or smaller model
+    - Reduce maxTokens
+    - Optimize tool usage
+    - Cache frequent queries
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Add Tools" icon="wrench" href="/marketplace/mcp-servers">
+    Browse Marketplace for MCP servers
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Branch based on agent output
+  </Card>
+  
+  <Card title="Agent Overview" icon="robot" href="/agents/overview">
+    Learn more about agents in Microstrate
+  </Card>
+  
+  <Card title="Variable Mapping" icon="brackets-curly" href="/flows/concepts/variable-mapping">
+    Reference agent output in other steps
+  </Card>
+</CardGroup>

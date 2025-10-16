@@ -31,6 +31,64 @@
             ]
           },
           {
+            "group": "Flows",
+            "pages": [
+              "flows/overview",
+              {
+                "group": "Triggers",
+                "icon": "bolt",
+                "pages": [
+                  "flows/triggers/overview",
+                  "flows/triggers/embed-triggers",
+                  "flows/triggers/http-request",
+                  "flows/triggers/webhook",
+                  "flows/triggers/schedule",
+                  "flows/triggers/upload",
+                  "flows/triggers/email",
+                  "flows/triggers/stream-triggers"
+                ]
+              },
+              {
+                "group": "Steps",
+                "icon": "list-check",
+                "pages": [
+                  "flows/steps/overview",
+                  "flows/steps/agents",
+                  "flows/steps/human-in-the-loop",
+                  "flows/steps/delay",
+                  "flows/steps/condition",
+                  "flows/steps/http-request",
+                  "flows/steps/map",
+                  "flows/steps/rules",
+                  "flows/steps/eval",
+                  "flows/steps/functions",
+                  "flows/steps/nested-flows",
+                  "flows/steps/api-integrations"
+                ]
+              },
+              "flows/best-practices"
+            ]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              "agents/overview",
+              "agents/creating-first-agent",
+              {
+                "group": "Configuration",
+                "icon": "sliders",
+                "pages": [
+                  "agents/configuration/information-settings",
+                  "agents/configuration/provider-settings",
+                  "agents/configuration/context-settings"
+                ]
+              },
+              "agents/tools-and-connectors",
+              "agents/prompt-engineering",
+              "agents/best-practices"
+            ]
+          },
+          {
             "group": "Account Management",
             "pages": [
               "essentials/account/creating-account",
@@ -73,16 +131,6 @@
                   "advanced/variable-mapping/advanced-techniques",
                   "advanced/variable-mapping/examples",
                   "advanced/variable-mapping/reference"
-                ]
-              },
-              {
-                "group": "Steps",
-                "icon": "list-check",
-                "pages": [
-                  "advanced/steps/overview",
-                  "advanced/steps/conditional-logic",
-                  "advanced/steps/error-handling",
-                  "advanced/steps/parallel-execution"
                 ]
               },
               {

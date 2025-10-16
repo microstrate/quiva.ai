@@ -1,0 +1,604 @@
+---
+title: 'Human in the Loop'
+description: 'Add manual approval and review steps to your flows'
+icon: 'user-check'
+---
+
+# Human in the Loop Step
+
+The Human in the Loop step pauses flow execution and requests manual approval or review from designated team members. Use it for high-stakes decisions, quality control, compliance requirements, or any situation where human judgment is required.
+
+<Info>
+**Agent + Human Collaboration**: Let agents handle routine decisions automatically, but pause for human review when decisions are critical, uncertain, or require empathy and judgment.
+</Info>
+
+---
+
+## How It Works
+
+Human in the Loop pauses the flow, sends notification to reviewers, waits for their decision, then continues based on their response:
+
+<CodeGroup>
+```text Simple Approval
+Agent: Analyzes refund request
+  Output: {decision: "approve", amount: 150, reason: "..."}
+↓
+Human in the Loop: Manager approval
+  Reviewers: [manager@company.com]
+  Context: Refund request for $150
+  Pause until: Manager approves/rejects
+↓ (approved)
+HTTP Request: Process refund
+```
+
+```text Quality Review
+Agent: Generates customer email
+  Output: {subject: "...", body: "..."}
+↓
+Human in the Loop: Review email content
+  Reviewers: [support-lead@company.com]
+  Show: Generated email
+  Options: Approve, Edit, Reject
+↓ (approved)
+Agent: Send email
+```
+
+```text Multi-Stage Approval
+Agent: Processes large order
+↓
+Condition: Order > $10,000?
+↓ (true)
+Human in the Loop: Sales manager approval
+↓ (approved)
+Condition: Order > $50,000?
+↓ (true)
+Human in the Loop: Director approval
+↓ (approved)
+HTTP Request: Process order
+```
+</CodeGroup>
+
+---
+
+## When to Use Human in the Loop
+
+| Use When | Don't Use When |
+|----------|----------------|
+| High-stakes decisions (large refunds, deletions) | Routine, low-risk decisions |
+| Compliance requirements (financial approvals) | High-volume operations |
+| Low confidence from agent (< 70%) | Agent is consistently accurate |
+| Customer complaints or escalations | Standard inquiries |
+| Sensitive content (legal, medical, HR) | Generic content generation |
+| Quality control on agent outputs | Agents have proven reliability |
+| Edge cases outside normal rules | Common scenarios |
+
+---
+
+## Configuration
+
+### Reviewers
+
+<ParamField path="reviewers" type="array" required>
+  Email addresses of people who can approve
+  
+  **Examples**:
+  ```json
+  ["manager@company.com"]
+  
+  ["support-lead@company.com", "support-manager@company.com"]
+  
+  // Dynamic based on data
+  ["${customer.account_manager}", "fallback@company.com"]
+  ```
+  
+  <Tip>
+  Add multiple reviewers - any one can approve (OR logic, not AND)
+  </Tip>
+</ParamField>
+
+<ParamField path="requiredApprovals" type="number" default="1">
+  Number of approvals required before continuing
+  
+  **Examples**:
+  - `1` - Any single reviewer can approve (most common)
+  - `2` - Two reviewers must approve
+  - `all` - All reviewers must approve
+  
+  **Use multi-approval for**: Very high-stakes decisions, compliance requirements
+</ParamField>
+
+### Request Details
+
+<ParamField path="title" type="string" required>
+  Short description of what needs approval
+  
+  **Examples**:
+  - "Refund Request Approval"
+  - "Content Review Required"
+  - "High-Value Order Approval"
+  - "Customer Escalation Review"
+</ParamField>
+
+<ParamField path="description" type="string">
+  Detailed context for reviewers
+  
+  Can include data from previous steps:
+  ```
+  Customer ${customer.name} has requested a refund of $${refund.amount} for order #${order.id}.
+  
+  Agent recommendation: ${agent.decision}
+  Reason: ${agent.reason}
+  Customer tier: ${customer.tier}
+  Order date: ${order.date}
+  ```
+</ParamField>
+
+<ParamField path="data" type="object">
+  Structured data to display to reviewers
+  
+  **Example**:
+  ```json
+  {
+    "customer": {
+      "name": "${customer.name}",
+      "email": "${customer.email}",
+      "tier": "${customer.tier}",
+      "lifetime_value": "${customer.ltv}"
+    },
+    "request": {
+      "type": "refund",
+      "amount": "${refund.amount}",
+      "reason": "${refund.reason}"
+    },
+    "agent_analysis": {
+      "recommendation": "${agent.decision}",
+      "confidence": "${agent.confidence}",
+      "reasoning": "${agent.reasoning}"
+    }
+  }
+  ```
+  
+  Displayed in structured format for easy review
+</ParamField>
+
+### Response Options
+
+<ParamField path="approvalOptions" type="array" default='["approve", "reject"]'>
+  Custom approval options
+  
+  **Default**: Approve or Reject
+  
+  **Custom examples**:
+  ```json
+  ["approve", "reject", "request_more_info"]
+  
+  ["approve", "approve_with_conditions", "reject"]
+  
+  ["low_priority", "medium_priority", "high_priority"]
+  ```
+</ParamField>
+
+<ParamField path="allowComments" type="boolean" default="true">
+  Let reviewers add comments
+  
+  Comments are included in the step output and can be used in subsequent steps.
+</ParamField>
+
+<ParamField path="allowEdit" type="boolean" default="false">
+  Let reviewers edit the submitted data
+  
+  **Use when**: Reviewers might need to modify details (e.g., adjust refund amount, edit generated content)
+</ParamField>
+
+### Timeout
+
+<ParamField path="timeout" type="number">
+  How long to wait before auto-action (in hours)
+  
+  **Examples**:
+  - `24` - Wait 24 hours
+  - `72` - Wait 3 days
+  - No timeout - Wait indefinitely
+</ParamField>
+
+<ParamField path="timeoutAction" type="enum">
+  What to do when timeout is reached
+  
+  **Options**:
+  - `auto_approve` - Automatically approve
+  - `auto_reject` - Automatically reject
+  - `escalate` - Send to escalation reviewers
+  - `notify` - Send reminder notification
+</ParamField>
+
+---
+
+## Response Structure
+
+Human in the Loop returns the reviewer's decision:
+
+```json
+{
+  "approved": true,
+  "decision": "approve",
+  "reviewer": "manager@company.com",
+  "comments": "Approved - customer has good history",
+  "timestamp": "2025-10-16T10:30:00Z",
+  "edited_data": {
+    // Any edits made by reviewer (if editing enabled)
+  }
+}
+```
+
+### Accessing Response
+
+Reference in subsequent steps:
+
+```javascript
+// Check if approved
+${human_review.approved}
+
+// Get decision
+${human_review.decision}
+
+// Get reviewer comments
+${human_review.comments}
+
+// Get who approved
+${human_review.reviewer}
+
+// Use in condition
+${human_review.approved} == true
+```
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Confidence-Based Review" icon="chart-line">
+    Review when agent confidence is low
+    
+    ```text
+    Agent: Analyze request
+      Output: {decision, confidence, reasoning}
+    ↓
+    Condition: Confidence check
+    ├─ If confidence >= 0.9 → Auto-execute
+    └─ If confidence < 0.9 → Human review
+        ↓
+        Condition: Approved?
+        ├─ Yes → Execute
+        └─ No → Reject
+    ```
+    
+    **Use when**: Agent handles most cases, humans review uncertain ones
+  </Accordion>
+
+  <Accordion title="High-Value Approval" icon="dollar-sign">
+    Require approval above threshold
+    
+    ```text
+    Agent: Process transaction
+    ↓
+    Condition: Amount > $10,000?
+    ├─ Yes → Manager approval required
+    │   ↓
+    │   Human in the Loop
+    │   ↓
+    │   Continue if approved
+    └─ No → Auto-approve
+    ```
+    
+    **Use when**: Financial controls, spending limits
+  </Accordion>
+
+  <Accordion title="Quality Control" icon="clipboard-check">
+    Review agent-generated content before sending
+    
+    ```text
+    Agent: Generate email/content
+    ↓
+    Human in the Loop: Content review
+      Show: Generated content
+      Options: Approve, Edit, Reject
+    ↓
+    Condition: Approved?
+    ├─ Yes → Send content
+    ├─ Edit → Update content, then send
+    └─ Reject → Notify agent owner
+    ```
+    
+    **Use when**: Customer-facing content, compliance requirements
+  </Accordion>
+
+  <Accordion title="Escalation Path" icon="stairs">
+    Multi-tier approval for complex decisions
+    
+    ```text
+    Agent: Analyze situation
+    ↓
+    Condition: Risk level?
+    ├─ Low → Auto-handle
+    ├─ Medium → Team lead approval
+    │   ↓
+    │   Human in the Loop: Team lead
+    │   ↓
+    │   Continue if approved
+    └─ High → Director approval
+        ↓
+        Human in the Loop: Director
+        ↓
+        Continue if approved
+    ```
+    
+    **Use when**: Risk-based escalation, org hierarchy
+  </Accordion>
+
+  <Accordion title="Compliance Review" icon="shield-check">
+    Required approval for regulated actions
+    
+    ```text
+    Agent: Processes sensitive data
+    ↓
+    Human in the Loop: Compliance approval
+      Reviewers: [compliance@company.com]
+      Required: All reviewers must approve
+    ↓
+    Continue only if approved
+    ```
+    
+    **Use when**: GDPR, HIPAA, financial regulations
+  </Accordion>
+
+  <Accordion title="Customer Escalation" icon="phone">
+    Human takeover for complex support issues
+    
+    ```text
+    Agent: Handles customer inquiry
+    ↓
+    Condition: Agent decision?
+    ├─ Resolved → Close ticket
+    └─ Escalate → Human takeover
+        ↓
+        Human in the Loop: Support agent
+          Context: Conversation history
+          Data: Customer profile, order history
+        ↓
+        Support agent continues conversation
+    ```
+    
+    **Use when**: Complex issues, angry customers, ambiguous situations
+  </Accordion>
+
+  <Accordion title="Timeout with Escalation" icon="clock">
+    Auto-escalate if not reviewed in time
+    
+    ```text
+    Agent: Flags for review
+    ↓
+    Human in the Loop: Manager review
+      Timeout: 24 hours
+      Timeout Action: Escalate
+    ↓ (if timeout)
+    Human in the Loop: Director review
+      Timeout: 12 hours
+      Timeout Action: Auto-approve
+    ↓
+    Continue
+    ```
+    
+    **Use when**: Time-sensitive approvals, SLA requirements
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Real-World Examples
+
+### Example 1: Refund Approval Workflow
+
+```text
+Customer: Requests refund via chat
+↓
+Agent: Analyzes refund request
+  Tools: Order history, return policy
+  Output: {
+    decision: "approve",
+    confidence: 0.75,
+    amount: 299.99,
+    reason: "Defective product",
+    policy_compliant: true
+  }
+↓
+Condition: Confidence >= 0.9?
+├─ Yes → Auto-approve refund
+└─ No → Manager review
+    ↓
+    Human in the Loop
+      Reviewers: ["support-manager@company.com"]
+      Title: "Refund Approval Required"
+      Description: "Customer ${customer.name} requesting $${refund.amount} refund"
+      Data: {
+        customer: ${customer},
+        order: ${order},
+        agent_recommendation: ${agent.output}
+      }
+      Options: ["approve", "reject", "approve_partial"]
+      Timeout: 24 hours
+      Timeout Action: auto_approve
+    ↓
+    Condition: Approved?
+    ├─ Yes → Process refund
+    └─ No → Send rejection email
+```
+
+---
+
+### Example 2: Marketing Content Review
+
+```text
+Trigger: Weekly content generation
+↓
+Agent: Generate social media posts
+  Output: 7 days of posts
+↓
+Human in the Loop: Marketing manager review
+  Reviewers: ["marketing@company.com"]
+  Title: "Weekly Social Content Review"
+  Description: "Review generated social posts for next week"
+  Data: {posts: ${agent.output.posts}}
+  Options: ["approve_all", "edit", "regenerate"]
+  Allow Edit: true
+↓
+Condition: Decision?
+├─ Approve → Schedule posts
+├─ Edit → Use edited version, schedule
+└─ Regenerate → New agent generation
+```
+
+---
+
+### Example 3: High-Value Sales Approval
+
+```text
+Form: Quote request submitted
+↓
+Agent: Generate pricing quote
+  Output: {
+    customer: {...},
+    products: [...],
+    subtotal: 45000,
+    discount: 0.15,
+    total: 38250
+  }
+↓
+Condition: Total >= $25,000?
+├─ No → Auto-send quote
+└─ Yes → Sales director approval
+    ↓
+    Human in the Loop
+      Reviewers: ["sales-director@company.com"]
+      Title: "High-Value Quote Approval"
+      Description: "Quote for ${agent.customer.name}: $${agent.total}"
+      Data: {
+        customer: ${agent.customer},
+        quote_details: ${agent.output},
+        margin_analysis: ${calculated_margin}
+      }
+      Options: ["approve", "adjust_discount", "reject"]
+      Allow Edit: true
+    ↓
+    Condition: Approved?
+    ├─ Yes → Send quote
+    ├─ Adjust → Update pricing, send
+    └─ Reject → Notify sales rep
+```
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Sparingly" icon="filter">
+    Only require human approval when truly necessary. Over-use creates bottlenecks and reduces efficiency.
+  </Card>
+  
+  <Card title="Provide Context" icon="circle-info">
+    Give reviewers all information needed to make informed decisions. Include agent reasoning, data, and recommendations.
+  </Card>
+  
+  <Card title="Set Reasonable Timeouts" icon="clock">
+    Don't let requests sit forever. Set timeouts with appropriate fallback actions.
+  </Card>
+  
+  <Card title="Make It Easy" icon="mouse-pointer">
+    Simple approve/reject options work best. Complex choices slow decisions.
+  </Card>
+  
+  <Card title="Notify Appropriately" icon="bell">
+    Use email, Slack, or your team's communication channel. Don't rely on reviewers checking the platform.
+  </Card>
+  
+  <Card title="Track and Optimize" icon="chart-line">
+    Monitor approval rates and times. If humans always approve, consider removing the step.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Reviewers not receiving notifications" icon="bell-slash">
+    **Causes**:
+    - Email address incorrect
+    - Notifications in spam
+    - Email service configuration issue
+    
+    **Solutions**:
+    - Verify email addresses
+    - Check spam folders
+    - Add noreply@microstrate.ai to contacts
+    - Check notification settings
+  </Accordion>
+
+  <Accordion title="Flow stuck waiting for approval" icon="hourglass">
+    **Causes**:
+    - Reviewers haven't responded
+    - No timeout set
+    - Notification not received
+    
+    **Solutions**:
+    - Set reasonable timeouts
+    - Add reminder notifications
+    - Add multiple reviewers
+    - Contact reviewers directly
+  </Accordion>
+
+  <Accordion title="Can't access approval decision" icon="link-slash">
+    **Causes**:
+    - Wrong variable path
+    - Step not completed
+    
+    **Solutions**:
+    - Use `${step_name.approved}` or `${step_name.decision}`
+    - Check step executed in logs
+    - Verify step name matches
+  </Accordion>
+
+  <Accordion title="Too many approval requests" icon="inbox">
+    **Causes**:
+    - Threshold too low
+    - Agent confidence not high enough
+    - Unnecessary approvals
+    
+    **Solutions**:
+    - Raise approval threshold
+    - Improve agent prompts for higher confidence
+    - Review if approvals are truly needed
+    - Consider batch approvals for similar requests
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Route based on approval decision
+  </Card>
+  
+  <Card title="Agents" icon="robot" href="/flows/steps/agents">
+    Configure agents that recommend decisions
+  </Card>
+  
+  <Card title="Delay Step" icon="clock" href="/flows/steps/delay">
+    Add time-based pauses to flows
+  </Card>
+  
+  <Card title="Notifications" icon="bell" href="/integrations/notifications">
+    Configure notification channels
+  </Card>
+</CardGroup>

@@ -1,0 +1,227 @@
+---
+title: 'Functions Overview'
+description: 'Complete reference of all available Microstrate functions'
+icon: 'book'
+---
+
+# Functions Overview
+
+This page lists all available functions in Microstrate. Functions provide access to Microstrate platform services (streams, storage) and common data transformation utilities.
+
+<Info>
+**Platform Integration**: Functions let you interact with Microstrate's real-time streaming, storage, and data transformation capabilities directly from your flows.
+</Info>
+
+---
+
+## Function Categories
+
+<CardGroup cols={3}>
+  <Card title="Stream Functions" icon="stream" href="/flows/functions/streams">
+    Real-time data streaming operations
+  </Card>
+  
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    Fast key-based data storage
+  </Card>
+  
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Large object storage operations
+  </Card>
+  
+  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utilities">
+    Format, merge, and transform data
+  </Card>
+</CardGroup>
+
+---
+
+## Stream Functions
+
+<Card title="View Stream Functions Documentation" icon="arrow-right" href="/flows/functions/streams">
+  Detailed documentation for real-time streaming operations
+</Card>
+
+Stream functions enable real-time, sequential data processing with low latency. Use streams for event sourcing, message queuing, and real-time data pipelines.
+
+- `create-stream` - Create a new stream in your account
+- `publish-message-to-stream` - Add a message to a stream
+- `get-item-from-stream` - Retrieve an item from a stream
+- `search-stream-items` - Search items by key and timestamp/offset
+- `aggregate-stream-items` - Aggregate items by key and timestamp/offset
+- `list-streams` - List all streams in your account
+- `poison-pill-message-to-stream` - Add poison pill message to stream
+
+---
+
+## Key-Value Storage Functions
+
+<Card title="View Key-Value Storage Documentation" icon="arrow-right" href="/flows/functions/key-value">
+  Detailed documentation for KV storage operations
+</Card>
+
+Key-Value storage provides fast, simple data storage with key-based access. Perfect for configuration, caching, and state management.
+
+- `create-key-value-bucket` - Create a new Key/Value bucket
+- `put-kv-item` - Add an item to a bucket
+- `get-kv-bucket-item` - Retrieve an item by key
+- `list-key-value-buckets` - List all KV buckets
+- `list-kv-bucket-items` - List items in a bucket
+
+---
+
+## Object Storage Functions
+
+<Card title="View Object Storage Documentation" icon="arrow-right" href="/flows/functions/object-storage">
+  Detailed documentation for object storage operations
+</Card>
+
+Object storage handles large items like files, documents, and binary data. Use for document management, media storage, and backups.
+
+- `create-object-store-bucket` - Create a new object storage bucket
+- `put-object-by-key` - Add an object to a bucket
+- `get-object-from-bucket` - Retrieve an object by key
+- `list-object-store-buckets` - List all object buckets
+- `list-object-keys` - List objects in a bucket
+
+---
+
+## Data Transformation Utilities
+
+<Card title="View Utility Functions Documentation" icon="arrow-right" href="/flows/functions/utilities">
+  Detailed documentation for data transformation functions
+</Card>
+
+Utility functions for common data operations like encoding, merging, grouping, and formatting.
+
+### Encoding & Formatting
+- `base64-encode` - Encode to base64 format
+- `base64-decode` - Decode from base64 format
+- `JSON-XML` - Transform JSON to XML
+
+### Data Operations
+- `deep-merge-objects` - Deeply merge objects recursively
+- `merge-arrays` - Merge multiple arrays into one
+- `group-by` - Group objects by a property
+- `set-operations` - Perform set operations (diff, union, intersection)
+
+### Templates & Mapping
+- `Handlebars Template` - Use Handlebars for dynamic templates
+- `Mapping` - JSON path mappings to restructure data
+
+### Specialized
+- `multiply-large-numbers` - Multiply very large numbers
+- `secret-key-get-node` - Retrieve secret keys
+
+---
+
+## Quick Reference
+
+### By Use Case
+
+<AccordionGroup>
+  <Accordion title="Real-time Data Processing">
+    Use **Stream Functions** when you need:
+    - Event sourcing and processing
+    - Message queuing systems
+    - Real-time data pipelines
+    - Sequential data processing
+    
+    **Example**: Process customer events in real-time, aggregate analytics data, build notification systems.
+  </Accordion>
+  
+  <Accordion title="Fast Data Storage">
+    Use **Key-Value Storage** when you need:
+    - Quick data lookups by key
+    - Configuration storage
+    - Caching layer
+    - Session management
+    
+    **Example**: Store user preferences, cache API responses, maintain feature flags.
+  </Accordion>
+  
+  <Accordion title="Large File Handling">
+    Use **Object Storage** when you need:
+    - Store files, documents, media
+    - Binary data storage
+    - Document management
+    - Backup and archival
+    
+    **Example**: Store uploaded PDFs, images, reports, customer documents.
+  </Accordion>
+  
+  <Accordion title="Data Transformation">
+    Use **Utility Functions** when you need:
+    - Format or encode data
+    - Merge or restructure objects
+    - Group or organize data
+    - Template generation
+    
+    **Example**: Base64 encode files, merge user profiles, group orders by customer.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## All Functions Alphabetical
+
+<AccordionGroup>
+  <Accordion title="A-G">
+    - `aggregate-stream-items` - Aggregate stream items by key and time
+    - `base64-decode` - Decode from base64
+    - `base64-encode` - Encode to base64
+    - `create-key-value-bucket` - Create KV bucket
+    - `create-object-store-bucket` - Create object bucket
+    - `create-stream` - Create new stream
+    - `deep-merge-objects` - Deeply merge objects
+    - `get-item-from-stream` - Get stream item
+    - `get-kv-bucket-item` - Get KV item
+    - `get-object-from-bucket` - Get object
+    - `group-by` - Group objects by property
+  </Accordion>
+  
+  <Accordion title="H-M">
+    - `Handlebars Template` - Dynamic templates with Handlebars
+    - `JSON-XML` - Transform JSON to XML
+    - `list-key-value-buckets` - List KV buckets
+    - `list-kv-bucket-items` - List items in KV bucket
+    - `list-object-keys` - List objects by keys
+    - `list-object-store-buckets` - List object buckets
+    - `list-streams` - List all streams
+    - `Mapping` - JSON path data mapping
+    - `merge-arrays` - Merge arrays
+    - `multiply-large-numbers` - Multiply large numbers
+  </Accordion>
+  
+  <Accordion title="P-Z">
+    - `poison-pill-message-to-stream` - Add poison pill to stream
+    - `publish-message-to-stream` - Publish to stream
+    - `put-kv-item` - Add KV item
+    - `put-object-by-key` - Add object
+    - `search-stream-items` - Search stream by key/time
+    - `secret-key-get-node` - Retrieve secret key
+    - `set-operations` - Set diff, union, intersection
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Stream Functions" icon="stream" href="/flows/functions/streams">
+    Learn about real-time streaming
+  </Card>
+  
+  <Card title="Storage Functions" icon="database" href="/flows/functions/key-value">
+    Explore storage options
+  </Card>
+  
+  <Card title="Data Utilities" icon="shuffle" href="/flows/functions/utilities">
+    Transform and format data
+  </Card>
+  
+  <Card title="Using Functions in Flows" icon="diagram-project" href="/flows/steps/functions">
+    See Functions step documentation
+  </Card>
+</CardGroup>

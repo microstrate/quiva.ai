@@ -1,0 +1,431 @@
+---
+title: "Agents Overview"
+description: "Build intelligent AI agents that reason, use tools, and make decisions within your workflows"
+icon: "robot"
+---
+
+# Understanding Agents
+
+Agents are the intelligence layer of Microstrate. They're AI-powered workers that can understand context, reason through problems, use tools, and make decisions—all within boundaries you define.
+
+## What is an Agent?
+
+An agent is an AI that can:
+
+- **Understand** - Parse natural language and complex data
+- **Reason** - Think through problems step-by-step
+- **Act** - Use tools and APIs to accomplish tasks
+- **Decide** - Make judgements based on policies and context
+- **Adapt** - Handle exceptions and edge cases
+
+Unlike rigid automation or simple chatbots, agents work more like human employees: you give them a goal, the tools they need, and boundaries to operate within—then they figure out how to accomplish the task.
+
+<img 
+  src="/images/agents/agent-diagram.png" 
+  alt="Agent Architecture"
+  className="rounded-lg"
+/>
+
+## Agents vs. Automation vs. Chatbots
+
+<CardGroup cols={3}>
+  <Card title="Traditional Automation" icon="gears">
+    **"If this, then that"**
+    
+    Follows exact rules. Breaks on exceptions. Requires programming every scenario.
+    
+    ❌ Can't handle variability  
+    ❌ Needs explicit programming  
+    ❌ Brittle with edge cases
+  </Card>
+  
+  <Card title="Simple Chatbots" icon="comment">
+    **"Conversation interface"**
+    
+    Responds to keywords. Limited to chat. No real reasoning or actions.
+    
+    ⚠️ Keyword-based only  
+    ⚠️ Can't use tools  
+    ⚠️ Limited to conversation
+  </Card>
+  
+  <Card title="Microstrate Agents" icon="robot">
+    **"Digital workforce"**
+    
+    Reasons through problems. Uses tools. Handles exceptions. Makes decisions.
+    
+    ✅ Intelligent reasoning  
+    ✅ Uses tools dynamically  
+    ✅ Handles complexity  
+    ✅ Works within boundaries
+  </Card>
+</CardGroup>
+
+## Core Agent Capabilities
+
+### 1. Intelligence & Reasoning
+
+Agents can:
+- Understand natural language and intent
+- Reason through multi-step problems
+- Handle ambiguity and edge cases
+- Learn from context and conversation history
+- Apply business logic flexibly
+
+<Card title="Example: Customer Service" icon="headset">
+**Customer**: "I want to return this shirt but I lost the receipt. It's been 35 days."
+
+**Traditional Automation**: Breaks (doesn't match exact return scenario)
+
+**Agent**: 
+1. Understands customer wants to return an item
+2. Checks order history (using tool)
+3. Sees purchase was 35 days ago (5 days past standard policy)
+4. Reviews return policy (using tool)
+5. Notes customer has good history and high lifetime value
+6. **Decides** to approve as one-time exception
+7. Processes return and explains decision to customer
+</Card>
+
+### 2. Tool Usage
+
+Agents can use tools (connectors) to:
+- Search knowledge bases
+- Query databases
+- Call APIs
+- Access CRM data
+- Process documents
+- Send emails
+- Update systems
+
+Agents **decide which tools to use** based on the task. You don't program "if customer asks about order, call order API"—the agent figures that out.
+
+<Info>
+Tools are MCP (Model Context Protocol) servers that provide standardized access to your systems. Learn more in [Tools & Connectors](/agents/tools-and-connectors).
+</Info>
+
+### 3. Guardrails & Boundaries
+
+Agents work within boundaries you define:
+
+- **Output validation** - Ensures responses match required format
+- **Business rules** - Enforces policies and constraints
+- **Human-in-the-loop** - Escalates critical decisions
+- **Context limits** - Controls memory and token usage
+- **Response modes** - Synchronous or background execution
+
+<Warning>
+Agents are powerful but not perfect. Always define boundaries, validate outputs, and use human-in-the-loop for critical decisions.
+</Warning>
+
+### 4. Self-Optimization
+
+Agents improve automatically:
+
+- **Smart Context** - Intelligently manages conversation memory
+- **Prompt Optimization** - Automatically enhances prompts based on configuration
+- **Adaptive Behavior** - Learns from usage patterns (coming soon)
+
+## When to Use Agents
+
+### Perfect For
+
+<AccordionGroup>
+  <Accordion title="Customer Service & Support" icon="headset">
+    - Answer customer questions with context
+    - Troubleshoot issues using knowledge base
+    - Apply policies with judgment (returns, refunds)
+    - Handle complex, multi-turn conversations
+    - Escalate to humans when needed
+  </Accordion>
+
+  <Accordion title="Lead Qualification" icon="user-check">
+    - Ask discovery questions dynamically
+    - Research companies and contacts
+    - Score leads based on ICP criteria
+    - Enrich data from multiple sources
+    - Route qualified leads intelligently
+  </Accordion>
+
+  <Accordion title="Content Generation" icon="pen">
+    - Create personalized email campaigns
+    - Generate social media posts
+    - Adapt messaging by audience segment
+    - Maintain brand voice across channels
+    - Repurpose content efficiently
+  </Accordion>
+
+  <Accordion title="Data Processing" icon="database">
+    - Extract information from documents
+    - Validate data against business rules
+    - Make contextual decisions on exceptions
+    - Cross-reference multiple systems
+    - Flag issues for human review
+  </Accordion>
+
+  <Accordion title="Sales & Outreach" icon="handshake">
+    - Personalize outreach at scale
+    - Research prospects automatically
+    - Follow up based on engagement
+    - Book meetings intelligently
+    - Qualify and route opportunities
+  </Accordion>
+</AccordionGroup>
+
+### Not Ideal For
+
+<Card title="When to Use Traditional Automation Instead" icon="triangle-exclamation">
+- **Simple, predictable tasks** - If it's always the same steps, use a condition or function
+- **High-volume, low-variability** - Agents have per-run costs; save them for complexity
+- **Pure data transformation** - Use Map, Rules, or Functions for straightforward data manipulation
+- **Time-critical micro-operations** - Agents add latency; use functions for speed-critical tasks
+- **Deterministic calculations** - Use Rules for exact math and logic
+
+**Rule of thumb**: If you can write "if X then Y" rules that cover all cases, use automation. If there's judgment, context, or exceptions, use agents.
+</Card>
+
+## Agent Architecture
+
+Every agent has three main configuration areas:
+
+### 1. Information Settings
+
+Define your agent's identity and behavior:
+
+- **Name & Description** - What this agent does
+- **Response Mode** - Wait for completion or run in background
+- **Agent Instructions** - Role, personality, and capabilities
+
+<Tip>
+Agent instructions are like a job description. Be specific about what the agent should do, how it should communicate, and what its limitations are.
+</Tip>
+
+[Learn more about Information Settings →](/agents/configuration/information-settings)
+
+### 2. Provider Settings
+
+Configure the AI model and integration:
+
+- **Provider** - Workforce (custom), OpenAI, Claude, Gemini
+- **Model** - Specific model version (GPT-4, Claude Sonnet, etc.)
+- **API Key** - Securely stored authentication
+- **Output Schema** - Define required response structure
+
+<Info>
+Different models excel at different tasks. GPT-4 for general intelligence, Claude for long context, Gemini for multimodal. Test to find what works best.
+</Info>
+
+[Learn more about Provider Settings →](/agents/configuration/provider-settings)
+
+### 3. Context Settings
+
+Control memory and reasoning behavior:
+
+- **Smart Context** - Automatic conversation memory management
+- **Prompt Optimization** - Auto-enhance prompts
+- **Token Limits** - Maximum context size
+- **Message History** - How many messages to remember
+- **Reasoning Steps** - How many tool uses allowed
+
+<Tip>
+Higher token limits = more context = better decisions, but higher costs. Start with defaults and increase if needed.
+</Tip>
+
+[Learn more about Context Settings →](/agents/configuration/context-settings)
+
+## Building Your First Agent
+
+<Steps>
+  <Step title="Define the Role">
+    What is this agent responsible for? Customer service? Lead qualification? Content creation?
+  </Step>
+  <Step title="Write Instructions">
+    Describe the agent's role, personality, and capabilities clearly
+  </Step>
+  <Step title="Choose a Model">
+    Select the LLM provider and model that fits your needs
+  </Step>
+  <Step title="Attach Tools">
+    Connect the systems and data sources the agent needs
+  </Step>
+  <Step title="Set Boundaries">
+    Define output schemas, validation rules, and escalation criteria
+  </Step>
+  <Step title="Test Thoroughly">
+    Try edge cases, exceptions, and realistic scenarios
+  </Step>
+  <Step title="Deploy & Monitor">
+    Activate in a flow and review performance regularly
+  </Step>
+</Steps>
+
+<Card title="Start Building" icon="rocket" href="/agents/creating-first-agent">
+Follow our step-by-step guide to create your first agent in minutes
+</Card>
+
+## Agent Examples
+
+### Customer Service Agent
+
+```
+Role: Customer service representative for [Company]
+
+Instructions: 
+You help customers with order tracking, returns, and product questions. 
+You're friendly, professional, and resolve issues on first contact.
+
+Tools:
+- Search Knowledge Base
+- Get Order History
+- Apply Return Policy
+- Create Support Ticket
+
+Boundaries:
+- Approve returns up to $200 without escalation
+- Escalate refunds over $200 to human
+- Always verify customer identity before accessing orders
+```
+
+### Lead Qualification Agent
+
+```
+Role: Sales development representative
+
+Instructions:
+You qualify inbound leads by understanding their needs, company fit, 
+and timeline. You ask relevant discovery questions and score leads 
+based on our ICP criteria.
+
+Tools:
+- Search CRM
+- Company Data API (Clearbit/ZoomInfo)
+- Calendar Booking
+- Lead Scoring Rules
+
+Boundaries:
+- Only book meetings with qualified leads (score > 70)
+- Maximum 5 discovery questions
+- If lead doesn't match ICP, add to nurture campaign
+```
+
+### Content Generation Agent
+
+```
+Role: Content marketing specialist
+
+Instructions:
+You create engaging social media posts and email campaigns that 
+match our brand voice. You adapt messaging for different audience 
+segments and channels while maintaining consistency.
+
+Tools:
+- Get Brand Guidelines
+- Get Customer Segments
+- Get Performance Metrics
+- Content Calendar
+
+Boundaries:
+- Follow brand voice guidelines strictly
+- Include call-to-action in every post
+- Adapt length and tone by channel
+- Flag sensitive topics for human review
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Be Specific in Instructions" icon="bullseye">
+    Don't say "help customers." Say "help customers with order tracking, returns within policy, and product questions. Escalate refunds over $200."
+  </Accordion>
+
+  <Accordion title="Give the Right Tools" icon="toolbox">
+    Connect data sources the agent needs. More context = better decisions. But don't connect everything—focus on relevant tools.
+  </Accordion>
+
+  <Accordion title="Define Clear Boundaries" icon="fence">
+    Specify what the agent can and cannot do. Define escalation criteria. Use output schemas to enforce structure.
+  </Accordion>
+
+  <Accordion title="Test with Real Scenarios" icon="flask">
+    Use actual customer emails, edge cases, and exceptions. Agents learn from examples in instructions.
+  </Accordion>
+
+  <Accordion title="Start Simple, Add Complexity" icon="seedling">
+    Begin with basic instructions and a few tools. Test thoroughly. Then add more capabilities and guardrails.
+  </Accordion>
+
+  <Accordion title="Monitor and Refine" icon="chart-line">
+    Review agent conversations regularly. Refine instructions based on performance. Update tools as systems change.
+  </Accordion>
+
+  <Accordion title="Use Human-in-the-Loop" icon="user-check">
+    Add human approval for critical decisions, high-value actions, or when confidence is low.
+  </Accordion>
+</AccordionGroup>
+
+## Agent Costs
+
+Agents have per-run costs based on:
+
+- **Model chosen** - GPT-4 > GPT-3.5, Claude Opus > Sonnet
+- **Context size** - More tokens = higher cost
+- **Tool usage** - Each tool call adds processing
+- **Reasoning steps** - More steps = more tokens
+
+<Info>
+Use the **Workforce** model (our custom model) for the best balance of performance and cost. Or bring your own API keys to use any provider's pricing.
+</Info>
+
+See [Plans & Pricing](/essentials/plans-and-pricing) for details.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Your First Agent" icon="rocket" href="/agents/creating-first-agent">
+    Step-by-step guide to building an agent
+  </Card>
+  
+  <Card title="Information Settings" icon="info-circle" href="/agents/configuration/information-settings">
+    Configure agent identity and behavior
+  </Card>
+  
+  <Card title="Provider Settings" icon="sliders" href="/agents/configuration/provider-settings">
+    Choose models and configure AI
+  </Card>
+  
+  <Card title="Context Settings" icon="brain" href="/agents/configuration/context-settings">
+    Manage memory and reasoning
+  </Card>
+  
+  <Card title="Tools & Connectors" icon="plug" href="/agents/tools-and-connectors">
+    Connect your systems and data
+  </Card>
+  
+  <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/agents/prompt-engineering">
+    Write effective agent instructions
+  </Card>
+  
+  <Card title="Best Practices" icon="star" href="/agents/best-practices">
+    Patterns for successful agents
+  </Card>
+  
+  <Card title="Use in Flows" icon="diagram-project" href="/flows/steps/agents">
+    Add agents to your workflows
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Community" icon="users" href="https://community.microstrate.ai">
+    Ask questions and share agents
+  </Card>
+  
+  <Card title="Support" icon="life-ring" href="/support">
+    Get help from our team
+  </Card>
+  
+  <Card title="Examples" icon="book" href="/examples/agents">
+    Browse agent templates
+  </Card>
+</CardGroup>

@@ -1,0 +1,319 @@
+---
+title: 'Flow Steps Overview'
+description: 'Build intelligent workflows with agents, logic, and integrations'
+icon: 'list-check'
+---
+
+# Flow Steps
+
+Flow steps are the building blocks of your workflows. After a trigger activates your flow, steps execute in sequence to accomplish your business logic. Each step performs a specific function—from running AI agents to transforming data to making decisions.
+
+<Info>
+**Agent-Centric Design**: Microstrate flows are designed to be agent-first. Start with an AI agent, attach tools (connectors) to it, and add supporting steps as needed. This approach maximizes the intelligence and autonomy of your workflows.
+</Info>
+
+---
+
+## Step Types
+
+<CardGroup cols={3}>
+  <Card title="Agents" icon="robot" href="/flows/steps/agents">
+    Run AI agents with tools and context
+  </Card>
+  
+  <Card title="Condition" icon="code-branch" href="/flows/steps/condition">
+    Branch flows with if/then/else logic
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
+    Call external APIs and services
+  </Card>
+  
+  <Card title="Map" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Transform and iterate over data
+  </Card>
+  
+  <Card title="Rules" icon="gavel" href="/flows/steps/rules">
+    Apply business rules and calculations
+  </Card>
+  
+  <Card title="Human in the Loop" icon="user-check" href="/flows/steps/human-in-the-loop">
+    Add manual approval steps
+  </Card>
+  
+  <Card title="Delay" icon="clock" href="/flows/steps/delay">
+    Pause workflow execution
+  </Card>
+  
+  <Card title="Eval" icon="code" href="/flows/steps/eval">
+    Execute custom JavaScript
+  </Card>
+  
+  <Card title="Functions" icon="function" href="/flows/steps/functions">
+    Use utility functions
+  </Card>
+</CardGroup>
+
+---
+
+## How Steps Work
+
+Steps execute sequentially after your trigger fires. Each step:
+
+1. **Receives input** from the trigger or previous steps
+2. **Performs its function** (run agent, make decision, transform data, etc.)
+3. **Outputs results** that subsequent steps can use
+4. **Passes control** to the next step
+
+<CodeGroup>
+```text Flow Example
+Trigger: HTTP POST received
+↓
+Step 1: Agent analyzes request
+↓
+Step 2: Condition checks agent decision
+↓ (if approved)
+Step 3: HTTP Request sends to CRM
+↓
+Step 4: Map formats response
+↓
+Return: Success message
+```
+
+```text Agent-Centric Example
+Trigger: New customer inquiry
+↓
+Step 1: Agent (with tools)
+  - Searches knowledge base
+  - Checks order history
+  - Accesses product catalog
+  - Makes decision
+↓
+Step 2: Condition on agent decision
+↓ (if escalate)
+Step 3: Human in the Loop approval
+↓ (if approved)
+Step 4: Agent sends response
+```
+</CodeGroup>
+
+---
+
+## The Agent-Centric Approach
+
+**Start with agents, not automation.**
+
+Traditional workflow tools force you to map out every step explicitly. Microstrate is different—**you delegate work to intelligent agents** and let them figure out the details.
+
+### Traditional Approach (Step-by-Step)
+```text
+1. Receive customer question
+2. Search knowledge base
+3. If found: Format answer
+4. If not found: Search help docs
+5. If found: Format answer
+6. If not found: Create support ticket
+7. Send response
+```
+*Problem: Breaks when anything unexpected happens*
+
+### Agent-Centric Approach
+```text
+1. Receive customer question
+2. Agent (with tools):
+   - Knowledge base connector
+   - Help docs connector
+   - Ticketing system connector
+   → Agent decides best approach
+3. Send response
+```
+*Benefit: Agent adapts to any scenario*
+
+<Tip>
+**Best Practice**: Let agents handle complexity. Only add additional steps (Conditions, Maps, HTTP Requests) when you need:
+- Explicit branching logic that you control
+- Data transformation before/after agents
+- Direct API calls without agent interpretation
+- Business rules that must be enforced
+</Tip>
+
+---
+
+## Common Step Patterns
+
+<AccordionGroup>
+  <Accordion title="Agent → Condition → Action" icon="robot">
+    Let agent make decision, branch based on outcome, take action.
+    
+    ```text
+    Agent analyzes customer request
+    ↓
+    Condition: If agent.decision = "refund"
+    ↓ (true)
+    HTTP Request: Process refund
+    ```
+    
+    **Use when**: Agent provides intelligence, but you need explicit control over outcomes.
+  </Accordion>
+
+  <Accordion title="Map → Agent → Map" icon="arrows-rotate">
+    Transform data before agent, process with agent, format after.
+    
+    ```text
+    Map: Extract relevant fields
+    ↓
+    Agent: Analyze and respond
+    ↓
+    Map: Format for external system
+    ```
+    
+    **Use when**: Agent needs clean input or output needs specific structure.
+  </Accordion>
+
+  <Accordion title="Rules → Agent" icon="gavel">
+    Evaluate business rules first, then let agent handle complexity.
+    
+    ```text
+    Rules: Check eligibility criteria
+    ↓
+    Condition: If eligible
+    ↓ (true)
+    Agent: Process application
+    ```
+    
+    **Use when**: Hard requirements must be met before agent processes.
+  </Accordion>
+
+  <Accordion title="Agent → Human in Loop → Agent" icon="user-check">
+    Agent proposes, human approves, agent executes.
+    
+    ```text
+    Agent: Analyze request and propose solution
+    ↓
+    Human in Loop: Review and approve
+    ↓
+    Agent: Execute approved solution
+    ```
+    
+    **Use when**: High-stakes decisions need human oversight.
+  </Accordion>
+
+  <Accordion title="HTTP → Map → Agent" icon="globe">
+    Fetch external data, transform it, let agent process.
+    
+    ```text
+    HTTP Request: Get customer data from CRM
+    ↓
+    Map: Extract relevant fields
+    ↓
+    Agent: Personalize response using data
+    ```
+    
+    **Use when**: Agent needs context from external systems.
+  </Accordion>
+
+  <Accordion title="Delay → Agent" icon="clock">
+    Wait for time-based conditions, then process with agent.
+    
+    ```text
+    Delay: Wait 24 hours
+    ↓
+    Agent: Follow up on unanswered inquiry
+    ```
+    
+    **Use when**: Time-based workflows or retry logic.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Step Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Simple" icon="seedling">
+    Begin with one agent. Add steps only when needed. The simpler your flow, the easier to maintain.
+  </Card>
+  
+  <Card title="Let Agents Decide" icon="brain">
+    Don't hard-code logic that agents can figure out. Use Conditions only for business-critical branching.
+  </Card>
+  
+  <Card title="Name Steps Clearly" icon="tag">
+    Use descriptive names: "Analyze Customer Request" not "Agent 1". Makes flows self-documenting.
+  </Card>
+  
+  <Card title="Test as You Build" icon="flask">
+    Test each step before adding the next. Catch issues early, iterate quickly.
+  </Card>
+  
+  <Card title="Handle Errors" icon="shield-exclamation">
+    Add error handling for critical steps. Use Conditions to route failures appropriately.
+  </Card>
+  
+  <Card title="Use Variables" icon="brackets-curly">
+    Reference previous step outputs with variables. Keep data flowing smoothly.
+  </Card>
+</CardGroup>
+
+---
+
+## When to Use Each Step
+
+| Step Type | Use When | Don't Use When |
+|-----------|----------|----------------|
+| **Agents** | Need intelligence, decision-making, or tool usage | Simple data transformation |
+| **Condition** | Need explicit branching you control | Agent can decide the path |
+| **HTTP Request** | Calling external APIs directly | Agent should interpret API data |
+| **Map** | Transforming data structure or iterating arrays | Agent can handle transformation |
+| **Rules** | Complex business calculations or eligibility checks | Simple if/then (use Condition) |
+| **Human in Loop** | High-stakes decisions need approval | Low-risk automated processes |
+| **Delay** | Time-based workflows or retry logic | Immediate execution needed |
+| **Eval** | Custom JavaScript logic not available elsewhere | Standard operations (use Functions) |
+| **Functions** | Common utilities (date, string, array operations) | Complex logic (use Eval or Agent) |
+
+---
+
+## Step Variables
+
+Every step outputs data you can reference in subsequent steps. Use the variable syntax to access step outputs:
+
+```
+${step_name.output.field}
+```
+
+**Examples:**
+```
+${agent_1.response}          // Agent's text response
+${condition_1.result}        // Condition's boolean result
+${http_1.body.data}          // HTTP response body data
+${map_1.output}              // Map's transformed output
+${rules_1.discount.outcome}  // Rules engine outcome
+```
+
+<Info>
+Learn more about variable syntax in [Variable Mapping](/flows/concepts/variable-mapping)
+</Info>
+
+---
+
+## Next Steps
+
+Ready to build your flow? Start with the most important step:
+
+<CardGroup cols={2}>
+  <Card title="Agents" icon="robot" href="/flows/steps/agents">
+    Configure AI agents with tools and context
+  </Card>
+  
+  <Card title="Condition" icon="code-branch" href="/flows/steps/condition">
+    Add branching logic to your flows
+  </Card>
+  
+  <Card title="All Step Types" icon="list" href="#step-types">
+    Explore all available step types
+  </Card>
+  
+  <Card title="Variable Mapping" icon="brackets-curly" href="/flows/concepts/variable-mapping">
+    Pass data between steps
+  </Card>
+</CardGroup>

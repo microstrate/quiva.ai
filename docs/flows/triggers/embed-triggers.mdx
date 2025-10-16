@@ -1,0 +1,1467 @@
+---
+title: "Embed Triggers"
+description: "Add interactive buttons, forms, and chat to your website with simple copy-paste embed code"
+icon: "window-maximize"
+---
+
+# Embed Triggers
+
+Embed triggers allow you to add interactive elements to your website or web application that trigger Microstrate flows. With simple copy-paste embed code, you can add buttons, forms, or chat interfaces that connect directly to your intelligent agents.
+
+## Overview
+
+Embed triggers come in three types:
+
+<CardGroup cols={3}>
+  <Card title="Button" icon="circle-dot">
+    Click to trigger an action or open chat
+  </Card>
+  
+  <Card title="Form" icon="rectangle-list">
+    Collect data from users and submit
+  </Card>
+  
+  <Card title="Chat" icon="comments">
+    Interactive conversation interface
+  </Card>
+</CardGroup>
+
+**Key Benefits:**
+- ✅ No backend required - just copy and paste HTML
+- ✅ Works on any website (HTML, WordPress, Squarespace, etc.)
+- ✅ Customizable styling and behavior
+- ✅ Secure with optional API keys
+- ✅ Mobile-responsive out of the box
+
+---
+
+## Button Embed
+
+The button embed renders a clickable button on your website. When clicked, it can either trigger a flow immediately or open a chat window.
+
+### What is Button Embed?
+
+A button embed creates an interactive button that:
+- Triggers your flow when clicked
+- Can make an HTTP request (for actions)
+- Can open a chat window (for conversations)
+- Passes data to your flow
+- Shows loading states
+- Displays success/error messages
+
+<img 
+  src="/images/triggers/button-embed.png" 
+  alt="Button Embed Example"
+  className="rounded-lg"
+/>
+
+### Use Cases
+
+<AccordionGroup>
+  <Accordion title="Quick Actions" icon="bolt">
+    **Examples:**
+    - "Get a Quote" - Calculate and return pricing
+    - "Check Availability" - Query inventory
+    - "Generate Report" - Create document on-demand
+    - "Subscribe to Newsletter" - Add to mailing list
+    
+    **Flow pattern:**
+    ```
+    Button Click
+    ↓
+    Agent processes request
+    ↓
+    Return result to user
+    ```
+  </Accordion>
+
+  <Accordion title="Chat Launcher" icon="comments">
+    **Examples:**
+    - "Chat with Support" - Open support chat
+    - "Talk to Sales" - Start sales conversation
+    - "Get Help" - Launch help chat
+    - "Ask a Question" - Begin Q&A
+    
+    **Flow pattern:**
+    ```
+    Button Click
+    ↓
+    Open chat window
+    ↓
+    User converses with agent
+    ```
+  </Accordion>
+
+  <Accordion title="Lead Capture" icon="user-plus">
+    **Examples:**
+    - "Start Free Trial" - Collect info and provision
+    - "Book a Demo" - Capture details and schedule
+    - "Request Information" - Gather requirements
+    
+    **Flow pattern:**
+    ```
+    Button Click
+    ↓
+    Agent collects information via chat or form
+    ↓
+    Process and respond
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Configuration
+
+<Steps>
+  <Step title="Add Button Trigger to Flow">
+    1. Open your flow in the Hub
+    2. Click **Add Trigger**
+    3. Select **Embed Trigger**
+    4. Choose **Button** as the embed type
+    5. The trigger is added to your flow
+  </Step>
+  
+  <Step title="Configure Button Settings">
+    Click on the button trigger to open settings:
+    
+    **Basic Settings:**
+    - **Trigger Name**: Descriptive name (e.g., "Homepage Chat Button")
+    - **Button Text**: What displays on the button (e.g., "Get Started", "Chat Now")
+    - **Button Color**: Primary color (hex code or color picker)
+    - **Button Style**: Choose from preset styles or customize
+    
+    **Action Settings:**
+    - **Action Type**: Choose what happens on click
+      - **Make HTTP Request**: Trigger flow and get response
+      - **Open Chat**: Launch chat interface
+    - **Response Mode**: Wait for completion or run in background
+    
+    <Info>
+    **Action Type determines behavior:**
+    - HTTP Request: For actions that return data (quotes, lookups, submissions)
+    - Open Chat: For conversations with agents
+    </Info>
+  </Step>
+  
+  <Step title="Configure Security (Optional)">
+    **Public (No Security):**
+    - Anyone can click the button
+    - Good for public websites
+    
+    **API Key Protected:**
+    1. Toggle **Require API Key** to ON
+    2. Click **Generate API Key**
+    3. Copy and save the key
+    4. The key is automatically embedded in the code
+    
+    <Warning>
+    API keys are for server-side use or when you want to limit access. For public buttons, leave security off.
+    </Warning>
+  </Step>
+  
+  <Step title="Get Embed Code">
+    1. Click **Get Embed Code** button
+    2. Copy the HTML snippet provided
+    3. The code includes:
+       - Button HTML
+       - JavaScript to handle clicks
+       - Styling (optional)
+       - API key (if enabled)
+    
+    **Example embed code:**
+    ```html
+    <button id="microstrate-button" 
+            data-flow-id="abc123"
+            data-action="chat">
+      Chat with Support
+    </button>
+    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script>
+      MicrostrateEmbed.init({
+        flowId: 'abc123',
+        apiKey: 'your-api-key-here' // if secured
+      });
+    </script>
+    ```
+  </Step>
+  
+  <Step title="Add to Your Website">
+    1. Open your website's HTML
+    2. Paste the embed code where you want the button
+    3. Save and publish
+    4. Test the button to ensure it works
+    
+    **Where to place:**
+    - Header/navigation
+    - Hero section
+    - Sidebar
+    - Footer
+    - Product pages
+    - Anywhere in your content
+  </Step>
+</Steps>
+
+### Customization Options
+
+<Tabs>
+  <Tab title="Styling">
+    Customize button appearance:
+    
+    **Via Configuration:**
+    - Button text
+    - Primary color
+    - Size (small, medium, large)
+    - Border radius
+    - Icon (optional)
+    
+    **Via CSS:**
+    ```css
+    #microstrate-button {
+      background-color: #4641F2;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    #microstrate-button:hover {
+      background-color: #3730d8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(70, 65, 242, 0.3);
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Behavior">
+    Configure button behavior:
+    
+    **Loading State:**
+    ```javascript
+    MicrostrateEmbed.init({
+      flowId: 'abc123',
+      onLoading: () => {
+        // Show spinner
+        button.innerHTML = '<span class="spinner"></span> Processing...';
+        button.disabled = true;
+      }
+    });
+    ```
+    
+    **Success/Error:**
+    ```javascript
+    MicrostrateEmbed.init({
+      flowId: 'abc123',
+      onSuccess: (response) => {
+        // Show success message
+        alert('Success! ' + response.message);
+      },
+      onError: (error) => {
+        // Show error message
+        alert('Error: ' + error.message);
+      }
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Data Passing">
+    Pass data with button click:
+    
+    ```html
+    <button id="microstrate-button"
+            data-flow-id="abc123"
+            data-product-id="prod_123"
+            data-user-email="user@example.com">
+      Get Quote
+    </button>
+    ```
+    
+    **Access in flow:**
+    ```
+    Product ID: ${trigger.data.productId}
+    User Email: ${trigger.data.userEmail}
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Form Embed
+
+The form embed creates customizable web forms that collect user input and submit it to your flow.
+
+### What is Form Embed?
+
+A form embed creates a data collection interface that:
+- Displays form fields you configure
+- Collects user input
+- Validates data client-side
+- Submits to your flow on submit
+- Shows confirmation or error messages
+- Supports various field types
+
+<img 
+  src="/images/triggers/form-embed.png" 
+  alt="Form Embed Example"
+  className="rounded-lg"
+/>
+
+### Use Cases
+
+<AccordionGroup>
+  <Accordion title="Contact Forms" icon="envelope">
+    **Collect:**
+    - Name
+    - Email
+    - Phone
+    - Company
+    - Message
+    
+    **Flow processes:**
+    - Qualify lead
+    - Enrich data
+    - Add to CRM
+    - Send notification
+    - Auto-respond
+    
+    **Example:**
+    ```
+    Form Submit (Name, Email, Company, Message)
+    ↓
+    Lead Qualification Agent
+    - Company lookup
+    - Lead scoring
+    ↓
+    Condition: Qualified?
+    - Yes → Add to CRM + Book meeting
+    - No → Add to nurture campaign
+    ↓
+    Send confirmation email
+    ```
+  </Accordion>
+
+  <Accordion title="Sales/Demo Requests" icon="handshake">
+    **Collect:**
+    - Name
+    - Email
+    - Company
+    - Company size
+    - Use case
+    - Timeline
+    
+    **Flow processes:**
+    - Automatically qualify
+    - Enrich with company data
+    - Score against ICP
+    - Book demo if qualified
+    - Notify sales team
+  </Accordion>
+
+  <Accordion title="Support Tickets" icon="ticket">
+    **Collect:**
+    - Name
+    - Email
+    - Issue type
+    - Priority
+    - Description
+    - Attachments (if enabled)
+    
+    **Flow processes:**
+    - Create support ticket
+    - Assign to team
+    - Auto-respond with ticket number
+    - Alert team if urgent
+  </Accordion>
+
+  <Accordion title="Surveys & Feedback" icon="clipboard-question">
+    **Collect:**
+    - Satisfaction rating
+    - Multiple choice answers
+    - Open text feedback
+    - Contact info (optional)
+    
+    **Flow processes:**
+    - Store responses
+    - Analyze sentiment
+    - Flag negative feedback
+    - Send thank you
+  </Accordion>
+
+  <Accordion title="Application Forms" icon="file-lines">
+    **Collect:**
+    - Personal information
+    - Qualifications
+    - Documents
+    - References
+    
+    **Flow processes:**
+    - Validate completeness
+    - Screen applicants
+    - Send to review queue
+    - Auto-respond
+  </Accordion>
+</AccordionGroup>
+
+### Configuration
+
+<Steps>
+  <Step title="Add Form Trigger to Flow">
+    1. Open your flow in the Hub
+    2. Click **Add Trigger**
+    3. Select **Embed Trigger**
+    4. Choose **Form** as the embed type
+    5. The trigger is added to your flow
+  </Step>
+  
+  <Step title="Design Your Form">
+    Click on the form trigger to open the form builder:
+    
+    **Add Fields:**
+    1. Click **Add Field**
+    2. Choose field type:
+       - Text Input (single line)
+       - Text Area (multiple lines)
+       - Email
+       - Phone
+       - Number
+       - Dropdown/Select
+       - Radio Buttons
+       - Checkboxes
+       - Date
+       - File Upload (if enabled)
+    3. Configure field settings:
+       - **Label**: What displays above the field
+       - **Placeholder**: Hint text inside field
+       - **Required**: Toggle on/off
+       - **Validation**: Email format, phone format, min/max length
+       - **Default Value**: Pre-fill if needed
+    
+    <Tip>
+    **Field naming:** Use clear, consistent field names (e.g., "email", "company_name"). These become the variable names you'll use in your flow: `${trigger.form.email}`
+    </Tip>
+  </Step>
+  
+  <Step title="Configure Form Layout">
+    **Layout Options:**
+    - **Single Column**: All fields stack vertically (default)
+    - **Two Columns**: Fields side-by-side
+    - **Three Columns**: Compact layout for many short fields
+    - **Custom Layout**: Drag and drop to arrange
+    
+    **Form Settings:**
+    - **Form Title**: Headline above form (optional)
+    - **Form Description**: Subtext explaining purpose
+    - **Submit Button Text**: "Submit", "Send", "Get Started", etc.
+    - **Success Message**: Shown after submission
+    - **Error Message**: Shown if submission fails
+    
+    <Info>
+    **Column layouts** are responsive - they automatically stack on mobile devices.
+    </Info>
+  </Step>
+  
+  <Step title="Configure Submission Behavior">
+    **Response Mode:**
+    - **Wait for Completion**: Form shows result after flow completes
+    - **Run in Background**: Form shows success immediately, flow runs async
+    
+    **After Submission:**
+    - **Show Message**: Display success message on same page
+    - **Redirect**: Send user to a different URL (e.g., thank you page)
+    - **Reset Form**: Clear fields and allow another submission
+    - **Keep Values**: Keep filled values (for editing)
+    
+    **Example configurations:**
+    
+    *Contact Form (Show Message):*
+    ```
+    Success Message: "Thanks for reaching out! We'll contact you within 24 hours."
+    Keep Form Visible: No
+    ```
+    
+    *Demo Request (Redirect):*
+    ```
+    Redirect URL: https://yoursite.com/thank-you-demo
+    Pass Data: Yes (include form data in URL params)
+    ```
+  </Step>
+  
+  <Step title="Style Your Form">
+    **Styling Options:**
+    
+    **Via Configuration:**
+    - Primary color (buttons, focus states)
+    - Background color
+    - Border radius
+    - Font family
+    - Spacing
+    
+    **Via Custom CSS:**
+    ```css
+    .microstrate-form {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 32px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .microstrate-form input,
+    .microstrate-form textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    
+    .microstrate-form button[type="submit"] {
+      background: #4641F2;
+      color: white;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    ```
+  </Step>
+  
+  <Step title="Configure Security (Optional)">
+    **Public Form (Recommended for most cases):**
+    - Anyone can submit
+    - Use CAPTCHA to prevent spam (coming soon)
+    - Rate limiting to prevent abuse
+    
+    **API Key Protected:**
+    - Requires API key in request
+    - Good for internal forms or server-side submissions
+    - Not typical for public website forms
+    
+    To enable API key:
+    1. Toggle **Require API Key** to ON
+    2. Generate and copy the API key
+    3. Key is embedded in the form code
+  </Step>
+  
+  <Step title="Get Embed Code">
+    1. Click **Get Embed Code**
+    2. Copy the HTML snippet
+    3. The code includes:
+       - Form HTML structure
+       - JavaScript for handling submission
+       - Validation logic
+       - Styling (optional)
+    
+    **Example embed code:**
+    ```html
+    <div id="microstrate-form-container"></div>
+    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script>
+      MicrostrateEmbed.renderForm({
+        containerId: 'microstrate-form-container',
+        flowId: 'abc123',
+        apiKey: 'your-api-key' // if secured
+      });
+    </script>
+    ```
+  </Step>
+  
+  <Step title="Add to Your Website">
+    1. Paste the embed code where you want the form
+    2. Common placements:
+       - Dedicated contact page
+       - Homepage section
+       - Sidebar widget
+       - Modal/popup
+       - Footer
+    3. Save and publish
+    4. Test form submission
+  </Step>
+</Steps>
+
+### Form Field Types
+
+<AccordionGroup>
+  <Accordion title="Text Input" icon="input-text">
+    Single-line text field.
+    
+    **Settings:**
+    - Label: "Full Name"
+    - Placeholder: "John Smith"
+    - Required: Yes/No
+    - Min/Max Length
+    - Pattern validation (regex)
+    
+    **Use for:** Names, titles, short answers
+  </Accordion>
+
+  <Accordion title="Text Area" icon="align-left">
+    Multi-line text field.
+    
+    **Settings:**
+    - Label: "Message"
+    - Placeholder: "Tell us about your needs..."
+    - Rows: 4-10
+    - Required: Yes/No
+    - Max length
+    
+    **Use for:** Messages, descriptions, comments
+  </Accordion>
+
+  <Accordion title="Email" icon="at">
+    Email address with validation.
+    
+    **Settings:**
+    - Label: "Email Address"
+    - Placeholder: "you@example.com"
+    - Required: Yes (typically)
+    - Auto-validates email format
+    
+    **Use for:** Email collection
+  </Accordion>
+
+  <Accordion title="Phone" icon="phone">
+    Phone number with formatting.
+    
+    **Settings:**
+    - Label: "Phone Number"
+    - Placeholder: "(555) 123-4567"
+    - Format: US, International, etc.
+    - Required: Yes/No
+    
+    **Use for:** Contact numbers
+  </Accordion>
+
+  <Accordion title="Number" icon="hashtag">
+    Numeric input.
+    
+    **Settings:**
+    - Label: "Number of Employees"
+    - Min/Max values
+    - Step (1, 0.1, etc.)
+    - Required: Yes/No
+    
+    **Use for:** Quantities, counts, measurements
+  </Accordion>
+
+  <Accordion title="Dropdown/Select" icon="caret-down">
+    Single selection from list.
+    
+    **Settings:**
+    - Label: "Company Size"
+    - Options:
+      - "1-10 employees"
+      - "11-50 employees"
+      - "51-200 employees"
+      - "201-1000 employees"
+      - "1000+ employees"
+    - Required: Yes/No
+    - Default selection
+    
+    **Use for:** Categories, options, selections
+  </Accordion>
+
+  <Accordion title="Radio Buttons" icon="circle-dot">
+    Single selection, all visible.
+    
+    **Settings:**
+    - Label: "Preferred Contact Method"
+    - Options:
+      - Email
+      - Phone
+      - Text
+    - Required: Yes/No
+    - Default selection
+    
+    **Use for:** Few options (2-5), always visible
+  </Accordion>
+
+  <Accordion title="Checkboxes" icon="square-check">
+    Multiple selections.
+    
+    **Settings:**
+    - Label: "Interested In:"
+    - Options:
+      - Product Demo
+      - Pricing Info
+      - Technical Documentation
+      - Free Trial
+    - Required: At least one/specific ones
+    
+    **Use for:** Multiple selections, preferences
+  </Accordion>
+
+  <Accordion title="Date" icon="calendar">
+    Date picker.
+    
+    **Settings:**
+    - Label: "Preferred Date"
+    - Min/Max dates
+    - Default: Today/None
+    - Required: Yes/No
+    - Format: MM/DD/YYYY, DD/MM/YYYY, etc.
+    
+    **Use for:** Appointments, deadlines, dates of birth
+  </Accordion>
+
+  <Accordion title="File Upload" icon="upload">
+    Allow file attachments.
+    
+    **Settings:**
+    - Label: "Upload Resume"
+    - Allowed types: PDF, DOC, images, etc.
+    - Max size: 5MB, 10MB, etc.
+    - Multiple files: Yes/No
+    - Required: Yes/No
+    
+    **Use for:** Documents, images, attachments
+    
+    <Info>
+    File uploads may have additional costs. Files are processed by the Upload trigger handling.
+    </Info>
+  </Accordion>
+</AccordionGroup>
+
+### Validation
+
+Client-side validation happens automatically:
+
+**Built-in Validation:**
+- Required fields must be filled
+- Email format checking
+- Phone format checking
+- Min/max length enforcement
+- Number range validation
+- File type and size checking
+
+**Custom Validation:**
+```javascript
+MicrostrateEmbed.renderForm({
+  containerId: 'form-container',
+  flowId: 'abc123',
+  onValidate: (formData) => {
+    // Custom validation logic
+    if (formData.company_size === '1-10' && formData.budget < 1000) {
+      return {
+        valid: false,
+        message: 'Budget must be at least $1,000 for companies under 10 employees'
+      };
+    }
+    return { valid: true };
+  }
+});
+```
+
+---
+
+## Chat Embed
+
+The chat embed creates an interactive chat interface on your website where users can have conversations with your AI agents.
+
+### What is Chat Embed?
+
+A chat embed creates a messaging interface that:
+- Opens as a widget or full-screen chat
+- Allows back-and-forth conversation
+- Shows typing indicators
+- Supports rich messages
+- Remembers conversation history
+- Can be triggered by button or auto-open
+
+<img 
+  src="/images/triggers/chat-embed.png" 
+  alt="Chat Embed Example"
+  className="rounded-lg"
+/>
+
+### Use Cases
+
+<AccordionGroup>
+  <Accordion title="Customer Support" icon="headset">
+    **24/7 support chat:**
+    - Answer product questions
+    - Troubleshoot issues
+    - Look up orders
+    - Process returns
+    - Escalate to humans when needed
+    
+    **Example flow:**
+    ```
+    User: "Where is my order?"
+    ↓
+    Agent: "I can help! What's your order number?"
+    ↓
+    User: "#12345"
+    ↓
+    Agent uses Order Lookup tool
+    ↓
+    Agent: "Your order shipped yesterday! Tracking: TRK123..."
+    ```
+  </Accordion>
+
+  <Accordion title="Sales Conversations" icon="comments-dollar">
+    **Lead qualification chat:**
+    - Ask discovery questions
+    - Understand needs
+    - Qualify leads
+    - Book meetings
+    - Answer pricing questions
+    
+    **Example flow:**
+    ```
+    User: "I'm interested in your Enterprise plan"
+    ↓
+    Agent: "Great! Can you tell me about your company?"
+    ↓
+    User: "We're a 200-person SaaS company"
+    ↓
+    Agent enriches company data, qualifies
+    ↓
+    Agent: "Perfect fit! Would you like to schedule a demo?"
+    ```
+  </Accordion>
+
+  <Accordion title="Product Guidance" icon="compass">
+    **Help users navigate:**
+    - Product recommendations
+    - Feature explanations
+    - Configuration help
+    - Use case guidance
+    - Setup assistance
+  </Accordion>
+
+  <Accordion title="Onboarding Assistant" icon="user-plus">
+    **Guide new users:**
+    - Welcome and introduce features
+    - Help with setup
+    - Answer questions
+    - Provide tutorials
+    - Collect feedback
+  </Accordion>
+</AccordionGroup>
+
+### Configuration
+
+<Steps>
+  <Step title="Add Chat Trigger to Flow">
+    1. Open your flow in the Hub
+    2. Click **Add Trigger**
+    3. Select **Embed Trigger**
+    4. Choose **Chat** as the embed type
+    5. The trigger is added to your flow
+  </Step>
+  
+  <Step title="Configure Chat Settings">
+    Click on the chat trigger to configure:
+    
+    **Display Settings:**
+    - **Chat Widget Style**: Bubble, sidebar, full-screen
+    - **Position**: Bottom right, bottom left, center
+    - **Widget Color**: Primary brand color
+    - **Agent Name**: Display name (e.g., "Support Assistant")
+    - **Agent Avatar**: Optional image URL
+    - **Welcome Message**: First message shown (e.g., "Hi! How can I help?")
+    
+    **Behavior Settings:**
+    - **Auto-open**: Open chat automatically on page load
+    - **Auto-open Delay**: Wait X seconds before opening
+    - **Minimize on Close**: Keep widget visible when closed
+    - **Sound Notifications**: Play sound on new messages
+    - **Desktop Notifications**: Browser notifications when tab inactive
+    
+    <Tip>
+    **Welcome message best practices:**
+    - Keep it friendly and concise
+    - Set expectations ("I'm here to help with orders and returns")
+    - Prompt action ("What can I help you with today?")
+    </Tip>
+  </Step>
+  
+  <Step title="Configure Conversation Flow">
+    **Agent Connection:**
+    - Select which agent handles conversations
+    - Agent must be in the same flow
+    - Agent receives chat messages as prompts
+    
+    **Conversation Memory:**
+    - **Context Window**: How much history to maintain
+    - **Session Duration**: How long conversations persist
+    - **Clear on Close**: Reset conversation when chat closed
+    
+    **Example configuration:**
+    ```
+    Chat Trigger
+    ↓
+    Customer Service Agent (with Smart Context enabled)
+    - Tools: Knowledge Base, Order Lookup, Refund Tool
+    - Response Mode: Wait for Completion
+    ↓
+    Agent response shown in chat
+    ```
+  </Step>
+  
+  <Step title="Customize Appearance">
+    **Via Configuration:**
+    - Primary color
+    - Secondary color
+    - Text color
+    - Background color
+    - Border radius
+    - Font family
+    
+    **Via Custom CSS:**
+    ```css
+    .microstrate-chat-widget {
+      --primary-color: #4641F2;
+      --text-color: #1a1a1a;
+      --bg-color: #ffffff;
+      --border-radius: 12px;
+      --font-family: 'Inter', sans-serif;
+    }
+    
+    .microstrate-chat-bubble {
+      background: var(--primary-color);
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      box-shadow: 0 4px 20px rgba(70, 65, 242, 0.3);
+    }
+    
+    .microstrate-chat-window {
+      width: 400px;
+      height: 600px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    }
+    ```
+  </Step>
+  
+  <Step title="Configure Security">
+    **Public Chat (Typical):**
+    - Anyone can use the chat
+    - No authentication required
+    - Rate limit to prevent abuse
+    
+    **Authenticated Chat:**
+    - Require user login
+    - Pass user data to agent
+    - Personalized experience
+    - Access to account information
+    
+    **To pass user data:**
+    ```javascript
+    MicrostrateEmbed.renderChat({
+      containerId: 'chat-container',
+      flowId: 'abc123',
+      userData: {
+        userId: 'user_123',
+        email: 'user@example.com',
+        name: 'John Smith',
+        accountType: 'premium'
+      }
+    });
+    ```
+    
+    Agent can access: `${trigger.userData.email}`
+  </Step>
+  
+  <Step title="Get Embed Code">
+    Choose your embed method:
+    
+    **Option 1: Chat Bubble (Recommended)**
+    - Floating button in corner
+    - Clicking opens chat window
+    - Unobtrusive, always available
+    
+    ```html
+    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script>
+      MicrostrateEmbed.renderChat({
+        flowId: 'abc123',
+        position: 'bottom-right',
+        autoOpen: false
+      });
+    </script>
+    ```
+    
+    **Option 2: Embedded Chat Window**
+    - Chat window always visible
+    - Part of your page layout
+    - Good for dedicated support pages
+    
+    ```html
+    <div id="chat-container" style="height: 600px;"></div>
+    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script>
+      MicrostrateEmbed.renderChat({
+        containerId: 'chat-container',
+        flowId: 'abc123',
+        displayMode: 'inline'
+      });
+    </script>
+    ```
+    
+    **Option 3: Button-Triggered Modal**
+    - Custom button on your page
+    - Clicking opens chat as modal overlay
+    - Full control over button placement and styling
+    
+    ```html
+    <button id="open-chat-btn">Chat with Support</button>
+    
+    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script>
+      const chat = MicrostrateEmbed.createChat({
+        flowId: 'abc123',
+        displayMode: 'modal'
+      });
+      
+      document.getElementById('open-chat-btn')
+        .addEventListener('click', () => chat.open());
+    </script>
+    ```
+  </Step>
+  
+  <Step title="Add to Your Website">
+    1. Copy the embed code
+    2. Paste before closing `</body>` tag (for bubble)
+    3. Or paste in specific container (for inline)
+    4. Save and publish
+    5. Test the chat on your site
+    
+    **Pro tip:** Add to all pages for consistent support access, or only on specific pages (product pages, checkout, support center).
+  </Step>
+</Steps>
+
+### Advanced Features
+
+<Tabs>
+  <Tab title="Rich Messages">
+    Support beyond plain text:
+    
+    **Markdown Support:**
+    - **Bold** and *italic*
+    - [Links](https://example.com)
+    - Lists and code blocks
+    
+    **Structured Messages:**
+    ```javascript
+    // Agent returns structured response
+    {
+      type: 'card',
+      title: 'Your Order Status',
+      description: 'Order #12345',
+      fields: [
+        { label: 'Status', value: 'Shipped' },
+        { label: 'Tracking', value: 'TRK123456' }
+      ],
+      actions: [
+        { label: 'Track Package', url: 'https://track.com/TRK123456' }
+      ]
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Typing Indicators">
+    Show when agent is "thinking":
+    
+    ```javascript
+    MicrostrateEmbed.renderChat({
+      flowId: 'abc123',
+      showTypingIndicator: true,
+      typingDelay: 500 // ms before showing indicator
+    });
+    ```
+    
+    Automatically shown while agent processes.
+  </Tab>
+  
+  <Tab title="Conversation History">
+    Maintain context across sessions:
+    
+    ```javascript
+    MicrostrateEmbed.renderChat({
+      flowId: 'abc123',
+      persistConversation: true,
+      sessionDuration: 24 * 60 * 60 * 1000 // 24 hours
+    });
+    ```
+    
+    User sees previous messages when returning.
+  </Tab>
+  
+  <Tab title="Suggested Responses">
+    Quick reply buttons:
+    
+    ```javascript
+    // Agent can return suggested responses
+    {
+      message: "What can I help you with?",
+      suggestions: [
+        "Track my order",
+        "Return an item",
+        "Product questions"
+      ]
+    }
+    ```
+    
+    User clicks suggestion instead of typing.
+  </Tab>
+  
+  <Tab title="File Attachments">
+    Allow users to upload files:
+    
+    ```javascript
+    MicrostrateEmbed.renderChat({
+      flowId: 'abc123',
+      allowFileUpload: true,
+      maxFileSize: 10 * 1024 * 1024, // 10MB
+      allowedFileTypes: ['image/*', 'application/pdf']
+    });
+    ```
+    
+    Files passed to agent for processing.
+  </Tab>
+  
+  <Tab title="Events & Callbacks">
+    React to chat events:
+    
+    ```javascript
+    MicrostrateEmbed.renderChat({
+      flowId: 'abc123',
+      onOpen: () => {
+        console.log('Chat opened');
+        // Track analytics
+      },
+      onClose: () => {
+        console.log('Chat closed');
+      },
+      onMessage: (message) => {
+        console.log('User sent:', message);
+      },
+      onResponse: (response) => {
+        console.log('Agent replied:', response);
+      },
+      onError: (error) => {
+        console.error('Chat error:', error);
+        // Show fallback message
+      }
+    });
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Security & Privacy
+
+### Securing Public Embeds
+
+Even public embeds should have protections:
+
+<AccordionGroup>
+  <Accordion title="Rate Limiting" icon="gauge">
+    Prevent abuse by limiting requests:
+    
+    **Recommended limits:**
+    - **Button**: 10 clicks per user per hour
+    - **Form**: 5 submissions per user per hour
+    - **Chat**: 100 messages per user per hour
+    
+    Configure in trigger settings:
+    ```
+    Rate Limits:
+    - Per IP: 100 requests/hour
+    - Per Session: 50 requests/hour
+    - Burst: 10 requests/minute
+    ```
+  </Accordion>
+
+  <Accordion title="CAPTCHA (Coming Soon)" icon="shield-check">
+    Verify humans vs. bots:
+    
+    - Add CAPTCHA to forms
+    - Challenge suspicious activity
+    - Reduce spam submissions
+  </Accordion>
+
+  <Accordion title="Content Security" icon="lock">
+    Protect against malicious input:
+    
+    - Input sanitization (automatic)
+    - XSS prevention (built-in)
+    - SQL injection prevention (N/A, no direct DB access)
+    - File upload scanning (for upload-enabled features)
+  </Accordion>
+
+  <Accordion title="Privacy Compliance" icon="user-shield">
+    Respect user privacy:
+    
+    - Don't collect more data than needed
+    - Display privacy policy link
+    - Allow users to delete data
+    - Comply with GDPR, CCPA
+    - Use consent checkboxes for sensitive data
+    
+    **Example privacy checkbox:**
+    ```
+    Field Type: Checkbox
+    Label: "I agree to the privacy policy"
+    Required: Yes
+    Link: https://yoursite.com/privacy
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Using API Keys
+
+For internal or secured embeds:
+
+<Steps>
+  <Step title="Generate API Key">
+    In trigger settings:
+    1. Toggle **Require API Key** to ON
+    2. Click **Generate API Key**
+    3. Copy and save securely
+  </Step>
+  
+  <Step title="Add to Embed Code">
+    The key is automatically included:
+    ```javascript
+    MicrostrateEmbed.init({
+      flowId: 'abc123',
+      apiKey: 'ms_key_abc123xyz789' // Auto-included
+    });
+    ```
+  </Step>
+  
+  <Step title="Protect the Key">
+    **Best practices:**
+    - Don't commit keys to public repos
+    - Use environment variables
+    - Rotate keys periodically
+    - Different keys for dev/prod
+    - Monitor for unauthorized usage
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Keep forms short" icon="minimize">
+    Only ask for what you need:
+    
+    ❌ **Bad:** 15 fields including middle name, full address, 5 questions
+    ✅ **Good:** 4-6 essential fields
+    
+    **Why:**
+    - Higher completion rates
+    - Better user experience
+    - Less overwhelming
+    - Faster submissions
+    
+    **Tip:** Ask for basics first, gather more later if qualified.
+  </Accordion>
+
+  <Accordion title="Set clear expectations" icon="message">
+    Tell users what to expect:
+    
+    **For forms:**
+    - "We'll respond within 24 hours"
+    - "This takes 2 minutes to complete"
+    - "Your information is secure"
+    
+    **For chat:**
+    - Welcome message: "Hi! I can help with orders, returns, and product questions."
+    - Response time: "I typically respond in under 30 seconds"
+    - Escalation: "If I can't help, I'll connect you with a human"
+  </Accordion>
+
+  <Accordion title="Provide immediate feedback" icon="bolt">
+    Don't leave users hanging:
+    
+    **Forms:**
+    - Show loading spinner on submit
+    - Display success message immediately
+    - Send confirmation email
+    
+    **Chat:**
+    - Show typing indicator while processing
+    - Acknowledge messages ("Let me look that up...")
+    - Set response time expectations
+    
+    **Buttons:**
+    - Disable during processing
+    - Show loading state
+    - Display result clearly
+  </Accordion>
+
+  <Accordion title="Make it mobile-friendly" icon="mobile">
+    Most users are on mobile:
+    
+    **Forms:**
+    - Use mobile-appropriate input types (email, tel, number)
+    - Large tap targets (44px minimum)
+    - Single column layout on mobile
+    - Avoid dropdowns (use radio buttons for few options)
+    
+    **Chat:**
+    - Full-screen on mobile
+    - Easy to close
+    - Readable text size (16px minimum)
+    - Thumb-friendly send button
+    
+    **Buttons:**
+    - Large enough to tap (44px minimum)
+    - Not too close to edges
+    - Clear label visible at all times
+  </Accordion>
+
+  <Accordion title="Test thoroughly" icon="flask">
+    Before launching:
+    
+    **Test checklist:**
+    - ✅ Desktop browsers (Chrome, Firefox, Safari, Edge)
+    - ✅ Mobile browsers (iOS Safari, Android Chrome)
+    - ✅ Tablet sizes
+    - ✅ Form validation works
+    - ✅ Error handling graceful
+    - ✅ Success flow works end-to-end
+    - ✅ Styling matches your site
+    - ✅ Loading states display
+    - ✅ Rate limiting prevents spam
+    - ✅ Analytics tracking (if enabled)
+  </Accordion>
+
+  <Accordion title="Monitor and optimize" icon="chart-line">
+    Track performance:
+    
+    **Key metrics:**
+    - **Forms**: Submission rate, completion rate, time to complete, abandonment rate
+    - **Chat**: Conversations started, messages per conversation, resolution rate, satisfaction
+    - **Buttons**: Click rate, success rate, error rate
+    
+    **Optimize based on data:**
+    - High abandonment → Simplify form
+    - Low click rate → Improve button copy/placement
+    - Low satisfaction → Improve agent responses
+    - High error rate → Fix technical issues
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Embed not showing" icon="eye-slash">
+    **Check:**
+    - JavaScript loaded? (check browser console)
+    - Container ID correct? (for inline embeds)
+    - Flow deployed? (not just saved)
+    - Any JavaScript errors?
+    - Ad blocker interfering?
+    
+    **Solutions:**
+    - Verify script URL is correct
+    - Check container element exists
+    - Deploy the flow if not deployed
+    - Test in incognito mode (no extensions)
+    - Check browser console for errors
+  </Accordion>
+
+  <Accordion title="Form not submitting" icon="xmark">
+    **Check:**
+    - Required fields filled?
+    - Validation errors shown?
+    - Network error? (check console)
+    - Rate limit reached?
+    - Flow deployed and active?
+    
+    **Solutions:**
+    - Fill all required fields
+    - Fix validation errors
+    - Check network tab for failed requests
+    - Wait if rate limited
+    - Verify flow is deployed
+  </Accordion>
+
+  <Accordion title="Chat not responding" icon="comment-slash">
+    **Check:**
+    - Agent connected to flow?
+    - Flow deployed?
+    - Agent hitting errors?
+    - Network connectivity?
+    - Rate limits reached?
+    
+    **Solutions:**
+    - Verify agent configuration
+    - Check flow execution logs
+    - Test agent separately
+    - Check browser network tab
+    - Review rate limit settings
+  </Accordion>
+
+  <Accordion title="Styling issues" icon="palette">
+    **Common issues:**
+    - Embed doesn't match site style
+    - CSS conflicts with site
+    - Responsive issues on mobile
+    - Colors not applying
+    
+    **Solutions:**
+    - Use custom CSS overrides
+    - Check CSS specificity
+    - Test on actual mobile devices
+    - Use browser dev tools to debug
+    - Increase CSS specificity if needed:
+      ```css
+      .microstrate-chat-widget.microstrate-chat-widget {
+        /* Higher specificity */
+      }
+      ```
+  </Accordion>
+
+  <Accordion title="CORS errors" icon="ban">
+    **Error:** "Cross-Origin Request Blocked"
+    
+    **Cause:**
+    - Embedding on unauthorized domain
+    - Missing domain in allowlist
+    
+    **Solution:**
+    1. Go to trigger settings
+    2. Add your domain to **Allowed Domains**:
+       - https://yoursite.com
+       - https://www.yoursite.com
+    3. Save and test again
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="HTTP Request Trigger" icon="globe" href="/flows/triggers/http-request">
+    Call flows from your backend
+  </Card>
+  
+  <Card title="Webhook Trigger" icon="link" href="/flows/triggers/webhook">
+    Receive events from services
+  </Card>
+  
+  <Card title="Agent Configuration" icon="robot" href="/agents/overview">
+    Configure agents for your embeds
+  </Card>
+  
+  <Card title="Flow Steps" icon="list-check" href="/flows/steps/overview">
+    What happens after the trigger
+  </Card>
+</CardGroup>

@@ -1,0 +1,874 @@
+---
+title: 'Key-Value Storage Functions'
+description: 'Fast key-based data storage for configuration and state management'
+icon: 'database'
+---
+
+# Key-Value Storage Functions
+
+Key-Value (KV) storage provides fast, simple data storage with key-based access. Perfect for configuration, caching, state management, and session storage.
+
+<Info>
+**What is Key-Value Storage?** KV storage is a simple database where you store data with a unique key and retrieve it later using that key. Think of it like a dictionary or hash map that persists across flow executions.
+</Info>
+
+---
+
+## Function List
+
+<CardGroup cols={2}>
+  <Card title="create-key-value-bucket" icon="plus" href="#create-key-value-bucket">
+    Create a new KV bucket
+  </Card>
+  
+  <Card title="put-kv-item" icon="upload" href="#put-kv-item">
+    Add or update an item
+  </Card>
+  
+  <Card title="get-kv-bucket-item" icon="download" href="#get-kv-bucket-item">
+    Retrieve an item by key
+  </Card>
+  
+  <Card title="list-key-value-buckets" icon="list" href="#list-key-value-buckets">
+    List all KV buckets
+  </Card>
+  
+  <Card title="list-kv-bucket-items" icon="table" href="#list-kv-bucket-items">
+    List items in a bucket
+  </Card>
+</CardGroup>
+
+---
+
+## create-key-value-bucket
+
+Create a new Key-Value storage bucket in your account. Buckets are containers for related key-value pairs.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to create. Must be unique within your account.
+  
+  **Naming conventions:**
+  - Use lowercase with hyphens: `user-preferences`, `api-cache`
+  - Be descriptive: `feature-flags` not `bucket1`
+  - Include purpose: `session-data`, `product-config`
+</ParamField>
+
+<ParamField path="ttl_seconds" type="number">
+  Time-to-live in seconds. Items automatically expire after this duration. If not set, items never expire.
+  
+  **Common TTL values:**
+  - `3600` - 1 hour (short-lived cache)
+  - `86400` - 1 day (daily cache)
+  - `604800` - 7 days (weekly data)
+  - `2592000` - 30 days (monthly data)
+  - `null` - No expiration (permanent storage)
+</ParamField>
+
+<ParamField path="description" type="string">
+  Optional description of the bucket's purpose.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "user-preferences",
+  "bucket_id": "bucket_abc123",
+  "ttl_seconds": 86400,
+  "created_at": "2025-10-16T10:30:00Z"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Configuration
+{
+  "function": "create-key-value-bucket",
+  "params": {
+    "bucket_name": "user-preferences",
+    "ttl_seconds": 2592000,
+    "description": "Store user preferences and settings"
+  }
+}
+```
+
+```text In Flow
+Functions Step: Create bucket for caching
+  Function: create-key-value-bucket
+  Bucket Name: "api-response-cache"
+  TTL: 3600 seconds (1 hour)
+↓
+Bucket created and ready for use
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="User Preferences" icon="user-gear">
+    Store user settings and preferences
+    
+    ```text
+    Create Bucket: "user-preferences"
+    TTL: 30 days
+    → Store: theme, language, notifications settings
+    → Retrieve: On user login
+    ```
+  </Accordion>
+  
+  <Accordion title="API Response Cache" icon="bolt">
+    Cache external API responses
+    
+    ```text
+    Create Bucket: "api-cache"
+    TTL: 1 hour
+    → Store: Expensive API responses
+    → Reduce: API calls and costs
+    ```
+  </Accordion>
+  
+  <Accordion title="Feature Flags" icon="flag">
+    Store feature toggle configuration
+    
+    ```text
+    Create Bucket: "feature-flags"
+    No TTL (permanent)
+    → Store: Feature enablement flags
+    → Control: Feature rollouts
+    ```
+  </Accordion>
+  
+  <Accordion title="Session Data" icon="clock">
+    Maintain user session state
+    
+    ```text
+    Create Bucket: "user-sessions"
+    TTL: 24 hours
+    → Store: Session data, cart contents
+    → Auto-expire: Old sessions
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## put-kv-item
+
+Add a new item or update an existing item in a Key-Value bucket.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to store the item in. Bucket must exist.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  Unique key for the item. If key exists, the value will be updated.
+  
+  **Key strategies:**
+  - User data: `user_${userId}` - e.g., `user_123`
+  - Session data: `session_${sessionId}` - e.g., `session_abc`
+  - Cache keys: `cache_${resource}_${id}` - e.g., `cache_product_456`
+  - Config: Descriptive names - e.g., `max_retries`, `api_timeout`
+</ParamField>
+
+<ParamField path="value" type="any" required>
+  The value to store. Can be any JSON-serializable data: string, number, boolean, object, array.
+  
+  **Value types:**
+  - **String**: `"Hello World"`
+  - **Number**: `42` or `3.14`
+  - **Boolean**: `true` or `false`
+  - **Object**: `{"name": "John", "age": 30}`
+  - **Array**: `[1, 2, 3, 4]`
+</ParamField>
+
+<ParamField path="ttl_seconds" type="number">
+  Optional time-to-live for this specific item (overrides bucket default). Item expires after this duration.
+</ParamField>
+
+<ParamField path="metadata" type="object">
+  Optional metadata to associate with the item (tags, created_by, etc.).
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "user-preferences",
+  "key": "user_123",
+  "value": {
+    "theme": "dark",
+    "language": "en",
+    "notifications": true
+  },
+  "ttl_seconds": 2592000,
+  "created_at": "2025-10-16T10:30:00Z",
+  "expires_at": "2025-11-15T10:30:00Z"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Store User Preferences
+{
+  "function": "put-kv-item",
+  "params": {
+    "bucket_name": "user-preferences",
+    "key": "user_${$.trigger.user_id}",
+    "value": {
+      "theme": "${$.trigger.theme}",
+      "language": "${$.trigger.language}",
+      "email_notifications": "${$.trigger.email_notifications}"
+    }
+  }
+}
+```
+
+```json Cache API Response
+{
+  "function": "put-kv-item",
+  "params": {
+    "bucket_name": "api-cache",
+    "key": "weather_${$.trigger.city}",
+    "value": "${$.http_request.response}",
+    "ttl_seconds": 3600
+  }
+}
+```
+
+```json Store Session Data
+{
+  "function": "put-kv-item",
+  "params": {
+    "bucket_name": "user-sessions",
+    "key": "session_${$.trigger.session_id}",
+    "value": {
+      "user_id": "${$.trigger.user_id}",
+      "cart": "${$.trigger.cart_items}",
+      "last_activity": "${$.now}"
+    },
+    "ttl_seconds": 86400
+  }
+}
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Configuration Storage" icon="gear">
+    Store application configuration
+    
+    ```text
+    Flow:
+    → Agent decides configuration value
+    → Store in KV: put-kv-item
+      Bucket: "app-config"
+      Key: "max_upload_size"
+      Value: 10485760 (10MB)
+    → Other flows read this config
+    ```
+  </Accordion>
+  
+  <Accordion title="Rate Limiting" icon="gauge-high">
+    Track API usage per user
+    
+    ```text
+    Flow:
+    → Get current count: get-kv-bucket-item
+    → Increment count
+    → Store updated count: put-kv-item
+      Key: "rate_limit_${user_id}"
+      Value: {count: 45, reset_at: "..."}
+      TTL: 3600 (1 hour window)
+    → Check if over limit
+    ```
+  </Accordion>
+  
+  <Accordion title="User State Management" icon="user">
+    Maintain user state across sessions
+    
+    ```text
+    Flow:
+    → User performs action
+    → Update state: put-kv-item
+      Key: "user_state_${user_id}"
+      Value: {onboarding_step: 3, completed_tutorial: true}
+    → Next visit: Retrieve state, continue where left off
+    ```
+  </Accordion>
+  
+  <Accordion title="Deduplication" icon="clone">
+    Prevent duplicate processing
+    
+    ```text
+    Flow:
+    → Receive event with ID
+    → Check if processed: get-kv-bucket-item
+      Key: "processed_${event_id}"
+    → If not found:
+      → Process event
+      → Mark as processed: put-kv-item
+        Key: "processed_${event_id}"
+        Value: {timestamp: "..."}
+        TTL: 604800 (7 days)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## get-kv-bucket-item
+
+Retrieve an item from a Key-Value bucket by its key.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to retrieve from.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  The key of the item to retrieve.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "user-preferences",
+  "key": "user_123",
+  "value": {
+    "theme": "dark",
+    "language": "en",
+    "notifications": true
+  },
+  "metadata": {
+    "created_at": "2025-10-16T10:30:00Z",
+    "updated_at": "2025-10-16T10:30:00Z",
+    "expires_at": "2025-11-15T10:30:00Z"
+  }
+}
+```
+
+### Not Found Response
+
+```json
+{
+  "success": false,
+  "error": "Item not found",
+  "bucket_name": "user-preferences",
+  "key": "user_999"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Get User Preferences
+{
+  "function": "get-kv-bucket-item",
+  "params": {
+    "bucket_name": "user-preferences",
+    "key": "user_${$.trigger.user_id}"
+  }
+}
+```
+
+```json Check Cache
+{
+  "function": "get-kv-bucket-item",
+  "params": {
+    "bucket_name": "api-cache",
+    "key": "weather_${$.trigger.city}"
+  }
+}
+```
+
+```text In Flow
+Functions: Get user preferences
+  Function: get-kv-bucket-item
+  Bucket: "user-preferences"
+  Key: user_${user_id}
+↓
+Condition: Preferences found?
+  → Yes: Use stored preferences
+  → No: Use defaults
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Cache-Aside Pattern" icon="memory">
+    Check cache before making expensive call
+    
+    ```text
+    Flow:
+    → Get from cache: get-kv-bucket-item
+    → If found: Use cached value
+    → If not found:
+      → Make API call
+      → Store in cache: put-kv-item
+      → Return value
+    ```
+  </Accordion>
+  
+  <Accordion title="Load User Context" icon="user-circle">
+    Load user data for personalization
+    
+    ```text
+    Trigger: User request
+    ↓
+    Functions: Get user preferences
+      Function: get-kv-bucket-item
+      Key: user_${user_id}
+    ↓
+    Agent: Respond with personalized content
+      Uses: user preferences, language, theme
+    ```
+  </Accordion>
+  
+  <Accordion title="Feature Flag Check" icon="toggle-on">
+    Check if feature is enabled
+    
+    ```text
+    Functions: Check feature flag
+      Function: get-kv-bucket-item
+      Bucket: "feature-flags"
+      Key: "new_checkout_flow"
+    ↓
+    Condition: Feature enabled?
+      → Yes: Use new flow
+      → No: Use old flow
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## list-key-value-buckets
+
+List all Key-Value storage buckets in your account with their metadata.
+
+### Parameters
+
+<ParamField path="limit" type="number" default="100">
+  Maximum number of buckets to return (1-1000).
+</ParamField>
+
+<ParamField path="offset" type="number" default="0">
+  Pagination offset for listing buckets.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "buckets": [
+    {
+      "bucket_id": "bucket_abc123",
+      "bucket_name": "user-preferences",
+      "ttl_seconds": 2592000,
+      "item_count": 1523,
+      "size_bytes": 458234,
+      "created_at": "2025-09-01T10:00:00Z",
+      "description": "Store user preferences and settings"
+    },
+    {
+      "bucket_id": "bucket_def456",
+      "bucket_name": "api-cache",
+      "ttl_seconds": 3600,
+      "item_count": 342,
+      "size_bytes": 123456,
+      "created_at": "2025-10-01T14:30:00Z",
+      "description": "Cache external API responses"
+    }
+  ],
+  "count": 2,
+  "total": 2,
+  "has_more": false
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json List All Buckets
+{
+  "function": "list-key-value-buckets",
+  "params": {
+    "limit": 50
+  }
+}
+```
+
+```text In Flow
+Functions: List all KV buckets
+  Function: list-key-value-buckets
+↓
+Map: Format for display
+↓
+Agent: Show storage overview to admin
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Storage Monitoring" icon="chart-pie">
+    Monitor storage usage and health
+    
+    ```text
+    List all buckets
+    → Check item counts and sizes
+    → Alert if approaching limits
+    → Clean up old buckets
+    ```
+  </Accordion>
+  
+  <Accordion title="Admin Dashboard" icon="gauge">
+    Build storage management interface
+    
+    ```text
+    List buckets → Display in admin panel
+    → Show: Name, items, size, TTL
+    → Allow: View/edit buckets
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## list-kv-bucket-items
+
+List all items contained within a Key-Value bucket.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to list items from.
+</ParamField>
+
+<ParamField path="limit" type="number" default="100">
+  Maximum number of items to return (1-1000).
+</ParamField>
+
+<ParamField path="offset" type="number" default="0">
+  Pagination offset for listing items.
+</ParamField>
+
+<ParamField path="prefix" type="string">
+  Optional key prefix to filter results. Only returns keys starting with this prefix.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "user-preferences",
+  "items": [
+    {
+      "key": "user_123",
+      "value": {
+        "theme": "dark",
+        "language": "en"
+      },
+      "size_bytes": 54,
+      "created_at": "2025-10-16T10:30:00Z",
+      "updated_at": "2025-10-16T10:30:00Z",
+      "expires_at": "2025-11-15T10:30:00Z"
+    },
+    {
+      "key": "user_456",
+      "value": {
+        "theme": "light",
+        "language": "es"
+      },
+      "size_bytes": 56,
+      "created_at": "2025-10-15T08:20:00Z",
+      "updated_at": "2025-10-15T08:20:00Z",
+      "expires_at": "2025-11-14T08:20:00Z"
+    }
+  ],
+  "count": 2,
+  "total": 1523,
+  "has_more": true
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json List All Items
+{
+  "function": "list-kv-bucket-items",
+  "params": {
+    "bucket_name": "user-preferences",
+    "limit": 100
+  }
+}
+```
+
+```json List with Prefix Filter
+{
+  "function": "list-kv-bucket-items",
+  "params": {
+    "bucket_name": "user-sessions",
+    "prefix": "session_active_",
+    "limit": 50
+  }
+}
+```
+
+```text In Flow
+Functions: List all active sessions
+  Function: list-kv-bucket-items
+  Bucket: "user-sessions"
+  Prefix: "session_active_"
+↓
+Map: Process each session
+↓
+Agent: Generate activity report
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Bulk Export" icon="download">
+    Export all items for backup or migration
+    
+    ```text
+    List all items (paginated)
+    → Process each page
+    → Export to file or external system
+    ```
+  </Accordion>
+  
+  <Accordion title="Data Cleanup" icon="broom">
+    Find and remove old or unused items
+    
+    ```text
+    List items with prefix: "temp_"
+    → Filter by age
+    → Delete old temporary items
+    ```
+  </Accordion>
+  
+  <Accordion title="Analytics" icon="chart-line">
+    Analyze stored data patterns
+    
+    ```text
+    List all items
+    → Aggregate by patterns
+    → Generate insights
+    → Optimize storage
+    ```
+  </Accordion>
+  
+  <Accordion title="Batch Operations" icon="layer-group">
+    Perform operations on multiple items
+    
+    ```text
+    List items with prefix: "user_"
+    → Filter: Users from specific region
+    → Update: Preferences for all
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Descriptive Keys" icon="key">
+    Include entity type in key: `user_123`, `session_abc`, `cache_product_456`
+  </Card>
+  
+  <Card title="Set Appropriate TTLs" icon="clock">
+    Use TTL to auto-expire old data. Prevent stale cache and storage bloat.
+  </Card>
+  
+  <Card title="Use Prefixes for Organization" icon="folder-tree">
+    Group related keys: `config_*`, `cache_*`, `temp_*` for easy filtering
+  </Card>
+  
+  <Card title="Keep Values Reasonably Sized" icon="scale-balanced">
+    KV storage is for small data. For large files use Object Storage.
+  </Card>
+  
+  <Card title="Handle Missing Keys" icon="triangle-exclamation">
+    Always check if get-kv-bucket-item returns success before using value
+  </Card>
+  
+  <Card title="Monitor Storage Usage" icon="gauge">
+    Regularly list buckets to track item counts and storage size
+  </Card>
+</CardGroup>
+
+---
+
+## Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Choose Right Bucket per Use Case" icon="boxes-stacked">
+    Don't mix different data types in one bucket
+    
+    - ✅ Separate buckets: `user-preferences`, `api-cache`, `feature-flags`
+    - ❌ One bucket: `general-storage` with mixed data
+  </Accordion>
+  
+  <Accordion title="Use TTL for Auto-Cleanup" icon="trash">
+    Let expired items delete automatically
+    
+    - ✅ Set TTL: Cache expires in 1 hour
+    - ❌ Manual cleanup: Scheduled job to delete old items
+  </Accordion>
+  
+  <Accordion title="Cache Expensive Operations" icon="bolt">
+    Store results of slow API calls or computations
+    
+    ```text
+    → Check cache first
+    → If miss: Compute/fetch
+    → Store in cache with TTL
+    → Return result
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Example Workflows
+
+### User Preference Management
+
+<Steps>
+  <Step title="Store Preferences">
+    ```text
+    Trigger: User updates settings
+    ↓
+    Functions: Save preferences
+      put-kv-item
+      Bucket: "user-preferences"
+      Key: user_${user_id}
+      Value: {theme, language, notifications}
+    ```
+  </Step>
+  
+  <Step title="Load on Login">
+    ```text
+    Trigger: User logs in
+    ↓
+    Functions: Get preferences
+      get-kv-bucket-item
+      Bucket: "user-preferences"
+      Key: user_${user_id}
+    ↓
+    Agent: Personalize experience
+    ```
+  </Step>
+</Steps>
+
+### API Response Caching
+
+<Steps>
+  <Step title="Check Cache">
+    ```text
+    Trigger: Need weather data
+    ↓
+    Functions: Check cache
+      get-kv-bucket-item
+      Bucket: "api-cache"
+      Key: weather_${city}
+    ↓
+    Condition: Cache hit?
+    ```
+  </Step>
+  
+  <Step title="Fetch if Miss">
+    ```text
+    → If cache miss:
+      HTTP Request: Call weather API
+      ↓
+      Functions: Store in cache
+        put-kv-item
+        Bucket: "api-cache"
+        Key: weather_${city}
+        Value: ${api_response}
+        TTL: 3600 (1 hour)
+    ```
+  </Step>
+  
+  <Step title="Return Data">
+    ```text
+    → Return cached or fresh data
+    → Reduce API calls by ~95%
+    ```
+  </Step>
+</Steps>
+
+### Feature Flag System
+
+<Steps>
+  <Step title="Set Feature Flag">
+    ```text
+    Admin: Enable new feature
+    ↓
+    Functions: Update flag
+      put-kv-item
+      Bucket: "feature-flags"
+      Key: "new_checkout"
+      Value: {enabled: true, rollout: 100}
+    ```
+  </Step>
+  
+  <Step title="Check in Flow">
+    ```text
+    User Flow:
+    ↓
+    Functions: Check feature flag
+      get-kv-bucket-item
+      Bucket: "feature-flags"
+      Key: "new_checkout"
+    ↓
+    Condition: Enabled?
+      → Yes: New checkout flow
+      → No: Old checkout flow
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Stream Functions" icon="water" href="/flows/functions/streams">
+    Real-time event processing
+  </Card>
+  
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Store large files and documents
+  </Card>
+  
+  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utilities">
+    Transform and encode data
+  </Card>
+  
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Using Functions in flows
+  </Card>
+</CardGroup>

@@ -1,0 +1,624 @@
+---
+title: 'Object Storage Functions'
+description: 'Store and manage large files, documents, and binary data'
+icon: 'box'
+---
+
+# Object Storage Functions
+
+Object storage handles large items like files, documents, media, and binary data. Use object storage for document management, media storage, file uploads, backups, and any data too large for Key-Value storage.
+
+<Info>
+**What is Object Storage?** Object storage is designed for large files and binary data. Unlike Key-Value storage (optimized for small, fast lookups), object storage is optimized for storing and retrieving files of any size - from documents to videos.
+</Info>
+
+---
+
+## Function List
+
+<CardGroup cols={2}>
+  <Card title="create-object-store-bucket" icon="plus" href="#create-object-store-bucket">
+    Create a new object bucket
+  </Card>
+  
+  <Card title="put-object-by-key" icon="upload" href="#put-object-by-key">
+    Upload an object to bucket
+  </Card>
+  
+  <Card title="get-object-from-bucket" icon="download" href="#get-object-from-bucket">
+    Retrieve an object by key
+  </Card>
+  
+  <Card title="list-object-store-buckets" icon="list" href="#list-object-store-buckets">
+    List all object buckets
+  </Card>
+  
+  <Card title="list-object-keys" icon="table" href="#list-object-keys">
+    List objects in a bucket
+  </Card>
+</CardGroup>
+
+---
+
+## create-object-store-bucket
+
+Create a new object storage bucket in your account. Buckets are containers for related objects (files, documents, media).
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to create. Must be unique within your account.
+  
+  **Naming conventions:**
+  - Use lowercase with hyphens: customer-documents, product-images
+  - Be descriptive: invoice-pdfs not bucket1
+  - Include purpose: user-uploads, report-archives
+  - Consider organization: client-acme-files, 2025-invoices
+</ParamField>
+
+<ParamField path="public_access" type="boolean" default="false">
+  Whether objects in this bucket are publicly accessible via URL.
+  
+  Set to false (default) for private access requiring authentication. Set to true for public access where objects are accessible via direct URL.
+  
+  <Warning>
+  **Security**: Only set to true for intentionally public content like product images. Keep customer documents, invoices, and sensitive data private.
+  </Warning>
+</ParamField>
+
+<ParamField path="versioning" type="boolean" default="false">
+  Enable versioning to keep multiple versions of each object.
+  
+  **Use cases:**
+  - Document management (track revisions)
+  - Compliance (maintain audit trail)
+  - Accidental deletion protection
+</ParamField>
+
+<ParamField path="lifecycle_days" type="number">
+  Automatically delete objects older than this many days. Useful for temporary storage.
+  
+  **Common lifecycle values:**
+  - 7 for temporary uploads with weekly cleanup
+  - 30 for monthly reports and short-term storage
+  - 90 for quarterly archives
+  - 365 for annual retention
+  - Leave empty for permanent storage with no auto-deletion
+</ParamField>
+
+<ParamField path="description" type="string">
+  Optional description of the bucket's purpose.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "customer-documents",
+  "bucket_id": "bucket_abc123",
+  "public_access": false,
+  "versioning": true,
+  "lifecycle_days": 365,
+  "created_at": "2025-10-16T10:30:00Z",
+  "region": "us-east-1"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Customer Documents
+{
+  "function": "create-object-store-bucket",
+  "params": {
+    "bucket_name": "customer-documents",
+    "public_access": false,
+    "versioning": true,
+    "lifecycle_days": 2555,
+    "description": "Store customer contracts and invoices"
+  }
+}
+```
+
+```json Product Images
+{
+  "function": "create-object-store-bucket",
+  "params": {
+    "bucket_name": "product-images",
+    "public_access": true,
+    "versioning": false,
+    "description": "Public product images for website"
+  }
+}
+```
+
+```json Temporary Uploads
+{
+  "function": "create-object-store-bucket",
+  "params": {
+    "bucket_name": "temp-uploads",
+    "public_access": false,
+    "versioning": false,
+    "lifecycle_days": 7,
+    "description": "Temporary file uploads, auto-delete after 7 days"
+  }
+}
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Document Management" icon="file-invoice">
+    Store customer documents, contracts, invoices
+    
+    ```
+    Create Bucket: customer-documents
+    Private access (sensitive data)
+    Versioning enabled (track changes)
+    7-year retention (compliance)
+    ```
+  </Accordion>
+  
+  <Accordion title="Media Library" icon="images">
+    Store product images, videos, marketing assets
+    
+    ```
+    Create Bucket: media-library
+    Public access (serve directly to web)
+    No versioning (latest version only)
+    Permanent storage
+    ```
+  </Accordion>
+  
+  <Accordion title="User Uploads" icon="cloud-arrow-up">
+    Handle file uploads from users
+    
+    ```
+    Create Bucket: user-uploads
+    Private access (user data)
+    Versioning optional
+    90-day lifecycle (temporary storage)
+    ```
+  </Accordion>
+  
+  <Accordion title="Backup Storage" icon="floppy-disk">
+    Store system backups and archives
+    
+    ```
+    Create Bucket: system-backups
+    Private access (sensitive)
+    Versioning enabled (multiple backups)
+    30-365 day retention
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## put-object-by-key
+
+Upload an object (file, document, binary data) to an object storage bucket.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to store the object in. Bucket must exist.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  Unique key (path) for the object. This is like a file path in the bucket.
+  
+  **Key strategies:**
+  - User files: users/userId/document.pdf
+  - Date-based: invoices/2025/10/invoice-001.pdf
+  - Type-based: images/products/widget-001.jpg
+  - UUID-based: uploads/uuid.pdf (guaranteed unique)
+  
+  **Best practices:**
+  - Use forward slashes for hierarchy
+  - Include file extension: .pdf, .jpg, .docx
+  - Make keys descriptive: customer-123/contract.pdf not file1.pdf
+</ParamField>
+
+<ParamField path="data" type="string|buffer" required>
+  The object data to store. Can be base64-encoded string for binary files, plain text for text files, or JSON string for structured data.
+  
+  <Info>
+  **Large files**: For files from triggers or HTTP requests, pass through the file data directly using variable mapping
+  </Info>
+</ParamField>
+
+<ParamField path="content_type" type="string">
+  MIME type of the object. Important for proper handling and display.
+  
+  **Common types:**
+  - application/pdf for PDF documents
+  - image/jpeg, image/png for images
+  - text/plain for text files
+  - application/json for JSON data
+  - video/mp4 for videos
+</ParamField>
+
+<ParamField path="metadata" type="object">
+  Optional metadata to associate with the object.
+  
+  **Useful metadata:**
+  - uploaded_by: User ID who uploaded
+  - original_filename: Original file name
+  - file_size: Size in bytes
+  - customer_id: Associated customer
+  - tags: Classification tags
+</ParamField>
+
+<ParamField path="public_url" type="boolean" default="false">
+  Generate a public URL for this object (only works if bucket has public access enabled).
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "customer-documents",
+  "key": "users/123/contract.pdf",
+  "object_id": "obj_xyz789",
+  "size_bytes": 245678,
+  "content_type": "application/pdf",
+  "version_id": "v1",
+  "created_at": "2025-10-16T10:30:00Z",
+  "public_url": null,
+  "download_url": "https://storage.microstrate.com/signed/abc123...",
+  "expires_in": 3600
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Upload PDF Document
+{
+  "function": "put-object-by-key",
+  "params": {
+    "bucket_name": "customer-documents",
+    "key": "customers/${$.customer_id}/invoice-${$.invoice_id}.pdf",
+    "data": "${$.agent.generated_pdf}",
+    "content_type": "application/pdf",
+    "metadata": {
+      "customer_id": "${$.customer_id}",
+      "invoice_id": "${$.invoice_id}",
+      "generated_by": "invoice-agent"
+    }
+  }
+}
+```
+
+```json Upload User File
+{
+  "function": "put-object-by-key",
+  "params": {
+    "bucket_name": "user-uploads",
+    "key": "uploads/${$.user_id}/${$.file.name}",
+    "data": "${$.trigger.file_data}",
+    "content_type": "${$.trigger.file_type}",
+    "metadata": {
+      "uploaded_by": "${$.user_id}",
+      "original_filename": "${$.file.name}"
+    }
+  }
+}
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="User File Uploads" icon="cloud-arrow-up">
+    Handle file uploads from users through forms
+    
+    ```
+    Trigger: Form submission with file
+    Functions: Store uploaded file
+    Bucket: user-uploads
+    Key: uploads/userId/filename
+    ```
+  </Accordion>
+  
+  <Accordion title="Generated Documents" icon="file-export">
+    Store agent-generated documents
+    
+    ```
+    Agent: Generate PDF report
+    Functions: Store PDF
+    Bucket: generated-reports
+    Key: reports/date/userId-report.pdf
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## get-object-from-bucket
+
+Retrieve an object (file) from an object storage bucket.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket containing the object.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  The key (path) of the object to retrieve.
+</ParamField>
+
+<ParamField path="return_format" type="string" default="url">
+  How to return the object data. Options are url for signed download URL (default, best for large files), base64 for base64-encoded data inline, or text for text files only.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "customer-documents",
+  "key": "users/123/contract.pdf",
+  "object_id": "obj_xyz789",
+  "size_bytes": 245678,
+  "content_type": "application/pdf",
+  "download_url": "https://storage.microstrate.com/signed/abc123...",
+  "expires_in": 3600
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Get Download URL
+{
+  "function": "get-object-from-bucket",
+  "params": {
+    "bucket_name": "customer-documents",
+    "key": "customers/${$.customer_id}/invoice.pdf",
+    "return_format": "url"
+  }
+}
+```
+
+```json Get File Data
+{
+  "function": "get-object-from-bucket",
+  "params": {
+    "bucket_name": "user-uploads",
+    "key": "uploads/${$.user_id}/${$.filename}",
+    "return_format": "base64"
+  }
+}
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Provide Download Link" icon="link">
+    Generate secure download link for user
+    
+    ```
+    Trigger: User requests file
+    Functions: Get file with url format
+    Returns: Signed URL (expires in 1 hour)
+    Agent: Send link via email or chat
+    ```
+  </Accordion>
+  
+  <Accordion title="Process Downloaded File" icon="gears">
+    Download file for processing by agent
+    
+    ```
+    Functions: Get file data with base64 format
+    Agent: Analyze document content
+    Return: Analysis results
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## list-object-store-buckets
+
+List all object storage buckets in your account with their metadata.
+
+### Parameters
+
+<ParamField path="limit" type="number" default="100">
+  Maximum number of buckets to return (range 1 to 1000).
+</ParamField>
+
+<ParamField path="offset" type="number" default="0">
+  Pagination offset for listing buckets.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "buckets": [
+    {
+      "bucket_id": "bucket_abc123",
+      "bucket_name": "customer-documents",
+      "public_access": false,
+      "versioning": true,
+      "object_count": 1523,
+      "total_size_bytes": 45823410340,
+      "created_at": "2025-09-01T10:00:00Z"
+    }
+  ],
+  "count": 1,
+  "total": 1,
+  "has_more": false
+}
+```
+
+### Example Usage
+
+```json
+{
+  "function": "list-object-store-buckets",
+  "params": {
+    "limit": 50
+  }
+}
+```
+
+---
+
+## list-object-keys
+
+List all objects (files) in a bucket by their keys.
+
+### Parameters
+
+<ParamField path="bucket_name" type="string" required>
+  Name of the bucket to list objects from.
+</ParamField>
+
+<ParamField path="prefix" type="string">
+  Optional key prefix to filter results. Only returns keys starting with this prefix.
+  
+  **Examples:**
+  - users/123/ for all files for user 123
+  - invoices/2025/ for all 2025 invoices
+  - images/products/ for all product images
+</ParamField>
+
+<ParamField path="limit" type="number" default="100">
+  Maximum number of objects to return (range 1 to 1000).
+</ParamField>
+
+<ParamField path="offset" type="number" default="0">
+  Pagination offset for listing objects.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "bucket_name": "customer-documents",
+  "objects": [
+    {
+      "key": "customers/123/contract.pdf",
+      "object_id": "obj_abc123",
+      "size_bytes": 245678,
+      "content_type": "application/pdf",
+      "created_at": "2025-10-16T10:30:00Z",
+      "version_id": "v1"
+    }
+  ],
+  "count": 1,
+  "total": 1523,
+  "has_more": true
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json List All Objects
+{
+  "function": "list-object-keys",
+  "params": {
+    "bucket_name": "customer-documents",
+    "limit": 100
+  }
+}
+```
+
+```json List with Prefix Filter
+{
+  "function": "list-object-keys",
+  "params": {
+    "bucket_name": "customer-documents",
+    "prefix": "customers/${$.customer_id}/",
+    "limit": 50
+  }
+}
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="User File Browser" icon="folder-open">
+    Show user their uploaded files
+    
+    ```
+    List objects with prefix: users/userId/
+    Display file names, sizes, dates
+    Provide download links
+    ```
+  </Accordion>
+  
+  <Accordion title="Batch Processing" icon="layer-group">
+    Process multiple files in sequence
+    
+    ```
+    List objects with prefix: inbox/
+    For each file: Get, process, move to processed folder
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Hierarchical Keys" icon="folder-tree">
+    Organize with slashes for easy filtering
+  </Card>
+  
+  <Card title="Set Content Types" icon="file-lines">
+    Always specify content_type for proper handling
+  </Card>
+  
+  <Card title="Include Metadata" icon="tags">
+    Add metadata for searching and organization
+  </Card>
+  
+  <Card title="Use Private Buckets" icon="lock">
+    Keep buckets private by default for security
+  </Card>
+  
+  <Card title="Enable Versioning" icon="clock-rotate-left">
+    Turn on versioning for critical documents
+  </Card>
+  
+  <Card title="Set Lifecycle Rules" icon="calendar-days">
+    Auto-delete temporary files to reduce costs
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Stream Functions" icon="water" href="/flows/functions/streams">
+    Real-time event processing
+  </Card>
+  
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    Fast key-based storage
+  </Card>
+  
+  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utilities">
+    Transform and encode data
+  </Card>
+  
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Using Functions in flows
+  </Card>
+</CardGroup>

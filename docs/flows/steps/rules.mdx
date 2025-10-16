@@ -1,0 +1,830 @@
+---
+title: 'Rules'
+description: 'Evaluate business logic, calculate values, and make decisions using a declarative rules engine'
+icon: 'gavel'
+---
+
+# Rules Step
+
+The Rules step evaluates business logic using a declarative rules engine. Instead of writing code, you define **facts** (your data) and **rules** (how to process it), and the engine automatically calculates outcomes. Perfect for pricing calculations, eligibility checks, conditional logic, and complex business rules.
+
+<Info>
+**New to Rules?** The Rules engine lets you build complex business logic without code. Think of it as a powerful decision-making engine for calculations, validations, and conditional outcomes.
+</Info>
+
+---
+
+## How Rules Work
+
+Rules evaluate facts (input data) against declarative rules to produce outcomes:
+
+<CodeGroup>
+```text Simple Calculation
+Agent: Analyzes order
+  Output: {total: 1500, tier: "gold"}
+↓
+Rules: Calculate discount
+  Facts: {total, tier}
+  Rules: 
+    - If tier == "gold" AND total > 1000 → discount = 15%
+    - Else → discount = 5%
+↓
+Output: {discount: 0.15, finalPrice: 1275}
+```
+
+```text Eligibility Check
+Form: Loan application data
+↓
+Rules: Check eligibility
+  Facts: {income, credit_score, debt_ratio}
+  Rules:
+    - If income >= 50000 AND credit_score >= 700 → eligible
+    - If debt_ratio < 0.4 → eligible
+    - Else → not eligible
+↓
+Condition: Route based on eligibility
+```
+
+```text Complex Pricing
+Agent: Product configuration
+↓
+Rules: Calculate pricing
+  Facts: {base_price, features, volume, contract_term}
+  Rules:
+    - Calculate feature costs
+    - Apply volume discounts
+    - Apply contract term discounts
+    - Calculate taxes
+↓
+Output: Detailed pricing breakdown
+```
+</CodeGroup>
+
+---
+
+## When to Use Rules
+
+| Use Rules When | Use Alternative When |
+|----------------|---------------------|
+| Complex calculations (pricing, scoring) | Simple if/then (use Condition) |
+| Multiple conditional outcomes | Single decision point |
+| Business logic with many factors | Agent can interpret situation |
+| Need transparent, auditable logic | Need learning/adaptation |
+| Rules are clearly defined | Rules are fuzzy or contextual |
+| Combining multiple conditions | Simple comparison |
+
+**Examples**:
+
+✅ **Use Rules**: Calculate insurance premium based on age, location, coverage, claims history  
+❌ **Use Condition instead**: If age > 18, approve
+
+✅ **Use Rules**: Multi-tier pricing with volume discounts, contract terms, add-ons  
+❌ **Use Agent instead**: Negotiate custom pricing based on customer relationship
+
+✅ **Use Rules**: Loan eligibility with income, credit score, debt ratio, employment  
+❌ **Use Condition instead**: If credit score > 700, approve
+
+---
+
+## Configuration
+
+### Facts (Input Data)
+
+<ParamField path="facts" type="object" required>
+  Input data for rules to evaluate
+  
+  **Can reference previous steps**:
+  ```json
+  {
+    "orderTotal.value": "${trigger.amount}",
+    "customerTier.value": "${customer.tier}",
+    "region.value": "${customer.region}",
+    "itemCount.value": "${cart.items.length}"
+  }
+  ```
+  
+  **Each fact must have `.value` suffix** - this is required by the rules engine
+  
+  <Tip>
+  Fact names should be descriptive: `orderTotal.value` not `x.value`
+  </Tip>
+</ParamField>
+
+### Rules (Logic)
+
+<ParamField path="rules" type="object" required>
+  Rules to evaluate against facts
+  
+  **Two types of rules**:
+  
+  1. **Direct calculation** - Simple formula
+  ```json
+  {
+    "finalPrice.value": {
+      "operator": "-",
+      "input": ["${orderTotal.value}", "${discount.value}"]
+    }
+  }
+  ```
+  
+  2. **Conditional rules** - If/then logic
+  ```json
+  {
+    "discount.value": [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": ">", "input": ["@fact:orderTotal.value", 1000]},
+            {"operator": "=", "input": ["@fact:customerTier.value", "gold"]}
+          ]
+        },
+        "outcome": 0.15
+      },
+      {"outcome": 0.05}
+    ]
+  }
+  ```
+</ParamField>
+
+<Note>
+Rules syntax is powerful but can get complex. See detailed documentation for all operators and patterns.
+</Note>
+
+---
+
+## Quick Start Example
+
+**Scenario**: Calculate order discount based on tier and amount
+
+**Input**:
+```json
+{
+  "facts": {
+    "orderTotal.value": 1500,
+    "customerTier.value": "gold"
+  },
+  "rules": {
+    "discount.value": [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": ">", "input": ["@fact:orderTotal.value", 1000]},
+            {"operator": "=", "input": ["@fact:customerTier.value", "gold"]}
+          ]
+        },
+        "outcome": 0.15
+      },
+      {"outcome": 0.05}
+    ],
+    "finalPrice.value": {
+      "operator": "-",
+      "input": [
+        "@fact:orderTotal.value",
+        {"operator": "*", "input": ["@fact:orderTotal.value", "@fact:discount.value"]}
+      ]
+    }
+  }
+}
+```
+
+**Output**:
+```json
+{
+  "discount.value": {
+    "outcome": 0.15
+  },
+  "finalPrice.value": {
+    "outcome": 1275
+  }
+}
+```
+
+<Check>
+Gold customer with $1,500 order gets 15% discount → Final price $1,275
+</Check>
+
+---
+
+## Detailed Rules Documentation
+
+For complete rules syntax, operators, and advanced patterns, see the comprehensive Rules documentation:
+
+<CardGroup cols={2}>
+  <Card title="Rules Overview" icon="book" href="/flows/nodes/rules">
+    Introduction to the rules engine and core concepts
+  </Card>
+  
+  <Card title="Getting Started" icon="rocket" href="/flows/nodes/rules/getting-started">
+    Your first rule with step-by-step examples
+  </Card>
+  
+  <Card title="Facts & Rules" icon="database" href="/flows/nodes/rules/facts-and-rules">
+    Understanding facts and rule structure
+  </Card>
+  
+  <Card title="Operators" icon="function" href="/flows/nodes/rules/operators">
+    All available operators (comparison, logical, arithmetic, string, array, date)
+  </Card>
+  
+  <Card title="Conditions" icon="code-branch" href="/flows/nodes/rules/conditions">
+    Building complex conditional logic
+  </Card>
+  
+  <Card title="Examples" icon="lightbulb" href="/flows/nodes/rules/examples">
+    Real-world rule patterns and use cases
+  </Card>
+  
+  <Card title="Best Practices" icon="star" href="/flows/nodes/rules/best-practices">
+    Tips for writing maintainable rules
+  </Card>
+</CardGroup>
+
+---
+
+## Common Flow Patterns
+
+<AccordionGroup>
+  <Accordion title="Pricing Calculation" icon="dollar-sign">
+    Calculate complex pricing with multiple factors
+    
+    ```text
+    Agent: Gather requirements
+      Output: {product, quantity, contract_length, features}
+    ↓
+    Rules: Calculate pricing
+      Facts: Agent output
+      Rules:
+        - Base price by product
+        - Volume discount tiers
+        - Contract length discount
+        - Feature add-ons
+        - Calculate subtotal
+        - Calculate tax
+        - Calculate total
+    ↓
+    Output: Complete pricing breakdown
+    ↓
+    Agent: Present pricing to customer
+    ```
+    
+    **Why Rules**: Transparent pricing logic, easy to audit, no code needed
+  </Accordion>
+
+  <Accordion title="Eligibility Check" icon="user-check">
+    Determine if someone qualifies based on multiple criteria
+    
+    ```text
+    Form: Application data
+    ↓
+    Rules: Check eligibility
+      Facts: {age, income, credit_score, employment, debt_ratio}
+      Rules:
+        - Must be 18+
+        - Income requirements by tier
+        - Credit score thresholds
+        - Employment status check
+        - Debt-to-income ratio limits
+        - Overall eligibility decision
+    ↓
+    Condition: Eligible?
+    ├─ If yes → Continue application
+    └─ If no → Rejection email
+    ```
+    
+    **Why Rules**: Clear requirements, consistent decisions, easy to update criteria
+  </Accordion>
+
+  <Accordion title="Lead Scoring" icon="ranking-star">
+    Score leads based on multiple attributes
+    
+    ```text
+    HTTP Request: Get lead data
+    ↓
+    Rules: Calculate lead score
+      Facts: {company_size, budget, industry, engagement, role}
+      Rules:
+        - Company size points (10-30)
+        - Budget tier points (10-30)
+        - Industry fit points (0-20)
+        - Engagement level points (0-20)
+        - Decision maker bonus (10)
+        - Total score
+        - Qualification tier (hot/warm/cold)
+    ↓
+    Condition: Route by score
+    ├─ Hot → Sales team notification
+    ├─ Warm → Nurture sequence
+    └─ Cold → Standard follow-up
+    ```
+    
+    **Why Rules**: Consistent scoring, easy to adjust weights, transparent criteria
+  </Accordion>
+
+  <Accordion title="Shipping Cost Calculation" icon="truck">
+    Calculate shipping based on multiple factors
+    
+    ```text
+    Cart data: {weight, destination, speed, items}
+    ↓
+    Rules: Calculate shipping
+      Facts: Cart data
+      Rules:
+        - Base rate by destination zone
+        - Weight-based charges
+        - Shipping speed multiplier
+        - Oversized item surcharge
+        - Free shipping threshold check
+        - Calculate final shipping cost
+    ↓
+    Output: Shipping cost breakdown
+    ```
+    
+    **Why Rules**: Complex calculation, transparent to customers, easy to update rates
+  </Accordion>
+
+  <Accordion title="Discount Eligibility" icon="tags">
+    Determine which discounts apply
+    
+    ```text
+    Order data: {total, customer, items, date}
+    ↓
+    Rules: Calculate discounts
+      Facts: Order data
+      Rules:
+        - Customer tier discount
+        - Volume discount tiers
+        - Promotional discount eligibility
+        - Seasonal discount
+        - Best discount selection (max)
+        - Apply discount to total
+    ↓
+    Output: Applied discount and final price
+    ```
+    
+    **Why Rules**: Multiple discount types, stacking rules, transparent logic
+  </Accordion>
+
+  <Accordion title="SLA Determination" icon="clock">
+    Calculate SLA based on customer tier and request type
+    
+    ```text
+    Support ticket: {type, tier, severity}
+    ↓
+    Rules: Determine SLA
+      Facts: Ticket data
+      Rules:
+        - Base response time by tier
+        - Priority multiplier by severity
+        - Request type adjustments
+        - Business hours consideration
+        - Calculate response deadline
+        - Calculate resolution deadline
+    ↓
+    Output: SLA times
+    ↓
+    Agent: Create ticket with SLA
+    ```
+    
+    **Why Rules**: Consistent SLA application, easy to update policies
+  </Accordion>
+
+  <Accordion title="Risk Assessment" icon="shield-exclamation">
+    Assess risk level for transactions or applications
+    
+    ```text
+    Transaction data: {amount, location, history, device}
+    ↓
+    Rules: Risk assessment
+      Facts: Transaction data
+      Rules:
+        - Unusual amount check
+        - Location mismatch
+        - Device fingerprint
+        - Transaction pattern analysis
+        - Historical fraud rate
+        - Calculate risk score
+        - Determine risk level (low/medium/high)
+    ↓
+    Condition: Route by risk
+    ├─ Low → Auto-approve
+    ├─ Medium → Additional verification
+    └─ High → Manual review
+    ```
+    
+    **Why Rules**: Clear risk criteria, auditable decisions, easy to adjust thresholds
+  </Accordion>
+
+  <Accordion title="Tiered Pricing" icon="layer-group">
+    Calculate pricing across multiple tiers
+    
+    ```text
+    Usage data: {units_used, plan, billing_period}
+    ↓
+    Rules: Calculate tiered pricing
+      Facts: Usage data
+      Rules:
+        - Tier 1: 0-100 units @ $1/unit
+        - Tier 2: 101-500 units @ $0.80/unit
+        - Tier 3: 501+ units @ $0.60/unit
+        - Calculate cost per tier
+        - Sum total cost
+        - Apply plan discount
+    ↓
+    Output: Detailed usage bill
+    ```
+    
+    **Why Rules**: Complex tiered logic, transparent billing, easy to update tiers
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Accessing Rule Outcomes
+
+Reference rule outcomes in subsequent steps:
+
+```javascript
+// Access specific rule outcome
+${rules.discount.value.outcome}
+
+// Access calculated value
+${rules.finalPrice.value.outcome}
+
+// Use in condition
+${rules.eligible.value.outcome} == true
+
+// Use in agent prompt
+The calculated discount is ${rules.discount.value.outcome}%
+```
+
+---
+
+## Real-World Examples
+
+### Example 1: Insurance Premium Calculation
+
+**Scenario**: Calculate car insurance premium based on multiple factors
+
+```text
+Form: Insurance application
+↓
+Rules: Calculate premium
+  Facts: {
+    age.value: ${form.age},
+    yearsLicensed.value: ${form.years_licensed},
+    accidentHistory.value: ${form.accidents},
+    vehicleValue.value: ${form.vehicle_value},
+    annualMileage.value: ${form.annual_mileage},
+    location.value: ${form.zip_code}
+  }
+  Rules: {
+    basePremium.value: {
+      // Base rate by vehicle value
+      operator: "*",
+      input: ["@fact:vehicleValue.value", 0.03]
+    },
+    ageMultiplier.value: [
+      {condition: {operator: "<", input: ["@fact:age.value", 25]}, outcome: 1.5},
+      {condition: {operator: ">=", input: ["@fact:age.value", 65]}, outcome: 1.2},
+      {outcome: 1.0}
+    ],
+    experienceDiscount.value: [
+      {condition: {operator: ">=", input: ["@fact:yearsLicensed.value", 10]}, outcome: 0.9},
+      {condition: {operator: ">=", input: ["@fact:yearsLicensed.value", 5]}, outcome: 0.95},
+      {outcome: 1.0}
+    ],
+    accidentSurcharge.value: {
+      operator: "+",
+      input: [1, {operator: "*", input: ["@fact:accidentHistory.value", 0.2]}]
+    },
+    mileageFactor.value: [
+      {condition: {operator: ">", input: ["@fact:annualMileage.value", 15000]}, outcome: 1.15},
+      {outcome: 1.0}
+    ],
+    finalPremium.value: {
+      operator: "*",
+      input: [
+        "@fact:basePremium.value",
+        "@fact:ageMultiplier.value",
+        "@fact:experienceDiscount.value",
+        "@fact:accidentSurcharge.value",
+        "@fact:mileageFactor.value"
+      ]
+    }
+  }
+↓
+Output: Premium calculation with breakdown
+↓
+Agent: Present quote to customer with explanation
+```
+
+---
+
+### Example 2: SaaS Pricing Calculator
+
+**Scenario**: Calculate monthly SaaS pricing with features and usage
+
+```text
+Agent: Gather requirements
+  Output: {users, storage_gb, api_calls, support_level, contract_months}
+↓
+Rules: Calculate pricing
+  Facts: Agent output
+  Rules: {
+    basePrice.value: [
+      {condition: {operator: "<=", input: ["@fact:users.value", 10]}, outcome: 49},
+      {condition: {operator: "<=", input: ["@fact:users.value", 50]}, outcome: 149},
+      {condition: {operator: "<=", input: ["@fact:users.value", 200]}, outcome: 399},
+      {outcome: 999}
+    ],
+    storageAddon.value: {
+      operator: "*",
+      input: [
+        {operator: "max", input: [0, {operator: "-", input: ["@fact:storage_gb.value", 100]}]},
+        0.5
+      ]
+    },
+    apiAddon.value: [
+      {condition: {operator: ">", input: ["@fact:api_calls.value", 100000]}, outcome: 99},
+      {condition: {operator: ">", input: ["@fact:api_calls.value", 50000]}, outcome: 49},
+      {outcome: 0}
+    ],
+    supportAddon.value: [
+      {condition: {operator: "=", input: ["@fact:support_level.value", "premium"]}, outcome: 199},
+      {condition: {operator: "=", input: ["@fact:support_level.value", "priority"]}, outcome: 99},
+      {outcome: 0}
+    ],
+    contractDiscount.value: [
+      {condition: {operator: ">=", input: ["@fact:contract_months.value", 12]}, outcome: 0.85},
+      {condition: {operator: ">=", input: ["@fact:contract_months.value", 6]}, outcome: 0.9},
+      {outcome: 1.0}
+    ],
+    subtotal.value: {
+      operator: "+",
+      input: [
+        "@fact:basePrice.value",
+        "@fact:storageAddon.value",
+        "@fact:apiAddon.value",
+        "@fact:supportAddon.value"
+      ]
+    },
+    monthlyPrice.value: {
+      operator: "*",
+      input: ["@fact:subtotal.value", "@fact:contractDiscount.value"]
+    },
+    annualPrice.value: {
+      operator: "*",
+      input: ["@fact:monthlyPrice.value", 12]
+    }
+  }
+↓
+Output: Complete pricing breakdown
+↓
+Agent: Generate proposal document
+```
+
+---
+
+### Example 3: Loan Approval Decision
+
+**Scenario**: Multi-criteria loan eligibility determination
+
+```text
+HTTP Request: Get applicant financial data
+↓
+Rules: Loan eligibility
+  Facts: {
+    income.value: ${http.body.annual_income},
+    creditScore.value: ${http.body.credit_score},
+    debtToIncome.value: ${http.body.debt_to_income_ratio},
+    employmentYears.value: ${http.body.employment_years},
+    loanAmount.value: ${http.body.requested_amount},
+    downPayment.value: ${http.body.down_payment}
+  }
+  Rules: {
+    incomeEligible.value: {
+      operator: ">=",
+      input: ["@fact:income.value", 50000]
+    },
+    creditEligible.value: {
+      operator: ">=",
+      input: ["@fact:creditScore.value", 680]
+    },
+    debtRatioEligible.value: {
+      operator: "<=",
+      input: ["@fact:debtToIncome.value", 0.43]
+    },
+    employmentEligible.value: {
+      operator: ">=",
+      input: ["@fact:employmentYears.value", 2]
+    },
+    loanToValue.value: {
+      operator: "/",
+      input: [
+        {operator: "-", input: ["@fact:loanAmount.value", "@fact:downPayment.value"]},
+        "@fact:loanAmount.value"
+      ]
+    },
+    ltvEligible.value: {
+      operator: "<=",
+      input: ["@fact:loanToValue.value", 0.8]
+    },
+    overallEligible.value: {
+      operator: "and",
+      input: [
+        "@fact:incomeEligible.value",
+        "@fact:creditEligible.value",
+        "@fact:debtRatioEligible.value",
+        "@fact:employmentEligible.value",
+        "@fact:ltvEligible.value"
+      ]
+    },
+    interestRate.value: [
+      {
+        condition: {
+          operator: "and",
+          input: [
+            {operator: ">=", input: ["@fact:creditScore.value", 760]},
+            {operator: "<=", input: ["@fact:loanToValue.value", 0.7]}
+          ]
+        },
+        outcome: 0.035
+      },
+      {
+        condition: {operator: ">=", input: ["@fact:creditScore.value", 720]},
+        outcome: 0.042
+      },
+      {
+        condition: {operator: ">=", input: ["@fact:creditScore.value", 680]},
+        outcome: 0.055
+      },
+      {outcome: 0.070}
+    ],
+    reasonsForDenial.value: [
+      // Complex array building of denial reasons if applicable
+    ]
+  }
+↓
+Condition: Is eligible?
+├─ If yes → Generate loan offer with rate
+└─ If no → Generate denial letter with reasons
+```
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Descriptive Names" icon="tag">
+    Name facts and rules clearly: `customerTierDiscount.value` not `discount1.value`
+  </Card>
+  
+  <Card title="Test with Real Data" icon="vial">
+    Test rules with actual values from your system. Edge cases matter.
+  </Card>
+  
+  <Card title="Start Simple" icon="seedling">
+    Begin with basic rules, add complexity gradually. Test each addition.
+  </Card>
+  
+  <Card title="Document Complex Logic" icon="message-lines">
+    Add comments explaining why rules exist, especially business requirements.
+  </Card>
+  
+  <Card title="Validate Inputs" icon="shield-check">
+    Check that facts have expected types and ranges before evaluation.
+  </Card>
+  
+  <Card title="Handle Edge Cases" icon="triangle-exclamation">
+    Always include default outcomes for conditional rules (the final `{outcome: X}`).
+  </Card>
+  
+  <Card title="Break Into Steps" icon="list-check">
+    For very complex logic, use multiple Rules steps. Easier to debug and maintain.
+  </Card>
+  
+  <Card title="Version Your Rules" icon="code-branch">
+    Track rule changes over time, especially for pricing and eligibility that affect customers.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Rule not evaluating" icon="circle-exclamation">
+    **Causes**:
+    - Missing `.value` suffix on facts or rules
+    - Incorrect variable reference
+    - Wrong operator syntax
+    
+    **Solutions**:
+    - Verify all facts end with `.value`
+    - Check variable paths: `"@fact:orderTotal.value"` not `"@fact:orderTotal"`
+    - Review operator syntax in documentation
+    - Check execution logs for error messages
+  </Accordion>
+
+  <Accordion title="Wrong outcome returned" icon="question">
+    **Causes**:
+    - Condition order wrong (first match wins)
+    - Logical operator error (AND vs OR)
+    - Data type mismatch
+    
+    **Solutions**:
+    - Reorder conditions (most specific first)
+    - Verify logical operators
+    - Check data types (string "100" vs number 100)
+    - Add logging to see which condition matched
+  </Accordion>
+
+  <Accordion title="Can't access outcome in next step" icon="link-slash">
+    **Causes**:
+    - Wrong variable path
+    - Missing `.outcome` suffix
+    - Rule didn't execute
+    
+    **Solutions**:
+    - Use `${rules_step_name.rule_name.value.outcome}`
+    - Check rule actually executed (logs)
+    - Verify step name is correct
+  </Accordion>
+
+  <Accordion title="Calculation incorrect" icon="calculator">
+    **Causes**:
+    - Operator precedence issue
+    - Missing parentheses in complex math
+    - Wrong operator used
+    
+    **Solutions**:
+    - Break complex calculations into steps
+    - Test each calculation piece separately
+    - Verify operator behavior in docs
+    - Use explicit nesting with operator objects
+  </Accordion>
+
+  <Accordion title="Performance slow with complex rules" icon="clock">
+    **Causes**:
+    - Too many conditions
+    - Nested loops in calculations
+    - Processing large arrays
+    
+    **Solutions**:
+    - Simplify rule logic where possible
+    - Break into multiple Rules steps
+    - Filter data before rules
+    - Consider using agent for very complex logic
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## When to Use Rules vs. Alternatives
+
+**Use Rules when**:
+- Logic is clearly defined and transparent
+- Multiple factors combine to determine outcome
+- Need auditable business logic
+- Calculations involve multiple steps
+- Requirements are likely to change (easy to update)
+
+**Use Condition when**:
+- Simple if/then (single decision point)
+- Binary outcome (yes/no, approve/reject)
+- No calculations needed
+
+**Use Agent when**:
+- Logic requires interpretation
+- Need to understand context
+- Rules are fuzzy or subjective
+- Need to explain reasoning in natural language
+
+**Use Eval when**:
+- Need custom JavaScript beyond rule operators
+- Highly dynamic logic that can't be expressed in rules
+- Integration with external libraries
+
+---
+
+## Learn More
+
+<CardGroup cols={2}>
+  <Card title="Complete Rules Documentation" icon="book" href="/flows/nodes/rules">
+    Full rules engine documentation with all operators and patterns
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Simpler branching for binary decisions
+  </Card>
+  
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    Custom JavaScript for complex logic
+  </Card>
+  
+  <Card title="Variable Mapping" icon="brackets-curly" href="/flows/concepts/variable-mapping">
+    Reference data from previous steps
+  </Card>
+</CardGroup>

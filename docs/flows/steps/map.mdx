@@ -1,0 +1,986 @@
+---
+title: 'Map'
+description: 'Transform data, iterate over arrays, and restructure objects'
+icon: 'arrow-right-arrow-left'
+---
+
+# Map Step
+
+The Map step transforms data structures, iterates over arrays, filters collections, and reshapes objects. Use it to prepare data for agents, format API responses, extract specific fields, or process lists of items.
+
+<Info>
+**When to use Map vs. Agents**: Use Map for structural transformations (reformatting, filtering, extracting). Use Agents when transformation requires intelligence or interpretation. Map is for predictable data manipulation; agents are for smart decisions.
+</Info>
+
+---
+
+## How Map Works
+
+Map takes input data and transforms it according to rules you define:
+
+<CodeGroup>
+```text Simple Transform
+HTTP Request: Returns user data
+↓
+Map: Extract relevant fields
+  Input: ${http.body}
+  Output: {name, email, tier}
+↓
+Agent: Use cleaned data
+```
+
+```text Array Iteration
+Database: Returns list of orders
+↓
+Map: Process each order
+  For each order:
+    - Calculate total
+    - Format date
+    - Add status
+↓
+Output: Transformed order list
+```
+
+```text Data Restructure
+Form submission: Flat structure
+↓
+Map: Nest into hierarchy
+  Input: {first_name, last_name, street, city}
+  Output: {
+    name: {first, last},
+    address: {street, city}
+  }
+```
+</CodeGroup>
+
+---
+
+## Configuration
+
+### Transform Type
+
+<ParamField path="transformType" type="enum" required>
+  Type of transformation to perform
+  
+  **Options**:
+  - `extract` - Pull specific fields from object
+  - `iterate` - Process each item in array
+  - `filter` - Keep only items matching condition
+  - `restructure` - Reshape entire data structure
+  - `merge` - Combine multiple objects
+  - `custom` - Use JavaScript for complex transforms
+</ParamField>
+
+---
+
+## Transform Types
+
+### Extract Fields
+
+Pull specific fields from an object, discarding the rest.
+
+<ParamField path="fields" type="array" required>
+  Fields to extract
+  
+  **Example**:
+  ```json
+  {
+    "fields": ["name", "email", "tier", "address.city"]
+  }
+  ```
+  
+  **Input**:
+  ```json
+  {
+    "id": 123,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "tier": "gold",
+    "internal_notes": "...",
+    "address": {
+      "street": "123 Main St",
+      "city": "Boston"
+    }
+  }
+  ```
+  
+  **Output**:
+  ```json
+  {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "tier": "gold",
+    "address": {
+      "city": "Boston"
+    }
+  }
+  ```
+</ParamField>
+
+<Tip>
+Use dot notation for nested fields: `"address.city"` extracts city from address object.
+</Tip>
+
+---
+
+### Iterate Over Array
+
+Process each item in an array, transforming or filtering items.
+
+<ParamField path="array" type="string" required>
+  Path to array to iterate over
+  
+  **Example**: `${http_request.body.orders}`
+</ParamField>
+
+<ParamField path="itemTransform" type="object" required>
+  How to transform each item
+  
+  **Example**:
+  ```json
+  {
+    "id": "${item.order_id}",
+    "customer": "${item.customer_name}",
+    "total": "${item.amount}",
+    "status": "${item.order_status}",
+    "date": "${item.created_at}"
+  }
+  ```
+  
+  Reference current item with `${item.field_name}`
+</ParamField>
+
+<ParamField path="filterCondition" type="string">
+  Optional filter condition (keep only matching items)
+  
+  **Examples**:
+  ```javascript
+  ${item.status} == "active"
+  ${item.amount} > 100
+  ${item.tier} == "gold" || ${item.tier} == "platinum"
+  ```
+</ParamField>
+
+**Complete Example**:
+
+**Input**:
+```json
+{
+  "orders": [
+    {"order_id": 1, "customer_name": "John", "amount": 150, "order_status": "paid"},
+    {"order_id": 2, "customer_name": "Jane", "amount": 50, "order_status": "pending"},
+    {"order_id": 3, "customer_name": "Bob", "amount": 200, "order_status": "paid"}
+  ]
+}
+```
+
+**Configuration**:
+```json
+{
+  "array": "${http.body.orders}",
+  "filterCondition": "${item.order_status} == 'paid'",
+  "itemTransform": {
+    "id": "${item.order_id}",
+    "customer": "${item.customer_name}",
+    "total": "${item.amount}"
+  }
+}
+```
+
+**Output**:
+```json
+[
+  {"id": 1, "customer": "John", "total": 150},
+  {"id": 3, "customer": "Bob", "total": 200}
+]
+```
+
+---
+
+### Filter Array
+
+Keep only items that match a condition (without transforming them).
+
+<ParamField path="array" type="string" required>
+  Path to array
+</ParamField>
+
+<ParamField path="condition" type="string" required>
+  Filter condition
+  
+  **Examples**:
+  ```javascript
+  // Keep high-value orders
+  ${item.amount} >= 1000
+  
+  // Keep active customers
+  ${item.status} == "active" && ${item.last_login} != null
+  
+  // Keep specific tiers
+  ["gold", "platinum"].includes(${item.tier})
+  
+  // Keep recent items
+  ${item.created_at} > "${seven_days_ago}"
+  ```
+</ParamField>
+
+---
+
+### Restructure Data
+
+Completely reshape data structure.
+
+<ParamField path="template" type="object" required>
+  New structure template using variables
+  
+  **Example - Flatten nested structure**:
+  
+  **Input**:
+  ```json
+  {
+    "user": {
+      "profile": {
+        "name": "John Doe",
+        "contact": {
+          "email": "john@example.com"
+        }
+      }
+    }
+  }
+  ```
+  
+  **Template**:
+  ```json
+  {
+    "name": "${input.user.profile.name}",
+    "email": "${input.user.profile.contact.email}"
+  }
+  ```
+  
+  **Output**:
+  ```json
+  {
+    "name": "John Doe",
+    "email": "john@example.com"
+  }
+  ```
+</ParamField>
+
+**Example - Create nested structure**:
+
+**Input**:
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "street": "123 Main St",
+  "city": "Boston",
+  "state": "MA"
+}
+```
+
+**Template**:
+```json
+{
+  "name": {
+    "first": "${input.first_name}",
+    "last": "${input.last_name}",
+    "full": "${input.first_name} ${input.last_name}"
+  },
+  "address": {
+    "street": "${input.street}",
+    "city": "${input.city}",
+    "state": "${input.state}"
+  }
+}
+```
+
+**Output**:
+```json
+{
+  "name": {
+    "first": "John",
+    "last": "Doe",
+    "full": "John Doe"
+  },
+  "address": {
+    "street": "123 Main St",
+    "city": "Boston",
+    "state": "MA"
+  }
+}
+```
+
+---
+
+### Merge Objects
+
+Combine multiple objects into one.
+
+<ParamField path="sources" type="array" required>
+  Objects to merge
+  
+  **Example**:
+  ```json
+  {
+    "sources": [
+      "${customer_data}",
+      "${order_data}",
+      {"source": "microstrate"}
+    ]
+  }
+  ```
+  
+  Later sources override earlier ones on conflicting keys.
+</ParamField>
+
+**Example**:
+
+**Input**:
+```json
+{
+  "customer": {"name": "John", "email": "john@example.com"},
+  "order": {"id": 123, "total": 99.99},
+  "metadata": {"processed": true}
+}
+```
+
+**Configuration**:
+```json
+{
+  "sources": [
+    "${input.customer}",
+    "${input.order}",
+    "${input.metadata}"
+  ]
+}
+```
+
+**Output**:
+```json
+{
+  "name": "John",
+  "email": "john@example.com",
+  "id": 123,
+  "total": 99.99,
+  "processed": true
+}
+```
+
+---
+
+### Custom JavaScript
+
+Use JavaScript for complex transformations that don't fit other types.
+
+<ParamField path="code" type="string" required>
+  JavaScript code to transform data
+  
+  **Available variables**:
+  - `input` - Input data
+  - `context` - Flow context and previous step outputs
+  
+  **Must return** transformed data
+  
+  **Example**:
+  ```javascript
+  // Calculate statistics from array
+  const orders = input.orders;
+  const total = orders.reduce((sum, order) => sum + order.amount, 0);
+  const average = total / orders.length;
+  
+  return {
+    total_orders: orders.length,
+    total_revenue: total,
+    average_order_value: average,
+    highest_order: Math.max(...orders.map(o => o.amount))
+  };
+  ```
+</ParamField>
+
+<Warning>
+Custom JavaScript has performance implications. Use built-in transform types when possible.
+</Warning>
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Clean API Response for Agent" icon="broom">
+    Extract only fields agent needs from API response
+    
+    ```text
+    HTTP Request: Get customer data
+    ↓
+    Map: Extract relevant fields
+      Type: Extract
+      Fields: ["name", "email", "tier", "orders"]
+    ↓
+    Agent: Personalize response
+      Context: Cleaned customer data
+    ```
+    
+    **Why**: Reduces token usage, removes noise, faster agent processing
+  </Accordion>
+
+  <Accordion title="Process Array of Items" icon="list">
+    Transform each item in a list
+    
+    ```text
+    Database: Get pending orders
+      Returns: [{order_id, customer_id, items, ...}, ...]
+    ↓
+    Map: Transform each order
+      Type: Iterate
+      Transform: {
+        id: ${item.order_id},
+        customer: ${item.customer_id},
+        total: ${item.items.length},
+        status: "processing"
+      }
+    ↓
+    Agent: Process each transformed order
+    ```
+    
+    **Use when**: Need to process lists of items
+  </Accordion>
+
+  <Accordion title="Filter High-Value Items" icon="filter">
+    Keep only items meeting criteria
+    
+    ```text
+    HTTP Request: Get all leads
+    ↓
+    Map: Filter high-value leads
+      Type: Filter
+      Condition: ${item.score} >= 7 && ${item.budget} >= 10000
+    ↓
+    Agent: Qualify filtered leads
+    ```
+    
+    **Use when**: Only processing subset of data
+  </Accordion>
+
+  <Accordion title="Prepare Data for API" icon="code">
+    Reshape data to match API requirements
+    
+    ```text
+    Agent: Generate customer data
+      Output: {name: "John Doe", email: "...", ...}
+    ↓
+    Map: Format for CRM API
+      Type: Restructure
+      Template: {
+        "contact": {
+          "first_name": "${input.name.split(' ')[0]}",
+          "last_name": "${input.name.split(' ')[1]}",
+          "email": "${input.email}"
+        },
+        "source": "microstrate"
+      }
+    ↓
+    HTTP Request: POST to CRM
+    ```
+    
+    **Use when**: External API expects specific format
+  </Accordion>
+
+  <Accordion title="Combine Multiple Sources" icon="object-group">
+    Merge data from different sources
+    
+    ```text
+    HTTP Request 1: Get customer profile
+    ↓
+    HTTP Request 2: Get customer orders
+    ↓
+    Map: Merge data
+      Type: Merge
+      Sources: [${http_1.body}, ${http_2.body}]
+    ↓
+    Agent: Analyze complete customer data
+    ```
+    
+    **Use when**: Need combined view of data
+  </Accordion>
+
+  <Accordion title="Extract Nested Fields" icon="folder-tree">
+    Flatten deeply nested structures
+    
+    ```text
+    HTTP Request: Complex nested response
+    ↓
+    Map: Flatten
+      Type: Restructure
+      Template: {
+        "id": "${input.data.user.profile.id}",
+        "name": "${input.data.user.profile.personal.name}",
+        "email": "${input.data.user.profile.contact.email}"
+      }
+    ↓
+    Simplified flat structure
+    ```
+    
+    **Use when**: Working with complex API responses
+  </Accordion>
+
+  <Accordion title="Calculate Aggregates" icon="calculator">
+    Compute statistics from arrays
+    
+    ```text
+    Database: Get order history
+    ↓
+    Map: Calculate statistics
+      Type: Custom JavaScript
+      Code: Calculate total, average, max, min
+    ↓
+    Agent: Provide insights on order history
+    ```
+    
+    **Use when**: Need derived metrics
+  </Accordion>
+
+  <Accordion title="Format for Display" icon="wand-magic-sparkles">
+    Transform data for user-friendly display
+    
+    ```text
+    Database: Raw transaction data
+    ↓
+    Map: Format for display
+      Transform each item:
+        - Format currency
+        - Format dates
+        - Add display labels
+        - Calculate derived fields
+    ↓
+    Agent: Present formatted data to user
+    ```
+    
+    **Use when**: Preparing data for end users
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Real-World Examples
+
+### Example 1: E-commerce Order Processing
+
+**Scenario**: Process orders, filter by status, enrich with customer data
+
+```text
+HTTP Request: GET /orders
+  Returns: [{order_id, customer_id, status, items, total}, ...]
+↓
+Map 1: Filter paid orders
+  Type: Filter
+  Array: ${http.body.orders}
+  Condition: ${item.status} == "paid"
+↓
+Map 2: Enrich with customer data
+  Type: Iterate
+  Transform: {
+    "order_id": "${item.order_id}",
+    "total": "${item.total}",
+    "customer": {
+      "id": "${item.customer_id}",
+      "name": "${customers[item.customer_id].name}",
+      "email": "${customers[item.customer_id].email}"
+    },
+    "item_count": "${item.items.length}"
+  }
+↓
+Agent: Process enriched orders
+```
+
+---
+
+### Example 2: Lead Scoring
+
+**Scenario**: Score leads based on multiple criteria
+
+```text
+HTTP Request: GET /leads
+↓
+Map: Calculate lead scores
+  Type: Iterate
+  Transform: {
+    "id": "${item.id}",
+    "company": "${item.company}",
+    "score": 0,
+    "score_factors": {}
+  }
+↓
+Map: Add scoring (Custom JS)
+  Code:
+    const lead = input;
+    let score = 0;
+    
+    // Company size
+    if (lead.employees >= 1000) score += 30;
+    else if (lead.employees >= 100) score += 20;
+    else score += 10;
+    
+    // Budget
+    if (lead.budget >= 100000) score += 30;
+    else if (lead.budget >= 50000) score += 20;
+    else score += 10;
+    
+    // Engagement
+    if (lead.website_visits >= 10) score += 20;
+    if (lead.email_opens >= 5) score += 10;
+    
+    return { ...lead, score };
+↓
+Map: Filter qualified leads
+  Type: Filter
+  Condition: ${item.score} >= 60
+↓
+Agent: Personalize outreach for qualified leads
+```
+
+---
+
+### Example 3: Customer Data Enrichment
+
+**Scenario**: Combine data from multiple APIs
+
+```text
+Trigger: New customer signup
+↓
+HTTP Request 1: GET customer profile from CRM
+↓
+HTTP Request 2: GET customer orders from e-commerce
+↓
+HTTP Request 3: GET customer support tickets
+↓
+Map: Merge all data
+  Type: Merge
+  Sources: [
+    "${http_1.body}",
+    {"orders": "${http_2.body.orders}"},
+    {"tickets": "${http_3.body.tickets}"}
+  ]
+↓
+Map: Calculate customer metrics
+  Type: Custom JavaScript
+  Code:
+    return {
+      ...input,
+      lifetime_value: input.orders.reduce((sum, o) => sum + o.total, 0),
+      order_count: input.orders.length,
+      support_interactions: input.tickets.length,
+      last_purchase: input.orders[0]?.date,
+      customer_health_score: calculateHealthScore(input)
+    }
+↓
+Agent: Generate personalized onboarding email
+  Context: Complete customer profile
+```
+
+---
+
+### Example 4: Report Generation
+
+**Scenario**: Transform raw data into report format
+
+```text
+Database: Query monthly transactions
+↓
+Map 1: Group by category (Custom JS)
+  Code:
+    const grouped = {};
+    input.transactions.forEach(t => {
+      if (!grouped[t.category]) grouped[t.category] = [];
+      grouped[t.category].push(t);
+    });
+    return grouped;
+↓
+Map 2: Calculate category totals
+  Type: Custom JavaScript
+  Code:
+    const categories = Object.keys(input);
+    return categories.map(cat => ({
+      category: cat,
+      count: input[cat].length,
+      total: input[cat].reduce((sum, t) => sum + t.amount, 0),
+      average: input[cat].reduce((sum, t) => sum + t.amount, 0) / input[cat].length
+    }));
+↓
+Agent: Generate executive summary report
+  Context: Category statistics
+```
+
+---
+
+### Example 5: Form Data Normalization
+
+**Scenario**: Normalize inconsistent form submissions
+
+```text
+Trigger: Form submission
+  Data: Various formats, optional fields, inconsistent casing
+↓
+Map: Normalize data
+  Type: Restructure
+  Template: {
+    "contact": {
+      "firstName": "${input.first_name || input.firstName || input.fname}",
+      "lastName": "${input.last_name || input.lastName || input.lname}",
+      "email": "${(input.email || input.email_address).toLowerCase().trim()}",
+      "phone": "${normalizePhone(input.phone || input.tel)}"
+    },
+    "company": {
+      "name": "${input.company_name || input.company || ''}",
+      "size": "${input.company_size || input.employees || 'unknown'}"
+    },
+    "metadata": {
+      "source": "web_form",
+      "submitted_at": "${now}",
+      "ip": "${trigger.ip}"
+    }
+  }
+↓
+Agent: Process normalized data
+```
+
+---
+
+## Variable Mapping
+
+Map step heavily uses variable syntax to reference data. Learn more about variable mapping:
+
+<Card title="Variable Mapping Guide" icon="brackets-curly" href="/flows/concepts/variable-mapping">
+  Complete guide to referencing data from triggers, steps, and context
+</Card>
+
+**Common variable patterns in Map**:
+
+```javascript
+// Reference trigger data
+${trigger.body.email}
+
+// Reference previous step
+${http_request.body.data}
+
+// Reference array item (in iterate)
+${item.field_name}
+
+// Nested access
+${agent.output.decision.confidence}
+
+// Array element
+${orders[0].total}
+
+// Multiple sources
+${step1.name} ${step2.email}
+```
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Right Transform Type" icon="bullseye">
+    Choose the appropriate transform type. Extract for simple field selection, Iterate for arrays, Custom JS for complex logic.
+  </Card>
+  
+  <Card title="Keep Transforms Simple" icon="minimize">
+    Break complex transformations into multiple Map steps. Easier to debug and maintain.
+  </Card>
+  
+  <Card title="Filter Early" icon="filter">
+    Filter arrays before processing to reduce computation. Process only what you need.
+  </Card>
+  
+  <Card title="Test with Real Data" icon="vial">
+    Test Maps with actual data structures from your APIs/databases. Edge cases matter.
+  </Card>
+  
+  <Card title="Document Complex Logic" icon="message-lines">
+    Add descriptions to Map steps explaining what transformation does and why.
+  </Card>
+  
+  <Card title="Avoid Over-Transformation" icon="triangle-exclamation">
+    Let agents handle interpretation. Use Map only for structural changes, not business logic.
+  </Card>
+  
+  <Card title="Check for Null Values" icon="ban">
+    Always handle null/undefined values. Use `${field || 'default'}` for safety.
+  </Card>
+  
+  <Card title="Validate Output" icon="check">
+    Verify Map output has expected structure before using in agents or APIs.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Output is empty or null" icon="empty-set">
+    **Causes**:
+    - Wrong variable path
+    - Source data doesn't exist
+    - Filter condition too strict
+    
+    **Solutions**:
+    - Check execution logs for actual input data
+    - Verify variable references: `${http.body.data}` not `${data}`
+    - Test filter condition separately
+    - Add null checks: `${field} != null`
+  </Accordion>
+
+  <Accordion title="Can't access nested fields" icon="folder-tree">
+    **Causes**:
+    - Incorrect dot notation
+    - Field doesn't exist
+    - Array needs index
+    
+    **Solutions**:
+    - Verify exact path from logs: `${input.user.profile.name}`
+    - Check for arrays: Use `[0]` for first element
+    - Handle optional fields: `${input.field || 'default'}`
+  </Accordion>
+
+  <Accordion title="Filter not working" icon="filter">
+    **Causes**:
+    - Wrong comparison operator
+    - Data type mismatch
+    - Variable reference incorrect
+    
+    **Solutions**:
+    - Use `==` for equality, not `=`
+    - Check types: `"100"` vs `100`
+    - Log items to see actual values
+    - Test condition in Eval step first
+  </Accordion>
+
+  <Accordion title="Iterate produces wrong output" icon="repeat">
+    **Causes**:
+    - Wrong array reference
+    - Transform template incorrect
+    - Missing fields in items
+    
+    **Solutions**:
+    - Verify array path in logs
+    - Check each item has required fields
+    - Use `${item.field || 'default'}` for optional fields
+    - Test with small sample array first
+  </Accordion>
+
+  <Accordion title="Custom JavaScript errors" icon="code">
+    **Causes**:
+    - Syntax error
+    - Undefined variable
+    - Missing return statement
+    
+    **Solutions**:
+    - Check JavaScript syntax
+    - Verify all variables exist: `input`, `context`
+    - Always return a value
+    - Use console.log for debugging (appears in logs)
+    - Test JS in Eval step first
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## When to Use Map vs. Other Steps
+
+| Use Map When | Use Alternative When |
+|--------------|---------------------|
+| Extracting specific fields | Need all data (no transform needed) |
+| Reformatting data structure | Agent can work with existing structure |
+| Filtering arrays | Condition on single value (use Condition) |
+| Merging objects | Complex merge logic (use Eval) |
+| Simple calculations | Complex business rules (use Rules) |
+| Structural changes only | Need intelligence (use Agent) |
+
+**Examples**:
+
+✅ **Use Map**: Extract name and email from API response  
+❌ **Don't need Map**: Agent can read full API response
+
+✅ **Use Map**: Filter array to items > $100  
+❌ **Use Condition instead**: Check if single value > $100
+
+✅ **Use Map**: Flatten nested object structure  
+❌ **Use Agent instead**: Interpret and summarize nested data
+
+---
+
+## Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Filter before processing" icon="filter">
+    Reduce array size before complex transformations
+    
+    **Good**:
+    ```text
+    Map 1: Filter (keep 100 items)
+    ↓
+    Map 2: Complex transform (process 100)
+    ```
+    
+    **Bad**:
+    ```text
+    Map 1: Complex transform (process 1000)
+    ↓
+    Map 2: Filter (keep 100)
+    ```
+  </Accordion>
+
+  <Accordion title="Use built-in transforms" icon="bolt">
+    Built-in transforms (Extract, Iterate, Filter) are faster than Custom JavaScript
+    
+    **Fast**: Extract, Iterate, Filter, Restructure  
+    **Slower**: Custom JavaScript (but more flexible)
+  </Accordion>
+
+  <Accordion title="Limit array sizes" icon="list">
+    Processing large arrays can be slow. Consider:
+    - Paginating API calls
+    - Filtering at source (database query, API parameters)
+    - Processing in batches
+  </Accordion>
+
+  <Accordion title="Avoid nested iterations" icon="sitemap">
+    Don't iterate arrays within iterations
+    
+    **Bad**:
+    ```text
+    Map: For each customer
+      Map: For each order (nested)
+    ```
+    
+    **Better**:
+    ```text
+    Map: Flatten to customer-order pairs
+    Map: Process flattened array
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Variable Mapping" icon="brackets-curly" href="/flows/concepts/variable-mapping">
+    Learn how to reference data in Map transforms
+  </Card>
+  
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    Custom JavaScript for complex logic
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Branch based on Map output
+  </Card>
+  
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Utility functions for common operations
+  </Card>
+</CardGroup>

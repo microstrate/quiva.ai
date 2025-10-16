@@ -1,0 +1,976 @@
+---
+title: "Context Settings"
+description: "Manage conversation memory, token limits, and reasoning behavior"
+icon: "brain"
+---
+
+# Context Settings
+
+The Context tab controls how your agent manages memory, processes conversation history, and reasons through problems. These settings directly impact response quality, cost, and agent capabilities.
+
+<img 
+  src="/images/agents/context-tab.png" 
+  alt="Context Settings Tab"
+  className="rounded-lg"
+/>
+
+## Overview
+
+Context settings determine:
+- How much conversation history the agent remembers
+- How intelligently that memory is managed
+- How many reasoning steps the agent can take
+- The total amount of information the agent can process
+- Whether prompts are automatically optimized
+
+---
+
+## Smart Context
+
+Automatically manages conversation memory by intelligently selecting the most relevant previous messages.
+
+### What is Smart Context?
+
+Instead of including the entire conversation history (which wastes tokens and can confuse the agent), Smart Context:
+
+1. **Analyzes** the current query and full conversation
+2. **Selects** the most relevant previous messages
+3. **Includes** only pertinent context for this specific response
+4. **Reduces** token usage while improving quality
+
+<img 
+  src="/images/agents/smart-context-diagram.png" 
+  alt="Smart Context Visualization"
+  className="rounded-lg"
+/>
+
+### How It Works
+
+**Without Smart Context:**
+```
+User: "What's your return policy?"
+Agent: [Response about 30-day returns]
+
+User: "What about shipping?"
+Agent: [Response about shipping]
+
+User: "Can I get a refund?"
+Agent receives: ALL previous messages
+- What's your return policy?
+- [Full response about returns]
+- What about shipping?
+- [Full response about shipping]
+- Can I get a refund?
+
+Total: ~500 tokens of context
+```
+
+**With Smart Context:**
+```
+User: "What's your return policy?"
+Agent: [Response about 30-day returns]
+
+User: "What about shipping?"
+Agent: [Response about shipping]
+
+User: "Can I get a refund?"
+Agent receives: ONLY relevant messages
+- What's your return policy?
+- [Full response about returns]
+- Can I get a refund?
+
+Total: ~200 tokens of context (shipping context excluded as irrelevant)
+```
+
+### Benefits
+
+<CardGroup cols={2}>
+  <Card title="Improved Quality" icon="star">
+    Agent focuses on relevant information, not distracted by unrelated history
+  </Card>
+  
+  <Card title="Reduced Costs" icon="dollar-sign">
+    Fewer tokens = lower costs per request
+  </Card>
+  
+  <Card title="Longer Conversations" icon="comments">
+    Stay within token limits even in extended conversations
+  </Card>
+  
+  <Card title="Better Performance" icon="gauge-high">
+    Less context to process = faster responses
+  </Card>
+</CardGroup>
+
+### When to Enable
+
+<Tabs>
+  <Tab title="Enable (Recommended)" icon="check">
+    **Use Smart Context for:**
+    - Multi-turn conversations
+    - Customer service chatbots
+    - Long interactions
+    - Cost-sensitive applications
+    - Most production use cases
+    
+    **Benefits:**
+    - ✅ Automatic memory optimization
+    - ✅ Lower token usage
+    - ✅ Better focus on relevant context
+    - ✅ No configuration needed
+    - ✅ Works automatically
+  </Tab>
+  
+  <Tab title="Disable" icon="times">
+    **Disable Smart Context when:**
+    - Single-turn interactions only
+    - Every message must have full history
+    - Debugging context issues
+    - Very simple use cases
+    
+    **Considerations:**
+    - ⚠️ Higher token costs
+    - ⚠️ May hit token limits faster
+    - ⚠️ Potential information overload
+    - ⚠️ Slower responses
+  </Tab>
+</Tabs>
+
+<Tip>
+**Default: Enabled** - Keep Smart Context enabled for most use cases. It's a free optimization that improves both quality and cost.
+</Tip>
+
+---
+
+## Prompt Optimization
+
+Automatically enhances your agent's prompts based on its configuration to achieve better results.
+
+### What is Prompt Optimization?
+
+Prompt Optimization analyzes your agent's:
+- Instructions
+- Tools and connectors
+- Output schema
+- Use case
+
+Then automatically:
+- Structures the prompt for better AI performance
+- Emphasizes important instructions
+- Optimizes for the specific model being used
+- Improves reasoning and tool usage
+
+### How It Works
+
+**Without Prompt Optimization:**
+```
+Agent receives:
+- Your exact instructions as written
+- Tool descriptions as provided
+- User prompt as passed in
+
+The AI processes these exactly as given.
+```
+
+**With Prompt Optimization:**
+```
+System analyzes your configuration and:
+- Restructures instructions for clarity
+- Highlights key constraints
+- Optimizes tool usage guidance
+- Formats for the specific model
+- Adds relevant context cues
+
+The AI receives an enhanced prompt.
+```
+
+### Benefits
+
+<AccordionGroup>
+  <Accordion title="Better Instruction Following" icon="list-check">
+    Agent is more likely to follow complex or nuanced instructions correctly.
+    
+    **Example:** Instructions about "only escalate refunds over $200" are emphasized in a way the model understands better.
+  </Accordion>
+
+  <Accordion title="Improved Tool Usage" icon="toolbox">
+    Agent makes better decisions about when and how to use tools.
+    
+    **Example:** "Search knowledge base before answering" becomes a stronger directive that the agent follows more consistently.
+  </Accordion>
+
+  <Accordion title="Better Reasoning" icon="brain">
+    Agent thinks through problems more systematically.
+    
+    **Example:** Multi-step problems are structured for step-by-step reasoning.
+  </Accordion>
+
+  <Accordion title="Model-Specific Optimization" icon="sliders">
+    Prompts are tailored to work best with the specific model you selected.
+    
+    **Example:** GPT-4 and Claude have different prompt formats they respond to best - optimization handles this automatically.
+  </Accordion>
+</AccordionGroup>
+
+### When to Enable
+
+<Tabs>
+  <Tab title="Enable (Recommended)" icon="check">
+    **Use Prompt Optimization for:**
+    - Complex agent instructions
+    - Agents with multiple tools
+    - Production deployments
+    - When quality is critical
+    - Most use cases
+    
+    **Benefits:**
+    - ✅ Better agent performance
+    - ✅ More consistent results
+    - ✅ Improved tool usage
+    - ✅ No manual prompt engineering
+    - ✅ Model-specific tuning
+  </Tab>
+  
+  <Tab title="Disable" icon="times">
+    **Disable when:**
+    - You've already optimized prompts manually
+    - Testing exact prompt variations
+    - Debugging prompt issues
+    - Very simple agents
+    
+    **Reasons:**
+    - You want full control
+    - Testing specific prompt formats
+    - Comparing optimized vs. unoptimized
+  </Tab>
+</Tabs>
+
+<Tip>
+**Default: Enabled** - Keep this on unless you're an expert prompt engineer who prefers manual optimization.
+</Tip>
+
+---
+
+## Maximum Tokens
+
+The maximum number of tokens the agent can use for context. This includes system instructions, conversation history, tool descriptions, and the agent's reasoning.
+
+### What are Tokens?
+
+Tokens are the basic units that AI models process:
+
+- **Roughly 4 characters = 1 token**
+- **Roughly 0.75 words = 1 token**
+- **"Hello world!" = ~3 tokens**
+- **This paragraph = ~50 tokens**
+
+<Info>
+**Token Calculator:**  
+50,000 tokens ≈ 37,500 words ≈ 75 pages of text
+</Info>
+
+### What Counts Toward the Limit
+
+All of these count toward your token limit:
+
+<AccordionGroup>
+  <Accordion title="System Instructions" icon="file-lines">
+    Your agent instructions from the Information tab.
+    
+    **Typical size:**
+    - Simple: 200-500 tokens
+    - Detailed: 500-1,500 tokens
+    - Very detailed: 1,500-3,000 tokens
+  </Accordion>
+
+  <Accordion title="Tool Descriptions" icon="toolbox">
+    Descriptions of available tools and how to use them.
+    
+    **Typical size per tool:**
+    - Simple tool: 100-300 tokens
+    - Complex tool: 300-800 tokens
+    - 5 tools ≈ 1,000-2,000 tokens
+  </Accordion>
+
+  <Accordion title="Conversation History" icon="comments">
+    Previous messages (limited by Message History setting).
+    
+    **Typical size:**
+    - Short message: 50-150 tokens
+    - Long message: 150-500 tokens
+    - 50 messages ≈ 5,000-10,000 tokens
+  </Accordion>
+
+  <Accordion title="User Prompt" icon="message">
+    The current input to the agent.
+    
+    **Typical size:**
+    - Simple question: 10-50 tokens
+    - Detailed request: 50-200 tokens
+    - Long document: 200-5,000+ tokens
+  </Accordion>
+
+  <Accordion title="Agent's Reasoning" icon="brain">
+    Internal reasoning steps and tool usage.
+    
+    **Typical size:**
+    - Simple response: 100-500 tokens
+    - Tool usage: 200-800 tokens per tool call
+    - Complex reasoning: 1,000-5,000+ tokens
+  </Accordion>
+</AccordionGroup>
+
+### Setting the Limit
+
+**Default: 50,000 tokens**
+
+<Tabs>
+  <Tab title="Low (8K-16K)" icon="gauge-low">
+    **Use for:**
+    - Simple, single-turn interactions
+    - Minimal conversation history
+    - Cost-sensitive applications
+    - Fast responses needed
+    
+    **Sufficient for:**
+    - Basic classification
+    - Simple Q&A
+    - One-shot processing
+    - Minimal tools
+    
+    **Limitations:**
+    - ⚠️ Limited history
+    - ⚠️ Few tools available
+    - ⚠️ Can't handle long inputs
+  </Tab>
+  
+  <Tab title="Medium (16K-50K)" icon="gauge">
+    **Use for:**
+    - Standard conversational agents
+    - Moderate tool usage
+    - Normal conversation history
+    - Most production use cases
+    
+    **Sufficient for:**
+    - Customer service
+    - Lead qualification
+    - Standard automation
+    - 3-5 tools
+    - 20-50 message history
+    
+    **Recommended default**
+  </Tab>
+  
+  <Tab title="High (50K-128K)" icon="gauge-high">
+    **Use for:**
+    - Long document processing
+    - Extended conversations
+    - Many tools
+    - Complex reasoning
+    
+    **Sufficient for:**
+    - Document analysis
+    - Long transcripts
+    - 10+ tools
+    - 100+ message history
+    - Research tasks
+    
+    **Higher costs**
+  </Tab>
+  
+  <Tab title="Very High (128K-200K)" icon="gauge-max">
+    **Use for:**
+    - Very long documents
+    - Extensive context needs
+    - Maximum capability
+    
+    **Sufficient for:**
+    - Books, manuals
+    - Entire codebases
+    - Comprehensive research
+    
+    **Considerations:**
+    - ⚠️ Significantly higher costs
+    - ⚠️ Slower processing
+    - ⚠️ Not all models support
+    - ⚠️ Diminishing returns
+  </Tab>
+</Tabs>
+
+### Choosing the Right Limit
+
+<Card title="Decision Guide" icon="question-circle">
+**Ask yourself:**
+
+1. **How long are typical inputs?**
+   - Short (< 500 words) → 16K-50K
+   - Medium (500-2,000 words) → 50K-128K
+   - Long (2,000+ words) → 128K+
+
+2. **How many tools does the agent use?**
+   - None or 1-2 → 16K-50K
+   - 3-5 → 50K
+   - 6-10 → 50K-128K
+   - 10+ → 128K+
+
+3. **How long are conversations?**
+   - Single turn → 16K
+   - 5-20 turns → 50K
+   - 20-50 turns → 50K-128K
+   - 50+ turns → 128K+
+
+4. **What's your budget?**
+   - Cost-sensitive → Use minimum needed
+   - Standard → 50K
+   - Premium → 128K+
+</Card>
+
+<Warning>
+**Context above 200K tokens can produce more unpredictable results.** Even if your model supports it, quality may degrade with extreme context lengths.
+</Warning>
+
+<Tip>
+**Start with 50,000** (the default). Increase only if you hit limits or need more capability. Monitor your usage and adjust.
+</Tip>
+
+---
+
+## Message History Limit
+
+Maximum number of previous messages to include in conversation context. Works with Smart Context to determine which messages the agent can access.
+
+### What is Message History?
+
+The conversation history is the list of previous messages between the user and agent:
+
+```
+User: "What's your return policy?"
+Agent: "We have a 30-day return policy..."
+User: "What about damaged items?"
+Agent: "Damaged items can be returned..."
+User: "Can I get a refund?"  ← Current message
+```
+
+Message History Limit determines how far back the agent can see.
+
+### How It Works
+
+**With Message History Limit = 50:**
+```
+Agent can access:
+- Current message
+- Up to 50 previous messages
+- (Approximately 25 conversation turns)
+
+Older messages are excluded from context.
+```
+
+**With Smart Context enabled:**
+```
+Agent can access:
+- Current message
+- Up to 50 previous messages
+- Smart Context selects most relevant ones
+
+Only the most pertinent history is included.
+```
+
+### Setting the Limit
+
+**Default: 50 messages** (approximately 25 turns)
+
+<Tabs>
+  <Tab title="Low (10-20)" icon="messages">
+    **Use for:**
+    - Short interactions
+    - Simple Q&A
+    - Cost optimization
+    - Single-topic conversations
+    
+    **Sufficient for:**
+    - 5-10 conversation turns
+    - Basic customer service
+    - Simple automation
+    
+    **Limitations:**
+    - ⚠️ Can't reference older context
+    - ⚠️ Not good for complex conversations
+  </Tab>
+  
+  <Tab title="Medium (20-50)" icon="comments">
+    **Use for:**
+    - Standard conversations
+    - Customer service
+    - Most production use cases
+    
+    **Sufficient for:**
+    - 10-25 conversation turns
+    - Typical support interactions
+    - Standard automation
+    
+    **Recommended default**
+  </Tab>
+  
+  <Tab title="High (50-100)" icon="comment-dots">
+    **Use for:**
+    - Extended conversations
+    - Complex problem-solving
+    - Research conversations
+    
+    **Sufficient for:**
+    - 25-50 conversation turns
+    - In-depth discussions
+    - Long troubleshooting sessions
+    
+    **Higher token usage**
+  </Tab>
+  
+  <Tab title="Very High (100-200)" icon="comments">
+    **Use for:**
+    - Very long interactions
+    - Comprehensive analysis
+    - When full history is critical
+    
+    **Sufficient for:**
+    - 50-100 conversation turns
+    - Extensive research
+    - Complex, multi-topic discussions
+    
+    **Considerations:**
+    - ⚠️ Significantly higher costs
+    - ⚠️ May approach token limits
+    - ⚠️ Diminishing value
+  </Tab>
+</Tabs>
+
+### Choosing the Right Limit
+
+<Card title="Decision Guide" icon="question-circle">
+**Consider:**
+
+1. **Typical conversation length?**
+   - 1-3 questions → 10-20 messages
+   - 5-15 questions → 20-50 messages
+   - 15-30 questions → 50-100 messages
+   - 30+ questions → 100-200 messages
+
+2. **Need to reference old context?**
+   - Rarely → Lower limit
+   - Sometimes → Medium limit
+   - Frequently → Higher limit
+
+3. **Cost sensitivity?**
+   - Very sensitive → Lower limit
+   - Standard → Medium limit
+   - Not concerned → Higher limit
+
+4. **Smart Context enabled?**
+   - Yes → Can use higher limits (it optimizes)
+   - No → Use lower limits to control costs
+</Card>
+
+<Info>
+**At 50 messages:** You get approximately 25 conversation turns (each turn = 1 user message + 1 agent message). This is plenty for most customer service and automation scenarios.
+</Info>
+
+<Tip>
+**Start with 50** (the default). Lower if you want to reduce costs. Raise if agents struggle with longer conversations.
+</Tip>
+
+---
+
+## Maximum Reasoning Steps
+
+Limits how many times the agent can use tools or reason through a problem before providing a final response.
+
+### What are Reasoning Steps?
+
+A reasoning step is any action the agent takes:
+
+1. **Tool usage** - Calling an API, searching knowledge base, querying database
+2. **Internal reasoning** - Thinking through a problem step-by-step
+3. **Decision-making** - Evaluating options and choosing a path
+
+**Example conversation:**
+
+```
+User: "I want to return order #12345"
+
+Step 1: Agent uses Order Lookup tool → Gets order details
+Step 2: Agent uses Return Policy tool → Checks if return allowed
+Step 3: Agent reasons → Order is within 30 days, item eligible
+Step 4: Agent uses Refund Processor tool → Initiates refund
+Step 5: Agent responds → "I've processed your return and refund"
+
+Total: 5 reasoning steps
+```
+
+### Why Limit Reasoning Steps?
+
+<AccordionGroup>
+  <Accordion title="Prevent Infinite Loops" icon="arrows-spin">
+    Without limits, agents could get stuck in loops:
+    
+    ```
+    Agent: Use tool A → Error
+    Agent: Try tool B → Error
+    Agent: Try tool A again → Error
+    Agent: Try different approach → Error
+    (Repeats indefinitely...)
+    ```
+    
+    The limit prevents this.
+  </Accordion>
+
+  <Accordion title="Control Costs" icon="dollar-sign">
+    Each reasoning step uses tokens:
+    
+    ```
+    Step 1: Tool call = 200 tokens
+    Step 2: Tool call = 200 tokens
+    Step 3: Reasoning = 300 tokens
+    Step 4: Tool call = 200 tokens
+    Step 5: Response = 400 tokens
+    
+    Total: 1,300 tokens
+    ```
+    
+    More steps = higher costs. The limit caps this.
+  </Accordion>
+
+  <Accordion title="Ensure Timely Responses" icon="clock">
+    Each step takes time:
+    
+    ```
+    Step 1: 0.5 seconds
+    Step 2: 0.5 seconds
+    Step 3: 0.3 seconds
+    Step 4: 0.5 seconds
+    Step 5: 0.8 seconds
+    
+    Total: 2.6 seconds
+    ```
+    
+    More steps = slower responses. The limit prevents excessive delays.
+  </Accordion>
+
+  <Accordion title="Encourage Efficiency" icon="gauge-high">
+    Limits encourage the agent to be efficient:
+    
+    ❌ With unlimited steps:
+    - Try every tool
+    - Excessive reasoning
+    - Redundant checks
+    
+    ✅ With reasonable limits:
+    - Choose best tool first
+    - Efficient reasoning
+    - Direct path to answer
+  </Accordion>
+</AccordionGroup>
+
+### Setting the Limit
+
+**Default: 10 steps**
+
+<Tabs>
+  <Tab title="Low (3-5)" icon="1">
+    **Use for:**
+    - Simple tasks
+    - Single tool usage
+    - Fast responses critical
+    - Cost-sensitive
+    
+    **Sufficient for:**
+    - 1-2 tool calls
+    - Simple reasoning
+    - Basic automation
+    
+    **Limitations:**
+    - ⚠️ Can't handle complex tasks
+    - ⚠️ May fail on multi-step problems
+  </Tab>
+  
+  <Tab title="Medium (5-10)" icon="5">
+    **Use for:**
+    - Standard automation
+    - Multiple tool usage
+    - Most production use cases
+    
+    **Sufficient for:**
+    - 3-5 tool calls
+    - Moderate reasoning
+    - Standard complexity
+    
+    **Recommended default**
+  </Tab>
+  
+  <Tab title="High (10-20)" icon="hashtag">
+    **Use for:**
+    - Complex problem-solving
+    - Many tools available
+    - Research and analysis
+    
+    **Sufficient for:**
+    - 5-10 tool calls
+    - Complex reasoning
+    - Multi-step workflows
+    
+    **Higher costs**
+  </Tab>
+  
+  <Tab title="Very High (20-30)" icon="infinity">
+    **Use for:**
+    - Extremely complex tasks
+    - Maximum flexibility
+    - Research and exploration
+    
+    **Sufficient for:**
+    - 10+ tool calls
+    - Extensive reasoning
+    - Open-ended tasks
+    
+    **Considerations:**
+    - ⚠️ Much higher costs
+    - ⚠️ Slower responses
+    - ⚠️ Risk of loops
+  </Tab>
+</Tabs>
+
+### Choosing the Right Limit
+
+<Card title="Decision Guide" icon="question-circle">
+**Consider:**
+
+1. **Task complexity?**
+   - Simple (1 tool) → 3-5 steps
+   - Moderate (2-3 tools) → 5-10 steps
+   - Complex (4-6 tools) → 10-20 steps
+   - Very complex (7+ tools) → 20-30 steps
+
+2. **How many tools available?**
+   - 1-2 tools → 5 steps
+   - 3-5 tools → 10 steps
+   - 6-10 tools → 15 steps
+   - 10+ tools → 20 steps
+
+3. **Response time requirements?**
+   - Must be fast → Lower limit
+   - Standard → 10 steps
+   - Can be slower → Higher limit
+
+4. **Cost sensitivity?**
+   - Very sensitive → Lower limit
+   - Standard → 10 steps
+   - Not concerned → Higher limit
+</Card>
+
+### What Happens When Limit is Reached
+
+When the agent hits the reasoning step limit:
+
+1. **Agent stops reasoning**
+2. **Returns best answer so far**
+3. **May include a note that it couldn't complete**
+
+**Example:**
+
+```
+User: "Analyze this complex data set and provide insights."
+
+Agent (after 10 steps of analysis):
+"Based on my analysis so far, I've found [partial insights]. 
+However, this is a complex dataset that would benefit from 
+additional analysis. Here's what I've discovered..."
+```
+
+<Warning>
+If agents frequently hit the limit without completing tasks, increase the limit. If they rarely use all steps, you can lower it to save costs.
+</Warning>
+
+<Tip>
+**Start with 10** (the default). Monitor your agents' performance. Increase for complex tasks, decrease for simple ones.
+</Tip>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Keep Smart Context enabled" icon="toggle-on">
+    Smart Context is a free optimization that:
+    - Reduces costs
+    - Improves focus
+    - Enables longer conversations
+    - Works automatically
+    
+    Disable only if you have specific reasons.
+  </Accordion>
+
+  <Accordion title="Use Prompt Optimization by default" icon="wand-magic-sparkles">
+    Unless you're an expert prompt engineer:
+    - Keep it enabled
+    - Let the system optimize
+    - Focus on clear instructions
+    - Don't worry about prompt formatting
+    
+    You can always disable for manual control.
+  </Accordion>
+
+  <Accordion title="Start with default token limit (50K)" icon="slider">
+    50,000 tokens is sufficient for most use cases:
+    - Standard conversations
+    - Multiple tools
+    - Reasonable history
+    - Good balance of cost/capability
+    
+    Increase only when you hit limits.
+  </Accordion>
+
+  <Accordion title="Monitor token usage" icon="chart-line">
+    Track how much context your agents actually use:
+    - Are they consistently near the limit?
+    - Are they using only a fraction?
+    - Adjust limits based on actual usage
+    
+    Right-size for efficiency.
+  </Accordion>
+
+  <Accordion title="Limit message history for cost control" icon="dollar-sign">
+    More history = more tokens = higher costs:
+    - Most use cases: 50 messages is plenty
+    - Simple bots: 20 messages may be enough
+    - Complex conversations: 100 messages if needed
+    
+    Balance history with budget.
+  </Accordion>
+
+  <Accordion title="Set reasoning steps based on complexity" icon="brain">
+    Match the limit to the task:
+    - Simple (1-2 tools) → 5 steps
+    - Standard (3-5 tools) → 10 steps
+    - Complex (6+ tools) → 15-20 steps
+    
+    Too low = incomplete tasks. Too high = wasted tokens.
+  </Accordion>
+
+  <Accordion title="Test edge cases" icon="flask">
+    Verify limits work for:
+    - Longest expected conversations
+    - Most complex tasks
+    - Edge cases with many tools
+    
+    If agents hit limits, increase thoughtfully.
+  </Accordion>
+
+  <Accordion title="Optimize over time" icon="rotate">
+    As you learn your agents' patterns:
+    - Lower unused capacity
+    - Increase where agents struggle
+    - Fine-tune for specific use cases
+    
+    Start generous, optimize down.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent hitting token limits" icon="triangle-exclamation">
+    **Symptoms:**
+    - Error: "Token limit exceeded"
+    - Responses cut off
+    - Agent can't complete tasks
+    
+    **Solutions:**
+    1. Increase Maximum Tokens limit
+    2. Reduce Message History Limit
+    3. Simplify agent instructions
+    4. Remove unnecessary tools
+    5. Enable Smart Context (if not already)
+    6. Use a model with higher context (Claude, GPT-4 Turbo)
+  </Accordion>
+
+  <Accordion title="Agent forgetting previous context" icon="head-side-brain">
+    **Symptoms:**
+    - Repeating questions
+    - Not remembering earlier conversation
+    - Losing track of context
+    
+    **Solutions:**
+    1. Increase Message History Limit
+    2. Check Smart Context is enabled
+    3. Verify conversation is actually multi-turn
+    4. Ensure messages are being saved correctly
+  </Accordion>
+
+  <Accordion title="Agent hitting reasoning step limit" icon="stop">
+    **Symptoms:**
+    - Incomplete answers
+    - "I couldn't complete analysis"
+    - Tasks not finished
+    
+    **Solutions:**
+    1. Increase Maximum Reasoning Steps
+    2. Simplify the task
+    3. Reduce number of tools (remove unused ones)
+    4. Break complex tasks into multiple agents
+    5. Check agent isn't stuck in loops
+  </Accordion>
+
+  <Accordion title="Responses are slow" icon="hourglass">
+    **Causes:**
+    - High token limits
+    - Many reasoning steps
+    - Large message history
+    - Complex tools
+    
+    **Solutions:**
+    1. Reduce token limits (if not using full capacity)
+    2. Lower reasoning step limit
+    3. Reduce message history
+    4. Use faster model (GPT-3.5 vs GPT-4)
+    5. Optimize tool descriptions
+  </Accordion>
+
+  <Accordion title="Costs higher than expected" icon="dollar-sign">
+    **Check:**
+    - Token limits set too high?
+    - Message history too long?
+    - Reasoning steps too high?
+    - Smart Context disabled?
+    - Using expensive model?
+    
+    **Optimize:**
+    1. Right-size token limits to actual usage
+    2. Lower message history to minimum needed
+    3. Reduce reasoning steps if not all used
+    4. Enable Smart Context
+    5. Consider Workforce model
+    6. Monitor per-agent costs
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Tools & Connectors" icon="plug" href="/agents/tools-and-connectors">
+    Connect data sources and APIs
+  </Card>
+  
+  <Card title="Information Settings" icon="info-circle" href="/agents/configuration/information-settings">
+    Configure agent identity and behavior
+  </Card>
+  
+  <Card title="Provider Settings" icon="sliders" href="/agents/configuration/provider-settings">
+    Choose AI models and configure outputs
+  </Card>
+  
+  <Card title="Best Practices" icon="star" href="/agents/best-practices">
+    Optimize agent performance
+  </Card>
+</CardGroup>

@@ -1,0 +1,917 @@
+---
+title: 'Stream Functions'
+description: 'Real-time data streaming operations for event processing'
+icon: 'water'
+---
+
+# Stream Functions
+
+Stream functions enable real-time, sequential data processing with low latency. Use streams for event sourcing, message queuing, real-time analytics, and building data pipelines.
+
+<Info>
+**What are Streams?** Streams are ordered, append-only logs of messages. Each message has a key, timestamp, and data payload. Messages are processed in order per partition key.
+</Info>
+
+---
+
+## Function List
+
+<CardGroup cols={2}>
+  <Card title="create-stream" icon="plus" href="#create-stream">
+    Create a new stream
+  </Card>
+  
+  <Card title="publish-message-to-stream" icon="paper-plane" href="#publish-message-to-stream">
+    Add message to stream
+  </Card>
+  
+  <Card title="get-item-from-stream" icon="download" href="#get-item-from-stream">
+    Retrieve stream item
+  </Card>
+  
+  <Card title="search-stream-items" icon="magnifying-glass" href="#search-stream-items">
+    Search by key and time
+  </Card>
+  
+  <Card title="aggregate-stream-items" icon="chart-line" href="#aggregate-stream-items">
+    Aggregate stream data
+  </Card>
+  
+  <Card title="list-streams" icon="list" href="#list-streams">
+    List all streams
+  </Card>
+  
+  <Card title="poison-pill-message-to-stream" icon="skull" href="#poison-pill-message-to-stream">
+    Send termination signal
+  </Card>
+</CardGroup>
+
+---
+
+## create-stream
+
+Create a new stream in your account for real-time data processing.
+
+### Parameters
+
+<ParamField path="stream_name" type="string" required>
+  Name of the stream to create. Must be unique within your account.
+  
+  **Naming conventions:**
+  - Use lowercase with hyphens: `user-events`, `order-processing`
+  - Be descriptive: `payment-transactions` not `stream1`
+  - Include purpose: `analytics-events`, `notification-queue`
+</ParamField>
+
+<ParamField path="retention_hours" type="number" default="168">
+  How long to retain messages (in hours). Default is 7 days (168 hours).
+  
+  **Options:**
+  - `24` - 1 day (for high-volume, short-lived events)
+  - `168` - 7 days (default, good for most use cases)
+  - `720` - 30 days (for audit logs, analytics)
+  - `8760` - 1 year (for compliance, historical data)
+</ParamField>
+
+<ParamField path="partitions" type="number" default="1">
+  Number of partitions for parallel processing. More partitions = higher throughput.
+  
+  **Guidance:**
+  - `1` - Low volume, simple ordering needs
+  - `3-5` - Medium volume, some parallel processing
+  - `10+` - High volume, maximum throughput
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "stream_name": "user-events",
+  "stream_id": "stream_abc123",
+  "retention_hours": 168,
+  "partitions": 3,
+  "created_at": "2025-10-16T10:30:00Z"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Configuration
+{
+  "function": "create-stream",
+  "params": {
+    "stream_name": "order-events",
+    "retention_hours": 720,
+    "partitions": 5
+  }
+}
+```
+
+```text In Flow
+Functions Step: Create stream for orders
+  Function: create-stream
+  Stream Name: "order-events"
+  Retention: 720 hours (30 days)
+  Partitions: 5
+↓
+Returns stream_id for use in publish operations
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Event Sourcing" icon="timeline">
+    Store all state changes as events
+    
+    ```text
+    Create Stream: "account-events"
+    → Store: account_created, balance_updated, etc.
+    → Rebuild state by replaying events
+    ```
+  </Accordion>
+  
+  <Accordion title="Real-time Analytics" icon="chart-bar">
+    Collect events for real-time dashboards
+    
+    ```text
+    Create Stream: "analytics-events"
+    → Publish: page_view, button_click, purchase
+    → Aggregate: Real-time metrics
+    ```
+  </Accordion>
+  
+  <Accordion title="Message Queue" icon="layer-group">
+    Queue work items for processing
+    
+    ```text
+    Create Stream: "background-jobs"
+    → Publish: email_job, report_job
+    → Workers consume and process
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## publish-message-to-stream
+
+Add a new message to a stream. Messages are appended in order and assigned a timestamp and offset.
+
+### Parameters
+
+<ParamField path="stream_name" type="string" required>
+  Name of the stream to publish to. Stream must exist.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  Partition key for message ordering. Messages with the same key are processed in order.
+  
+  **Key strategies:**
+  - User ID: `user_${userId}` - All events for a user stay ordered
+  - Order ID: `order_${orderId}` - Order events stay together
+  - Session ID: `session_${sessionId}` - Session events in sequence
+  - Random: `${uuid}` - Distribute across partitions for throughput
+</ParamField>
+
+<ParamField path="data" type="object" required>
+  Message payload. Can be any JSON object. Include relevant context for processing.
+  
+  **Best practices:**
+  - Include timestamp: `{"timestamp": "2025-10-16T10:30:00Z"}`
+  - Include event type: `{"event_type": "order_created"}`
+  - Include IDs: `{"user_id": "123", "order_id": "456"}`
+  - Keep focused: One event type per message
+</ParamField>
+
+<ParamField path="timestamp" type="string">
+  Optional custom timestamp (ISO 8601). If not provided, uses current server time.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "message_id": "msg_xyz789",
+  "stream_name": "user-events",
+  "key": "user_123",
+  "offset": 42156,
+  "timestamp": "2025-10-16T10:30:00Z"
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Configuration
+{
+  "function": "publish-message-to-stream",
+  "params": {
+    "stream_name": "order-events",
+    "key": "order_${$.trigger.order_id}",
+    "data": {
+      "event_type": "order_created",
+      "order_id": "${$.trigger.order_id}",
+      "customer_id": "${$.trigger.customer_id}",
+      "amount": "${$.trigger.amount}",
+      "items": "${$.trigger.items}"
+    }
+  }
+}
+```
+
+```text In Flow
+Trigger: New order webhook
+↓
+Functions: Publish order event
+  Function: publish-message-to-stream
+  Stream: "order-events"
+  Key: order_${order_id}
+  Data: {event details}
+↓
+Order event stored in stream for processing
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="User Activity Tracking" icon="user">
+    Track all user actions for analytics
+    
+    ```json
+    {
+      "stream_name": "user-activity",
+      "key": "user_${user_id}",
+      "data": {
+        "event_type": "page_view",
+        "user_id": "user_123",
+        "page": "/products/widget",
+        "timestamp": "2025-10-16T10:30:00Z",
+        "session_id": "sess_abc"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Order State Changes" icon="box">
+    Track order lifecycle events
+    
+    ```json
+    {
+      "stream_name": "order-events",
+      "key": "order_${order_id}",
+      "data": {
+        "event_type": "order_shipped",
+        "order_id": "ORD-001",
+        "tracking_number": "1Z999AA10123456784",
+        "carrier": "UPS",
+        "timestamp": "2025-10-16T10:30:00Z"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="System Events" icon="server">
+    Log system events for monitoring
+    
+    ```json
+    {
+      "stream_name": "system-events",
+      "key": "service_${service_name}",
+      "data": {
+        "event_type": "error_occurred",
+        "service": "payment-processor",
+        "error": "Connection timeout",
+        "severity": "high",
+        "timestamp": "2025-10-16T10:30:00Z"
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## get-item-from-stream
+
+Retrieve a specific item from a stream by its offset or message ID.
+
+### Parameters
+
+<ParamField path="stream_name" type="string" required>
+  Name of the stream to read from.
+</ParamField>
+
+<ParamField path="offset" type="number">
+  The offset (sequence number) of the message to retrieve.
+</ParamField>
+
+<ParamField path="message_id" type="string">
+  The unique message ID to retrieve. Alternative to offset.
+</ParamField>
+
+<Info>
+**Note:** Provide either `offset` or `message_id`, not both.
+</Info>
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": {
+    "message_id": "msg_xyz789",
+    "stream_name": "order-events",
+    "key": "order_ORD-001",
+    "offset": 42156,
+    "timestamp": "2025-10-16T10:30:00Z",
+    "data": {
+      "event_type": "order_created",
+      "order_id": "ORD-001",
+      "customer_id": "CUST-123",
+      "amount": 150.00
+    }
+  }
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json By Offset
+{
+  "function": "get-item-from-stream",
+  "params": {
+    "stream_name": "order-events",
+    "offset": 42156
+  }
+}
+```
+
+```json By Message ID
+{
+  "function": "get-item-from-stream",
+  "params": {
+    "stream_name": "order-events",
+    "message_id": "msg_xyz789"
+  }
+}
+```
+
+```text In Flow
+Functions: Get specific order event
+  Function: get-item-from-stream
+  Stream: "order-events"
+  Message ID: ${$.trigger.message_id}
+↓
+Agent: Process retrieved event
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Replay Specific Event" icon="rotate-right">
+    Retrieve and reprocess a specific event
+    
+    ```text
+    Get message by ID
+    → Reprocess event
+    → Update downstream systems
+    ```
+  </Accordion>
+  
+  <Accordion title="Debug Event" icon="bug">
+    Investigate a specific event
+    
+    ```text
+    Get event by offset
+    → Inspect payload
+    → Understand what happened
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## search-stream-items
+
+Search for items in a stream by key and time range. Returns matching messages in order.
+
+### Parameters
+
+<ParamField path="stream_name" type="string" required>
+  Name of the stream to search.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  Partition key to search for. Returns all messages with this key.
+</ParamField>
+
+<ParamField path="start_timestamp" type="string">
+  Start of time range (ISO 8601). If not provided, starts from beginning.
+</ParamField>
+
+<ParamField path="end_timestamp" type="string">
+  End of time range (ISO 8601). If not provided, includes all messages up to present.
+</ParamField>
+
+<ParamField path="start_offset" type="number">
+  Alternative to timestamp: Start from this offset.
+</ParamField>
+
+<ParamField path="end_offset" type="number">
+  Alternative to timestamp: End at this offset.
+</ParamField>
+
+<ParamField path="limit" type="number" default="100">
+  Maximum number of messages to return (1-1000).
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "messages": [
+    {
+      "message_id": "msg_001",
+      "key": "order_ORD-001",
+      "offset": 42150,
+      "timestamp": "2025-10-16T09:00:00Z",
+      "data": {"event_type": "order_created", "amount": 150}
+    },
+    {
+      "message_id": "msg_002",
+      "key": "order_ORD-001",
+      "offset": 42160,
+      "timestamp": "2025-10-16T10:30:00Z",
+      "data": {"event_type": "order_shipped", "tracking": "1Z999"}
+    }
+  ],
+  "count": 2,
+  "has_more": false
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Search by Time Range
+{
+  "function": "search-stream-items",
+  "params": {
+    "stream_name": "order-events",
+    "key": "order_${$.order_id}",
+    "start_timestamp": "2025-10-01T00:00:00Z",
+    "end_timestamp": "2025-10-16T23:59:59Z",
+    "limit": 50
+  }
+}
+```
+
+```json Search by Offset
+{
+  "function": "search-stream-items",
+  "params": {
+    "stream_name": "user-events",
+    "key": "user_${$.user_id}",
+    "start_offset": 1000,
+    "end_offset": 5000
+  }
+}
+```
+
+```text In Flow
+Trigger: Customer service inquiry
+↓
+Functions: Get customer's order history
+  Function: search-stream-items
+  Stream: "order-events"
+  Key: user_${customer_id}
+  Last 30 days
+↓
+Agent: Answer question with order context
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="User Event History" icon="clock-rotate-left">
+    Get all events for a user in time range
+    
+    ```text
+    Search: key="user_123", last 7 days
+    → Returns: All user actions (login, purchase, etc.)
+    → Use for: Personalization, support, debugging
+    ```
+  </Accordion>
+  
+  <Accordion title="Order Timeline" icon="timeline">
+    Get complete order lifecycle
+    
+    ```text
+    Search: key="order_ORD-001"
+    → Returns: created, paid, shipped, delivered
+    → Use for: Customer inquiries, troubleshooting
+    ```
+  </Accordion>
+  
+  <Accordion title="Session Replay" icon="video">
+    Reconstruct user session
+    
+    ```text
+    Search: key="session_abc123"
+    → Returns: All session events in order
+    → Use for: Analytics, bug reproduction
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## aggregate-stream-items
+
+Aggregate items in a stream by key and time range. Useful for analytics, metrics, and summaries.
+
+### Parameters
+
+<ParamField path="stream_name" type="string" required>
+  Name of the stream to aggregate.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  Partition key to aggregate. Can use wildcards: `user_*` to aggregate all users.
+</ParamField>
+
+<ParamField path="start_timestamp" type="string">
+  Start of aggregation window (ISO 8601).
+</ParamField>
+
+<ParamField path="end_timestamp" type="string">
+  End of aggregation window (ISO 8601).
+</ParamField>
+
+<ParamField path="aggregation_type" type="string" required>
+  Type of aggregation to perform.
+  
+  **Options:**
+  - `count` - Count messages
+  - `sum` - Sum numeric field
+  - `avg` - Average numeric field
+  - `min` - Minimum value
+  - `max` - Maximum value
+  - `group_by` - Group by field and count
+</ParamField>
+
+<ParamField path="field" type="string">
+  Field to aggregate (for sum, avg, min, max operations). Use dot notation for nested fields.
+</ParamField>
+
+<ParamField path="group_by_field" type="string">
+  Field to group by (for group_by aggregation).
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "aggregation": {
+    "type": "sum",
+    "field": "data.amount",
+    "result": 1500.00,
+    "count": 10,
+    "start_timestamp": "2025-10-16T00:00:00Z",
+    "end_timestamp": "2025-10-16T23:59:59Z"
+  }
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json Count Events
+{
+  "function": "aggregate-stream-items",
+  "params": {
+    "stream_name": "order-events",
+    "key": "user_*",
+    "aggregation_type": "count",
+    "start_timestamp": "2025-10-16T00:00:00Z",
+    "end_timestamp": "2025-10-16T23:59:59Z"
+  }
+}
+```
+
+```json Sum Revenue
+{
+  "function": "aggregate-stream-items",
+  "params": {
+    "stream_name": "order-events",
+    "key": "order_*",
+    "aggregation_type": "sum",
+    "field": "data.amount",
+    "start_timestamp": "2025-10-01T00:00:00Z"
+  }
+}
+```
+
+```json Group By Event Type
+{
+  "function": "aggregate-stream-items",
+  "params": {
+    "stream_name": "user-activity",
+    "key": "user_${$.user_id}",
+    "aggregation_type": "group_by",
+    "group_by_field": "data.event_type"
+  }
+}
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Revenue Analytics" icon="dollar-sign">
+    Calculate daily/monthly revenue
+    
+    ```text
+    Aggregate: Sum of order amounts, today
+    → Result: $15,432.50
+    → Use for: Dashboards, reports
+    ```
+  </Accordion>
+  
+  <Accordion title="User Activity Metrics" icon="chart-bar">
+    Count user actions by type
+    
+    ```text
+    Aggregate: Group by event_type
+    → Result: {page_view: 1250, purchase: 42, login: 380}
+    → Use for: Product analytics
+    ```
+  </Accordion>
+  
+  <Accordion title="System Health" icon="heart-pulse">
+    Monitor error rates
+    
+    ```text
+    Aggregate: Count errors by severity
+    → Result: {critical: 2, warning: 15, info: 234}
+    → Use for: Monitoring, alerts
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## list-streams
+
+List all streams in your account with their metadata.
+
+### Parameters
+
+<ParamField path="limit" type="number" default="100">
+  Maximum number of streams to return (1-1000).
+</ParamField>
+
+<ParamField path="offset" type="number" default="0">
+  Pagination offset for listing streams.
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true,
+  "streams": [
+    {
+      "stream_id": "stream_abc123",
+      "stream_name": "order-events",
+      "retention_hours": 720,
+      "partitions": 5,
+      "message_count": 125678,
+      "size_bytes": 45823410,
+      "created_at": "2025-09-01T10:00:00Z",
+      "last_message_at": "2025-10-16T10:30:00Z"
+    },
+    {
+      "stream_id": "stream_def456",
+      "stream_name": "user-activity",
+      "retention_hours": 168,
+      "partitions": 3,
+      "message_count": 892341,
+      "size_bytes": 123456789,
+      "created_at": "2025-08-15T14:30:00Z",
+      "last_message_at": "2025-10-16T10:29:45Z"
+    }
+  ],
+  "count": 2,
+  "total": 2,
+  "has_more": false
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json List All Streams
+{
+  "function": "list-streams",
+  "params": {
+    "limit": 50
+  }
+}
+```
+
+```text In Flow
+Functions: List all streams
+  Function: list-streams
+↓
+Map: Format for display
+↓
+Agent: Show stream status to user
+```
+</CodeGroup>
+
+### Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Stream Monitoring" icon="gauge">
+    Monitor stream health and usage
+    
+    ```text
+    List all streams
+    → Check message counts
+    → Alert if issues detected
+    ```
+  </Accordion>
+  
+  <Accordion title="Stream Management UI" icon="sliders">
+    Build stream management interface
+    
+    ```text
+    List streams → Display in dashboard
+    → Allow user to view/edit streams
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## poison-pill-message-to-stream
+
+Add a poison pill message to signal consumers to stop processing or end a batch. Useful for graceful shutdown and batch completion.
+
+### Parameters
+
+<ParamField path="stream_name" type="string" required>
+  Name of the stream to add poison pill to.
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  Partition key for the poison pill. Consumers processing this key will receive the signal.
+</ParamField>
+
+<ParamField path="data" type="object">
+  Optional data payload for the poison pill (e.g., reason, batch_id).
+</ParamField>
+
+<Info>
+**What is a Poison Pill?** A special message that signals consumers to stop processing. Named after the "poison pill" pattern in computer science for gracefully terminating worker processes.
+</Info>
+
+### Response
+
+```json
+{
+  "success": true,
+  "message_id": "msg_poison_abc123",
+  "stream_name": "order-processing",
+  "key": "batch_001",
+  "timestamp": "2025-10-16T10:30:45Z",
+  "poison_pill": true
+}
+```
+
+### Example Usage
+
+<CodeGroup>
+```json End Batch Processing
+{
+  "function": "poison-pill-message-to-stream",
+  "params": {
+    "stream_name": "order-processing",
+    "key": "batch_${$.batch_id}",
+    "data": {
+      "reason": "batch_complete",
+      "batch_id": "${$.batch_id}",
+      "total_items": "${$.item_count}"
+    }
+  }
+}
+```
+
+```text In Flow
+Map: Process batch of 1000 orders
+  → Publish each order to stream
+↓
+Functions: Signal batch complete
+  Function: poison-pill-message-to-stream
+  Key: batch_${batch_id}
+↓
+Consumer: Detects poison pill, finalizes batch
+```
+</CodeGroup>
+
+### Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Batch Processing" icon="layer-group">
+    Signal end of batch for processing
+    
+    ```text
+    Map: Process batch of items
+      → Publish each item to stream
+    ↓
+    Functions: Signal batch complete
+      Function: poison-pill-message-to-stream
+      Message: {batch_id, count, timestamp}
+    ↓
+    Consumer detects poison pill and finalizes batch
+    ```
+  </Accordion>
+
+  <Accordion title="Graceful Shutdown" icon="power-off">
+    Signal workers to shut down gracefully
+    
+    ```text
+    Trigger: System shutdown initiated
+    ↓
+    Functions: Send shutdown signal
+      Function: poison-pill-message-to-stream
+      Stream: "worker-queue"
+      Message: {type: "shutdown"}
+    ↓
+    Workers complete current tasks and exit
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Descriptive Names" icon="tag">
+    Name streams clearly: `user-events`, `order-processing`, not `stream1`
+  </Card>
+  
+  <Card title="Include Timestamps" icon="clock">
+    Always include timestamp in message data for time-based queries
+  </Card>
+  
+  <Card title="Use Keys for Ordering" icon="key">
+    Use partition keys to maintain ordering for related events (user_id, order_id)
+  </Card>
+  
+  <Card title="Keep Messages Focused" icon="bullseye">
+    One event type per message. Don't mix different events in same message.
+  </Card>
+  
+  <Card title="Include Context" icon="circle-info">
+    Add relevant IDs and metadata for debugging and analysis
+  </Card>
+  
+  <Card title="Monitor Stream Health" icon="heart-pulse">
+    Regularly list streams and check status, message counts
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    Store configuration and state
+  </Card>
+  
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Store large files and media
+  </Card>
+  
+  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utilities">
+    Transform and encode data
+  </Card>
+  
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Using Functions in flows
+  </Card>
+</CardGroup>

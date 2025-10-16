@@ -1,0 +1,572 @@
+---
+title: "Creating Your First Agent"
+description: "Build and deploy your first AI agent in minutes"
+icon: "rocket"
+---
+
+# Creating Your First Agent
+
+This guide walks you through creating your first AI agent from scratch. We'll build a customer service agent that can answer questions, look up orders, and handle returns.
+
+<Info>
+**Time to complete**: 10-15 minutes  
+**What you'll build**: A customer service agent with order lookup capabilities  
+**What you'll learn**: Agent configuration, tool attachment, and testing
+</Info>
+
+## Prerequisites
+
+Before you begin:
+
+<Steps>
+  <Step title="Create an Account">
+    Sign up at [app.microstrate.ai](https://app.microstrate.ai/en/signup)
+  </Step>
+  <Step title="Select a Plan">
+    Free tier works great for learning
+  </Step>
+  <Step title="Verify Your Email">
+    Check your inbox and verify your email address
+  </Step>
+</Steps>
+
+## Step 1: Create a New Flow
+
+Agents work within flows, so we'll start by creating a flow:
+
+1. Navigate to **Hub** in the left sidebar
+2. Click **Create New Flow**
+3. Name it "Customer Service Agent"
+4. Click **Create**
+
+<img 
+  src="/images/agents/create-flow.png" 
+  alt="Create New Flow"
+  className="rounded-lg"
+/>
+
+## Step 2: Add a Trigger
+
+Every flow needs a trigger to start it. We'll use a simple HTTP trigger:
+
+1. Click **Add Trigger** in the flow builder
+2. Select **HTTP Request**
+3. The trigger will automatically generate a custom endpoint
+4. Note the endpoint URL for testing later
+
+<Tip>
+The HTTP trigger creates a custom API endpoint. You can call this endpoint with customer questions to test your agent.
+</Tip>
+
+## Step 3: Add an Agent Step
+
+Now let's add the agent:
+
+1. Click the **+** button after the trigger
+2. Select **Agent** from the step types
+3. Your new agent step appears in the flow
+
+<img 
+  src="/images/agents/add-agent-step.png" 
+  alt="Add Agent Step"
+  className="rounded-lg"
+/>
+
+## Step 4: Configure Information Settings
+
+Click on the agent step to open the configuration panel. Start with the **Information** tab:
+
+### Name & Description
+
+Give your agent a clear, descriptive name:
+
+```
+Name: Customer Service Agent
+Description: Handles customer inquiries, order lookups, and return requests
+```
+
+### Response Mode
+
+Choose how the agent should execute:
+
+<Tabs>
+  <Tab title="Wait for Completion (Recommended)">
+    The flow waits for the agent to finish before responding. Best for:
+    - API endpoints that need results
+    - Real-time responses
+    - Chat interactions
+    
+    **Select this option for now.**
+  </Tab>
+  <Tab title="Run in Background">
+    The flow responds immediately and the agent runs async. Best for:
+    - Long-running processes
+    - Email processing
+    - Scheduled tasks
+  </Tab>
+</Tabs>
+
+### Agent Instructions
+
+This is where you define what your agent does. Be specific and clear:
+
+```
+You are a customer service agent for [Your Company Name]. 
+
+Your responsibilities:
+- Answer customer questions about products and orders
+- Look up order status and tracking information
+- Handle return requests according to our 30-day policy
+- Provide helpful, professional, and friendly support
+
+Your personality:
+- Friendly and approachable
+- Professional and efficient
+- Patient and understanding
+- Solution-oriented
+
+Guidelines:
+- Always greet customers warmly
+- Ask clarifying questions if needed
+- Use the order lookup tool before answering order questions
+- Follow the return policy strictly
+- Escalate complex issues to human support
+- Always end with asking if there's anything else you can help with
+```
+
+<Info>
+Good agent instructions include: role, responsibilities, personality, and specific guidelines. Think of it as a job description.
+</Info>
+
+<img 
+  src="/images/agents/information-settings.png" 
+  alt="Information Settings"
+  className="rounded-lg"
+/>
+
+## Step 5: Configure Provider Settings
+
+Click the **Provider** tab to select your AI model:
+
+### Select Provider
+
+Choose your LLM provider:
+
+<Tabs>
+  <Tab title="Workforce (Recommended)">
+    Our custom model optimized for business use cases. Best balance of performance and cost.
+    
+    **Select this for now** - it's included in all plans.
+  </Tab>
+  <Tab title="OpenAI">
+    Industry-leading models like GPT-4 and GPT-3.5. Requires your own API key.
+  </Tab>
+  <Tab title="Claude">
+    Anthropic's models, excellent for long contexts and complex reasoning. Requires API key.
+  </Tab>
+  <Tab title="Gemini">
+    Google's models with strong multimodal capabilities. Requires API key.
+  </Tab>
+</Tabs>
+
+### Choose Model
+
+If using Workforce, the default model is already selected. For other providers, choose your model version:
+
+- **GPT-4** - Most capable, higher cost
+- **GPT-3.5-Turbo** - Fast and cost-effective
+- **Claude Sonnet** - Balanced performance
+- **Claude Opus** - Maximum capability
+
+### API Key (Optional)
+
+If using OpenAI, Claude, or Gemini, enter your API key:
+
+<Steps>
+  <Step title="Get Your API Key">
+    Visit your provider's console:
+    - [Get Anthropic API key →](https://console.anthropic.com/)
+    - [Get OpenAI API key →](https://platform.openai.com/api-keys)
+  </Step>
+  <Step title="Enter and Save">
+    Paste your API key in the field. Keys are encrypted and securely stored.
+  </Step>
+</Steps>
+
+<Warning>
+Keep API keys secure. Never share them or commit them to code repositories.
+</Warning>
+
+### Prompt Field
+
+The prompt field shows what will be sent to the agent:
+
+```
+Prompt: ${trigger.body.message}
+```
+
+This variable mapping automatically passes the customer's message from the trigger to the agent.
+
+<Info>
+You can customize this mapping to pass different data or combine multiple fields. Learn more in [Variable Mapping](/advanced/variable-mapping/overview).
+</Info>
+
+<img 
+  src="/images/agents/provider-settings.png" 
+  alt="Provider Settings"
+  className="rounded-lg"
+/>
+
+## Step 6: Configure Context Settings
+
+Click the **Context** tab to control memory and reasoning:
+
+### Smart Context
+
+Toggle **ON** (recommended):
+
+```
+✅ Smart Context Enabled
+```
+
+Smart Context automatically manages conversation memory by selecting the most relevant previous messages. This:
+- Improves response quality
+- Reduces token usage
+- Prevents context overload
+
+<Tip>
+Keep Smart Context enabled unless you have a specific reason to disable it.
+</Tip>
+
+### Prompt Optimization
+
+Toggle **ON** (recommended):
+
+```
+✅ Prompt Optimization Enabled
+```
+
+Automatically enhances your agent's prompts based on its configuration to achieve better results.
+
+### Maximum Tokens
+
+Set the context limit (default is good for most cases):
+
+```
+Maximum Tokens: 50,000
+```
+
+<Info>
+**What are tokens?** Roughly 4 characters = 1 token, or about 0.75 words.  
+50,000 tokens ≈ 37,500 words of context
+</Info>
+
+Higher limits allow more context but increase costs. Start with 50,000 and increase only if needed.
+
+### Message History Limit
+
+Set how many previous messages to remember:
+
+```
+Message History: 50 messages
+```
+
+At 50 messages, you get approximately 25 conversation turns (user + agent pairs). This is plenty for most interactions.
+
+### Maximum Reasoning Steps
+
+Limit how many times the agent can use tools or reason:
+
+```
+Maximum Reasoning Steps: 10
+```
+
+This prevents infinite loops while allowing complex multi-step reasoning. 10 is a good default.
+
+<img 
+  src="/images/agents/context-settings.png" 
+  alt="Context Settings"
+  className="rounded-lg"
+/>
+
+## Step 7: Add Tools (Optional but Recommended)
+
+Tools give your agent the ability to access data and perform actions. Let's add an order lookup tool:
+
+<Info>
+For this tutorial, we'll keep it simple without tools. You can add them later by following the [Tools & Connectors Guide](/agents/tools-and-connectors).
+</Info>
+
+If you want to add a tool now:
+
+1. Click **Tools** tab in the agent configuration
+2. Click **Add Tool**
+3. Select from available MCP servers or API integrations
+4. Configure authentication and parameters
+
+Common tools for customer service:
+- **Knowledge Base Search** - Look up help articles
+- **Order Lookup API** - Get order status and tracking
+- **CRM Integration** - Access customer history
+- **Ticketing System** - Create support tickets
+
+## Step 8: Define Output Schema (Optional)
+
+Output schemas ensure your agent returns data in a specific format. This is useful for:
+- Structured data extraction
+- Integration with other systems
+- Validation and error handling
+
+For now, we'll skip this. Your agent will return natural language responses.
+
+<Info>
+Learn more about output schemas in [Provider Settings](/agents/configuration/provider-settings#output-schema).
+</Info>
+
+## Step 9: Save Your Agent
+
+Your agent is now configured! Click **Save** to save your changes.
+
+<img 
+  src="/images/agents/save-agent.png" 
+  alt="Save Agent"
+  className="rounded-lg"
+/>
+
+## Step 10: Test Your Agent
+
+Time to test! Let's make sure your agent works:
+
+### Using the Test Panel
+
+1. Click **Test** in the top right of the flow builder
+2. Enter a test message in the trigger body:
+
+```json
+{
+  "message": "Hi, I want to know about your return policy. Can you help?"
+}
+```
+
+3. Click **Run Test**
+4. Watch your agent process the request and respond
+
+<img 
+  src="/images/agents/test-agent.png" 
+  alt="Test Agent"
+  className="rounded-lg"
+/>
+
+### Expected Response
+
+Your agent should respond with something like:
+
+```
+Hello! I'd be happy to help you with our return policy.
+
+We have a 30-day return policy for most items. Here are the key details:
+
+- Returns must be initiated within 30 days of purchase
+- Items must be in original condition with tags attached
+- Proof of purchase is required
+- Refunds are processed within 5-7 business days
+
+To start a return, I can look up your order if you provide your order number. 
+Do you have your order number handy, or would you like me to help you locate it?
+
+Is there anything specific about our return policy you'd like to know more about?
+```
+
+### Try Different Questions
+
+Test with various scenarios:
+
+<AccordionGroup>
+  <Accordion title="Order Status Question" icon="box">
+    ```json
+    {
+      "message": "Where is my order? My order number is #12345"
+    }
+    ```
+    
+    The agent should acknowledge the order number and (without tools) explain how to check status.
+  </Accordion>
+
+  <Accordion title="Return Request" icon="arrow-rotate-left">
+    ```json
+    {
+      "message": "I want to return a shirt I bought 35 days ago"
+    }
+    ```
+    
+    The agent should note it's past the 30-day policy and offer alternatives or escalation.
+  </Accordion>
+
+  <Accordion title="General Question" icon="question">
+    ```json
+    {
+      "message": "What are your business hours?"
+    }
+    ```
+    
+    The agent should provide helpful information based on its instructions.
+  </Accordion>
+
+  <Accordion title="Complex Scenario" icon="brain">
+    ```json
+    {
+      "message": "I received a damaged item but I can't find my receipt. What should I do?"
+    }
+    ```
+    
+    The agent should handle this exception case thoughtfully.
+  </Accordion>
+</AccordionGroup>
+
+## Step 11: Deploy Your Agent
+
+Once you're happy with the testing:
+
+1. Click **Deploy** in the top right
+2. Your flow is now active and ready to receive requests
+3. Note your HTTP endpoint URL from the trigger
+
+<img 
+  src="/images/agents/deploy-flow.png" 
+  alt="Deploy Flow"
+  className="rounded-lg"
+/>
+
+### Calling Your Agent
+
+You can now call your agent via the HTTP endpoint:
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.microstrate.ai/trigger/your-endpoint-id \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Hi, I need help with my order"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.microstrate.ai/trigger/your-endpoint-id', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    message: 'Hi, I need help with my order'
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.microstrate.ai/trigger/your-endpoint-id',
+    json={
+        'message': 'Hi, I need help with my order'
+    }
+)
+
+print(response.json())
+```
+</CodeGroup>
+
+## Congratulations! 🎉
+
+You've built and deployed your first AI agent! Here's what you accomplished:
+
+✅ Created a customer service agent  
+✅ Configured information, provider, and context settings  
+✅ Tested with multiple scenarios  
+✅ Deployed to production  
+
+## Next Steps
+
+Now that you have a working agent, here are some ways to enhance it:
+
+<CardGroup cols={2}>
+  <Card title="Add Tools" icon="plug" href="/agents/tools-and-connectors">
+    Connect to your CRM, knowledge base, or APIs
+  </Card>
+  
+  <Card title="Improve Instructions" icon="pen" href="/agents/prompt-engineering">
+    Learn prompt engineering best practices
+  </Card>
+  
+  <Card title="Add Human Review" icon="user-check" href="/flows/steps/human-in-the-loop">
+    Add approval steps for critical actions
+  </Card>
+  
+  <Card title="Create More Flows" icon="diagram-project" href="/flows/overview">
+    Build different agents for different use cases
+  </Card>
+  
+  <Card title="Use Different Triggers" icon="bolt" href="/flows/triggers/overview">
+    Add forms, chat, email, or schedules
+  </Card>
+  
+  <Card title="Advanced Configuration" icon="sliders" href="/agents/configuration/provider-settings">
+    Fine-tune performance and behavior
+  </Card>
+</CardGroup>
+
+## Common Issues & Solutions
+
+<AccordionGroup>
+  <Accordion title="Agent isn't responding" icon="triangle-exclamation">
+    **Check:**
+    - Is the flow deployed (not just saved)?
+    - Is the trigger configured correctly?
+    - Are you sending the request to the right endpoint?
+    - Check the execution logs for errors
+  </Accordion>
+
+  <Accordion title="Responses are too generic" icon="comment-slash">
+    **Fix:**
+    - Add more specific instructions
+    - Include examples in the agent instructions
+    - Increase token limits for more context
+    - Add relevant tools for data access
+  </Accordion>
+
+  <Accordion title="Agent is too slow" icon="clock">
+    **Optimize:**
+    - Reduce token limits if set too high
+    - Limit reasoning steps
+    - Use a faster model (GPT-3.5 vs GPT-4)
+    - Disable prompt optimization if not needed
+  </Accordion>
+
+  <Accordion title="Costs are higher than expected" icon="dollar-sign">
+    **Reduce costs:**
+    - Use Workforce model instead of bringing your own
+    - Lower token limits
+    - Reduce message history
+    - Limit reasoning steps
+    - Use Smart Context to optimize memory
+  </Accordion>
+</AccordionGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Community" icon="users" href="https://community.microstrate.ai">
+    Ask questions and get help
+  </Card>
+  
+  <Card title="Documentation" icon="book" href="/agents/overview">
+    Read comprehensive guides
+  </Card>
+  
+  <Card title="Support" icon="life-ring" href="/support">
+    Contact our support team
+  </Card>
+</CardGroup>

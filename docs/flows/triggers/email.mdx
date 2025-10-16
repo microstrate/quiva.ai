@@ -1,0 +1,725 @@
+---
+title: 'Email Trigger'
+description: 'Trigger flows from incoming emails - automate email processing, support tickets, and lead capture'
+icon: 'envelope'
+---
+
+# Email Trigger
+
+The Email trigger allows you to trigger flows when emails are received at a specific email address. Perfect for automating customer support, processing lead inquiries, handling support tickets, and any workflow that starts with an email.
+
+When you add an Email trigger, Microstrate provides a unique email address. Any email sent to this address will trigger your flow with the full email content and attachments.
+
+---
+
+## How It Works
+
+Add an Email trigger to your flow. Microstrate generates a unique email address for this trigger. Configure email forwarding or share the address with users. When emails arrive at this address, your flow triggers automatically. Flow receives email subject, body, sender, attachments, and metadata.
+
+---
+
+## Configuration
+
+### Email Address
+
+When you add the trigger, Microstrate automatically generates a unique email address:
+
+```
+flow-abc123@mail.microstrate.com
+```
+
+Click "Copy Email Address" in the trigger configuration. Use this address to receive emails that trigger your flow. The email address is permanent and doesn't change.
+
+### Email Forwarding
+
+You can forward emails from your existing email address to the Microstrate email:
+
+**Gmail:** Set up automatic forwarding in Gmail settings.
+
+**Outlook:** Create inbox rule to forward to Microstrate address.
+
+**Custom Domain:** Set up email forwarding at your domain provider.
+
+This allows you to use your branded email address (support@yourcompany.com) while triggering Microstrate flows.
+
+### Response Mode
+
+**Run in Background (Default):**
+
+Email triggers flow immediately, sender receives no automatic response. Flow processes email asynchronously. Best for most email automation scenarios.
+
+**Send Auto-Reply:**
+
+Configure automatic reply sent to sender. Useful for acknowledgment messages. Reply text can include dynamic content from flow.
+
+Example auto-reply:
+```
+Thank you for contacting us! We've received your message and will respond within 24 hours.
+
+Reference ID: {{executionId}}
+```
+
+### Spam Filtering
+
+Built-in spam filtering protects your flows. Common spam patterns blocked automatically. Known spam sources rejected. You can configure additional filters.
+
+**Custom filters:**
+- Block specific sender domains
+- Require specific subject keywords
+- Minimum/maximum email length
+- Block emails with no body text
+
+---
+
+## Accessing Email Data
+
+### Email Metadata
+
+All email information is available under `$.trigger.email`:
+
+```javascript
+// Basic info
+const from = $.trigger.email.from;
+const to = $.trigger.email.to;
+const subject = $.trigger.email.subject;
+const receivedAt = $.trigger.email.received_at;
+
+// Example values
+// from: "customer@example.com"
+// to: "flow-abc123@mail.microstrate.com"
+// subject: "Help with my order"
+// receivedAt: "2025-10-14T10:30:00Z"
+```
+
+### Email Body
+
+Access both plain text and HTML versions:
+
+```javascript
+// Plain text body
+const textBody = $.trigger.email.text;
+
+// HTML body
+const htmlBody = $.trigger.email.html;
+
+// Check if reply (RE: or FWD:)
+const isReply = $.trigger.email.subject.startsWith('RE:');
+const isForward = $.trigger.email.subject.startsWith('FWD:');
+```
+
+### Sender Information
+
+Extract sender details:
+
+```javascript
+// Full sender (name and email)
+const sender = $.trigger.email.from;
+// "John Doe <john@example.com>"
+
+// Email address only
+const senderEmail = $.trigger.email.from_email;
+// "john@example.com"
+
+// Sender name (if provided)
+const senderName = $.trigger.email.from_name;
+// "John Doe"
+```
+
+### Recipients
+
+Access all recipients:
+
+```javascript
+// Primary recipient (To:)
+const to = $.trigger.email.to;
+
+// CC recipients
+const cc = $.trigger.email.cc;
+// Array of email addresses
+
+// BCC recipients (if your address was BCC'd)
+const bcc = $.trigger.email.bcc;
+```
+
+### Email Headers
+
+Access full email headers:
+
+```javascript
+// All headers
+const headers = $.trigger.email.headers;
+
+// Specific headers
+const messageId = headers['message-id'];
+const replyTo = headers['reply-to'];
+const inReplyTo = headers['in-reply-to'];
+const references = headers['references'];
+
+// Custom headers
+const customHeader = headers['x-custom-header'];
+```
+
+### Attachments
+
+Access email attachments:
+
+```javascript
+// Check if email has attachments
+const hasAttachments = $.trigger.email.attachments.length > 0;
+
+// Get attachments array
+const attachments = $.trigger.email.attachments;
+
+// Loop through attachments
+for (const attachment of attachments) {
+  const fileName = attachment.filename;
+  const fileType = attachment.contentType;
+  const fileSize = attachment.size;
+  const filePath = attachment.path;
+  
+  // Read attachment content
+  const content = await window.fs.readFile(filePath);
+}
+
+// Get specific attachment
+const firstAttachment = $.trigger.email.attachments[0];
+```
+
+---
+
+## Use Cases
+
+### Customer Support Automation
+
+**Scenario:** Automate customer support ticket creation
+
+**Flow:**
+- Trigger: Email (support@company.com)
+- Agent: Analyze email content
+  - Extract customer issue
+  - Determine urgency level
+  - Identify customer sentiment
+- HTTP Request: Search knowledge base for solutions
+- Condition: Can auto-resolve?
+  - Yes: Send solution email
+  - No: Create support ticket
+- HTTP Request: Create ticket in helpdesk system
+- HTTP Request: Send acknowledgment email to customer
+
+**Benefits:** Instant response, automatic triage, knowledge base integration, 24/7 availability.
+
+### Lead Capture and Qualification
+
+**Scenario:** Process incoming lead inquiries from website contact form
+
+**Flow:**
+- Trigger: Email (leads@company.com)
+- Agent: Extract lead information
+  - Company name, role, requirements
+  - Budget indicators, timeline
+- HTTP Request: Enrich company data
+- Agent: Qualify lead against ICP criteria
+- Condition: Qualified lead?
+  - Yes: Add to CRM + notify sales
+  - No: Add to nurture campaign
+- HTTP Request: Send personalized follow-up
+
+**Benefits:** Automatic lead qualification, instant response, sales team efficiency, no leads lost.
+
+### Invoice Processing via Email
+
+**Scenario:** Process invoices received via email
+
+**Flow:**
+- Trigger: Email (invoices@company.com)
+- Condition: Has PDF attachment?
+- Agent: Extract invoice data from attachment
+  - Invoice number, amount, vendor, due date
+- HTTP Request: Validate against purchase orders
+- Condition: Approved?
+  - Yes: Create entry in accounting system
+  - No: Flag for manual review
+- HTTP Request: Notify accounts payable team
+
+**Benefits:** Eliminate manual data entry, faster processing, audit trail, automatic validation.
+
+### Order Confirmation Processing
+
+**Scenario:** Process order confirmation emails from suppliers
+
+**Flow:**
+- Trigger: Email (orders@company.com)
+- Agent: Extract order details
+  - Order number, items, quantities, delivery date
+- HTTP Request: Update inventory management system
+- HTTP Request: Notify warehouse team
+- Condition: Rush order?
+  - Yes: Send priority notification
+  - No: Standard processing
+
+**Benefits:** Automatic inventory updates, team notifications, exception handling.
+
+### Job Application Processing
+
+**Scenario:** Process job applications received via email
+
+**Flow:**
+- Trigger: Email (careers@company.com)
+- Condition: Has resume attachment?
+- Agent: Extract candidate information
+  - Name, contact, experience, skills
+- Agent: Screen against job requirements
+- Condition: Meets minimum qualifications?
+  - Yes: Add to applicant tracking system
+  - No: Send polite rejection
+- HTTP Request: Notify hiring manager
+
+**Benefits:** Automatic screening, consistent process, faster response to candidates.
+
+### Newsletter Subscription Management
+
+**Scenario:** Process newsletter subscription requests
+
+**Flow:**
+- Trigger: Email (subscribe@company.com)
+- Agent: Extract email address from body
+- HTTP Request: Check if already subscribed
+- Condition: Already subscribed?
+  - Yes: Send "already subscribed" message
+  - No: Add to mailing list
+- HTTP Request: Send welcome email
+
+**Benefits:** Automatic subscription management, double-opt-in support, error handling.
+
+### Feedback Collection
+
+**Scenario:** Process customer feedback emails
+
+**Flow:**
+- Trigger: Email (feedback@company.com)
+- Agent: Analyze feedback sentiment
+  - Positive, neutral, or negative
+  - Extract key themes
+- HTTP Request: Save to feedback database
+- Condition: Negative feedback?
+  - Yes: Alert customer success team
+  - No: Log for review
+- HTTP Request: Send thank you email
+
+**Benefits:** Sentiment analysis, immediate escalation, response tracking.
+
+### Document Approval Workflow
+
+**Scenario:** Process document approval requests
+
+**Flow:**
+- Trigger: Email (approvals@company.com)
+- Agent: Extract document details from attachments
+- HTTP Request: Create approval request in system
+- HTTP Request: Notify approvers
+- Agent: Generate approval summary
+- HTTP Request: Send confirmation to requester
+
+**Benefits:** Automated routing, audit trail, status tracking.
+
+---
+
+## Best Practices
+
+### Email Validation
+
+**Always validate email content:**
+
+Check sender is legitimate. Verify email has required content. Validate attachments if expected. Check for spam indicators.
+
+```javascript
+// Validate sender domain
+const senderEmail = $.trigger.email.from_email;
+const allowedDomains = ['company.com', 'partner.com'];
+const senderDomain = senderEmail.split('@')[1];
+
+if (!allowedDomains.includes(senderDomain)) {
+  return 'unauthorized_sender';
+}
+
+// Check subject has content
+if (!$.trigger.email.subject || $.trigger.email.subject.trim() === '') {
+  return 'missing_subject';
+}
+
+// Verify body has content
+if (!$.trigger.email.text || $.trigger.email.text.length < 10) {
+  return 'insufficient_content';
+}
+```
+
+### Error Handling
+
+**Handle email processing errors gracefully:**
+
+Catch parsing errors. Handle missing attachments. Manage invalid email formats. Provide fallback processing.
+
+```javascript
+try {
+  // Process email
+  const data = await processEmail($.trigger.email);
+} catch (error) {
+  console.error('Email processing failed:', error);
+  
+  // Send error notification
+  await sendErrorNotification({
+    emailId: $.trigger.email.message_id,
+    error: error.message,
+    sender: $.trigger.email.from
+  });
+  
+  return 'processing_error';
+}
+```
+
+### Attachment Handling
+
+**Process attachments carefully:**
+
+Check attachment count. Validate file types. Scan for malware. Handle large attachments.
+
+```javascript
+const attachments = $.trigger.email.attachments;
+
+// Check attachment limit
+if (attachments.length > 5) {
+  return 'too_many_attachments';
+}
+
+// Validate each attachment
+for (const attachment of attachments) {
+  // Check file type
+  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+  if (!allowedTypes.includes(attachment.contentType)) {
+    return 'invalid_attachment_type';
+  }
+  
+  // Check file size (max 10 MB)
+  if (attachment.size > 10485760) {
+    return 'attachment_too_large';
+  }
+}
+```
+
+### Response Management
+
+**Send appropriate responses:**
+
+Acknowledge receipt quickly. Provide reference numbers. Set expectations. Include helpful information.
+
+**Good auto-reply:**
+```
+Thank you for contacting us!
+
+We've received your email and will respond within 24 hours.
+
+Reference Number: REF-{{executionId}}
+Subject: {{email.subject}}
+
+For urgent matters, please call: 1-800-SUPPORT
+
+Best regards,
+Support Team
+```
+
+**Avoid:**
+- Generic "email received" without details
+- No reference number
+- No timeline expectations
+- No alternative contact methods
+
+### Security Considerations
+
+**Protect against malicious emails:**
+
+Validate sender domains. Check for phishing indicators. Scan attachments for malware. Rate limit email processing. Monitor for suspicious patterns.
+
+**Red flags:**
+- Sender domain doesn't match claimed organization
+- Suspicious links in email body
+- Executable attachments
+- Requests for sensitive information
+- Urgency or threat language
+
+### Performance Optimization
+
+**For high-volume email:**
+
+Use background processing. Implement queue management. Set priority levels. Monitor processing times.
+
+**For large attachments:**
+
+Process asynchronously. Store attachments externally. Clean up after processing. Implement size limits.
+
+---
+
+## Email Parsing
+
+### Extract Information
+
+Use agents to extract structured data from emails:
+
+```javascript
+// Agent prompt
+const agentPrompt = `
+Extract the following information from this email:
+- Customer name
+- Order number
+- Issue description
+- Urgency level (low/medium/high)
+
+Email content:
+${$.trigger.email.text}
+`;
+
+// Agent will return structured data
+```
+
+### Parse Common Formats
+
+**Order confirmations:**
+- Order number patterns
+- Tracking numbers
+- Product details
+- Delivery dates
+
+**Support requests:**
+- Issue descriptions
+- Product/service mentioned
+- Account identifiers
+- Contact preferences
+
+**Lead inquiries:**
+- Company name
+- Contact person
+- Requirements
+- Budget/timeline
+
+### Handle Email Threads
+
+Detect if email is part of thread:
+
+```javascript
+// Check for reply
+const isReply = $.trigger.email.headers['in-reply-to'] !== undefined;
+
+// Get thread ID
+const threadId = $.trigger.email.headers['references'] || 
+                 $.trigger.email.headers['in-reply-to'];
+
+// Extract only new content (not quoted text)
+const emailBody = $.trigger.email.text;
+const newContent = emailBody.split('On ')[0]; // Simple approach
+```
+
+---
+
+## Email Response
+
+### Send Reply Email
+
+Use HTTP Request step to send email response:
+
+```javascript
+// Send via your email service
+await axios.post('https://api.sendgrid.com/v3/mail/send', {
+  personalizations: [{
+    to: [{ email: $.trigger.email.from_email }],
+    subject: `RE: ${$.trigger.email.subject}`
+  }],
+  from: { email: 'support@company.com' },
+  content: [{
+    type: 'text/plain',
+    value: 'Your response here...'
+  }],
+  reply_to: {
+    email: 'support@company.com'
+  },
+  headers: {
+    'In-Reply-To': $.trigger.email.headers['message-id'],
+    'References': $.trigger.email.headers['message-id']
+  }
+});
+```
+
+### Auto-Reply Configuration
+
+Set up auto-reply in trigger settings:
+
+**Enable Auto-Reply:** Toggle on in trigger configuration.
+
+**Reply Template:** Use dynamic variables.
+
+**Available variables:**
+- `{{email.subject}}` - Original subject
+- `{{email.from}}` - Sender address
+- `{{executionId}}` - Execution ID for reference
+- `{{timestamp}}` - Current timestamp
+
+**Example template:**
+```
+Hi {{email.from_name}},
+
+Thank you for your email regarding "{{email.subject}}".
+
+We've received your message and are processing it now.
+
+Reference: {{executionId}}
+Received: {{timestamp}}
+
+We'll get back to you shortly!
+
+Best regards,
+Support Team
+```
+
+---
+
+## Troubleshooting
+
+### Emails Not Triggering Flow
+
+**Check email address:** Verify emails sent to correct Microstrate address.
+
+**Check spam folder:** Email might be caught by spam filter.
+
+**Check flow is active:** Ensure flow is published and trigger enabled.
+
+**Review email logs:** Check trigger execution logs for delivery attempts.
+
+### Missing Email Content
+
+**Check email format:** Some emails might be malformed.
+
+**Verify encoding:** Check character encoding is supported.
+
+**Check for attachments:** Content might be in attachments instead of body.
+
+**Review headers:** Check if content-type is supported.
+
+### Attachment Issues
+
+**File not accessible:** Verify attachment path is correct.
+
+**Corrupted attachment:** Request sender to resend.
+
+**Unsupported format:** Check file type is supported.
+
+**Size limit exceeded:** Attachment too large for processing.
+
+### Processing Delays
+
+**High volume:** Many emails arriving simultaneously.
+
+**Large attachments:** Processing time increases with size.
+
+**Complex flows:** Flow has many steps or external API calls.
+
+**External service delays:** Third-party APIs responding slowly.
+
+---
+
+## Email Limits by Plan
+
+**Free Tier:**
+- 50 emails per month
+- Max attachment size: 5 MB
+- 3 attachments per email
+
+**Starter Plan:**
+- 500 emails per month
+- Max attachment size: 10 MB
+- 5 attachments per email
+
+**Pro Plan:**
+- 5,000 emails per month
+- Max attachment size: 25 MB
+- 10 attachments per email
+
+**Team Plan:**
+- 50,000 emails per month
+- Max attachment size: 50 MB
+- 20 attachments per email
+
+**Enterprise Plan:**
+- Custom volume
+- Custom attachment size
+- Custom attachment count
+- Dedicated email infrastructure
+
+---
+
+## Advanced Features
+
+### Email Filtering
+
+Filter emails before processing:
+
+**Subject filters:**
+- Only process emails with specific keywords
+- Ignore emails with certain patterns
+- Route based on subject content
+
+**Sender filters:**
+- Whitelist specific domains
+- Blacklist known spam sources
+- Route by sender organization
+
+**Content filters:**
+- Minimum/maximum body length
+- Required keywords in body
+- Attachment requirements
+
+### Email Threading
+
+Track conversation threads:
+
+Store thread IDs in database. Associate responses with original emails. Maintain conversation history. Link related flows.
+
+### Multiple Email Addresses
+
+Create multiple email triggers for different purposes:
+
+- support@mail.microstrate.com - Customer support
+- sales@mail.microstrate.com - Sales inquiries
+- invoices@mail.microstrate.com - Invoice processing
+
+Each trigger can have different flows and processing logic.
+
+### Email Analytics
+
+Track email processing metrics:
+
+- Total emails received
+- Processing success rate
+- Average processing time
+- Common senders
+- Attachment statistics
+- Response times
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Stream Triggers" icon="stream" href="/flows/triggers/stream-triggers">
+    Advanced real-time message triggers
+  </Card>
+  
+  <Card title="Agent Steps" icon="robot" href="/flows/steps/agents">
+    Process emails with AI agents
+  </Card>
+  
+  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
+    Send responses and integrate systems
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Route emails based on content
+  </Card>
+</CardGroup>

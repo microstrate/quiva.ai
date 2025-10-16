@@ -1,0 +1,744 @@
+---
+title: 'Upload Trigger'
+description: 'Trigger flows when documents are uploaded - process PDFs, images, spreadsheets, and more'
+icon: 'upload'
+---
+
+# Upload Trigger
+
+The Upload trigger allows you to trigger flows when documents are uploaded. Perfect for processing invoices, extracting data from forms, analyzing images, converting documents, and any workflow that starts with a file upload.
+
+When you add an Upload trigger, Microstrate provides a unique upload endpoint. Users can upload files directly to this endpoint, triggering your flow with the file contents.
+
+---
+
+## How It Works
+
+Add an Upload trigger to your flow. Microstrate generates a unique upload endpoint URL. Users upload files to this endpoint via form, API, or embed. Your flow receives the uploaded file and its metadata. Flow processes the document automatically.
+
+---
+
+## Configuration
+
+### Upload Endpoint
+
+When you add the trigger, Microstrate automatically generates a unique upload endpoint. Click "Copy Upload URL" in the trigger configuration. Use this URL in your upload forms or applications. The URL is stable and doesn't change unless you regenerate it.
+
+### Accepted File Types
+
+Configure which file types are allowed:
+
+**Documents:**
+- PDF (.pdf)
+- Microsoft Word (.docx, .doc)
+- Text files (.txt, .md, .rtf)
+- CSV (.csv)
+- Excel (.xlsx, .xls)
+
+**Images:**
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- GIF (.gif)
+- WebP (.webp)
+- TIFF (.tiff)
+- BMP (.bmp)
+
+**Other:**
+- JSON (.json)
+- XML (.xml)
+- ZIP archives (.zip)
+
+Leave blank to accept all file types. Specify file extensions to restrict uploads (e.g., ".pdf,.jpg,.png").
+
+### File Size Limits
+
+**Default limits by plan:**
+
+- Free: 10 MB per file
+- Starter: 25 MB per file
+- Pro: 50 MB per file
+- Team: 100 MB per file
+- Enterprise: Custom limits
+
+Configure maximum file size in trigger settings. Files exceeding the limit are rejected with error message.
+
+### Multiple Files
+
+**Single file mode (default):** One file per upload request.
+
+**Multiple files mode:** Allow multiple files in single upload. Useful for batch processing. Flow receives array of files. Each file processed by the flow.
+
+### Response Mode
+
+**Wait for Completion (Synchronous):**
+
+Upload endpoint waits for flow to complete before responding. Best for: Quick processing (under 10 seconds), when uploader needs immediate result, showing confirmation message with results.
+
+**Run in Background (Asynchronous):**
+
+Upload endpoint responds immediately, flow runs in background. Best for: Long document processing (OCR, analysis), batch uploads of multiple files, when uploader doesn't need to wait.
+
+Response includes upload confirmation and execution ID for tracking.
+
+---
+
+## Security
+
+### Public Access
+
+By default, upload endpoints are public. Anyone with the URL can upload files. Use for: Public forms, customer-facing uploads, lead generation.
+
+Consider adding rate limiting and file validation for public endpoints.
+
+### Secured with API Key
+
+Generate an API key to secure the upload endpoint. Toggle "Secure with API Key" in trigger configuration. Click "Generate API Key". Include API key in upload requests.
+
+For form uploads: Add API key as hidden field. For API uploads: Include in Authorization header.
+
+Only requests with valid API key can upload files. Good for: Internal tools, authenticated users, partner integrations.
+
+### File Validation
+
+Always validate uploaded files in your flow. Check file type matches expected format. Verify file size is reasonable. Scan for malicious content if needed. Validate document structure.
+
+Use Condition step at start of flow:
+
+```javascript
+// Check file type
+if (!$.trigger.file.type.includes('pdf')) {
+  return 'invalid_file_type';
+}
+
+// Check file size
+if ($.trigger.file.size > 10000000) { // 10 MB
+  return 'file_too_large';
+}
+```
+
+---
+
+## Upload Methods
+
+### HTML Form Upload
+
+Create an HTML form to upload files:
+
+```html
+<form action="https://uploads.microstrate.com/YOUR_UPLOAD_ID" 
+      method="POST" 
+      enctype="multipart/form-data">
+  <input type="file" name="file" required>
+  <input type="submit" value="Upload Document">
+</form>
+```
+
+For multiple files:
+
+```html
+<input type="file" name="files" multiple>
+```
+
+With API key (hidden field):
+
+```html
+<input type="hidden" name="api_key" value="ms_up_abc123...">
+```
+
+### JavaScript Upload
+
+Upload files using JavaScript:
+
+```javascript
+async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const response = await fetch(
+    'https://uploads.microstrate.com/YOUR_UPLOAD_ID',
+    {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': 'Bearer ms_up_abc123...'
+      }
+    }
+  );
+  
+  return await response.json();
+}
+
+// Usage
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  const result = await uploadFile(file);
+  console.log('Upload result:', result);
+});
+```
+
+### API Upload
+
+Upload files programmatically:
+
+```bash
+curl -X POST https://uploads.microstrate.com/YOUR_UPLOAD_ID \
+  -H "Authorization: Bearer ms_up_abc123..." \
+  -F "file=@/path/to/document.pdf"
+```
+
+Multiple files:
+
+```bash
+curl -X POST https://uploads.microstrate.com/YOUR_UPLOAD_ID \
+  -H "Authorization: Bearer ms_up_abc123..." \
+  -F "files=@document1.pdf" \
+  -F "files=@document2.pdf"
+```
+
+### React Component
+
+```javascript
+import { useState } from 'react';
+
+function DocumentUpload() {
+  const [uploading, setUploading] = useState(false);
+  const [result, setResult] = useState(null);
+  
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    setUploading(true);
+    
+    const formData = new FormData(e.target);
+    
+    try {
+      const response = await fetch(
+        'https://uploads.microstrate.com/YOUR_UPLOAD_ID',
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+      
+      const data = await response.json();
+      setResult(data);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  return (
+    <form onSubmit={handleUpload}>
+      <input 
+        type="file" 
+        name="file" 
+        accept=".pdf,.jpg,.png"
+        required 
+      />
+      <button type="submit" disabled={uploading}>
+        {uploading ? 'Uploading...' : 'Upload'}
+      </button>
+      {result && <div>Success! {result.message}</div>}
+    </form>
+  );
+}
+```
+
+---
+
+## Accessing Uploaded Files
+
+### File Metadata
+
+All file information is available under `$.trigger.file`:
+
+```javascript
+// File metadata
+const fileName = $.trigger.file.name;
+const fileType = $.trigger.file.type;
+const fileSize = $.trigger.file.size;
+const uploadedAt = $.trigger.file.uploaded_at;
+
+// Example values
+// fileName: "invoice_2025.pdf"
+// fileType: "application/pdf"
+// fileSize: 245678 (bytes)
+// uploadedAt: "2025-10-14T10:30:00Z"
+```
+
+### File Content
+
+Access file content using the file reading API:
+
+```javascript
+// Read file contents
+const fileContent = await window.fs.readFile($.trigger.file.path);
+
+// For text files, use encoding
+const textContent = await window.fs.readFile(
+  $.trigger.file.path, 
+  { encoding: 'utf8' }
+);
+
+// For binary files (images, PDFs), get as buffer
+const binaryContent = await window.fs.readFile($.trigger.file.path);
+```
+
+### Multiple Files
+
+When multiple files uploaded:
+
+```javascript
+// Access files array
+const files = $.trigger.files;
+
+// Loop through files
+for (const file of files) {
+  console.log(file.name, file.type, file.size);
+  const content = await window.fs.readFile(file.path);
+  // Process each file
+}
+
+// Get specific file
+const firstFile = $.trigger.files[0];
+const secondFile = $.trigger.files[1];
+```
+
+---
+
+## Use Cases
+
+### Invoice Processing
+
+**Scenario:** Automatically process uploaded invoices
+
+**Flow:**
+- Trigger: Upload (accept .pdf)
+- Agent: Extract invoice data (OCR)
+  - Invoice number, date, amount, line items, vendor info
+- HTTP Request: Validate against purchase orders
+- Condition: Approved?
+  - Yes: Create entry in accounting system
+  - No: Flag for manual review
+- HTTP Request: Notify accounting team
+
+**Benefits:** Eliminate manual data entry, faster processing, reduce errors, automatic approval workflow.
+
+### Resume Screening
+
+**Scenario:** Screen uploaded resumes for job applications
+
+**Flow:**
+- Trigger: Upload (accept .pdf, .docx)
+- Agent: Extract candidate information
+  - Name, contact, experience, education, skills
+- Agent: Score against job requirements
+- Condition: Meets minimum qualifications?
+  - Yes: Add to applicant tracking system
+  - No: Send rejection email
+- HTTP Request: Notify hiring manager of qualified candidates
+
+**Benefits:** Automatic screening, consistent evaluation, faster response to candidates.
+
+### Form Data Extraction
+
+**Scenario:** Extract data from scanned forms
+
+**Flow:**
+- Trigger: Upload (accept .pdf, .jpg, .png)
+- Agent: Perform OCR on form image
+- Agent: Extract structured data from form fields
+- Map: Format data for database
+- HTTP Request: Save to database
+- Condition: Data quality check passed?
+  - Yes: Send confirmation
+  - No: Request manual verification
+
+**Benefits:** Digitize paper forms, reduce manual typing, improve accuracy.
+
+### Document Analysis
+
+**Scenario:** Analyze contract documents
+
+**Flow:**
+- Trigger: Upload (accept .pdf, .docx)
+- Agent: Read and analyze contract
+  - Extract key terms, dates, obligations
+  - Identify non-standard clauses
+  - Flag potential risks
+- Agent: Generate summary report
+- HTTP Request: Save analysis to document management system
+- HTTP Request: Email report to legal team
+
+**Benefits:** Faster contract review, consistent analysis, risk identification.
+
+### Image Processing
+
+**Scenario:** Process and optimize uploaded images
+
+**Flow:**
+- Trigger: Upload (accept .jpg, .png)
+- Function: Validate image dimensions
+- Function: Resize image for web
+- Function: Generate thumbnails
+- Function: Convert to WebP format
+- HTTP Request: Upload to CDN
+- HTTP Request: Save URLs to database
+
+**Benefits:** Automatic optimization, consistent image formats, faster page loads.
+
+### Receipt Processing
+
+**Scenario:** Extract data from expense receipts
+
+**Flow:**
+- Trigger: Upload (accept .pdf, .jpg, .png)
+- Agent: Extract receipt data (OCR)
+  - Merchant, date, amount, items, tax
+- Agent: Categorize expense type
+- HTTP Request: Create expense record
+- Condition: Requires approval?
+  - Yes: Create approval request
+  - No: Auto-approve and reimburse
+- HTTP Request: Notify employee
+
+**Benefits:** Simplified expense reporting, automatic categorization, faster reimbursement.
+
+### Document Conversion
+
+**Scenario:** Convert documents to different formats
+
+**Flow:**
+- Trigger: Upload (accept .docx, .xlsx, .pptx)
+- Function: Convert to PDF
+- Function: Generate preview images
+- HTTP Request: Upload converted files to storage
+- HTTP Request: Send download links to user
+
+**Benefits:** Universal format conversion, automatic processing, secure storage.
+
+### Data Import
+
+**Scenario:** Import data from uploaded spreadsheets
+
+**Flow:**
+- Trigger: Upload (accept .csv, .xlsx)
+- Function: Parse spreadsheet
+- Agent: Validate data format and values
+- Map: Transform to database schema
+- HTTP Request: Bulk insert to database
+- Condition: Errors found?
+  - Yes: Generate error report
+  - No: Send success confirmation
+
+**Benefits:** Bulk data import, validation, error handling.
+
+---
+
+## Best Practices
+
+### File Validation
+
+**Always validate uploaded files:**
+
+Verify file type matches expected format. Check file size is within limits. Scan for malicious content. Validate file structure before processing.
+
+**Example validation:**
+
+```javascript
+// Check file extension
+const allowedTypes = ['.pdf', '.jpg', '.png'];
+const fileExt = $.trigger.file.name.split('.').pop().toLowerCase();
+
+if (!allowedTypes.includes(`.${fileExt}`)) {
+  throw new Error('Invalid file type');
+}
+
+// Check file size (max 10 MB)
+if ($.trigger.file.size > 10485760) {
+  throw new Error('File too large');
+}
+
+// Verify PDF structure (for PDFs)
+if (fileExt === 'pdf') {
+  const content = await window.fs.readFile($.trigger.file.path);
+  if (!content.toString().startsWith('%PDF')) {
+    throw new Error('Invalid PDF file');
+  }
+}
+```
+
+### Error Handling
+
+**Implement robust error handling:**
+
+Catch file reading errors. Handle corrupted files gracefully. Provide clear error messages to users. Log errors for debugging.
+
+**Example:**
+
+```javascript
+try {
+  const content = await window.fs.readFile($.trigger.file.path);
+  // Process content
+} catch (error) {
+  console.error('File processing failed:', error);
+  return {
+    status: 'error',
+    message: 'Unable to process file. Please ensure file is not corrupted.',
+    error: error.message
+  };
+}
+```
+
+### Performance Optimization
+
+**For large files:**
+
+Use background processing mode. Process files in chunks if possible. Implement timeout handling. Consider file size limits.
+
+**For multiple files:**
+
+Process in parallel when possible. Implement queue for batch processing. Monitor memory usage. Set reasonable batch size limits.
+
+### Security Considerations
+
+**Protect against malicious uploads:**
+
+Use API key authentication for sensitive endpoints. Validate file types strictly. Scan for malware if processing user uploads. Isolate file processing from main systems. Set file size limits to prevent DoS.
+
+**Never trust user input:**
+
+Validate all file metadata. Sanitize filenames before storage. Check for path traversal attempts. Verify file contents match declared type.
+
+### User Experience
+
+**Provide feedback:**
+
+Show upload progress indicator. Display clear error messages. Confirm successful upload. Provide processing status if async.
+
+**Example response:**
+
+```json
+{
+  "status": "success",
+  "message": "Document uploaded and processing started",
+  "executionId": "exec_abc123",
+  "estimatedTime": "30 seconds"
+}
+```
+
+---
+
+## Working with Different File Types
+
+### PDF Documents
+
+**Reading PDFs:**
+
+Use libraries like pdf-parse or pdf.js. Extract text content. Extract images and metadata.
+
+**Common use cases:**
+
+Invoice processing, contract analysis, form extraction, document conversion.
+
+### Images
+
+**Reading Images:**
+
+Get image as buffer. Process with image libraries. Extract EXIF metadata.
+
+**Common use cases:**
+
+OCR for text extraction, image optimization, face detection, object recognition.
+
+### Excel and CSV
+
+**Reading Spreadsheets:**
+
+Use SheetJS library for Excel files. Use Papaparse for CSV files. Extract data from specific sheets or columns.
+
+**Example with CSV:**
+
+```javascript
+import Papa from 'papaparse';
+
+const fileContent = await window.fs.readFile(
+  $.trigger.file.path, 
+  { encoding: 'utf8' }
+);
+
+const result = Papa.parse(fileContent, {
+  header: true,
+  dynamicTyping: true,
+  skipEmptyLines: true
+});
+
+const rows = result.data;
+// Process rows
+```
+
+### Word Documents
+
+**Reading DOCX:**
+
+Use mammoth library to extract text and HTML. Parse document structure.
+
+**Common use cases:**
+
+Resume parsing, document analysis, template processing.
+
+### JSON and XML
+
+**Reading structured data:**
+
+Parse JSON directly. Use XML parser for XML files. Validate against schema.
+
+**Example with JSON:**
+
+```javascript
+const fileContent = await window.fs.readFile(
+  $.trigger.file.path,
+  { encoding: 'utf8' }
+);
+
+const data = JSON.parse(fileContent);
+// Process JSON data
+```
+
+---
+
+## Troubleshooting
+
+### Upload Failing
+
+**File too large:** Check file size is within plan limits. Reduce file size if possible. Consider upgrading plan.
+
+**Invalid file type:** Verify file extension is allowed. Check MIME type matches extension. Ensure file is not corrupted.
+
+**Network timeout:** Use background mode for large files. Check network connectivity. Try upload again.
+
+### File Processing Errors
+
+**Cannot read file:** Verify file path is correct. Check file was uploaded successfully. Ensure file format is supported.
+
+**Corrupted file:** Validate file integrity. Request user to re-upload. Implement error handling.
+
+**Memory errors:** File too large for processing. Process in chunks. Use streaming if possible. Upgrade to higher plan.
+
+### Performance Issues
+
+**Slow processing:** Optimize flow steps. Use background mode. Process files in parallel. Consider file size limits.
+
+**Timeout errors:** Increase timeout settings. Split into smaller tasks. Use async processing.
+
+---
+
+## Upload Response Format
+
+### Successful Upload (Sync)
+
+```json
+{
+  "status": "success",
+  "executionId": "exec_abc123",
+  "result": {
+    "fileName": "invoice_2025.pdf",
+    "fileSize": 245678,
+    "processed": true,
+    "data": {
+      "invoiceNumber": "INV-2025-001",
+      "amount": 1250.00,
+      "date": "2025-10-14"
+    }
+  }
+}
+```
+
+### Successful Upload (Async)
+
+```json
+{
+  "status": "uploaded",
+  "executionId": "exec_abc123",
+  "message": "File uploaded successfully and processing started",
+  "fileName": "invoice_2025.pdf",
+  "fileSize": 245678
+}
+```
+
+### Error Response
+
+```json
+{
+  "status": "error",
+  "error": {
+    "code": "FILE_TOO_LARGE",
+    "message": "File size exceeds maximum limit of 25 MB",
+    "maxSize": 26214400
+  }
+}
+```
+
+### HTTP Status Codes
+
+- 200 OK: Upload and processing successful (sync)
+- 202 Accepted: Upload successful, processing in background (async)
+- 400 Bad Request: Invalid file or request
+- 401 Unauthorized: Invalid or missing API key
+- 413 Payload Too Large: File exceeds size limit
+- 415 Unsupported Media Type: File type not allowed
+- 500 Internal Server Error: Processing error
+
+---
+
+## Advanced Features
+
+### File Metadata Enrichment
+
+Add custom metadata to uploads:
+
+```javascript
+// In your upload form
+<input type="hidden" name="metadata[category]" value="invoice">
+<input type="hidden" name="metadata[customerId]" value="CUST-123">
+
+// Access in flow
+const category = $.trigger.metadata.category;
+const customerId = $.trigger.metadata.customerId;
+```
+
+### Pre-signed Upload URLs
+
+Generate temporary upload URLs for secure direct uploads. Useful for client-side uploads without exposing API keys. URLs expire after set time period.
+
+### Webhook Notifications
+
+Configure webhook to notify external system when upload processed. Include processing results in webhook payload. Useful for integrating with existing systems.
+
+### Upload Analytics
+
+Track upload statistics. Monitor processing success rates. Identify common file types. Measure processing times.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Email Trigger" icon="envelope" href="/flows/triggers/email">
+    Trigger flows from incoming emails
+  </Card>
+  
+  <Card title="Agent Steps" icon="robot" href="/flows/steps/agents">
+    Process uploaded documents with AI agents
+  </Card>
+  
+  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
+    Send processed data to external systems
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Route based on file type or content
+  </Card>
+</CardGroup>

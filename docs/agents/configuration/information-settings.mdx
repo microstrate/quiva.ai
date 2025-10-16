@@ -1,0 +1,688 @@
+---
+title: "Information Settings"
+description: "Configure your agent's identity, behavior, and execution mode"
+icon: "info-circle"
+---
+
+# Information Settings
+
+The Information tab defines your agent's core identity and behavior. This is where you set the agent's name, describe what it does, choose how it executes, and write the instructions that guide its behavior.
+
+<img 
+  src="/images/agents/information-tab.png" 
+  alt="Information Settings Tab"
+  className="rounded-lg"
+/>
+
+## Configuration Fields
+
+### Name
+
+The agent's display name, shown throughout the platform and in logs.
+
+**Guidelines:**
+- Be descriptive and specific
+- Include the agent's primary function
+- Use consistent naming conventions across agents
+- Keep it concise (2-5 words ideal)
+
+<CodeGroup>
+```text Good Examples
+Customer Service Agent
+Lead Qualification Assistant
+Invoice Processing Agent
+Content Generator - Blog Posts
+Order Status Lookup
+```
+
+```text Avoid
+Agent 1
+My Agent
+Test
+Helper
+Bot
+```
+</CodeGroup>
+
+<Tip>
+Good naming helps you quickly identify agents in flows with multiple agents or when debugging.
+</Tip>
+
+---
+
+### Description
+
+A brief summary of what this agent does. Used for documentation and team collaboration.
+
+**Guidelines:**
+- Explain the agent's purpose in 1-2 sentences
+- Mention key capabilities or tools
+- Include any important limitations
+- Help others understand when to use this agent
+
+**Examples:**
+
+```text Customer Service Agent
+Handles customer inquiries including order status, returns, and product 
+questions. Can look up orders, apply return policies, and escalate 
+complex issues to human support.
+```
+
+```text Lead Qualification Agent
+Qualifies inbound leads through discovery questions and ICP scoring. 
+Accesses CRM data, enriches company information, and books meetings 
+with qualified prospects.
+```
+
+```text Content Generator
+Creates personalized email campaigns and social media posts following 
+brand guidelines. Adapts messaging by audience segment and channel.
+```
+
+<Info>
+Descriptions are for humans, not the AI. Keep them clear and helpful for your team.
+</Info>
+
+---
+
+### Response Mode
+
+Controls how the agent executes within the flow. This is a critical setting that affects user experience and flow behavior.
+
+<Tabs>
+  <Tab title="Wait for Completion">
+    <div className="space-y-4">
+      <p><strong>Behavior:</strong> The flow waits for the agent to finish processing before moving to the next step or returning a response.</p>
+      
+      <p><strong>Use when:</strong></p>
+      <ul>
+        <li>Building API endpoints that need to return agent results</li>
+        <li>Creating real-time chat experiences</li>
+        <li>Form submissions that show agent responses</li>
+        <li>Any synchronous interaction where users wait for results</li>
+      </ul>
+      
+      <p><strong>Pros:</strong></p>
+      <ul>
+        <li>✅ Users get immediate responses</li>
+        <li>✅ Easier to handle errors and retries</li>
+        <li>✅ Simpler flow logic</li>
+        <li>✅ Can pass agent output to subsequent steps</li>
+      </ul>
+      
+      <p><strong>Cons:</strong></p>
+      <ul>
+        <li>⚠️ User waits for agent to complete (may be 5-30 seconds)</li>
+        <li>⚠️ Request times out if agent takes too long</li>
+        <li>⚠️ Not suitable for very long-running tasks</li>
+      </ul>
+    </div>
+  </Tab>
+  
+  <Tab title="Run in Background">
+    <div className="space-y-4">
+      <p><strong>Behavior:</strong> The flow responds immediately and the agent runs asynchronously. The trigger doesn't wait for completion.</p>
+      
+      <p><strong>Use when:</strong></p>
+      <ul>
+        <li>Processing emails or documents</li>
+        <li>Running scheduled tasks</li>
+        <li>Handling webhooks from external systems</li>
+        <li>Long-running analysis or content generation</li>
+        <li>Any async workflow where immediate response isn't needed</li>
+      </ul>
+      
+      <p><strong>Pros:</strong></p>
+      <ul>
+        <li>✅ Instant trigger response (no waiting)</li>
+        <li>✅ Can handle very long-running tasks</li>
+        <li>✅ Won't timeout on complex processing</li>
+        <li>✅ Better for high-volume processing</li>
+      </ul>
+      
+      <p><strong>Cons:</strong></p>
+      <ul>
+        <li>⚠️ Can't return agent results to trigger</li>
+        <li>⚠️ More complex to notify users of completion</li>
+        <li>⚠️ Harder to handle errors in real-time</li>
+        <li>⚠️ Need separate mechanism to show results</li>
+      </ul>
+    </div>
+  </Tab>
+</Tabs>
+
+**Decision Tree:**
+
+```
+Does the user/system wait for the response?
+├─ YES → Wait for Completion
+└─ NO → Run in Background
+    
+Is this real-time interaction (chat, API, form)?
+├─ YES → Wait for Completion
+└─ NO → Run in Background
+
+Will processing take more than 30 seconds?
+├─ YES → Run in Background
+└─ NO → Either (prefer Wait for Completion for simplicity)
+```
+
+<Warning>
+**Important:** If using "Run in Background", subsequent steps in the flow cannot access the agent's response. Plan your flow accordingly.
+</Warning>
+
+**Example Scenarios:**
+
+<AccordionGroup>
+  <Accordion title="Chat Widget - Wait for Completion" icon="comment">
+    **Scenario:** Customer types question in chat widget
+    
+    **Flow:**
+    - Trigger: Chat message received
+    - Agent: Processes question and generates response
+    - Response mode: **Wait for Completion**
+    - Result: User sees agent response immediately in chat
+    
+    **Why:** User is waiting in the chat interface for a response.
+  </Accordion>
+
+  <Accordion title="Email Processing - Run in Background" icon="envelope">
+    **Scenario:** Customer sends email to support@company.com
+    
+    **Flow:**
+    - Trigger: Email received
+    - Agent: Reads email, looks up customer, processes request
+    - Response mode: **Run in Background**
+    - Result: Email accepted immediately, agent processes async
+    
+    **Why:** No one is waiting for immediate response. Agent can take time to process thoroughly.
+  </Accordion>
+
+  <Accordion title="Form Submission - Wait for Completion" icon="file-lines">
+    **Scenario:** Lead fills out contact form
+    
+    **Flow:**
+    - Trigger: Form submitted
+    - Agent: Qualifies lead and enriches data
+    - Response mode: **Wait for Completion**
+    - Result: Form shows "Thank you" with personalized message
+    
+    **Why:** User submitted form and expects confirmation. Better UX with immediate response.
+  </Accordion>
+
+  <Accordion title="Scheduled Report - Run in Background" icon="clock">
+    **Scenario:** Daily sales report generation
+    
+    **Flow:**
+    - Trigger: Schedule (every morning at 9am)
+    - Agent: Analyzes data, generates insights, creates report
+    - Response mode: **Run in Background**
+    - Result: Report generated and emailed to team
+    
+    **Why:** No user waiting. Long-running analysis. Scheduled automation.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Agent Instructions
+
+This is the most important field—it defines your agent's role, personality, capabilities, and behavior. Think of it as a detailed job description for a human employee.
+
+**What to include:**
+
+<AccordionGroup>
+  <Accordion title="1. Role & Identity" icon="id-badge">
+    Who is the agent? What's their job?
+    
+    ```
+    You are a customer service representative for Acme Corp, a B2B 
+    SaaS company. You specialize in helping customers with account 
+    management, billing questions, and technical troubleshooting.
+    ```
+  </Accordion>
+
+  <Accordion title="2. Primary Responsibilities" icon="list-check">
+    What tasks should the agent handle?
+    
+    ```
+    Your responsibilities:
+    - Answer questions about product features and capabilities
+    - Help customers troubleshoot common technical issues
+    - Look up account and billing information
+    - Process refund and cancellation requests within policy
+    - Guide customers through onboarding and setup
+    - Escalate complex issues to human support team
+    ```
+  </Accordion>
+
+  <Accordion title="3. Personality & Communication Style" icon="face-smile">
+    How should the agent communicate?
+    
+    ```
+    Your personality:
+    - Friendly and approachable, but professional
+    - Patient and understanding with frustrated customers
+    - Clear and concise in explanations
+    - Proactive in offering help and suggestions
+    - Empathetic to customer pain points
+    
+    Communication style:
+    - Use clear, jargon-free language
+    - Keep responses concise (2-3 paragraphs max)
+    - Use bullet points for multiple items
+    - Always greet customers warmly
+    - End with asking if there's anything else you can help with
+    ```
+  </Accordion>
+
+  <Accordion title="4. Specific Guidelines & Rules" icon="gavel">
+    What are the hard rules?
+    
+    ```
+    Guidelines:
+    - Always verify customer identity before accessing account details
+    - Follow our 30-day return policy strictly (no exceptions)
+    - Refunds over $500 require manager approval - escalate these
+    - Never share other customers' information
+    - If you're unsure, say so and offer to escalate
+    - Use the order lookup tool before answering order-specific questions
+    - Cite help articles when referencing policies or procedures
+    ```
+  </Accordion>
+
+  <Accordion title="5. Tool Usage Instructions" icon="toolbox">
+    How and when to use tools?
+    
+    ```
+    Tools available:
+    - Order Lookup: Use whenever customer mentions an order number
+    - Knowledge Base Search: Search before answering product questions
+    - Account Details: Access account info after verifying identity
+    - Refund Tool: Process refunds under $500 automatically
+    - Create Ticket: Escalate issues you can't resolve
+    
+    Tool usage rules:
+    - Always use Order Lookup before answering order questions
+    - Search Knowledge Base for product features and policies
+    - Don't create tickets for simple questions you can answer
+    - Use Account Details only after confirming customer identity
+    ```
+  </Accordion>
+
+  <Accordion title="6. Examples & Edge Cases" icon="lightbulb">
+    Show the agent how to handle specific scenarios:
+    
+    ```
+    Example scenarios:
+    
+    Scenario: Customer wants refund after 30 days
+    Response: Acknowledge the 30-day policy, explain why it exists, 
+    offer alternatives (exchange, store credit), and escalate if 
+    customer is a high-value account.
+    
+    Scenario: Technical issue you can't solve
+    Response: Acknowledge the issue, apologize for the trouble, 
+    explain you're escalating to technical team, create a ticket, 
+    and give customer the ticket number.
+    
+    Scenario: Customer is frustrated or angry
+    Response: Stay calm and empathetic. Acknowledge their frustration. 
+    Don't get defensive. Focus on solutions. Escalate if abuse occurs.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+**Complete Example:**
+
+```markdown
+You are a customer service agent for TechFlow, a project management 
+SaaS platform. You help customers with account issues, feature questions, 
+and technical troubleshooting.
+
+## Your Responsibilities
+- Answer questions about TechFlow features and capabilities
+- Help customers troubleshoot technical issues
+- Look up account, billing, and subscription information
+- Process refund requests following our policies
+- Guide new customers through onboarding
+- Escalate complex technical or billing issues
+
+## Your Personality
+- Friendly, professional, and patient
+- Understanding with frustrated customers
+- Clear and concise in communication
+- Proactive in offering solutions
+- Empathetic to customer challenges
+
+## Communication Guidelines
+- Use simple, jargon-free language
+- Keep responses under 3 paragraphs when possible
+- Use bullet points for lists
+- Always greet customers warmly
+- Ask clarifying questions if needed
+- End by asking if there's anything else to help with
+
+## Specific Rules
+- Verify customer identity before accessing account details
+- Follow 30-day refund policy (no exceptions without approval)
+- Refunds over $1,000 require escalation to billing team
+- Never share information about other customers
+- If unsure, admit it and offer to escalate
+- Always use tools to verify information before answering
+
+## Tool Usage
+- **Account Lookup**: Use when customer mentions account issues
+- **Order History**: Check before answering billing questions
+- **Knowledge Base**: Search before answering product questions
+- **Refund Processor**: Process refunds under $1,000 automatically
+- **Ticket Creator**: Escalate complex issues
+
+## Example Responses
+
+**Customer asks about feature availability:**
+First search the Knowledge Base. If found, explain the feature clearly 
+and offer to help set it up. If not found, explain it's not currently 
+available and ask what they're trying to accomplish (might suggest alternative).
+
+**Refund request after 30 days:**
+"I understand you'd like a refund. Our standard policy is 30 days, 
+and I see your purchase was [X] days ago. While I can't process a 
+refund outside our policy, I'd like to help find a solution. Would 
+you be interested in an account credit instead? Or I can escalate 
+this to our billing team to review your specific situation."
+
+**Technical issue you can't solve:**
+"I apologize for the trouble you're experiencing. This sounds like 
+an issue that needs our technical team's attention. I'm creating a 
+support ticket for you right now and escalating it to our tech team. 
+Your ticket number is #[NUMBER]. They typically respond within 4 hours. 
+Is there anything else I can help with while we wait?"
+```
+
+<Tip>
+**Pro tip:** Include 2-3 example responses for common scenarios. Agents learn from examples and will pattern-match their responses.
+</Tip>
+
+**Writing Tips:**
+
+<CardGroup cols={2}>
+  <Card title="Be Specific" icon="bullseye">
+    Don't: "Help customers"  
+    Do: "Answer questions about orders, process returns within 30-day policy, look up tracking information"
+  </Card>
+  
+  <Card title="Show Examples" icon="lightbulb">
+    Don't: "Be friendly"  
+    Do: "Greet with 'Hi! I'd be happy to help with that.' Use a warm, conversational tone."
+  </Card>
+  
+  <Card title="Define Boundaries" icon="fence">
+    Don't: "Handle refunds"  
+    Do: "Process refunds under $500 automatically. Escalate refunds over $500 to manager."
+  </Card>
+  
+  <Card title="Explain Tool Usage" icon="toolbox">
+    Don't: "Use tools as needed"  
+    Do: "Always search the knowledge base before answering product questions. Use order lookup when customer mentions an order number."
+  </Card>
+</CardGroup>
+
+<Warning>
+**Markdown Formatting:** The instructions field preserves markdown formatting. Use headers, lists, and bold text to organize instructions clearly.
+</Warning>
+
+**Placeholder Example in Field:**
+
+```markdown
+You are a customer support agent for [Company Name]. You help customers 
+with order tracking, returns, and product questions. You're friendly, 
+professional, and always try to resolve issues on the first interaction.
+
+Your guidelines:
+- Always greet customers warmly
+- Use the order lookup tool before answering order questions
+- Follow our 30-day return policy
+- Escalate refunds over $200 to human support
+- End by asking if there's anything else you can help with
+```
+
+---
+
+## Prompt Field
+
+The prompt field is located at the bottom of the Information tab and shows what input will be passed to the agent when it runs.
+
+**Default Value:**
+
+```
+Prompt: ${trigger.body.message}
+```
+
+This variable mapping automatically passes the message from the trigger to the agent.
+
+### Understanding the Prompt
+
+The prompt is what the agent receives as input. It can come from:
+
+- **Directly from trigger** - `${trigger.body.message}`, `${trigger.email.content}`
+- **From previous steps** - `${step_id.response}`, `${http_request.data.question}`
+- **Mapped from multiple sources** - Combine multiple fields
+
+### When to Customize the Prompt
+
+<Tabs>
+  <Tab title="Keep Default" icon="check">
+    **Use the default when:**
+    - Agent is directly connected to trigger
+    - Trigger provides a single message/question field
+    - Simple pass-through of user input
+    
+    **Example flows:**
+    - Chat widget → Agent
+    - Form submission → Agent
+    - HTTP request with message → Agent
+  </Tab>
+  
+  <Tab title="Customize" icon="pen">
+    **Customize when:**
+    - Agent is not directly after trigger
+    - Need to combine multiple fields
+    - Processing output from previous step
+    - Adding context or formatting
+    
+    **Example mappings:**
+    ```
+    Process this email: ${trigger.email.subject}
+    
+    Email content:
+    ${trigger.email.body}
+    ```
+    
+    Or combining multiple sources:
+    ```
+    Customer: ${trigger.form.name}
+    Question: ${trigger.form.message}
+    Order Number: ${trigger.form.order_number}
+    ```
+  </Tab>
+</Tabs>
+
+### Advanced Prompt Mapping
+
+You can build complex prompts using variable mapping:
+
+```
+Context: ${previous_agent.summary}
+
+New customer message: ${trigger.message}
+
+Previous conversation:
+${conversation_history}
+
+Please respond to the customer's new message considering the full context.
+```
+
+<Info>
+Learn more about variable mapping in the [Variable Mapping Guide](/advanced/variable-mapping/overview).
+</Info>
+
+### Prompt Examples by Use Case
+
+<AccordionGroup>
+  <Accordion title="Chat Widget" icon="comment">
+    ```
+    ${trigger.body.message}
+    ```
+    
+    Simple pass-through of the chat message.
+  </Accordion>
+
+  <Accordion title="Email Processing" icon="envelope">
+    ```
+    From: ${trigger.email.from}
+    Subject: ${trigger.email.subject}
+    
+    Email content:
+    ${trigger.email.body}
+    
+    Please process this customer email and provide an appropriate response.
+    ```
+    
+    Provides full email context to the agent.
+  </Accordion>
+
+  <Accordion title="Form with Multiple Fields" icon="file-lines">
+    ```
+    Contact Form Submission:
+    - Name: ${trigger.form.name}
+    - Email: ${trigger.form.email}
+    - Company: ${trigger.form.company}
+    - Message: ${trigger.form.message}
+    
+    Qualify this lead and determine next steps.
+    ```
+    
+    Structures multiple form fields for the agent.
+  </Accordion>
+
+  <Accordion title="Agent Chaining" icon="link">
+    ```
+    Previous analysis: ${research_agent.findings}
+    
+    Based on this research, please write a personalized email to:
+    ${trigger.lead.name} at ${trigger.lead.company}
+    ```
+    
+    Passes output from one agent to another.
+  </Accordion>
+
+  <Accordion title="Document Processing" icon="file">
+    ```
+    Document uploaded: ${trigger.upload.filename}
+    Document type: ${trigger.upload.type}
+    
+    Content:
+    ${document_extract.text}
+    
+    Please analyze this document and extract key information according to our schema.
+    ```
+    
+    Combines upload metadata with extracted content.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+The prompt field supports full JSONPath and variable mapping syntax. Use filters, transformations, and conditional logic as needed.
+</Tip>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Name agents clearly and consistently" icon="tag">
+    Use a consistent naming pattern across your organization:
+    - **Pattern 1:** `[Function] Agent` - "Customer Service Agent", "Lead Qualification Agent"
+    - **Pattern 2:** `[Department] - [Function]` - "Sales - Lead Qualifier", "Support - Order Lookup"
+    - **Pattern 3:** `[Use Case] Assistant` - "Refund Assistant", "Onboarding Assistant"
+    
+    Pick one pattern and stick with it.
+  </Accordion>
+
+  <Accordion title="Write detailed instructions" icon="book">
+    More detail = better performance. Include:
+    - Clear role definition
+    - Specific responsibilities
+    - Communication style
+    - Tool usage guidelines
+    - Edge case handling
+    - 2-3 example responses
+    
+    Think: "If I hired a human for this role, what would I tell them?"
+  </Accordion>
+
+  <Accordion title="Choose response mode carefully" icon="bolt">
+    **Default to "Wait for Completion"** for:
+    - User-facing interactions
+    - API endpoints
+    - Anything requiring immediate response
+    
+    **Use "Run in Background"** for:
+    - Email processing
+    - Scheduled tasks
+    - Long-running analysis
+    - High-volume async processing
+  </Accordion>
+
+  <Accordion title="Test with real scenarios" icon="flask">
+    After configuring:
+    1. Test with typical cases
+    2. Test with edge cases
+    3. Test with malformed input
+    4. Test with frustrated/difficult customers
+    5. Review and refine instructions based on results
+  </Accordion>
+
+  <Accordion title="Iterate based on performance" icon="rotate">
+    Monitor agent conversations and:
+    - Add instructions for gaps you discover
+    - Include new examples for common scenarios
+    - Refine personality based on feedback
+    - Update tool usage guidelines
+    
+    Agents improve with refined instructions.
+  </Accordion>
+
+  <Accordion title="Use markdown formatting" icon="heading">
+    Organize instructions with:
+    - `#` Headers for major sections
+    - `-` Bullet points for lists
+    - `**Bold**` for emphasis
+    - Code blocks for examples
+    
+    Well-formatted instructions are easier for the AI to parse and follow.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Provider Settings" icon="sliders" href="/agents/configuration/provider-settings">
+    Configure AI models and output schemas
+  </Card>
+  
+  <Card title="Context Settings" icon="brain" href="/agents/configuration/context-settings">
+    Manage memory and reasoning behavior
+  </Card>
+  
+  <Card title="Tools & Connectors" icon="plug" href="/agents/tools-and-connectors">
+    Connect your systems and data sources
+  </Card>
+  
+  <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/agents/prompt-engineering">
+    Master the art of writing agent instructions
+  </Card>
+</CardGroup>

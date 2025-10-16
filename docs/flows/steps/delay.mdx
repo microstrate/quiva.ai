@@ -1,0 +1,571 @@
+---
+title: 'Delay'
+description: 'Pause flow execution for a specified amount of time'
+icon: 'clock'
+---
+
+# Delay Step
+
+The Delay step pauses flow execution for a specified duration before continuing to the next step. Use it for time-based workflows, retry logic with backoff, scheduled follow-ups, or giving external systems time to process.
+
+<Info>
+**Delays are non-blocking**: While a flow waits, your system resources remain available for other flows. Delays don't consume compute time.
+</Info>
+
+---
+
+## How It Works
+
+Delay pauses the flow, waits for the specified time, then continues:
+
+<CodeGroup>
+```text Simple Delay
+Agent: Send welcome email
+↓
+Delay: 24 hours
+↓
+Agent: Send follow-up email
+```
+
+```text Retry with Backoff
+HTTP Request: Call external API
+↓
+Condition: Failed?
+├─ Yes → Delay: 5 seconds
+│   ↓
+│   HTTP Request: Retry
+│   ↓
+│   Condition: Failed again?
+│   ├─ Yes → Delay: 10 seconds
+│   │   ↓
+│   │   HTTP Request: Final retry
+│   └─ No → Continue
+└─ No → Continue
+```
+
+```text Drip Campaign
+Agent: Send email 1
+↓
+Delay: 3 days
+↓
+Agent: Send email 2
+↓
+Delay: 3 days
+↓
+Agent: Send email 3
+```
+</CodeGroup>
+
+---
+
+## When to Use Delay
+
+| Use When | Don't Use When |
+|----------|----------------|
+| Time-based follow-ups (drip campaigns) | Immediate execution needed |
+| Retry logic (wait before retry) | No time dependency |
+| Give external systems time to process | Real-time response required |
+| Rate limiting (space out API calls) | High-volume operations |
+| Scheduled reminders | User-triggered events |
+| Cool-down periods | Always-on monitoring |
+
+---
+
+## Configuration
+
+### Duration
+
+<ParamField path="duration" type="object" required>
+  How long to wait
+  
+  **Structure**:
+  ```json
+  {
+    "value": 5,
+    "unit": "minutes"
+  }
+  ```
+  
+  **Units**:
+  - `seconds` - For short delays (1-59 seconds)
+  - `minutes` - For medium delays (1-59 minutes)
+  - `hours` - For longer delays (1-23 hours)
+  - `days` - For multi-day delays (1-30 days)
+  
+  **Examples**:
+  ```json
+  // Wait 30 seconds
+  {"value": 30, "unit": "seconds"}
+  
+  // Wait 5 minutes
+  {"value": 5, "unit": "minutes"}
+  
+  // Wait 24 hours
+  {"value": 24, "unit": "hours"}
+  
+  // Wait 7 days
+  {"value": 7, "unit": "days"}
+  ```
+</ParamField>
+
+### Dynamic Duration
+
+<ParamField path="dynamicDuration" type="boolean" default="false">
+  Calculate delay duration from previous step data
+  
+  When enabled, duration can reference variables:
+  ```json
+  {
+    "value": "${calculated_delay}",
+    "unit": "minutes"
+  }
+  ```
+  
+  **Use when**: Delay duration depends on data (e.g., customer tier, response time)
+</ParamField>
+
+### Until Time
+
+<ParamField path="untilTime" type="string">
+  Wait until specific date/time (instead of duration)
+  
+  **Format**: ISO 8601 datetime
+  
+  **Examples**:
+  ```json
+  // Wait until specific date and time
+  "2025-10-17T09:00:00Z"
+  
+  // Can use variables
+  "${scheduled_send_time}"
+  ```
+  
+  **Use when**: Need to align with specific time (e.g., send at 9am)
+</ParamField>
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Drip Email Campaign" icon="envelope">
+    Space out email sends over time
+    
+    ```text
+    Trigger: User signs up
+    ↓
+    Agent: Send welcome email (Day 0)
+    ↓
+    Delay: 2 days
+    ↓
+    Agent: Send getting started email (Day 2)
+    ↓
+    Delay: 3 days
+    ↓
+    Agent: Send tips and tricks email (Day 5)
+    ↓
+    Delay: 5 days
+    ↓
+    Agent: Send upgrade prompt email (Day 10)
+    ```
+    
+    **Use when**: Onboarding sequences, nurture campaigns
+  </Accordion>
+
+  <Accordion title="Follow-Up Reminder" icon="bell">
+    Send reminder if no response
+    
+    ```text
+    Agent: Send proposal email
+    ↓
+    Delay: 3 days
+    ↓
+    Condition: Response received?
+    ├─ Yes → End flow
+    └─ No → Agent: Send follow-up
+        ↓
+        Delay: 7 days
+        ↓
+        Condition: Response received?
+        ├─ Yes → End flow
+        └─ No → Agent: Final follow-up
+    ```
+    
+    **Use when**: Sales outreach, pending approvals, overdue items
+  </Accordion>
+
+  <Accordion title="Retry with Exponential Backoff" icon="rotate">
+    Retry failed operations with increasing delays
+    
+    ```text
+    HTTP Request: Call API
+    ↓
+    Condition: Success?
+    ├─ Yes → Continue
+    └─ No → Delay: 1 second
+        ↓
+        HTTP Request: Retry 1
+        ↓
+        Condition: Success?
+        ├─ Yes → Continue
+        └─ No → Delay: 2 seconds
+            ↓
+            HTTP Request: Retry 2
+            ↓
+            Condition: Success?
+            ├─ Yes → Continue
+            └─ No → Delay: 4 seconds
+                ↓
+                HTTP Request: Final retry
+    ```
+    
+    **Use when**: External API calls, transient failures
+  </Accordion>
+
+  <Accordion title="Rate Limiting" icon="gauge">
+    Space out API calls to respect rate limits
+    
+    ```text
+    Map: Process each item in array
+    ↓
+    For each item:
+      HTTP Request: Call API
+      ↓
+      Delay: 1 second
+      ↓
+      Next item
+    ```
+    
+    **Use when**: Batch processing with API rate limits
+  </Accordion>
+
+  <Accordion title="Cool-Down Period" icon="snowflake">
+    Prevent repeated actions too quickly
+    
+    ```text
+    Agent: Sends notification
+    ↓
+    Delay: 1 hour
+    ↓
+    (User can't trigger same notification again during delay)
+    ```
+    
+    **Use when**: Prevent spam, throttle notifications
+  </Accordion>
+
+  <Accordion title="Scheduled Send" icon="calendar">
+    Wait until specific time to send
+    
+    ```text
+    Agent: Generate report
+    ↓
+    Delay: Until 9:00 AM next business day
+    ↓
+    Agent: Send report email
+    ```
+    
+    **Use when**: Reports, scheduled communications
+  </Accordion>
+
+  <Accordion title="Time-Based Check-In" icon="user-clock">
+    Check status after time period
+    
+    ```text
+    HTTP Request: Start long-running job
+    ↓
+    Delay: 30 seconds
+    ↓
+    HTTP Request: Check job status
+    ↓
+    Condition: Complete?
+    ├─ Yes → Continue
+    └─ No → Delay: 30 seconds
+        ↓
+        HTTP Request: Check again
+        ↓
+        (Repeat until complete or max attempts)
+    ```
+    
+    **Use when**: Polling for job completion, async operations
+  </Accordion>
+
+  <Accordion title="Trial Expiration Reminder" icon="timer">
+    Remind before subscription ends
+    
+    ```text
+    Trigger: Trial started
+    ↓
+    Delay: 11 days (for 14-day trial)
+    ↓
+    Agent: Send "3 days left" reminder
+    ↓
+    Delay: 2 days
+    ↓
+    Agent: Send "1 day left" reminder
+    ↓
+    Delay: 1 day
+    ↓
+    Condition: Upgraded?
+    ├─ Yes → End flow
+    └─ No → Agent: Trial expired notification
+    ```
+    
+    **Use when**: Subscription management, time-limited access
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Real-World Examples
+
+### Example 1: Onboarding Email Sequence
+
+```text
+Trigger: New user signup
+  Data: {email, name, signup_date}
+↓
+Agent: Send welcome email
+  To: ${trigger.email}
+  Content: Welcome message, getting started guide
+↓
+Delay: 1 day
+↓
+Agent: Send feature overview email
+  To: ${trigger.email}
+  Content: Key features, video tutorials
+↓
+Delay: 3 days
+↓
+HTTP Request: Check user activity
+  URL: /api/users/${trigger.user_id}/activity
+↓
+Condition: User active?
+├─ Yes → Agent: Send power user tips
+│   ↓
+│   Delay: 5 days
+│   ↓
+│   Agent: Send upgrade prompt
+└─ No → Agent: Send re-engagement email
+    ↓
+    Delay: 2 days
+    ↓
+    Condition: Still inactive?
+    └─ Yes → Agent: Final re-engagement attempt
+```
+
+---
+
+### Example 2: Payment Retry Logic
+
+```text
+Trigger: Payment failed
+  Data: {customer_id, amount, payment_method}
+↓
+Agent: Analyze failure reason
+  Output: {retryable: true, recommended_delay: 24}
+↓
+Condition: Retryable?
+├─ No → Agent: Notify customer (non-retryable)
+└─ Yes → Delay: 24 hours
+    ↓
+    HTTP Request: Retry payment
+    ↓
+    Condition: Success?
+    ├─ Yes → Agent: Send success confirmation
+    └─ No → Delay: 48 hours
+        ↓
+        HTTP Request: Second retry
+        ↓
+        Condition: Success?
+        ├─ Yes → Agent: Send success confirmation
+        └─ No → Agent: Request payment method update
+```
+
+---
+
+### Example 3: Support Ticket Follow-Up
+
+```text
+Trigger: Support ticket resolved
+  Data: {ticket_id, customer_email, resolution}
+↓
+Agent: Send resolution confirmation
+  To: ${trigger.customer_email}
+  Content: Summary of resolution
+↓
+Delay: 3 days
+↓
+HTTP Request: Check if ticket reopened
+  URL: /api/tickets/${trigger.ticket_id}
+↓
+Condition: Still closed?
+├─ No → End flow (customer responded)
+└─ Yes → Agent: Send satisfaction survey
+    To: ${trigger.customer_email}
+    Content: "How was your experience?"
+    ↓
+    Delay: 7 days
+    ↓
+    HTTP Request: Check for survey response
+    ↓
+    Condition: Survey completed?
+    ├─ Yes → End flow
+    └─ No → Agent: Survey reminder
+```
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Appropriate Units" icon="ruler">
+    Seconds for retry logic, minutes for quick follow-ups, hours/days for campaigns. Choose the unit that best matches your use case.
+  </Card>
+  
+  <Card title="Consider Time Zones" icon="globe">
+    For scheduled sends, account for customer time zones. Use "Until Time" with localized times.
+  </Card>
+  
+  <Card title="Set Maximum Retry Attempts" icon="circle-xmark">
+    Don't retry forever. Set a maximum number of attempts before giving up or escalating.
+  </Card>
+  
+  <Card title="Monitor Delayed Flows" icon="chart-line">
+    Track how many flows are waiting. Long delays create many pending executions.
+  </Card>
+  
+  <Card title="Test with Short Delays" icon="vial">
+    During development, use seconds instead of hours/days to test faster.
+  </Card>
+  
+  <Card title="Document Delay Reasons" icon="message-lines">
+    Add descriptions explaining why each delay exists and why that duration was chosen.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Flow never continues after delay" icon="hourglass">
+    **Causes**:
+    - Delay duration too long
+    - Flow execution failed
+    - System issue
+    
+    **Solutions**:
+    - Check flow execution logs
+    - Verify delay configuration
+    - Check for errors after delay
+    - Contact support if system issue
+  </Accordion>
+
+  <Accordion title="Delay not respecting duration" icon="clock">
+    **Causes**:
+    - Wrong unit specified
+    - Dynamic duration calculation error
+    - Variable reference incorrect
+    
+    **Solutions**:
+    - Verify unit (seconds/minutes/hours/days)
+    - Check dynamic duration calculation
+    - Verify variable paths if using dynamic
+    - Test with static duration first
+  </Accordion>
+
+  <Accordion title="Too many flows waiting" icon="layers">
+    **Causes**:
+    - Long delays create backlog
+    - High trigger volume
+    - Delays not necessary
+    
+    **Solutions**:
+    - Review if all delays are needed
+    - Shorten delay durations if possible
+    - Consider alternative approaches (webhooks instead of polling)
+    - Monitor pending flow count
+  </Accordion>
+
+  <Accordion title="Scheduled send at wrong time" icon="calendar-xmark">
+    **Causes**:
+    - Time zone mismatch
+    - Incorrect "Until Time" format
+    - Clock drift
+    
+    **Solutions**:
+    - Use ISO 8601 format with timezone
+    - Account for user's timezone
+    - Test scheduled sends with near-future times
+    - Verify time zone settings
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Performance Considerations
+
+<AccordionGroup>
+  <Accordion title="Delays don't consume resources" icon="battery-full">
+    Delayed flows don't use compute time while waiting. They're paused and resumed automatically.
+    
+    **Cost**: Minimal storage for flow state, no compute cost during delay
+  </Accordion>
+
+  <Accordion title="Maximum delay duration" icon="stopwatch">
+    **Limits**:
+    - Maximum: 30 days per delay step
+    - For longer delays: Chain multiple delay steps
+    - For scheduled sends: Use "Until Time" for any future date
+  </Accordion>
+
+  <Accordion title="Scale considerations" icon="up-right-and-down-left-from-center">
+    High-volume triggers with delays can create many pending flows:
+    
+    - 1,000 signups/day with 7-day sequence = 7,000 pending flows
+    - Monitor pending flow count
+    - Delays are efficient, but plan for scale
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Delay vs. Schedule Trigger
+
+**Use Delay when**: Within a flow, need to pause between steps
+
+**Use Schedule Trigger when**: Starting a new flow at specific time/interval
+
+| Delay Step | Schedule Trigger |
+|------------|------------------|
+| Pauses existing flow | Starts new flow |
+| Relative time (from now) | Absolute time (specific schedule) |
+| Part of workflow sequence | Independent execution |
+| One-time pause | Recurring schedule |
+
+**Example**: 
+
+✅ **Use Delay**: User signs up → Wait 3 days → Send email  
+✅ **Use Schedule**: Send newsletter every Monday at 9am
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Check conditions after delays
+  </Card>
+  
+  <Card title="Schedule Trigger" icon="calendar" href="/flows/triggers/schedule">
+    Start flows on a schedule
+  </Card>
+  
+  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
+    Retry API calls with delays
+  </Card>
+  
+  <Card title="Agents" icon="robot" href="/flows/steps/agents">
+    Send time-delayed communications
+  </Card>
+</CardGroup>

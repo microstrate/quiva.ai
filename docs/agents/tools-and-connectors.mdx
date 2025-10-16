@@ -1,0 +1,772 @@
+---
+title: "Tools & Connectors"
+description: "Connect your agents to data sources, APIs, and business systems"
+icon: "plug"
+---
+
+# Tools & Connectors
+
+Tools give your agents the ability to access data, call APIs, and interact with your business systems. Without tools, agents can only reason based on what you tell them. With tools, they become powerful automation engines that can look up information, update systems, and take actions.
+
+## What are Tools?
+
+Tools are integrations that allow agents to:
+
+- **Access data** - Search knowledge bases, query databases, retrieve records
+- **Call APIs** - Invoke external services and platforms
+- **Perform actions** - Create records, send emails, update systems
+- **Make decisions** - Use data from multiple sources to inform responses
+
+<img 
+  src="/images/agents/tools-diagram.png" 
+  alt="Agent Tools Architecture"
+  className="rounded-lg"
+/>
+
+## Tool Types
+
+Microstrate supports two main types of tools:
+
+### MCP Servers (Model Context Protocol)
+
+<Card title="What is MCP?" icon="server">
+MCP (Model Context Protocol) is an open standard for connecting AI models to data sources and tools. It provides a standardized way for agents to discover, understand, and use integrations.
+
+**Benefits:**
+- ✅ Standardized interface
+- ✅ Self-describing (agents understand how to use them)
+- ✅ Composable and reusable
+- ✅ Growing ecosystem of integrations
+</Card>
+
+### API Integrations
+
+Pre-configured HTTP integrations for popular services with authentication and parameter mapping already set up.
+
+---
+
+## Adding Tools to Agents
+
+### From the Agent Configuration
+
+1. Open your agent configuration
+2. Click the **Tools** tab
+3. Click **Add Tool**
+4. Select from available options:
+   - **MCP Servers** - From marketplace or custom
+   - **API Integrations** - Pre-built connectors
+5. Configure authentication and parameters
+6. Save
+
+<img 
+  src="/images/agents/add-tool.png" 
+  alt="Adding Tools"
+  className="rounded-lg"
+/>
+
+### Tool Selection Best Practices
+
+<AccordionGroup>
+  <Accordion title="Only add relevant tools" icon="check">
+    Don't connect everything "just in case":
+    
+    ❌ **Bad:** Add 15 tools to every agent
+    ✅ **Good:** Add only tools this specific agent needs
+    
+    **Why:**
+    - Each tool adds tokens (descriptions, parameters)
+    - More tools = higher costs
+    - More tools = more confusion for agent
+    - More tools = slower responses
+    
+    **Example:**
+    Customer service agent needs:
+    - Knowledge base search
+    - Order lookup
+    - Refund processor
+    
+    Customer service agent does NOT need:
+    - Lead enrichment
+    - Social media posting
+    - Inventory management
+  </Accordion>
+
+  <Accordion title="Provide clear tool descriptions" icon="file-lines">
+    When configuring custom tools, write clear descriptions:
+    
+    ❌ **Bad:** "Gets data"
+    ✅ **Good:** "Searches the knowledge base for help articles by keyword. Returns title, summary, and full article content."
+    
+    **Why:**
+    - Agents read descriptions to understand when to use tools
+    - Clear descriptions = correct tool usage
+    - Vague descriptions = wrong tool or no tool usage
+  </Accordion>
+
+  <Accordion title="Name tools descriptively" icon="tag">
+    Tool names should explain what they do:
+    
+    ❌ **Bad:** "API 1", "Tool", "Function"
+    ✅ **Good:** "Get Order Status", "Search Knowledge Base", "Process Refund"
+    
+    **Why:**
+    - Agents select tools by name and description
+    - Descriptive names improve tool selection accuracy
+  </Accordion>
+
+  <Accordion title="Group related functionality" icon="layer-group">
+    Instead of many micro-tools, create tools that handle related operations:
+    
+    ❌ **Bad:**
+    - Get Order by ID
+    - Get Order by Email
+    - Get Order by Date
+    - Get Order by Customer
+    
+    ✅ **Good:**
+    - Search Orders (accepts ID, email, date, or customer)
+    
+    **Why:**
+    - Fewer tools = less confusion
+    - More flexible search
+    - Easier maintenance
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Common Tool Types
+
+### Knowledge Base / Search Tools
+
+Allow agents to search documentation, help articles, or knowledge repositories.
+
+**Use when:**
+- Answering product questions
+- Providing support information
+- Citing policies and procedures
+- Referencing documentation
+
+**Example configuration:**
+
+```
+Tool: Knowledge Base Search
+
+Description: Search our help center for articles about products, 
+policies, and troubleshooting. Returns article title, summary, and 
+full content.
+
+Parameters:
+- query (string): Search keywords
+- category (optional): Filter by category (billing, technical, shipping)
+- limit (optional): Number of results (default 5)
+
+Authentication: API Key
+```
+
+**Agent usage example:**
+
+```
+User: "What's your return policy?"
+
+Agent thinks: Need to search knowledge base for return policy
+
+Agent action: Call Knowledge Base Search
+- query: "return policy"
+- category: "policies"
+
+Tool returns: [Article: "Return & Refund Policy", content: "We accept..."]
+
+Agent response: "According to our return policy, we accept..."
+```
+
+---
+
+### CRM / Customer Data Tools
+
+Access customer information, order history, and account details.
+
+**Use when:**
+- Looking up customer accounts
+- Checking order status
+- Verifying customer history
+- Personalizing responses
+
+**Example configuration:**
+
+```
+Tool: Get Customer Info
+
+Description: Retrieve customer account details including contact info, 
+order history, account status, and lifetime value. Use when customer 
+provides email or customer ID.
+
+Parameters:
+- email (optional): Customer email
+- customer_id (optional): Customer ID
+- include_orders (boolean): Include order history (default true)
+
+Authentication: OAuth 2.0 (Salesforce)
+```
+
+**Agent usage example:**
+
+```
+User: "I want to check my order status. My email is john@example.com"
+
+Agent thinks: Need customer info and orders
+
+Agent action: Call Get Customer Info
+- email: "john@example.com"
+- include_orders: true
+
+Tool returns: {
+  customer_id: "C12345",
+  name: "John Smith",
+  orders: [
+    {order_id: "O789", status: "shipped", tracking: "TRK123"}
+  ]
+}
+
+Agent response: "Hi John! I found your order O789. It shipped yesterday 
+and is on its way. Tracking number: TRK123"
+```
+
+---
+
+### Action / Transaction Tools
+
+Perform actions like processing refunds, creating tickets, or updating records.
+
+**Use when:**
+- Processing refunds
+- Creating support tickets
+- Updating account information
+- Taking automated actions
+
+**Example configuration:**
+
+```
+Tool: Process Refund
+
+Description: Process a refund for an order. Can only refund orders within 
+30 days. Requires order number and refund amount. Returns confirmation 
+number.
+
+Parameters:
+- order_number (string): Order number
+- amount (number): Refund amount in dollars
+- reason (string): Reason for refund
+- notify_customer (boolean): Send email notification (default true)
+
+Authentication: API Key
+
+Rules:
+- Only orders < 30 days old
+- Refund amount <= original order amount
+- Requires manager approval if amount > $500
+```
+
+**Agent usage example:**
+
+```
+User: "I want to return order #12345 and get my money back."
+
+Agent thinks: Need to process a refund
+
+Agent action: Call Process Refund
+- order_number: "12345"
+- amount: 49.99
+- reason: "customer return request"
+- notify_customer: true
+
+Tool returns: {
+  success: true,
+  refund_id: "REF789",
+  confirmation: "Refund processed, customer will receive $49.99 in 5-7 days"
+}
+
+Agent response: "I've processed your refund for order #12345. You'll 
+receive $49.99 back to your original payment method within 5-7 business 
+days. Your refund confirmation number is REF789."
+```
+
+---
+
+### Data Enrichment Tools
+
+Enrich leads or customers with external data.
+
+**Use when:**
+- Qualifying leads
+- Researching companies
+- Enriching contact information
+- Gathering intelligence
+
+**Example configuration:**
+
+```
+Tool: Company Lookup
+
+Description: Get detailed company information including size, industry, 
+funding, technology stack, and contact details. Use for lead qualification 
+and research.
+
+Parameters:
+- domain (string): Company website domain
+- fields (array): Which fields to return (default: all)
+
+Authentication: API Key (Clearbit/ZoomInfo)
+
+Returns:
+- Company name
+- Employee count
+- Industry
+- Annual revenue
+- Tech stack
+- Key contacts
+```
+
+**Agent usage example:**
+
+```
+User: "I work at acme-corp.com and I'm interested in your product."
+
+Agent thinks: Should qualify this lead and enrich company data
+
+Agent action: Call Company Lookup
+- domain: "acme-corp.com"
+
+Tool returns: {
+  name: "Acme Corp",
+  employees: 250,
+  industry: "SaaS",
+  revenue: "$25M",
+  tech: ["Salesforce", "HubSpot"]
+}
+
+Agent response: "Great to meet you! I see Acme Corp is a SaaS company 
+with about 250 employees. Based on your company profile, you'd be a 
+great fit for our Enterprise plan. Let me ask a few questions to 
+understand your specific needs..."
+```
+
+---
+
+## Tool Authentication
+
+Different tools require different authentication methods:
+
+### API Key
+
+<Tabs>
+  <Tab title="Configuration">
+    ```
+    Tool: Knowledge Base API
+    Auth Type: API Key
+    
+    API Key: sk_1234567890abcdef
+    Header: X-API-Key (or Authorization: Bearer)
+    ```
+  </Tab>
+  
+  <Tab title="How to Get">
+    1. Log into service provider
+    2. Navigate to API/Developer section
+    3. Generate new API key
+    4. Copy and paste into Microstrate
+    5. Keys are encrypted and stored securely
+  </Tab>
+  
+  <Tab title="Best Practices">
+    - Use separate keys for dev and production
+    - Rotate keys every 90 days
+    - Set rate limits on provider side
+    - Monitor usage for unexpected activity
+    - Store keys securely in Secrets Manager
+  </Tab>
+</Tabs>
+
+### OAuth 2.0
+
+<Tabs>
+  <Tab title="Configuration">
+    ```
+    Tool: Salesforce CRM
+    Auth Type: OAuth 2.0
+    
+    Click "Connect to Salesforce"
+    → Authenticate with your account
+    → Grant permissions
+    → Token automatically managed
+    ```
+  </Tab>
+  
+  <Tab title="How It Works">
+    1. Click "Connect" button
+    2. Redirected to service login
+    3. Authenticate with your account
+    4. Grant requested permissions
+    5. Redirected back to Microstrate
+    6. Tokens stored and refreshed automatically
+  </Tab>
+  
+  <Tab title="Best Practices">
+    - Use service accounts for production
+    - Grant minimum required permissions
+    - Regularly review connected apps
+    - Revoke unused integrations
+    - Monitor OAuth audit logs
+  </Tab>
+</Tabs>
+
+### Basic Auth
+
+<Tabs>
+  <Tab title="Configuration">
+    ```
+    Tool: Legacy API
+    Auth Type: Basic Auth
+    
+    Username: api_user
+    Password: ************
+    ```
+  </Tab>
+  
+  <Tab title="Security">
+    - Less secure than OAuth or API keys
+    - Use only when required
+    - Always use HTTPS
+    - Rotate credentials regularly
+    - Consider migrating to API keys
+  </Tab>
+</Tabs>
+
+### No Auth (Public APIs)
+
+<Tabs>
+  <Tab title="Configuration">
+    ```
+    Tool: Public Data API
+    Auth Type: None
+    
+    No credentials required
+    ```
+  </Tab>
+  
+  <Tab title="Considerations">
+    - Rate limits still apply
+    - May have restricted functionality
+    - Data freshness varies
+    - Consider caching results
+  </Tab>
+</Tabs>
+
+---
+
+## Using Secrets Manager
+
+For sensitive credentials, use the Secrets Manager:
+
+<Steps>
+  <Step title="Create a Secret">
+    Navigate to **Account → Secrets Manager**
+    
+    Click **Create Secret**
+    
+    ```
+    Key: SALESFORCE_API_KEY
+    Value: sk_abc123xyz789
+    ```
+  </Step>
+  
+  <Step title="Reference in Tool">
+    In tool configuration:
+    
+    ```
+    API Key: SECRET::SALESFORCE_API_KEY::
+    ```
+    
+    The secret is automatically resolved at runtime.
+  </Step>
+  
+  <Step title="Benefits">
+    - ✅ Centralized credential management
+    - ✅ Encrypted storage
+    - ✅ Audit logging
+    - ✅ Easy rotation (update once, applies everywhere)
+    - ✅ Role-based access control
+  </Step>
+</Steps>
+
+<Info>
+Learn more in the [Secrets Manager Guide](/advanced/integrations/api-connections#secrets-manager)
+</Info>
+
+---
+
+## Tool Usage in Agent Instructions
+
+Tell agents how and when to use tools in your instructions:
+
+### Explicit Tool Usage
+
+```markdown
+## Tool Usage Guidelines
+
+### Knowledge Base Search
+Use this tool BEFORE answering any product or policy questions.
+Always search with 2-3 relevant keywords.
+
+Example: If customer asks "What's your shipping policy?", search for 
+"shipping policy" in the knowledge base first.
+
+### Customer Lookup
+Use this tool whenever a customer provides their email or order number.
+Look up their account before answering account-specific questions.
+
+### Refund Processor
+Only use this tool if:
+1. Customer explicitly requests a refund
+2. Order is within 30 days
+3. Refund amount is under $500 (escalate higher amounts)
+4. You've verified the customer's identity
+
+### Support Ticket Creator
+Use this tool when:
+1. You cannot resolve the issue
+2. Issue requires specialized knowledge (billing, technical)
+3. Customer specifically requests to speak with someone
+4. Issue is time-sensitive or complex
+```
+
+### Tool Selection Examples
+
+```markdown
+## Example Scenarios
+
+**Customer asks: "Where is my order?"**
+1. Ask for order number or email
+2. Use Customer Lookup tool with provided information
+3. Get order details and tracking
+4. Provide status and tracking number
+
+**Customer asks: "What's your return policy?"**
+1. Use Knowledge Base Search for "return policy"
+2. Read the article
+3. Summarize policy for customer
+4. Offer to help with a specific return if needed
+
+**Customer says: "I want a refund for order #12345"**
+1. Use Customer Lookup to get order details
+2. Check order date (must be < 30 days)
+3. Use Refund Processor if eligible
+4. If not eligible, explain why and offer alternatives
+```
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with essential tools only" icon="filter">
+    Begin with the minimum tools needed:
+    
+    **Phase 1:** Core functionality
+    - Knowledge base search
+    - Basic customer lookup
+    
+    **Phase 2:** Add as needed
+    - Order management
+    - Refund processing
+    
+    **Phase 3:** Advanced features
+    - Data enrichment
+    - Complex integrations
+    
+    Don't add tools "just in case" - each one adds complexity and cost.
+  </Accordion>
+
+  <Accordion title="Test tools independently first" icon="flask">
+    Before giving tools to agents:
+    
+    1. Test tool calls manually
+    2. Verify authentication works
+    3. Check response formats
+    4. Understand error cases
+    5. Know rate limits
+    
+    Then add to agent and test integration.
+  </Accordion>
+
+  <Accordion title="Provide clear tool instructions" icon="book">
+    In your agent instructions:
+    
+    ```markdown
+    ✅ Good:
+    "Use the Order Lookup tool whenever a customer mentions an order 
+    number or asks about order status. Call it with the order_number 
+    parameter."
+    
+    ❌ Bad:
+    "Use tools as needed"
+    ```
+    
+    Specific instructions = correct tool usage.
+  </Accordion>
+
+  <Accordion title="Handle tool errors gracefully" icon="triangle-exclamation">
+    Tools can fail. Prepare agents:
+    
+    ```markdown
+    If a tool call fails:
+    1. Acknowledge the issue to the customer
+    2. Explain what you tried
+    3. Offer alternative solutions
+    4. Escalate if necessary
+    
+    Example: "I tried to look up your order but encountered a system 
+    error. Let me create a support ticket for our team to investigate. 
+    They'll contact you within 2 hours."
+    ```
+  </Accordion>
+
+  <Accordion title="Monitor tool usage" icon="chart-line">
+    Track which tools are being used:
+    
+    - Which tools are called most?
+    - Which tools are never used? (consider removing)
+    - Are tools being used correctly?
+    - Are error rates acceptable?
+    
+    Optimize based on actual usage patterns.
+  </Accordion>
+
+  <Accordion title="Secure sensitive tools" icon="lock">
+    For tools that perform actions (refunds, deletions, updates):
+    
+    - Add approval steps (Human-in-the-Loop)
+    - Set monetary limits in tool configuration
+    - Require additional verification
+    - Log all actions
+    - Monitor for suspicious activity
+    
+    Example: Refunds over $200 require human approval.
+  </Accordion>
+
+  <Accordion title="Version and document tools" icon="book-open">
+    Maintain documentation:
+    
+    - What the tool does
+    - When to use it
+    - Parameters and their meanings
+    - Expected responses
+    - Error conditions
+    - Usage examples
+    
+    Good documentation = easier troubleshooting and onboarding.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent not using tools" icon="question">
+    **Possible causes:**
+    - Tools not properly connected
+    - Instructions don't mention tools
+    - Tool descriptions unclear
+    - Agent hitting reasoning step limit
+    
+    **Solutions:**
+    1. Check tool is connected and enabled
+    2. Add explicit tool usage instructions
+    3. Improve tool descriptions
+    4. Increase reasoning step limit
+    5. Test tool manually first
+  </Accordion>
+
+  <Accordion title="Agent using wrong tool" icon="shuffle">
+    **Possible causes:**
+    - Similar tool names/descriptions
+    - Vague tool descriptions
+    - Missing usage guidelines
+    
+    **Solutions:**
+    1. Make tool names more distinct
+    2. Improve tool descriptions (be specific)
+    3. Add explicit usage guidelines in instructions
+    4. Remove similar/redundant tools
+    5. Provide examples in instructions
+  </Accordion>
+
+  <Accordion title="Tool authentication failing" icon="key">
+    **Check:**
+    - Is API key correct?
+    - Is OAuth token expired?
+    - Are credentials stored in Secrets Manager?
+    - Do credentials have required permissions?
+    - Is the service API working?
+    
+    **Solutions:**
+    1. Verify credentials are correct
+    2. Reconnect OAuth if expired
+    3. Check service status page
+    4. Verify permissions on service side
+    5. Test credentials outside of agent
+  </Accordion>
+
+  <Accordion title="Tool calls timing out" icon="clock">
+    **Possible causes:**
+    - External API is slow
+    - Complex query
+    - Rate limiting
+    - Network issues
+    
+    **Solutions:**
+    1. Increase timeout setting if available
+    2. Simplify query parameters
+    3. Check API rate limits
+    4. Add caching for common queries
+    5. Consider async processing for slow tools
+  </Accordion>
+
+  <Accordion title="Rate limit errors" icon="ban">
+    **When agent hits provider rate limits:**
+    
+    **Short term:**
+    1. Reduce tool usage frequency
+    2. Add caching
+    3. Batch requests when possible
+    
+    **Long term:**
+    1. Upgrade provider plan
+    2. Use multiple API keys (rotation)
+    3. Implement request queuing
+    4. Consider alternative providers
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom MCP Servers" icon="server" href="/advanced/integrations/custom-mcp-servers">
+    Build your own tool integrations
+  </Card>
+  
+  <Card title="API Connections" icon="plug" href="/advanced/integrations/api-connections">
+    Connect to external APIs
+  </Card>
+  
+  <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/agents/prompt-engineering">
+    Write better tool usage instructions
+  </Card>
+  
+  <Card title="Best Practices" icon="star" href="/agents/best-practices">
+    Optimize agent performance
+  </Card>
+</CardGroup>

@@ -1,0 +1,252 @@
+---
+title: 'Webhook Trigger'
+description: 'Receive and process webhooks from external services like Stripe, GitHub, Slack, and more'
+icon: 'link'
+---
+
+# Webhook Trigger
+
+The Webhook trigger provides a dedicated endpoint to receive webhook events from external services. When an external service like Stripe, GitHub, or Slack sends a webhook to your endpoint, your flow is automatically triggered with the webhook data.
+
+Webhook triggers are optimized for receiving events from third-party services with built-in security features like signature verification and event filtering.
+
+---
+
+## How It Works
+
+Add the trigger to your flow, and Microstrate generates a unique webhook endpoint. Copy the webhook URL and paste it into the external service's webhook configuration. When events occur in the external service, they send webhook events to your endpoint. Your flow receives the webhook data and processes it automatically.
+
+---
+
+## Configuration
+
+### Webhook Endpoint
+
+When you add a webhook trigger, Microstrate automatically generates a unique webhook endpoint. Click "Copy Webhook URL" in the trigger configuration. Paste this URL into the external service's webhook settings. The URL is stable and doesn't change unless you regenerate it.
+
+### Supported Methods
+
+Webhook triggers accept POST requests with JSON or form-encoded body. Supported content types include application/json, application/x-www-form-urlencoded, and multipart/form-data. Most webhook services use application/json by default.
+
+### Event Filtering
+
+Many webhook services send multiple event types to the same URL. You can filter which events trigger your flow. For example, with Stripe you might filter for payment_intent.succeeded and customer.subscription.created events only.
+
+Webhook trigger receives all events from the service. Only specified event types trigger the flow. Other events are acknowledged but ignored. This reduces unnecessary flow executions.
+
+### Response Mode
+
+**Acknowledge Immediately (Default):**
+
+Webhook responds immediately with 200 OK, then flow runs in background. Best for long-running flows, most webhook integrations, and when external service doesn't need response data.
+
+Many webhook services have short timeout limits (5-30 seconds). This prevents webhook retries due to timeouts and allows complex processing without time pressure.
+
+**Wait for Completion:**
+
+Webhook waits for entire flow to complete before responding. Best for quick flows under 5 seconds, when you need to return data to the webhook sender, and custom webhooks that expect response data.
+
+Use with caution: Many webhook services timeout after 5-30 seconds and will retry if no response is received.
+
+---
+
+## Security
+
+### Public Access
+
+By default, webhook triggers are public and accept requests from any source. Use for testing and development, services that send from variable IP addresses, or when using signature verification.
+
+For production webhooks, always use either API key authentication OR signature verification.
+
+### API Key Authentication
+
+Require API key authentication for additional security. Toggle "Secure with API Key" in trigger configuration. Click "Generate API Key" to create a unique key. Add the API key to the webhook configuration in the external service as a query parameter or header if supported.
+
+Not all webhook services support custom headers or query parameters. Check your service's documentation.
+
+### Signature Verification
+
+Signature verification ensures webhooks are actually from the claimed service and haven't been tampered with. External service signs webhook payload with secret key. Signature included in webhook headers. Microstrate verifies signature using same secret. Only valid signatures trigger flow.
+
+Common signature headers: Stripe uses Stripe-Signature, GitHub uses X-Hub-Signature-256, Slack uses X-Slack-Signature, Shopify uses X-Shopify-Hmac-Sha256.
+
+Signature verification is the recommended security method for production webhooks.
+
+**Enable Signature Verification:**
+
+Copy the webhook signing secret from the external service. In the webhook trigger settings, toggle "Enable Signature Verification". Select service type (Stripe, GitHub, Slack, Custom). Paste webhook secret. Save configuration. Send a test webhook from the external service to verify.
+
+Supported services include Stripe, GitHub, Slack, Shopify, Twilio, and custom HMAC configurations.
+
+---
+
+## Popular Service Integrations
+
+### Stripe
+
+Configure Stripe webhooks to send payment events to Microstrate. Common events include payment_intent.succeeded, customer.subscription.created, invoice.payment_failed, and charge.refunded.
+
+Go to Stripe Dashboard, navigate to Developers then Webhooks. Click "Add endpoint". Paste Microstrate webhook URL. Select events to listen to. Copy signing secret. In Microstrate, enable signature verification, select "Stripe" as service type, and paste signing secret.
+
+### GitHub
+
+Configure GitHub webhooks to send repository events to Microstrate. Common events include push, pull_request, issues, release, and workflow_run.
+
+Go to Repository Settings, navigate to Webhooks. Click "Add webhook". Paste Microstrate webhook URL. Select "Content type: application/json". Generate and save secret. Select events to listen to. In Microstrate, enable signature verification, select "GitHub" as service type, and paste webhook secret.
+
+### Slack
+
+Configure Slack webhooks to send workspace events to Microstrate. Common events include message.channels, app_mention, team_join, and reaction_added.
+
+Go to api.slack.com/apps. Create new app. Enable Event Subscriptions. Paste Microstrate webhook URL in "Request URL". Slack will verify the URL. Subscribe to events. In Microstrate, enable signature verification, select "Slack" as service type, and paste signing secret from app settings.
+
+Slack requires URL verification. Microstrate automatically responds to Slack's challenge request.
+
+---
+
+## Webhook Data Access
+
+All webhook data is available under `$.trigger` in your flow:
+
+```javascript
+// Headers
+const signature = $.trigger.headers['x-webhook-signature'];
+
+// Body (JSON)
+const event = $.trigger.event;
+const eventType = $.trigger.type;
+const data = $.trigger.data;
+
+// Metadata
+const webhookId = $.trigger.webhook_id;
+const receivedAt = $.trigger.received_at;
+```
+
+**Stripe webhook structure:**
+
+```javascript
+const eventType = $.trigger.type;  // "payment_intent.succeeded"
+const data = $.trigger.data.object;
+const amount = data.amount / 100;  // Convert cents to dollars
+const customerId = data.customer;
+```
+
+**GitHub webhook structure:**
+
+```javascript
+const action = $.trigger.action;  // "opened", "closed"
+const repository = $.trigger.repository.name;
+const pr = $.trigger.pull_request;
+const author = $.trigger.sender.login;
+```
+
+**Slack webhook structure:**
+
+```javascript
+const eventType = $.trigger.event.type;  // "app_mention"
+const message = $.trigger.event.text;
+const channel = $.trigger.event.channel;
+const user = $.trigger.event.user;
+```
+
+---
+
+## Testing Webhooks
+
+**Test with External Service:**
+
+Most services have a "Send test webhook" feature. In Stripe Dashboard, go to Webhooks, click endpoint, then "Send test webhook". In GitHub, go to Webhooks, click webhook, navigate to "Recent Deliveries", then "Redeliver". Verify flow executes in Microstrate.
+
+**Test with curl:**
+
+```bash
+curl -X POST https://webhooks.microstrate.com/YOUR_WEBHOOK_ID \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test.event", "data": {"test": true}}'
+```
+
+**Test with API Key:**
+
+```bash
+curl -X POST "https://webhooks.microstrate.com/YOUR_WEBHOOK_ID?api_key=ms_wh_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test.event"}'
+```
+
+---
+
+## Best Practices
+
+**Always Use Signature Verification:**
+
+Enable signature verification for all production webhooks. Store webhook secrets securely in environment variables. Rotate secrets periodically. Monitor for verification failures. Never use public webhooks in production without verification.
+
+**Handle Webhook Retries:**
+
+Most services retry failed webhooks multiple times. Ensure your flow handles duplicates. Check if event already processed using event ID. Process webhook only once. Mark as processed to prevent duplicates.
+
+Stripe retries with exponential backoff up to 3 days. GitHub retries 5 times over 15 minutes. Slack retries 3 times over 5 minutes.
+
+**Respond Quickly:**
+
+Use "Acknowledge Immediately" mode (default). Process data asynchronously. Respond within 2-3 seconds. Services timeout after 5-30 seconds. Timeouts trigger automatic retries which creates duplicate processing issues.
+
+**Monitor Webhook Health:**
+
+Track success rate, failed signature verifications, processing time, retry rate, and error patterns. Set up alerts for signature verification failures, high failure rate, unusual spike in volume, and missing expected webhooks.
+
+---
+
+## Troubleshooting
+
+**Webhook Not Triggering:**
+
+Check webhook URL configured correctly in external service. Verify flow is active and published. Confirm webhook trigger is enabled. Ensure event type matches filter if filtering enabled. Verify signature verification passing if enabled.
+
+**Signature Verification Failing:**
+
+Common causes include wrong secret configured, wrong service type selected, secret rotated but not updated, and clock skew. Verify secret is correct from service webhook settings. Check service type matches (Stripe is different from GitHub). Rotate secret if compromised and update in both places.
+
+**Duplicate Webhooks:**
+
+Service retrying due to slow response or error response. Multiple webhook endpoints configured. Network issues causing retransmission. Switch to async mode (acknowledge immediately). Implement idempotency using event ID. Check external service config to ensure only one webhook configured.
+
+**Missing Webhook Data:**
+
+Log full payload to see what's actually sent. Check API version as data structure may have changed. Verify event type as some events have different payload structures. Read service docs to confirm expected data structure. Check permissions as service may not be sending all data.
+
+**Webhook Disabled by Service:**
+
+Common reasons include too many failures, not responding within timeout period, and repeated signature verification failures. Fix the underlying issue (switch to async mode, fix signature verification, resolve flow errors). Re-enable webhook in service dashboard. Send test webhook to verify. Monitor closely for first few hours.
+
+---
+
+## Comparison: Webhook vs HTTP Request Trigger
+
+**Webhook Trigger:** Best for receiving from external services, built-in signature verification, built-in event filtering, async response mode default.
+
+**HTTP Request Trigger:** Best for custom API endpoints, manual implementation required for signatures, manual event filtering in flow, sync response mode default.
+
+Use Webhook Trigger when receiving events from Stripe, GitHub, Slack and need signature verification. Use HTTP Request Trigger when building custom integrations, your application triggering flows, and need to return data to caller.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Schedule Trigger" icon="clock" href="/flows/triggers/schedule">
+    Run flows on a recurring schedule
+  </Card>
+  
+  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
+    Make HTTP requests to external services in your flow
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/triggers/condition">
+    Route flow based on webhook event types
+  </Card>
+  
+  <Card title="Agent Steps" icon="robot" href="/flows/steps/agents">
+    Process webhook data with AI agents
+  </Card>
+</CardGroup>

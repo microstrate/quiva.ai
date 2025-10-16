@@ -1,0 +1,265 @@
+---
+title: 'HTTP Request Trigger'
+description: 'Create custom API endpoints to trigger flows with HTTP POST requests'
+icon: 'globe'
+---
+
+# HTTP Request Trigger
+
+The HTTP Request trigger automatically creates a custom endpoint that accepts HTTP POST requests to trigger your flow. This is perfect for integrating Microstrate flows with your application, external services, or any system that can make HTTP requests.
+
+When you add an HTTP Request trigger, Microstrate automatically generates a unique endpoint URL. You can then send JSON data to this endpoint from anywhere.
+
+---
+
+## How It Works
+
+Add the trigger to your flow, and Microstrate generates a unique endpoint. Make an HTTP POST request from your application. Your flow receives the request data and executes all steps. The endpoint returns a response based on your configuration.
+
+---
+
+## Configuration
+
+### Endpoint URL
+
+When you add the trigger, Microstrate automatically generates a unique endpoint URL. Click "Copy Endpoint URL" in the trigger configuration. Use this URL in your application code. The URL is stable and doesn't change unless you regenerate it.
+
+### Request Method
+
+HTTP Request triggers only accept POST requests with JSON body. POST can send complex data structures and is the standard for triggering actions. GET, PUT, PATCH, and DELETE methods are not supported.
+
+### Request Body
+
+The request body must be valid JSON. All fields are available under `$.trigger` in your flow.
+
+Example request:
+
+```json
+{
+  "customer_id": "CUST-123",
+  "order_id": "ORD-456",
+  "action": "process_refund",
+  "amount": 49.99
+}
+```
+
+Access in flow:
+
+```javascript
+$.trigger.customer_id  // "CUST-123"
+$.trigger.order_id     // "ORD-456"
+$.trigger.amount       // 49.99
+```
+
+Request body must be valid JSON. Malformed JSON will return a 400 Bad Request error.
+
+### Response Mode
+
+Choose between synchronous and asynchronous execution.
+
+**Wait for Completion (Synchronous):**
+
+The endpoint waits for the entire flow to complete before responding. Best for API integrations needing immediate results, workflows under 30 seconds, and when caller needs response data.
+
+Response includes status, execution ID, results, and execution time.
+
+Requests timeout after 30 seconds. Use background mode for longer flows.
+
+**Run in Background (Asynchronous):**
+
+The endpoint responds immediately and the flow runs in the background. Best for long-running processes over 10 seconds, webhook handlers, and fire-and-forget operations.
+
+Response includes execution ID for tracking and immediate acknowledgment.
+
+---
+
+## Security
+
+### Public Access
+
+By default, HTTP Request triggers are public and don't require authentication. Use for internal services within secure network, testing and development, or low-risk operations.
+
+Public endpoints should be used carefully. Consider rate limiting and monitoring for production use.
+
+### API Key Authentication
+
+Enable API key authentication to secure your endpoint. Toggle "Secure with API Key" in trigger configuration. Click "Generate API Key" to create a unique key for this endpoint.
+
+Include the API key in the Authorization header:
+
+```bash
+curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
+  -H "Authorization: Bearer ms_sk_abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{"data": "value"}'
+```
+
+Rotate keys periodically by clicking "Regenerate API Key". Old key is immediately invalidated. Update your applications with new key.
+
+Store API keys securely in environment variables or secrets managers, never in code repositories.
+
+---
+
+## Use Cases
+
+### Backend Integration
+
+Trigger flows from your application backend:
+
+```javascript
+const axios = require('axios');
+
+async function triggerFlow(data) {
+  const response = await axios.post(
+    'https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger',
+    data,
+    {
+      headers: {
+        'Authorization': `Bearer ${process.env.API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+  return response.data;
+}
+```
+
+### Frontend Integration
+
+Call flows from your frontend application. For frontend calls, either use public endpoints for non-sensitive operations, or proxy through your backend to keep API keys secure.
+
+---
+
+## Request Examples
+
+**Basic Request:**
+
+```bash
+curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id": "CUST-123"}'
+```
+
+**With API Key:**
+
+```bash
+curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
+  -H "Authorization: Bearer ms_sk_abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id": "CUST-123"}'
+```
+
+---
+
+## Response Format
+
+**Synchronous Success:**
+
+```json
+{
+  "status": "success",
+  "executionId": "exec_abc123",
+  "result": {
+    "agent_response": "Order processed successfully"
+  },
+  "executionTime": 2847
+}
+```
+
+**Asynchronous Success:**
+
+```json
+{
+  "status": "queued",
+  "executionId": "exec_abc123",
+  "message": "Flow execution started"
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "status": "error",
+  "executionId": "exec_abc123",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Missing required field: customer_id"
+  }
+}
+```
+
+**HTTP Status Codes:**
+
+- 200 OK: Success (sync mode)
+- 202 Accepted: Queued (async mode)
+- 400 Bad Request: Invalid request data
+- 401 Unauthorized: Invalid API key
+- 404 Not Found: Flow not found
+- 429 Too Many Requests: Rate limit exceeded
+- 500 Internal Server Error: Server error
+- 504 Gateway Timeout: Request timed out
+
+---
+
+## Testing
+
+Enable Test Mode in the trigger configuration. Copy the test endpoint URL. Send test request using curl, Postman, or your preferred tool. View execution in flow logs.
+
+---
+
+## Best Practices
+
+**Security:**
+
+- Enable API key authentication for all production endpoints
+- Store keys in secure environment variables
+- Use different keys for dev, staging, and production
+- Rotate keys regularly
+- Monitor for unauthorized access
+
+**Error Handling:**
+
+Implement retry logic with exponential backoff. Handle network errors and server errors. Don't retry client errors (4xx status codes).
+
+**Validation:**
+
+Always validate data received in the trigger. Check for required fields. Validate data types and formats.
+
+**Rate Limiting:**
+
+Monitor request volume. Implement client-side rate limiting. Stay within plan limits.
+
+---
+
+## Troubleshooting
+
+**401 Unauthorized:** Check API key is included in Authorization header. Verify key is correct. Regenerate key if needed.
+
+**400 Bad Request:** Ensure valid JSON format. Include Content-Type: application/json header. Validate request structure.
+
+**504 Gateway Timeout:** Switch to Background mode for long-running flows. Optimize flow steps. Reduce external API calls.
+
+**429 Too Many Requests:** Implement exponential backoff. Reduce request frequency. Upgrade plan if needed.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Webhook Trigger" icon="link" href="/flows/triggers/webhook">
+    Receive webhooks from external services
+  </Card>
+  
+  <Card title="Schedule Trigger" icon="clock" href="/flows/triggers/schedule">
+    Run flows on a schedule
+  </Card>
+  
+  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
+    Make HTTP requests within your flow
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Route flow based on HTTP request data
+  </Card>
+</CardGroup>

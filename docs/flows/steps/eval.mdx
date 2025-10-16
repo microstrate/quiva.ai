@@ -1,0 +1,1050 @@
+---
+title: 'Eval'
+description: 'Execute custom JavaScript code for complex logic and calculations'
+icon: 'code'
+---
+
+# Eval Step
+
+The Eval step executes custom JavaScript code within your flow. Use it for complex logic, custom calculations, advanced data manipulation, or anything that can't be accomplished with other step types. Full JavaScript ES6+ support with access to common libraries.
+
+<Warning>
+**Use Sparingly**: Eval is powerful but adds complexity. Use built-in steps (Map, Rules, Functions) when possible. Reserve Eval for truly custom logic that can't be accomplished otherwise.
+</Warning>
+
+---
+
+## How It Works
+
+Eval executes JavaScript code and returns the result:
+
+<CodeGroup>
+```text Simple Calculation
+Previous Step: Order data
+↓
+Eval: Calculate complex pricing
+  Code: Custom pricing algorithm
+  Returns: Calculated price
+↓
+Next Step: Use calculated price
+```
+
+```text Data Transformation
+HTTP Request: Returns complex nested data
+↓
+Eval: Custom data transformation
+  Code: Flatten, filter, aggregate data
+  Returns: Transformed structure
+↓
+Agent: Process cleaned data
+```
+
+```text Business Logic
+Form: Application data
+↓
+Eval: Complex eligibility logic
+  Code: Multi-factor calculation with edge cases
+  Returns: {eligible, score, reasons}
+↓
+Condition: Route based on eligibility
+```
+</CodeGroup>
+
+---
+
+## When to Use Eval
+
+| Use Eval When | Use Alternative When |
+|---------------|---------------------|
+| Complex calculations beyond Rules | Simple math (use Rules) |
+| Custom algorithms not available elsewhere | Standard operations (use Functions) |
+| Advanced array/object manipulation beyond Map | Simple transforms (use Map) |
+| Need specific JavaScript libraries | Built-in operators sufficient |
+| Complex conditional logic with edge cases | Simple if/then (use Condition) |
+| Prototyping new logic before building proper step | Logic is stable (build custom step) |
+
+**Examples**:
+
+✅ **Use Eval**: Calculate compound interest with variable rates, fees, and payment schedules  
+❌ **Use Rules instead**: Simple percentage calculation
+
+✅ **Use Eval**: Implement custom recommendation algorithm  
+❌ **Use Agent instead**: Interpret user needs and recommend
+
+✅ **Use Eval**: Parse and validate complex data formats  
+❌ **Use Map instead**: Extract fields from JSON
+
+---
+
+## Configuration
+
+### Code
+
+<ParamField path="code" type="string" required>
+  JavaScript code to execute
+  
+  **Must return a value** using `return` statement
+  
+  **Available variables**:
+  - `input` - Input data from previous step or trigger
+  - `context` - Full flow context including all previous steps
+  - `trigger` - Original trigger data
+  - `secrets` - Access to secrets (read-only)
+  
+  **Example**:
+  ```javascript
+  // Access input
+  const orderTotal = input.total;
+  const customerTier = input.tier;
+  
+  // Access previous steps
+  const agentDecision = context.agent_step.output.decision;
+  
+  // Perform calculations
+  let discount = 0;
+  if (customerTier === "gold" && orderTotal > 1000) {
+    discount = orderTotal * 0.15;
+  } else if (customerTier === "silver" && orderTotal > 500) {
+    discount = orderTotal * 0.10;
+  }
+  
+  // Return result
+  return {
+    discount: discount,
+    finalPrice: orderTotal - discount,
+    discountApplied: discount > 0
+  };
+  ```
+</ParamField>
+
+### Input Data
+
+<ParamField path="input" type="any">
+  Data passed to the Eval step
+  
+  Can reference previous steps:
+  ```json
+  {
+    "order": "${http_request.body}",
+    "customer": "${customer_data}",
+    "settings": "${config}"
+  }
+  ```
+  
+  Accessible in code as `input` object
+</ParamField>
+
+### Timeout
+
+<ParamField path="timeout" type="number" default="5000">
+  Maximum execution time in milliseconds
+  
+  **Recommendations**:
+  - Simple logic: 1000ms (1 second)
+  - Moderate complexity: 5000ms (5 seconds, default)
+  - Heavy processing: 30000ms (30 seconds)
+  
+  <Warning>Long timeouts can slow flows. Optimize code for performance.</Warning>
+</ParamField>
+
+---
+
+## Available Libraries
+
+Eval has access to common JavaScript libraries:
+
+<AccordionGroup>
+  <Accordion title="Lodash" icon="function">
+    Utility library for arrays, objects, and more
+    
+    **Import**:
+    ```javascript
+    const _ = require('lodash');
+    ```
+    
+    **Common uses**:
+    ```javascript
+    // Group array by property
+    const grouped = _.groupBy(items, 'category');
+    
+    // Deep clone object
+    const copy = _.cloneDeep(original);
+    
+    // Get nested value safely
+    const value = _.get(object, 'deep.nested.path', 'default');
+    
+    // Debounce/throttle (for async operations)
+    const debounced = _.debounce(fn, 1000);
+    ```
+  </Accordion>
+
+  <Accordion title="Moment.js" icon="calendar">
+    Date and time manipulation
+    
+    **Import**:
+    ```javascript
+    const moment = require('moment');
+    ```
+    
+    **Common uses**:
+    ```javascript
+    // Parse and format dates
+    const date = moment('2025-10-16').format('MMMM DD, YYYY');
+    
+    // Add/subtract time
+    const tomorrow = moment().add(1, 'days');
+    
+    // Compare dates
+    const isBefore = moment(date1).isBefore(date2);
+    
+    // Calculate duration
+    const duration = moment.duration(end.diff(start));
+    const hours = duration.asHours();
+    ```
+  </Accordion>
+
+  <Accordion title="Math.js" icon="calculator">
+    Advanced mathematical operations
+    
+    **Import**:
+    ```javascript
+    const math = require('mathjs');
+    ```
+    
+    **Common uses**:
+    ```javascript
+    // Complex calculations
+    const result = math.evaluate('sqrt(3^2 + 4^2)');
+    
+    // Matrix operations
+    const matrix = math.matrix([[1, 2], [3, 4]]);
+    
+    // Statistical functions
+    const mean = math.mean([1, 2, 3, 4, 5]);
+    const stdDev = math.std([1, 2, 3, 4, 5]);
+    ```
+  </Accordion>
+
+  <Accordion title="Crypto (Node.js)" icon="lock">
+    Cryptographic functions
+    
+    **Import**:
+    ```javascript
+    const crypto = require('crypto');
+    ```
+    
+    **Common uses**:
+    ```javascript
+    // Generate hash
+    const hash = crypto.createHash('sha256')
+      .update(data)
+      .digest('hex');
+    
+    // Generate random values
+    const randomBytes = crypto.randomBytes(16).toString('hex');
+    
+    // HMAC signature
+    const hmac = crypto.createHmac('sha256', secret)
+      .update(data)
+      .digest('hex');
+    ```
+  </Accordion>
+
+  <Accordion title="Standard JavaScript" icon="js">
+    All standard ES6+ features available
+    
+    **Includes**:
+    - Array methods (map, filter, reduce, find, etc.)
+    - Object methods (keys, values, entries, assign, etc.)
+    - String methods (split, replace, match, etc.)
+    - Math object (round, floor, ceil, random, etc.)
+    - JSON parse/stringify
+    - RegExp for pattern matching
+    - Promises and async/await
+    - Template literals
+    - Destructuring
+    - Spread operator
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Complex Calculations" icon="calculator">
+    Calculations beyond simple operators
+    
+    ```javascript
+    // Compound interest calculation
+    const principal = input.amount;
+    const rate = input.annual_rate / 100;
+    const years = input.term_years;
+    const compoundFreq = 12; // monthly
+    
+    const amount = principal * Math.pow(
+      (1 + rate / compoundFreq),
+      compoundFreq * years
+    );
+    
+    const totalInterest = amount - principal;
+    
+    return {
+      principal: principal,
+      final_amount: Math.round(amount * 100) / 100,
+      total_interest: Math.round(totalInterest * 100) / 100,
+      monthly_payment: Math.round((amount / (years * 12)) * 100) / 100
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="Advanced Array Processing" icon="list">
+    Complex array manipulation beyond Map
+    
+    ```javascript
+    const orders = input.orders;
+    
+    // Group by customer, calculate totals, filter high-value
+    const _ = require('lodash');
+    
+    const customerTotals = _.chain(orders)
+      .groupBy('customer_id')
+      .map((orders, customerId) => ({
+        customer_id: customerId,
+        order_count: orders.length,
+        total_spent: _.sumBy(orders, 'amount'),
+        avg_order: _.meanBy(orders, 'amount'),
+        last_order_date: _.maxBy(orders, 'date').date
+      }))
+      .filter(c => c.total_spent > 10000)
+      .orderBy(['total_spent'], ['desc'])
+      .value();
+    
+    return {
+      high_value_customers: customerTotals,
+      count: customerTotals.length
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="Data Validation" icon="shield-check">
+    Custom validation logic
+    
+    ```javascript
+    const data = input;
+    const errors = [];
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      errors.push("Invalid email format");
+    }
+    
+    // Phone validation (US format)
+    const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+    if (!phoneRegex.test(data.phone)) {
+      errors.push("Phone must be format: XXX-XXX-XXXX");
+    }
+    
+    // Age validation
+    const age = new Date().getFullYear() - new Date(data.birthdate).getFullYear();
+    if (age < 18) {
+      errors.push("Must be 18 or older");
+    }
+    
+    // Custom business rule
+    if (data.loan_amount > data.annual_income * 5) {
+      errors.push("Loan amount cannot exceed 5x annual income");
+    }
+    
+    return {
+      valid: errors.length === 0,
+      errors: errors,
+      data: data
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="String Parsing and Formatting" icon="text">
+    Complex string manipulation
+    
+    ```javascript
+    const text = input.raw_text;
+    
+    // Extract email addresses
+    const emailRegex = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
+    const emails = text.match(emailRegex) || [];
+    
+    // Extract phone numbers (various formats)
+    const phoneRegex = /(\d{3}[-.]?\d{3}[-.]?\d{4})/g;
+    const phones = text.match(phoneRegex) || [];
+    
+    // Extract URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urls = text.match(urlRegex) || [];
+    
+    // Clean and format
+    const cleaned = text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ')
+      .replace(/[^\w\s@.-]/g, '');
+    
+    return {
+      original: text,
+      cleaned: cleaned,
+      extracted: {
+        emails: emails,
+        phones: phones,
+        urls: urls
+      }
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="Date/Time Calculations" icon="calendar">
+    Complex date logic
+    
+    ```javascript
+    const moment = require('moment');
+    
+    const startDate = moment(input.start_date);
+    const endDate = moment(input.end_date);
+    
+    // Calculate business days (exclude weekends)
+    let businessDays = 0;
+    let current = startDate.clone();
+    
+    while (current.isSameOrBefore(endDate)) {
+      if (current.day() !== 0 && current.day() !== 6) {
+        businessDays++;
+      }
+      current.add(1, 'days');
+    }
+    
+    // Calculate age
+    const birthdate = moment(input.birthdate);
+    const age = moment().diff(birthdate, 'years');
+    
+    // Format various ways
+    return {
+      business_days: businessDays,
+      total_days: endDate.diff(startDate, 'days'),
+      weeks: endDate.diff(startDate, 'weeks'),
+      age: age,
+      formatted_start: startDate.format('MMMM DD, YYYY'),
+      formatted_end: endDate.format('MMMM DD, YYYY')
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="Conditional Logic with Edge Cases" icon="code-branch">
+    Complex business logic with many conditions
+    
+    ```javascript
+    const customer = input.customer;
+    const order = input.order;
+    
+    let tier = "standard";
+    let discount = 0;
+    let shippingFee = 9.99;
+    let priority = "normal";
+    
+    // Determine tier
+    if (customer.lifetime_value > 50000) {
+      tier = "platinum";
+    } else if (customer.lifetime_value > 10000) {
+      tier = "gold";
+    } else if (customer.lifetime_value > 1000) {
+      tier = "silver";
+    }
+    
+    // Calculate discount (complex rules)
+    if (tier === "platinum") {
+      discount = 0.20;
+      shippingFee = 0;
+      priority = "high";
+    } else if (tier === "gold" && order.total > 500) {
+      discount = 0.15;
+      shippingFee = 0;
+    } else if (tier === "silver" && order.total > 200) {
+      discount = 0.10;
+    } else if (order.total > 100) {
+      discount = 0.05;
+    }
+    
+    // Special promotions
+    if (customer.referred_by && order.is_first) {
+      discount = Math.max(discount, 0.10); // At least 10% for referrals
+    }
+    
+    // Edge cases
+    if (customer.account_on_hold) {
+      return {
+        approved: false,
+        reason: "Account on hold - contact support"
+      };
+    }
+    
+    if (order.shipping_country !== customer.billing_country) {
+      priority = "review"; // Flag for fraud review
+    }
+    
+    // Calculate final pricing
+    const subtotal = order.total;
+    const discountAmount = subtotal * discount;
+    const total = subtotal - discountAmount + shippingFee;
+    
+    return {
+      approved: true,
+      tier: tier,
+      discount_percent: discount * 100,
+      discount_amount: Math.round(discountAmount * 100) / 100,
+      shipping_fee: shippingFee,
+      subtotal: subtotal,
+      total: Math.round(total * 100) / 100,
+      priority: priority
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="API Response Transformation" icon="arrow-right-arrow-left">
+    Complex data reshaping beyond Map
+    
+    ```javascript
+    const apiData = input.api_response;
+    const _ = require('lodash');
+    
+    // Transform deeply nested API response
+    const users = apiData.data.users.map(user => {
+      // Extract and flatten
+      const orders = _.get(user, 'relationships.orders.data', []);
+      const orderDetails = orders.map(order => ({
+        id: order.id,
+        amount: _.get(order, 'attributes.total_amount', 0),
+        status: _.get(order, 'attributes.status', 'unknown'),
+        date: _.get(order, 'attributes.created_at')
+      }));
+      
+      // Calculate aggregates
+      const totalSpent = _.sumBy(orderDetails, 'amount');
+      const orderCount = orderDetails.length;
+      const lastOrderDate = _.maxBy(orderDetails, 'date')?.date;
+      
+      return {
+        id: user.id,
+        name: _.get(user, 'attributes.name'),
+        email: _.get(user, 'attributes.email'),
+        created: _.get(user, 'attributes.created_at'),
+        stats: {
+          total_spent: totalSpent,
+          order_count: orderCount,
+          avg_order: orderCount > 0 ? totalSpent / orderCount : 0,
+          last_order: lastOrderDate
+        },
+        orders: orderDetails
+      };
+    });
+    
+    return {
+      users: users,
+      total_count: users.length,
+      high_value_count: users.filter(u => u.stats.total_spent > 10000).length
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="Custom Scoring Algorithm" icon="ranking-star">
+    Proprietary scoring logic
+    
+    ```javascript
+    const lead = input.lead;
+    let score = 0;
+    const factors = [];
+    
+    // Company size scoring (0-30 points)
+    if (lead.company_employees >= 1000) {
+      score += 30;
+      factors.push({factor: "company_size", points: 30, value: "1000+"});
+    } else if (lead.company_employees >= 100) {
+      score += 20;
+      factors.push({factor: "company_size", points: 20, value: "100-999"});
+    } else {
+      score += 10;
+      factors.push({factor: "company_size", points: 10, value: "<100"});
+    }
+    
+    // Budget scoring (0-30 points)
+    if (lead.budget >= 100000) {
+      score += 30;
+      factors.push({factor: "budget", points: 30, value: "$100k+"});
+    } else if (lead.budget >= 50000) {
+      score += 20;
+      factors.push({factor: "budget", points: 20, value: "$50k-100k"});
+    } else {
+      score += 10;
+      factors.push({factor: "budget", points: 10, value: "<$50k"});
+    }
+    
+    // Industry fit (0-20 points)
+    const targetIndustries = ["technology", "finance", "healthcare"];
+    if (targetIndustries.includes(lead.industry.toLowerCase())) {
+      score += 20;
+      factors.push({factor: "industry", points: 20, value: "target industry"});
+    }
+    
+    // Engagement scoring (0-20 points)
+    const engagementScore = Math.min(20, 
+      (lead.website_visits * 2) + 
+      (lead.email_opens * 1) + 
+      (lead.demo_requests * 5)
+    );
+    score += engagementScore;
+    factors.push({factor: "engagement", points: engagementScore, value: "activity"});
+    
+    // Decision maker bonus (10 points)
+    const decisionMakers = ["ceo", "cto", "cfo", "vp", "director"];
+    if (decisionMakers.some(role => lead.title.toLowerCase().includes(role))) {
+      score += 10;
+      factors.push({factor: "decision_maker", points: 10, value: lead.title});
+    }
+    
+    // Determine tier
+    let tier;
+    if (score >= 80) tier = "hot";
+    else if (score >= 60) tier = "warm";
+    else if (score >= 40) tier = "cold";
+    else tier = "unqualified";
+    
+    return {
+      score: score,
+      tier: tier,
+      factors: factors,
+      lead_id: lead.id,
+      recommendation: tier === "hot" ? "contact immediately" : 
+                      tier === "warm" ? "nurture sequence" : 
+                      tier === "cold" ? "standard follow-up" : 
+                      "disqualify"
+    };
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Real-World Examples
+
+### Example 1: Mortgage Qualification Calculator
+
+```javascript
+const applicant = input.applicant;
+const property = input.property;
+
+// Constants
+const MAX_DTI = 0.43; // Max debt-to-income ratio
+const MIN_CREDIT_SCORE = 620;
+const MAX_LTV = 0.80; // Max loan-to-value
+
+// Calculate debt-to-income ratio
+const monthlyIncome = applicant.annual_income / 12;
+const monthlyDebts = applicant.monthly_debt_payments;
+const estimatedMortgage = (property.price * 0.8) * 0.005; // Rough estimate
+const totalMonthlyDebt = monthlyDebts + estimatedMortgage;
+const dti = totalMonthlyDebt / monthlyIncome;
+
+// Calculate loan-to-value
+const downPayment = property.down_payment;
+const loanAmount = property.price - downPayment;
+const ltv = loanAmount / property.price;
+
+// Check qualifications
+const qualified = 
+  applicant.credit_score >= MIN_CREDIT_SCORE &&
+  dti <= MAX_DTI &&
+  ltv <= MAX_LTV &&
+  applicant.employment_years >= 2;
+
+// Calculate interest rate (simplified)
+let interestRate;
+if (applicant.credit_score >= 760 && ltv <= 0.7) {
+  interestRate = 0.065;
+} else if (applicant.credit_score >= 720) {
+  interestRate = 0.070;
+} else if (applicant.credit_score >= 680) {
+  interestRate = 0.075;
+} else {
+  interestRate = 0.080;
+}
+
+// Calculate monthly payment
+const monthlyRate = interestRate / 12;
+const numPayments = 30 * 12; // 30-year mortgage
+const monthlyPayment = loanAmount * 
+  (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+  (Math.pow(1 + monthlyRate, numPayments) - 1);
+
+// Reasons for disqualification
+const reasons = [];
+if (applicant.credit_score < MIN_CREDIT_SCORE) {
+  reasons.push(`Credit score too low (${applicant.credit_score} < ${MIN_CREDIT_SCORE})`);
+}
+if (dti > MAX_DTI) {
+  reasons.push(`Debt-to-income ratio too high (${(dti * 100).toFixed(1)}% > ${MAX_DTI * 100}%)`);
+}
+if (ltv > MAX_LTV) {
+  reasons.push(`Loan-to-value too high (${(ltv * 100).toFixed(1)}% > ${MAX_LTV * 100}%)`);
+}
+if (applicant.employment_years < 2) {
+  reasons.push(`Insufficient employment history (${applicant.employment_years} years < 2 years)`);
+}
+
+return {
+  qualified: qualified,
+  reasons: reasons,
+  details: {
+    loan_amount: Math.round(loanAmount),
+    interest_rate: interestRate,
+    monthly_payment: Math.round(monthlyPayment),
+    dti_ratio: Math.round(dti * 1000) / 10,
+    ltv_ratio: Math.round(ltv * 1000) / 10,
+    total_interest: Math.round((monthlyPayment * numPayments) - loanAmount)
+  }
+};
+```
+
+---
+
+### Example 2: Recommendation Engine
+
+```javascript
+const _ = require('lodash');
+
+const user = input.user;
+const products = input.products;
+const userHistory = input.purchase_history;
+
+// Calculate user preferences from history
+const categoryPreferences = _.chain(userHistory)
+  .groupBy('category')
+  .mapValues(items => ({
+    count: items.length,
+    avg_rating: _.meanBy(items, 'rating'),
+    total_spent: _.sumBy(items, 'price')
+  }))
+  .value();
+
+// Score each product
+const scoredProducts = products.map(product => {
+  let score = 0;
+  
+  // Category preference (0-40 points)
+  const categoryPref = categoryPreferences[product.category];
+  if (categoryPref) {
+    score += Math.min(40, categoryPref.count * 5);
+  }
+  
+  // Price fit (0-20 points)
+  const avgSpent = _.meanBy(userHistory, 'price');
+  const priceDiff = Math.abs(product.price - avgSpent) / avgSpent;
+  score += Math.max(0, 20 - (priceDiff * 20));
+  
+  // Rating (0-20 points)
+  score += (product.rating / 5) * 20;
+  
+  // Popularity (0-10 points)
+  score += Math.min(10, (product.purchase_count / 1000) * 10);
+  
+  // Recency bonus (0-10 points)
+  const daysOld = (Date.now() - new Date(product.created_at)) / (1000 * 60 * 60 * 24);
+  if (daysOld < 30) {
+    score += 10;
+  } else if (daysOld < 90) {
+    score += 5;
+  }
+  
+  return {
+    ...product,
+    recommendation_score: Math.round(score),
+    match_reasons: []
+  };
+});
+
+// Sort and take top recommendations
+const recommendations = _.chain(scoredProducts)
+  .orderBy(['recommendation_score', 'rating'], ['desc', 'desc'])
+  .take(10)
+  .value();
+
+return {
+  recommendations: recommendations,
+  user_preferences: categoryPreferences,
+  recommendation_count: recommendations.length
+};
+```
+
+---
+
+### Example 3: Fraud Detection Scoring
+
+```javascript
+const transaction = input.transaction;
+const userProfile = input.user_profile;
+const moment = require('moment');
+
+let riskScore = 0;
+const riskFactors = [];
+
+// Unusual amount check (0-30 points)
+const avgTransaction = userProfile.avg_transaction_amount;
+const amountDeviation = Math.abs(transaction.amount - avgTransaction) / avgTransaction;
+if (amountDeviation > 5) {
+  riskScore += 30;
+  riskFactors.push("Amount 5x higher than average");
+} else if (amountDeviation > 2) {
+  riskScore += 15;
+  riskFactors.push("Amount 2x higher than average");
+}
+
+// Location check (0-25 points)
+if (transaction.location.country !== userProfile.country) {
+  riskScore += 25;
+  riskFactors.push("Transaction from different country");
+} else if (transaction.location.city !== userProfile.city) {
+  riskScore += 10;
+  riskFactors.push("Transaction from different city");
+}
+
+// Time pattern check (0-15 points)
+const hour = moment(transaction.timestamp).hour();
+if (hour >= 0 && hour <= 5) {
+  riskScore += 15;
+  riskFactors.push("Unusual time (midnight-5am)");
+}
+
+// Velocity check (0-20 points)
+const recentTransactions = userProfile.transactions_last_24h || 0;
+if (recentTransactions > 10) {
+  riskScore += 20;
+  riskFactors.push("High transaction velocity (>10 in 24h)");
+} else if (recentTransactions > 5) {
+  riskScore += 10;
+  riskFactors.push("Elevated transaction velocity");
+}
+
+// Device fingerprint (0-10 points)
+if (transaction.device_id !== userProfile.known_device_ids.some(id => id === transaction.device_id)) {
+  riskScore += 10;
+  riskFactors.push("Unknown device");
+}
+
+// Determine risk level
+let riskLevel;
+if (riskScore >= 70) {
+  riskLevel = "high";
+} else if (riskScore >= 40) {
+  riskLevel = "medium";
+} else {
+  riskLevel = "low";
+}
+
+// Recommended action
+let action;
+if (riskLevel === "high") {
+  action = "block_and_review";
+} else if (riskLevel === "medium") {
+  action = "require_verification";
+} else {
+  action = "approve";
+}
+
+return {
+  risk_score: riskScore,
+  risk_level: riskLevel,
+  risk_factors: riskFactors,
+  recommended_action: action,
+  transaction_id: transaction.id,
+  requires_manual_review: riskScore >= 60
+};
+```
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Judiciously" icon="triangle-exclamation">
+    Only use Eval when built-in steps (Map, Rules, Functions, Condition) can't accomplish the task. Eval adds complexity.
+  </Card>
+  
+  <Card title="Always Return a Value" icon="arrow-turn-down-left">
+    Code must include a `return` statement. The returned value becomes the step output.
+  </Card>
+  
+  <Card title="Handle Errors" icon="shield-check">
+    Use try-catch blocks for operations that might fail. Return error information for debugging.
+  </Card>
+  
+  <Card title="Keep It Fast" icon="gauge">
+    Optimize for performance. Long-running code slows flows. Set appropriate timeouts.
+  </Card>
+  
+  <Card title="Test Thoroughly" icon="vial">
+    Test with real data and edge cases. Use Test Mode to verify before production.
+  </Card>
+  
+  <Card title="Document Complex Logic" icon="message-lines">
+    Add comments explaining what the code does and why. Future you will thank present you.
+  </Card>
+  
+  <Card title="Avoid External API Calls" icon="ban">
+    Use HTTP Request step for API calls, not fetch/axios in Eval. Eval is for computation, not I/O.
+  </Card>
+  
+  <Card title="Validate Inputs" icon="check">
+    Check that input has expected structure before processing. Return meaningful errors if not.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Code execution fails" icon="circle-exclamation">
+    **Causes**:
+    - Syntax error in JavaScript
+    - Runtime error (undefined variable, null reference)
+    - Exceeded timeout
+    - Missing return statement
+    
+    **Solutions**:
+    - Check execution logs for error message
+    - Test code separately in JavaScript console
+    - Add try-catch blocks
+    - Verify all variables exist before using
+    - Add return statement
+  </Accordion>
+
+  <Accordion title="Can't access input data" icon="database">
+    **Causes**:
+    - Wrong variable name
+    - Input not passed correctly
+    - Variable undefined
+    
+    **Solutions**:
+    - Use `input` to access passed data
+    - Use `context` for full flow context
+    - Check input configuration
+    - Add null checks: `const value = input?.field || 'default'`
+  </Accordion>
+
+  <Accordion title="Library not available" icon="book">
+    **Causes**:
+    - Library not included in Eval environment
+    - Wrong import syntax
+    
+    **Solutions**:
+    - Check available libraries list
+    - Use correct require syntax: `const _ = require('lodash')`
+    - For unavailable libraries, implement logic directly or use different step
+  </Accordion>
+
+  <Accordion title="Timeout errors" icon="clock">
+    **Causes**:
+    - Code takes too long to execute
+    - Infinite loop
+    - Processing large datasets
+    
+    **Solutions**:
+    - Optimize algorithm
+    - Increase timeout setting
+    - Process data in smaller chunks
+    - Use Map step for large array processing instead
+  </Accordion>
+
+  <Accordion title="Unexpected output" icon="question">
+    **Causes**:
+    - Logic error in code
+    - Wrong data types
+    - Missing edge case handling
+    
+    **Solutions**:
+    - Add console.log statements (appear in logs)
+    - Test with various inputs
+    - Verify data types match expectations
+    - Handle null/undefined cases
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Security Considerations
+
+<AccordionGroup>
+  <Accordion title="No External Network Access" icon="globe-slash">
+    Eval cannot make external HTTP requests. Use HTTP Request step for API calls.
+    
+    **Blocked**:
+    - fetch()
+    - XMLHttpRequest
+    - axios
+    - node-fetch
+  </Accordion>
+
+  <Accordion title="Secrets Access" icon="key">
+    Can read secrets but not write them
+    
+    ```javascript
+    // Read secret
+    const apiKey = secrets.api_key;
+    
+    // Cannot modify
+    // secrets.api_key = "new_value"; // ERROR
+    ```
+  </Accordion>
+
+  <Accordion title="Input Validation" icon="shield-check">
+    Always validate input data, especially user-provided data
+    
+    ```javascript
+    // Validate before processing
+    if (!input || typeof input.amount !== 'number') {
+      return {
+        error: true,
+        message: "Invalid input: amount must be a number"
+      };
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Sandboxed Execution" icon="cube">
+    Code runs in isolated environment
+    
+    - Cannot access file system
+    - Cannot execute system commands
+    - Cannot import arbitrary modules
+    - Timeout enforced automatically
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Map Step" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Simpler data transformations
+  </Card>
+  
+  <Card title="Rules Step" icon="gavel" href="/flows/steps/rules">
+    Declarative business logic
+  </Card>
+  
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Pre-built utility functions
+  </Card>
+  
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Route based on Eval output
+  </Card>
+</CardGroup>
