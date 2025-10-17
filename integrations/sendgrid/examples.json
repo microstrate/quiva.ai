@@ -110,7 +110,7 @@
           }
         }
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_mail_batch": {
@@ -120,7 +120,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_scheduled_sends": {
@@ -130,7 +130,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_user_scheduled_sends": {
@@ -144,7 +144,7 @@
         "batch_id": "YOUR_BATCH_ID",
         "status": "pause"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_batch__batch_id_": {
@@ -157,7 +157,7 @@
       "path": {
         "batch_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_scheduled_sends__batch_id_": {
@@ -170,7 +170,7 @@
       "path": {
         "batch_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_user_scheduled_sends__batch_id_": {
@@ -183,7 +183,7 @@
       "path": {
         "batch_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_user_scheduled_sends__batch_id_": {
@@ -199,7 +199,7 @@
       "data": {
         "status": "pause"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_api_keys": {
@@ -212,7 +212,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_api_keys": {
@@ -230,7 +230,7 @@
           "alerts.read"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_api_keys__api_key_id_": {
@@ -243,7 +243,7 @@
       "path": {
         "api_key_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_api_keys__api_key_id_": {
@@ -256,7 +256,7 @@
       "path": {
         "api_key_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_api_keys__api_key_id_": {
@@ -272,7 +272,7 @@
       "data": {
         "name": "A New Hope"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_api_keys__api_key_id_": {
@@ -292,7 +292,7 @@
           "user.profile.update"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_scopes": {
@@ -302,7 +302,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_settings_enforced_tls": {
@@ -312,7 +312,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_user_settings_enforced_tls": {
@@ -326,7 +326,7 @@
         "require_tls": true,
         "require_valid_cert": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_access_settings_whitelist": {
@@ -336,7 +336,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_access_settings_whitelist": {
@@ -359,7 +359,7 @@
           }
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_access_settings_whitelist": {
@@ -376,7 +376,7 @@
           3
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_access_settings_activity": {
@@ -389,7 +389,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_access_settings_whitelist__rule_id_": {
@@ -402,7 +402,7 @@
       "path": {
         "rule_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_access_settings_whitelist__rule_id_": {
@@ -415,7 +415,7 @@
       "path": {
         "rule_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_sso_certificates": {
@@ -427,7 +427,7 @@
         "enabled": false,
         "integration_id": "b0b98502-9408-4b24-9e3d-31ed7cb15312"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_sso_integrations__integration_id__certificates": {
@@ -437,7 +437,7 @@
       "path": {
         "integration_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_sso_certificates__cert_id_": {
@@ -447,7 +447,7 @@
       "path": {
         "cert_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_sso_certificates__cert_id_": {
@@ -457,7 +457,7 @@
       "path": {
         "cert_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_sso_certificates__cert_id_": {
@@ -472,7 +472,7 @@
         "enabled": false,
         "intergration_id": "b0b98502-9408-4b24-9e3d-31ed7cb15312"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_sso_integrations": {
@@ -482,7 +482,7 @@
       "query": {
         "si": "<boolean>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_sso_integrations": {
@@ -494,11 +494,11 @@
         "enabled": true,
         "signin_url": "https://example.okta.com/home/examplecompany/yokpGWsmpRUcuvXFb4x6/nfaVADNhuHvvReAEV4x6",
         "signout_url": "https://example.okta.com/login/signout?fromURI=exampleappurl",
-        "entity_id": "http://www.okta.com/${org.externalKey}",
+        "entity_id": "https://www.okta.com/${org.externalKey}",
         "completed_integration": true,
         "id": "b0b98502-9408-4b24-9e3d-31ed7cb15312"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_sso_integrations__id_": {
@@ -511,7 +511,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_sso_integrations__id_": {
@@ -521,7 +521,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_sso_integrations__id_": {
@@ -539,11 +539,11 @@
         "enabled": true,
         "signin_url": "https://example.okta.com/home/examplecompany/yokpGWsmpRUcuvXFb4x6/nfaVADNhuHvvReAEV4x6",
         "signout_url": "https://example.okta.com/login/signout?fromURI=exampleappurl",
-        "entity_id": "http://www.okta.com/${org.externalKey}",
+        "entity_id": "https://www.okta.com/${org.externalKey}",
         "last_updated": 1621288964,
         "completed_integration": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_sso_teammates": {
@@ -562,7 +562,7 @@
           "mail.send"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_sso_teammates__username_": {
@@ -585,7 +585,7 @@
         ],
         "is_admin": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings": {
@@ -599,7 +599,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings_address_whitelist": {
@@ -609,7 +609,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_mail_settings_address_whitelist": {
@@ -626,7 +626,7 @@
           "example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings_footer": {
@@ -636,7 +636,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_mail_settings_footer": {
@@ -648,10 +648,10 @@
       },
       "data": {
         "enabled": true,
-        "html_content": "<p><a href=\"http://example.com\" target=\"_blank\">Ahoy, World!</a></p>\n",
+        "html_content": "<p><a href=\"https://example.com\" target=\"_blank\">Ahoy, World!</a></p>\n",
         "plain_content": ""
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings_forward_spam": {
@@ -661,7 +661,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_mail_settings_forward_spam": {
@@ -675,7 +675,7 @@
         "email": "abuse@example.com",
         "enabled": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings_template": {
@@ -685,7 +685,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_mail_settings_template": {
@@ -699,7 +699,7 @@
         "enabled": true,
         "html_content": "<% body %>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings_bounce_purge": {
@@ -709,7 +709,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_mail_settings_bounce_purge": {
@@ -724,7 +724,7 @@
         "hard_bounces": 5,
         "soft_bounces": 5
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mail_settings_forward_bounce": {
@@ -734,7 +734,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_mail_settings_forward_bounce": {
@@ -748,7 +748,7 @@
         "enabled": true,
         "email": "bounces@example.com"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_partner_settings_new_relic": {
@@ -758,7 +758,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_partner_settings_new_relic": {
@@ -773,7 +773,7 @@
         "enabled": true,
         "enable_subuser_statistics": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_partner_settings": {
@@ -787,7 +787,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_teammates": {
@@ -801,7 +801,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_teammates": {
@@ -819,7 +819,7 @@
         ],
         "is_admin": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_teammates_pending__token__resend": {
@@ -832,7 +832,7 @@
       "path": {
         "token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_scopes_requests": {
@@ -843,7 +843,7 @@
         "limit": "<integer>",
         "offset": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_teammates_pending": {
@@ -853,7 +853,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_teammates__username_": {
@@ -866,7 +866,7 @@
       "path": {
         "username": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_teammates__username_": {
@@ -879,7 +879,7 @@
       "path": {
         "username": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_teammates__username_": {
@@ -899,7 +899,7 @@
         ],
         "is_admin": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_scopes_requests__request_id__approve": {
@@ -909,7 +909,7 @@
       "path": {
         "request_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_scopes_requests__request_id_": {
@@ -919,7 +919,7 @@
       "path": {
         "request_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_teammates_pending__token_": {
@@ -932,7 +932,7 @@
       "path": {
         "token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_alerts": {
@@ -943,7 +943,7 @@
         "Authorization": "<string>",
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_alerts": {
@@ -959,7 +959,7 @@
         "email_to": "example@example.com",
         "frequency": "daily"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_alerts__alert_id_": {
@@ -973,7 +973,7 @@
       "path": {
         "alert_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_alerts__alert_id_": {
@@ -986,7 +986,7 @@
       "path": {
         "alert_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_alerts__alert_id_": {
@@ -1002,7 +1002,7 @@
       "data": {
         "email_to": "example@example.com"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_profile": {
@@ -1012,7 +1012,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_user_profile": {
@@ -1027,7 +1027,7 @@
         "last_name": "User",
         "city": "Orange"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_account": {
@@ -1037,7 +1037,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_email": {
@@ -1047,7 +1047,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_user_email": {
@@ -1060,7 +1060,7 @@
       "data": {
         "email": "example@example.com"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_username": {
@@ -1070,7 +1070,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_user_username": {
@@ -1083,7 +1083,7 @@
       "data": {
         "username": "test_username"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_credits": {
@@ -1093,7 +1093,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_user_password": {
@@ -1107,7 +1107,7 @@
         "new_password": "new_password",
         "old_password": "old_password"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers": {
@@ -1119,7 +1119,7 @@
         "limit": "<integer>",
         "offset": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_subusers": {
@@ -1135,7 +1135,7 @@
           "2.2.2.2"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_subusers__subuser_name_": {
@@ -1145,7 +1145,7 @@
       "path": {
         "subuser_name": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_subusers__subuser_name_": {
@@ -1158,7 +1158,7 @@
       "data": {
         "disabled": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers_reputations": {
@@ -1168,7 +1168,7 @@
       "query": {
         "usernames": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_subusers__subuser_name__ips": {
@@ -1181,7 +1181,7 @@
       "data": [
         "127.0.0.1"
       ],
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers__subuser_name__monitor": {
@@ -1191,7 +1191,7 @@
       "path": {
         "subuser_name": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_subusers__subuser_name__monitor": {
@@ -1205,7 +1205,7 @@
         "email": "example@example.com",
         "frequency": 50000
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_subusers__subuser_name__monitor": {
@@ -1215,7 +1215,7 @@
       "path": {
         "subuser_name": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_subusers__subuser_name__monitor": {
@@ -1229,7 +1229,7 @@
         "email": "example@example.com",
         "frequency": 500
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers__subuser_name__stats_monthly": {
@@ -1246,7 +1246,7 @@
       "path": {
         "subuser_name": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers_stats_monthly": {
@@ -1261,7 +1261,7 @@
         "limit": "<integer>",
         "offset": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers_stats_sums": {
@@ -1277,7 +1277,7 @@
         "aggregated_by": "<string>",
         "sort_by_metric": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_subusers_stats": {
@@ -1292,7 +1292,7 @@
         "start_date": "<string>",
         "end_date": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_links": {
@@ -1305,7 +1305,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_links": {
@@ -1320,7 +1320,7 @@
         "subdomain": "mail",
         "default": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_links__id__validate": {
@@ -1333,7 +1333,7 @@
       "path": {
         "id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_links__link_id__subuser": {
@@ -1346,7 +1346,7 @@
       "data": {
         "username": "jane@example.com"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_links__id_": {
@@ -1359,7 +1359,7 @@
       "path": {
         "id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_whitelabel_links__id_": {
@@ -1372,7 +1372,7 @@
       "path": {
         "id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_whitelabel_links__id_": {
@@ -1388,7 +1388,7 @@
       "data": {
         "default": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_links_default": {
@@ -1401,7 +1401,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_links_subuser": {
@@ -1411,7 +1411,7 @@
       "query": {
         "username": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_whitelabel_links_subuser": {
@@ -1421,14 +1421,14 @@
       "query": {
         "username": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips_warmup": {
     "Basic Example": {
       "url": "/ips/warmup",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_ips_warmup": {
@@ -1438,7 +1438,7 @@
       "data": {
         "ip": "0.0.0.0"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips_warmup__ip_address_": {
@@ -1448,7 +1448,7 @@
       "path": {
         "ip_address": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_ips_warmup__ip_address_": {
@@ -1458,7 +1458,7 @@
       "path": {
         "ip_address": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_ips": {
@@ -1473,7 +1473,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_ips": {
@@ -1488,7 +1488,7 @@
         "subdomain": "email",
         "domain": "example.com"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_ips__id__validate": {
@@ -1501,7 +1501,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_ips__id_": {
@@ -1514,7 +1514,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_whitelabel_ips__id_": {
@@ -1527,7 +1527,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_validations_email": {
@@ -1538,7 +1538,7 @@
         "email": "example@example.com",
         "source": "signup"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_dns_email": {
@@ -1551,14 +1551,14 @@
         "email": "my_colleague@example.com",
         "message": "DNS Record for verification"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips_pools": {
     "Basic Example": {
       "url": "/ips/pools",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_ips_pools": {
@@ -1568,7 +1568,7 @@
       "data": {
         "name": "marketing"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_ips_pools__pool_name__ips": {
@@ -1581,7 +1581,7 @@
       "data": {
         "ip": "0.0.0.0"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips_pools__pool_name_": {
@@ -1591,7 +1591,7 @@
       "path": {
         "pool_name": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_ips_pools__pool_name_": {
@@ -1601,7 +1601,7 @@
       "path": {
         "pool_name": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_ips_pools__pool_name_": {
@@ -1614,7 +1614,7 @@
       "data": {
         "name": "new_pool_name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_ips_pools__pool_name__ips__ip_": {
@@ -1625,7 +1625,7 @@
         "pool_name": "<string>",
         "ip": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips": {
@@ -1640,7 +1640,7 @@
         "subuser": "<string>",
         "sort_by_direction": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_ips": {
@@ -1656,21 +1656,21 @@
         "warmup": true,
         "user_can_send": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips_remaining": {
     "Basic Example": {
       "url": "/ips/remaining",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips_assigned": {
     "Basic Example": {
       "url": "/ips/assigned",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_ips__ip_address_": {
@@ -1680,7 +1680,7 @@
       "path": {
         "ip_address": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_domains": {
@@ -1697,7 +1697,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_domains": {
@@ -1719,7 +1719,7 @@
         "default": true,
         "automatic_security": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_domains__domain_id_": {
@@ -1732,7 +1732,7 @@
       "path": {
         "domain_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_whitelabel_domains__domain_id_": {
@@ -1745,7 +1745,7 @@
       "path": {
         "domain_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_whitelabel_domains__domain_id_": {
@@ -1762,7 +1762,7 @@
         "default": false,
         "custom_spf": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_domains_default": {
@@ -1775,7 +1775,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_domains__id__ips": {
@@ -1791,7 +1791,7 @@
       "data": {
         "ip": "192.168.0.1"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_whitelabel_domains__id__ips__ip_": {
@@ -1805,7 +1805,7 @@
         "id": "<integer>",
         "ip": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_domains__id__validate": {
@@ -1818,7 +1818,7 @@
       "path": {
         "id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_whitelabel_domains_subuser": {
@@ -1828,7 +1828,7 @@
       "query": {
         "username": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_whitelabel_domains_subuser": {
@@ -1838,7 +1838,7 @@
       "query": {
         "username": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_whitelabel_domains__domain_id__subuser": {
@@ -1851,21 +1851,21 @@
       "data": {
         "username": "jdoe"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_verified_senders_domains": {
     "Basic Example": {
       "url": "/verified_senders/domains",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_verified_senders_steps_completed": {
     "Basic Example": {
       "url": "/verified_senders/steps_completed",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_verified_senders": {
@@ -1877,7 +1877,7 @@
         "lastSeenID": "<number>",
         "id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_verified_senders": {
@@ -1897,7 +1897,7 @@
         "country": "USA",
         "zip": "94105"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_verified_senders_verify__token_": {
@@ -1907,7 +1907,7 @@
       "path": {
         "token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_verified_senders__id_": {
@@ -1917,7 +1917,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_verified_senders__id_": {
@@ -1940,7 +1940,7 @@
         "country": "USA",
         "zip": "94105"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_verified_senders_resend__id_": {
@@ -1950,7 +1950,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_designs__id_": {
@@ -1960,7 +1960,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_designs__id_": {
@@ -1974,7 +1974,7 @@
         "name": "Ahoy, Cake or Pie Cafe!",
         "editor": "design"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_designs__id_": {
@@ -1984,7 +1984,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_designs__id_": {
@@ -1997,13 +1997,13 @@
       "data": {
         "name": "Ahoy, World!",
         "subject": "Getting Started",
-        "html_content": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html data-editor-version=\"2\" class=\"sg-campaigns\" xmlns=\"http://www.w3.org/1999/xhtml\">\n    <head>\n      <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1\">\n      <!--[if !mso]><!-->\n      <meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\">\n      <!--<![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n      <xml>\n        <o:OfficeDocumentSettings>\n          <o:AllowPNG/>\n          <o:PixelsPerInch>96</o:PixelsPerInch>\n        </o:OfficeDocumentSettings>\n      </xml>\n      <![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n  <style type=\"text/css\">\n    body {width: 600px;margin: 0 auto;}\n    table {border-collapse: collapse;}\n    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}\n    img {-ms-interpolation-mode: bicubic;}\n  </style>\n<![endif]-->\n      <style type=\"text/css\">\n    body, p, div {\n      font-family: arial,helvetica,sans-serif;\n      font-size: 14px;\n    }\n    body {\n      color: #000000;\n    }\n    body a {\n      color: #1188E6;\n      text-decoration: none;\n    }\n    p { margin: 0; padding: 0; }\n    table.wrapper {\n      width:100% !important;\n      table-layout: fixed;\n      -webkit-font-smoothing: antialiased;\n      -webkit-text-size-adjust: 100%;\n      -moz-text-size-adjust: 100%;\n      -ms-text-size-adjust: 100%;\n    }\n    img.max-width {\n      max-width: 100% !important;\n    }\n    .column.of-2 {\n      width: 50%;\n    }\n    .column.of-3 {\n      width: 33.333%;\n    }\n    .column.of-4 {\n      width: 25%;\n    }\n    ul ul ul ul  {\n      list-style-type: disc !important;\n    }\n    ol ol {\n      list-style-type: lower-roman !important;\n    }\n    ol ol ol {\n      list-style-type: lower-latin !important;\n    }\n    ol ol ol ol {\n      list-style-type: decimal !important;\n    }\n    @media screen and (max-width:480px) {\n      .preheader .rightColumnContent,\n      .footer .rightColumnContent {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent div,\n      .preheader .rightColumnContent span,\n      .footer .rightColumnContent div,\n      .footer .rightColumnContent span {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent,\n      .preheader .leftColumnContent {\n        font-size: 80% !important;\n        padding: 5px 0;\n      }\n      table.wrapper-mobile {\n        width: 100% !important;\n        table-layout: fixed;\n      }\n      img.max-width {\n        height: auto !important;\n        max-width: 100% !important;\n      }\n      a.bulletproof-button {\n        display: block !important;\n        width: auto !important;\n        font-size: 80%;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n      }\n      .columns {\n        width: 100% !important;\n      }\n      .column {\n        display: block !important;\n        width: 100% !important;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n        margin-left: 0 !important;\n        margin-right: 0 !important;\n      }\n      .social-icon-column {\n        display: inline-block !important;\n      }\n    }\n  </style>\n      <!--user entered Head Start--><!--End Head user entered-->\n    </head>\n    <body>\n      <center class=\"wrapper\" data-link-color=\"#1188E6\" data-body-style=\"font-size:14px; font-family:arial,helvetica,sans-serif; color:#000000; background-color:#FFFFFF;\">\n        <div class=\"webkit\">\n          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" class=\"wrapper\" bgcolor=\"#FFFFFF\">\n            <tr>\n              <td valign=\"top\" bgcolor=\"#FFFFFF\" width=\"100%\">\n                <table width=\"100%\" role=\"content-container\" class=\"outer\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                  <tr>\n                    <td width=\"100%\">\n                      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                        <tr>\n                          <td>\n                            <!--[if mso]>\n    <center>\n    <table><tr><td width=\"600\">\n  <![endif]-->\n                                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; max-width:600px;\" align=\"center\">\n                                      <tr>\n                                        <td role=\"modules-container\" style=\"padding:0px 0px 0px 0px; color:#000000; text-align:left;\" bgcolor=\"#FFFFFF\" width=\"100%\" align=\"left\"><table class=\"module preheader preheader-hide\" role=\"module\" data-type=\"preheader\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;\">\n    <tr>\n      <td role=\"module-content\">\n        <p></p>\n      </td>\n    </tr>\n  </table><table class=\"module\" role=\"module\" data-type=\"text\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\" data-muid=\"41f90842-501c-4f08-96c9-17c0f74cb841\" data-mc-module-version=\"2019-10-22\">\n    <tbody>\n      <tr>\n        <td style=\"padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;\" height=\"100%\" valign=\"top\" bgcolor=\"\" role=\"module-content\"><div><div style=\"font-family: inherit; text-align: inherit\">Ahoy, World!</div><div></div></div></td>\n      </tr>\n    </tbody>\n  </table><div data-role=\"module-unsubscribe\" class=\"module\" role=\"module\" data-type=\"unsubscribe\" style=\"color:#444444; font-size:12px; line-height:20px; padding:16px 16px 16px 16px; text-align:Center;\" data-muid=\"4e838cf3-9892-4a6d-94d6-170e474d21e5\"><div class=\"Unsubscribe--addressLine\"><p class=\"Unsubscribe--senderName\" style=\"font-size:12px; line-height:20px;\">{{Sender_Name}}</p><p style=\"font-size:12px; line-height:20px;\"><span class=\"Unsubscribe--senderAddress\">{{Sender_Address}}</span>, <span class=\"Unsubscribe--senderCity\">{{Sender_City}}</span>, <span class=\"Unsubscribe--senderState\">{{Sender_State}}</span> <span class=\"Unsubscribe--senderZip\">{{Sender_Zip}}</span></p></div><p style=\"font-size:12px; line-height:20px;\"><a class=\"Unsubscribe--unsubscribeLink\" href=\"{{{unsubscribe}}}\" target=\"_blank\" style=\"\">Unsubscribe</a> - <a href=\"{{{unsubscribe_preferences}}}\" target=\"_blank\" class=\"Unsubscribe--unsubscribePreferences\" style=\"\">Unsubscribe Preferences</a></p></div></td>\n                                      </tr>\n                                    </table>\n                                    <!--[if mso]>\n                                  </td>\n                                </tr>\n                              </table>\n                            </center>\n                            <![endif]-->\n                          </td>\n                        </tr>\n                      </table>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n      </center>\n    </body>\n  </html>",
+        "html_content": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html data-editor-version=\"2\" class=\"sg-campaigns\" xmlns=\"https://www.w3.org/1999/xhtml\">\n    <head>\n      <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1\">\n      <!--[if !mso]><!-->\n      <meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\">\n      <!--<![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n      <xml>\n        <o:OfficeDocumentSettings>\n          <o:AllowPNG/>\n          <o:PixelsPerInch>96</o:PixelsPerInch>\n        </o:OfficeDocumentSettings>\n      </xml>\n      <![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n  <style type=\"text/css\">\n    body {width: 600px;margin: 0 auto;}\n    table {border-collapse: collapse;}\n    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}\n    img {-ms-interpolation-mode: bicubic;}\n  </style>\n<![endif]-->\n      <style type=\"text/css\">\n    body, p, div {\n      font-family: arial,helvetica,sans-serif;\n      font-size: 14px;\n    }\n    body {\n      color: #000000;\n    }\n    body a {\n      color: #1188E6;\n      text-decoration: none;\n    }\n    p { margin: 0; padding: 0; }\n    table.wrapper {\n      width:100% !important;\n      table-layout: fixed;\n      -webkit-font-smoothing: antialiased;\n      -webkit-text-size-adjust: 100%;\n      -moz-text-size-adjust: 100%;\n      -ms-text-size-adjust: 100%;\n    }\n    img.max-width {\n      max-width: 100% !important;\n    }\n    .column.of-2 {\n      width: 50%;\n    }\n    .column.of-3 {\n      width: 33.333%;\n    }\n    .column.of-4 {\n      width: 25%;\n    }\n    ul ul ul ul  {\n      list-style-type: disc !important;\n    }\n    ol ol {\n      list-style-type: lower-roman !important;\n    }\n    ol ol ol {\n      list-style-type: lower-latin !important;\n    }\n    ol ol ol ol {\n      list-style-type: decimal !important;\n    }\n    @media screen and (max-width:480px) {\n      .preheader .rightColumnContent,\n      .footer .rightColumnContent {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent div,\n      .preheader .rightColumnContent span,\n      .footer .rightColumnContent div,\n      .footer .rightColumnContent span {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent,\n      .preheader .leftColumnContent {\n        font-size: 80% !important;\n        padding: 5px 0;\n      }\n      table.wrapper-mobile {\n        width: 100% !important;\n        table-layout: fixed;\n      }\n      img.max-width {\n        height: auto !important;\n        max-width: 100% !important;\n      }\n      a.bulletproof-button {\n        display: block !important;\n        width: auto !important;\n        font-size: 80%;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n      }\n      .columns {\n        width: 100% !important;\n      }\n      .column {\n        display: block !important;\n        width: 100% !important;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n        margin-left: 0 !important;\n        margin-right: 0 !important;\n      }\n      .social-icon-column {\n        display: inline-block !important;\n      }\n    }\n  </style>\n      <!--user entered Head Start--><!--End Head user entered-->\n    </head>\n    <body>\n      <center class=\"wrapper\" data-link-color=\"#1188E6\" data-body-style=\"font-size:14px; font-family:arial,helvetica,sans-serif; color:#000000; background-color:#FFFFFF;\">\n        <div class=\"webkit\">\n          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" class=\"wrapper\" bgcolor=\"#FFFFFF\">\n            <tr>\n              <td valign=\"top\" bgcolor=\"#FFFFFF\" width=\"100%\">\n                <table width=\"100%\" role=\"content-container\" class=\"outer\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                  <tr>\n                    <td width=\"100%\">\n                      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                        <tr>\n                          <td>\n                            <!--[if mso]>\n    <center>\n    <table><tr><td width=\"600\">\n  <![endif]-->\n                                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; max-width:600px;\" align=\"center\">\n                                      <tr>\n                                        <td role=\"modules-container\" style=\"padding:0px 0px 0px 0px; color:#000000; text-align:left;\" bgcolor=\"#FFFFFF\" width=\"100%\" align=\"left\"><table class=\"module preheader preheader-hide\" role=\"module\" data-type=\"preheader\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;\">\n    <tr>\n      <td role=\"module-content\">\n        <p></p>\n      </td>\n    </tr>\n  </table><table class=\"module\" role=\"module\" data-type=\"text\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\" data-muid=\"41f90842-501c-4f08-96c9-17c0f74cb841\" data-mc-module-version=\"2019-10-22\">\n    <tbody>\n      <tr>\n        <td style=\"padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;\" height=\"100%\" valign=\"top\" bgcolor=\"\" role=\"module-content\"><div><div style=\"font-family: inherit; text-align: inherit\">Ahoy, World!</div><div></div></div></td>\n      </tr>\n    </tbody>\n  </table><div data-role=\"module-unsubscribe\" class=\"module\" role=\"module\" data-type=\"unsubscribe\" style=\"color:#444444; font-size:12px; line-height:20px; padding:16px 16px 16px 16px; text-align:Center;\" data-muid=\"4e838cf3-9892-4a6d-94d6-170e474d21e5\"><div class=\"Unsubscribe--addressLine\"><p class=\"Unsubscribe--senderName\" style=\"font-size:12px; line-height:20px;\">{{Sender_Name}}</p><p style=\"font-size:12px; line-height:20px;\"><span class=\"Unsubscribe--senderAddress\">{{Sender_Address}}</span>, <span class=\"Unsubscribe--senderCity\">{{Sender_City}}</span>, <span class=\"Unsubscribe--senderState\">{{Sender_State}}</span> <span class=\"Unsubscribe--senderZip\">{{Sender_Zip}}</span></p></div><p style=\"font-size:12px; line-height:20px;\"><a class=\"Unsubscribe--unsubscribeLink\" href=\"{{{unsubscribe}}}\" target=\"_blank\" style=\"\">Unsubscribe</a> - <a href=\"{{{unsubscribe_preferences}}}\" target=\"_blank\" class=\"Unsubscribe--unsubscribePreferences\" style=\"\">Unsubscribe Preferences</a></p></div></td>\n                                      </tr>\n                                    </table>\n                                    <!--[if mso]>\n                                  </td>\n                                </tr>\n                              </table>\n                            </center>\n                            <![endif]-->\n                          </td>\n                        </tr>\n                      </table>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n      </center>\n    </body>\n  </html>",
         "generate_plain_content": false,
         "categories": [
           "promotions"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_designs": {
@@ -2015,7 +2015,7 @@
         "page_token": "<string>",
         "summary": "<boolean>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_designs": {
@@ -2026,10 +2026,10 @@
         "name": "Ahoy, World!",
         "editor": "design",
         "subject": "Getting Started",
-        "html_content": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html data-editor-version=\"2\" class=\"sg-campaigns\" xmlns=\"http://www.w3.org/1999/xhtml\">\n    <head>\n      <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1\">\n      <!--[if !mso]><!-->\n      <meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\">\n      <!--<![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n      <xml>\n        <o:OfficeDocumentSettings>\n          <o:AllowPNG/>\n          <o:PixelsPerInch>96</o:PixelsPerInch>\n        </o:OfficeDocumentSettings>\n      </xml>\n      <![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n  <style type=\"text/css\">\n    body {width: 600px;margin: 0 auto;}\n    table {border-collapse: collapse;}\n    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}\n    img {-ms-interpolation-mode: bicubic;}\n  </style>\n<![endif]-->\n      <style type=\"text/css\">\n    body, p, div {\n      font-family: arial,helvetica,sans-serif;\n      font-size: 14px;\n    }\n    body {\n      color: #000000;\n    }\n    body a {\n      color: #1188E6;\n      text-decoration: none;\n    }\n    p { margin: 0; padding: 0; }\n    table.wrapper {\n      width:100% !important;\n      table-layout: fixed;\n      -webkit-font-smoothing: antialiased;\n      -webkit-text-size-adjust: 100%;\n      -moz-text-size-adjust: 100%;\n      -ms-text-size-adjust: 100%;\n    }\n    img.max-width {\n      max-width: 100% !important;\n    }\n    .column.of-2 {\n      width: 50%;\n    }\n    .column.of-3 {\n      width: 33.333%;\n    }\n    .column.of-4 {\n      width: 25%;\n    }\n    ul ul ul ul  {\n      list-style-type: disc !important;\n    }\n    ol ol {\n      list-style-type: lower-roman !important;\n    }\n    ol ol ol {\n      list-style-type: lower-latin !important;\n    }\n    ol ol ol ol {\n      list-style-type: decimal !important;\n    }\n    @media screen and (max-width:480px) {\n      .preheader .rightColumnContent,\n      .footer .rightColumnContent {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent div,\n      .preheader .rightColumnContent span,\n      .footer .rightColumnContent div,\n      .footer .rightColumnContent span {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent,\n      .preheader .leftColumnContent {\n        font-size: 80% !important;\n        padding: 5px 0;\n      }\n      table.wrapper-mobile {\n        width: 100% !important;\n        table-layout: fixed;\n      }\n      img.max-width {\n        height: auto !important;\n        max-width: 100% !important;\n      }\n      a.bulletproof-button {\n        display: block !important;\n        width: auto !important;\n        font-size: 80%;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n      }\n      .columns {\n        width: 100% !important;\n      }\n      .column {\n        display: block !important;\n        width: 100% !important;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n        margin-left: 0 !important;\n        margin-right: 0 !important;\n      }\n      .social-icon-column {\n        display: inline-block !important;\n      }\n    }\n  </style>\n      <!--user entered Head Start--><!--End Head user entered-->\n    </head>\n    <body>\n      <center class=\"wrapper\" data-link-color=\"#1188E6\" data-body-style=\"font-size:14px; font-family:arial,helvetica,sans-serif; color:#000000; background-color:#FFFFFF;\">\n        <div class=\"webkit\">\n          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" class=\"wrapper\" bgcolor=\"#FFFFFF\">\n            <tr>\n              <td valign=\"top\" bgcolor=\"#FFFFFF\" width=\"100%\">\n                <table width=\"100%\" role=\"content-container\" class=\"outer\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                  <tr>\n                    <td width=\"100%\">\n                      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                        <tr>\n                          <td>\n                            <!--[if mso]>\n    <center>\n    <table><tr><td width=\"600\">\n  <![endif]-->\n                                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; max-width:600px;\" align=\"center\">\n                                      <tr>\n                                        <td role=\"modules-container\" style=\"padding:0px 0px 0px 0px; color:#000000; text-align:left;\" bgcolor=\"#FFFFFF\" width=\"100%\" align=\"left\"><table class=\"module preheader preheader-hide\" role=\"module\" data-type=\"preheader\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;\">\n    <tr>\n      <td role=\"module-content\">\n        <p></p>\n      </td>\n    </tr>\n  </table><table class=\"module\" role=\"module\" data-type=\"text\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\" data-muid=\"41f90842-501c-4f08-96c9-17c0f74cb841\" data-mc-module-version=\"2019-10-22\">\n    <tbody>\n      <tr>\n        <td style=\"padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;\" height=\"100%\" valign=\"top\" bgcolor=\"\" role=\"module-content\"><div><div style=\"font-family: inherit; text-align: inherit\">Ahoy, World!</div><div></div></div></td>\n      </tr>\n    </tbody>\n  </table><div data-role=\"module-unsubscribe\" class=\"module\" role=\"module\" data-type=\"unsubscribe\" style=\"color:#444444; font-size:12px; line-height:20px; padding:16px 16px 16px 16px; text-align:Center;\" data-muid=\"4e838cf3-9892-4a6d-94d6-170e474d21e5\"><div class=\"Unsubscribe--addressLine\"><p class=\"Unsubscribe--senderName\" style=\"font-size:12px; line-height:20px;\">{{Sender_Name}}</p><p style=\"font-size:12px; line-height:20px;\"><span class=\"Unsubscribe--senderAddress\">{{Sender_Address}}</span>, <span class=\"Unsubscribe--senderCity\">{{Sender_City}}</span>, <span class=\"Unsubscribe--senderState\">{{Sender_State}}</span> <span class=\"Unsubscribe--senderZip\">{{Sender_Zip}}</span></p></div><p style=\"font-size:12px; line-height:20px;\"><a class=\"Unsubscribe--unsubscribeLink\" href=\"{{{unsubscribe}}}\" target=\"_blank\" style=\"\">Unsubscribe</a> - <a href=\"{{{unsubscribe_preferences}}}\" target=\"_blank\" class=\"Unsubscribe--unsubscribePreferences\" style=\"\">Unsubscribe Preferences</a></p></div></td>\n                                      </tr>\n                                    </table>\n                                    <!--[if mso]>\n                                  </td>\n                                </tr>\n                              </table>\n                            </center>\n                            <![endif]-->\n                          </td>\n                        </tr>\n                      </table>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n      </center>\n    </body>\n  </html>",
+        "html_content": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html data-editor-version=\"2\" class=\"sg-campaigns\" xmlns=\"https://www.w3.org/1999/xhtml\">\n    <head>\n      <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1\">\n      <!--[if !mso]><!-->\n      <meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\">\n      <!--<![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n      <xml>\n        <o:OfficeDocumentSettings>\n          <o:AllowPNG/>\n          <o:PixelsPerInch>96</o:PixelsPerInch>\n        </o:OfficeDocumentSettings>\n      </xml>\n      <![endif]-->\n      <!--[if (gte mso 9)|(IE)]>\n  <style type=\"text/css\">\n    body {width: 600px;margin: 0 auto;}\n    table {border-collapse: collapse;}\n    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}\n    img {-ms-interpolation-mode: bicubic;}\n  </style>\n<![endif]-->\n      <style type=\"text/css\">\n    body, p, div {\n      font-family: arial,helvetica,sans-serif;\n      font-size: 14px;\n    }\n    body {\n      color: #000000;\n    }\n    body a {\n      color: #1188E6;\n      text-decoration: none;\n    }\n    p { margin: 0; padding: 0; }\n    table.wrapper {\n      width:100% !important;\n      table-layout: fixed;\n      -webkit-font-smoothing: antialiased;\n      -webkit-text-size-adjust: 100%;\n      -moz-text-size-adjust: 100%;\n      -ms-text-size-adjust: 100%;\n    }\n    img.max-width {\n      max-width: 100% !important;\n    }\n    .column.of-2 {\n      width: 50%;\n    }\n    .column.of-3 {\n      width: 33.333%;\n    }\n    .column.of-4 {\n      width: 25%;\n    }\n    ul ul ul ul  {\n      list-style-type: disc !important;\n    }\n    ol ol {\n      list-style-type: lower-roman !important;\n    }\n    ol ol ol {\n      list-style-type: lower-latin !important;\n    }\n    ol ol ol ol {\n      list-style-type: decimal !important;\n    }\n    @media screen and (max-width:480px) {\n      .preheader .rightColumnContent,\n      .footer .rightColumnContent {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent div,\n      .preheader .rightColumnContent span,\n      .footer .rightColumnContent div,\n      .footer .rightColumnContent span {\n        text-align: left !important;\n      }\n      .preheader .rightColumnContent,\n      .preheader .leftColumnContent {\n        font-size: 80% !important;\n        padding: 5px 0;\n      }\n      table.wrapper-mobile {\n        width: 100% !important;\n        table-layout: fixed;\n      }\n      img.max-width {\n        height: auto !important;\n        max-width: 100% !important;\n      }\n      a.bulletproof-button {\n        display: block !important;\n        width: auto !important;\n        font-size: 80%;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n      }\n      .columns {\n        width: 100% !important;\n      }\n      .column {\n        display: block !important;\n        width: 100% !important;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n        margin-left: 0 !important;\n        margin-right: 0 !important;\n      }\n      .social-icon-column {\n        display: inline-block !important;\n      }\n    }\n  </style>\n      <!--user entered Head Start--><!--End Head user entered-->\n    </head>\n    <body>\n      <center class=\"wrapper\" data-link-color=\"#1188E6\" data-body-style=\"font-size:14px; font-family:arial,helvetica,sans-serif; color:#000000; background-color:#FFFFFF;\">\n        <div class=\"webkit\">\n          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" class=\"wrapper\" bgcolor=\"#FFFFFF\">\n            <tr>\n              <td valign=\"top\" bgcolor=\"#FFFFFF\" width=\"100%\">\n                <table width=\"100%\" role=\"content-container\" class=\"outer\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                  <tr>\n                    <td width=\"100%\">\n                      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                        <tr>\n                          <td>\n                            <!--[if mso]>\n    <center>\n    <table><tr><td width=\"600\">\n  <![endif]-->\n                                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%; max-width:600px;\" align=\"center\">\n                                      <tr>\n                                        <td role=\"modules-container\" style=\"padding:0px 0px 0px 0px; color:#000000; text-align:left;\" bgcolor=\"#FFFFFF\" width=\"100%\" align=\"left\"><table class=\"module preheader preheader-hide\" role=\"module\" data-type=\"preheader\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;\">\n    <tr>\n      <td role=\"module-content\">\n        <p></p>\n      </td>\n    </tr>\n  </table><table class=\"module\" role=\"module\" data-type=\"text\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\" data-muid=\"41f90842-501c-4f08-96c9-17c0f74cb841\" data-mc-module-version=\"2019-10-22\">\n    <tbody>\n      <tr>\n        <td style=\"padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;\" height=\"100%\" valign=\"top\" bgcolor=\"\" role=\"module-content\"><div><div style=\"font-family: inherit; text-align: inherit\">Ahoy, World!</div><div></div></div></td>\n      </tr>\n    </tbody>\n  </table><div data-role=\"module-unsubscribe\" class=\"module\" role=\"module\" data-type=\"unsubscribe\" style=\"color:#444444; font-size:12px; line-height:20px; padding:16px 16px 16px 16px; text-align:Center;\" data-muid=\"4e838cf3-9892-4a6d-94d6-170e474d21e5\"><div class=\"Unsubscribe--addressLine\"><p class=\"Unsubscribe--senderName\" style=\"font-size:12px; line-height:20px;\">{{Sender_Name}}</p><p style=\"font-size:12px; line-height:20px;\"><span class=\"Unsubscribe--senderAddress\">{{Sender_Address}}</span>, <span class=\"Unsubscribe--senderCity\">{{Sender_City}}</span>, <span class=\"Unsubscribe--senderState\">{{Sender_State}}</span> <span class=\"Unsubscribe--senderZip\">{{Sender_Zip}}</span></p></div><p style=\"font-size:12px; line-height:20px;\"><a class=\"Unsubscribe--unsubscribeLink\" href=\"{{{unsubscribe}}}\" target=\"_blank\" style=\"\">Unsubscribe</a> - <a href=\"{{{unsubscribe_preferences}}}\" target=\"_blank\" class=\"Unsubscribe--unsubscribePreferences\" style=\"\">Unsubscribe Preferences</a></p></div></td>\n                                      </tr>\n                                    </table>\n                                    <!--[if mso]>\n                                  </td>\n                                </tr>\n                              </table>\n                            </center>\n                            <![endif]-->\n                          </td>\n                        </tr>\n                      </table>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n      </center>\n    </body>\n  </html>",
         "plain_content": "Ahoy, World!\n\n{{Sender_Name}}\n\n{{Sender_Address}} , {{Sender_City}} , {{Sender_State}} {{Sender_Zip}}\n\nUnsubscribe ( {{{unsubscribe}}} ) - Unsubscribe Preferences ( {{{unsubscribe_preferences}}} )"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_designs_pre-builts__id_": {
@@ -2039,7 +2039,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_designs_pre-builts__id_": {
@@ -2053,7 +2053,7 @@
         "name": "Ahoy, Cake or Pie Cafe!",
         "editor": "design"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_designs_pre-builts": {
@@ -2065,14 +2065,14 @@
         "page_token": "<string>",
         "summary": "<boolean>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_contacts": {
     "Basic Example": {
       "url": "/marketing/contacts",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_contacts": {
@@ -2083,7 +2083,7 @@
         "delete_all_contacts": "<string>",
         "ids": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_marketing_contacts": {
@@ -2116,21 +2116,21 @@
           "123e4567-e89b-12d3-a456-426614174000"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_contacts_count": {
     "Basic Example": {
       "url": "/marketing/contacts/count",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_contacts_exports": {
     "Basic Example": {
       "url": "/marketing/contacts/exports",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_contacts_exports": {
@@ -2150,7 +2150,7 @@
         "file_type": "csv",
         "max_file_size": 0
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_contacts__id_": {
@@ -2160,7 +2160,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_contacts_search": {
@@ -2170,7 +2170,7 @@
       "data": {
         "query": "email LIKE 'ENTER_COMPLETE_OR_PARTIAL_EMAIL_ADDRESS_HERE%' AND CONTAINS(list_ids, 'YOUR_LIST_IDs')"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_marketing_contacts_imports": {
@@ -2186,7 +2186,7 @@
           ""
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_contacts_imports__id_": {
@@ -2196,7 +2196,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_contacts_exports__id_": {
@@ -2206,7 +2206,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_contacts_batch": {
@@ -2219,7 +2219,7 @@
           "1235"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_contacts_search_emails": {
@@ -2233,7 +2233,7 @@
           "joann_doe@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_segments_2_0": {
@@ -2244,7 +2244,7 @@
         "parent_list_ids": "<string>",
         "no_parent_list_id": "<boolean>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_segments_2_0": {
@@ -2258,7 +2258,7 @@
           ""
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_segments_2_0__segment_id_": {
@@ -2271,7 +2271,7 @@
       "path": {
         "segment_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_segments_2_0__segment_id_": {
@@ -2281,7 +2281,7 @@
       "path": {
         "segment_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_marketing_segments_2_0__segment_id_": {
@@ -2295,7 +2295,7 @@
         "name": "x",
         "query_dsl": ""
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_senders": {
@@ -2322,7 +2322,7 @@
         "zip": "94105",
         "country": "United States"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_lists": {
@@ -2333,7 +2333,7 @@
         "page_size": "<number>",
         "page_token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_lists": {
@@ -2343,7 +2343,7 @@
       "data": {
         "name": "list-name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_lists__id__contacts_count": {
@@ -2353,7 +2353,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_lists__id_": {
@@ -2366,7 +2366,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_lists__id_": {
@@ -2379,7 +2379,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_marketing_lists__id_": {
@@ -2392,7 +2392,7 @@
       "data": {
         "name": "updated-list-name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_lists__id__contacts": {
@@ -2405,14 +2405,14 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_field_definitions": {
     "Basic Example": {
       "url": "/marketing/field_definitions",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_field_definitions": {
@@ -2423,7 +2423,7 @@
         "name": "custom_field_name",
         "field_type": "Text"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_field_definitions__custom_field_id_": {
@@ -2433,7 +2433,7 @@
       "path": {
         "custom_field_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_marketing_field_definitions__custom_field_id_": {
@@ -2446,7 +2446,7 @@
       "data": {
         "name": "new_custom_field_name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_segments": {
@@ -2457,7 +2457,7 @@
         "parent_list_ids": "<string>",
         "no_parent_list_id": "<boolean>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_segments": {
@@ -2472,7 +2472,7 @@
         ],
         "parent_list_id": "123e4567-e89b-12d3-a456-426614174000"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_segments__segment_id_": {
@@ -2485,7 +2485,7 @@
       "path": {
         "segment_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_segments__segment_id_": {
@@ -2495,7 +2495,7 @@
       "path": {
         "segment_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_marketing_segments__segment_id_": {
@@ -2512,7 +2512,7 @@
           ""
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_segments_delete": {
@@ -2528,7 +2528,7 @@
           "16641f5b-cfa3-41b9-9626-244488ee85b1"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_singlesends": {
@@ -2539,7 +2539,7 @@
         "page_size": "<integer>",
         "page_token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_singlesends": {
@@ -2561,7 +2561,7 @@
           "sender_id": 1234567
         }
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_singlesends": {
@@ -2571,7 +2571,7 @@
       "query": {
         "ids": "<array>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_singlesends__id_": {
@@ -2581,7 +2581,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_singlesends__id_": {
@@ -2594,7 +2594,7 @@
       "data": {
         "name": "x"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_singlesends__id_": {
@@ -2604,7 +2604,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_marketing_singlesends__id_": {
@@ -2642,7 +2642,7 @@
           "ip_pool": "<string,null>"
         }
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_singlesends_search": {
@@ -2663,7 +2663,7 @@
           "shoes"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_marketing_singlesends__id__schedule": {
@@ -2673,7 +2673,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "put_marketing_singlesends__id__schedule": {
@@ -2686,14 +2686,14 @@
       "data": {
         "send_at": "3752-01-28T23:21:52.575Z"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_singlesends_categories": {
     "Basic Example": {
       "url": "/marketing/singlesends/categories",
       "method": "get",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_marketing_test_send_email": {
@@ -2712,7 +2712,7 @@
           "bundt@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_automations": {
@@ -2724,7 +2724,7 @@
         "page_size": "<integer>",
         "page_token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_automations__id_": {
@@ -2744,7 +2744,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_singlesends": {
@@ -2756,7 +2756,7 @@
         "page_size": "<integer>",
         "page_token": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_singlesends__id_": {
@@ -2775,7 +2775,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_automations__id__links": {
@@ -2791,7 +2791,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_singlesends__id__links": {
@@ -2808,7 +2808,7 @@
       "path": {
         "id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_singlesends_export": {
@@ -2819,7 +2819,7 @@
         "ids": "<array>",
         "timezone": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_marketing_stats_automations_export": {
@@ -2830,7 +2830,7 @@
         "ids": "<array>",
         "timezone": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_senders": {
@@ -2840,7 +2840,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_senders": {
@@ -2867,7 +2867,7 @@
         "zip": "80202",
         "country": "United States"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_senders__sender_id_": {
@@ -2880,7 +2880,7 @@
       "path": {
         "sender_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_senders__sender_id_": {
@@ -2893,7 +2893,7 @@
       "path": {
         "sender_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_senders__sender_id_": {
@@ -2923,7 +2923,7 @@
         "zip": "80202",
         "country": "United States"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_senders__sender_id__resend_verification": {
@@ -2936,7 +2936,7 @@
       "path": {
         "sender_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_lists": {
@@ -2946,7 +2946,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_lists": {
@@ -2959,7 +2959,7 @@
       "data": {
         "name": "your list name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_lists": {
@@ -2975,7 +2975,7 @@
         3,
         4
       ],
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_lists__list_id_": {
@@ -2991,7 +2991,7 @@
       "path": {
         "list_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_lists__list_id_": {
@@ -3008,7 +3008,7 @@
         "list_id": "<string>"
       },
       "data": "<null>",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_contactdb_lists__list_id_": {
@@ -3027,7 +3027,7 @@
       "data": {
         "name": "newlistname"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_lists__list_id__recipients": {
@@ -3045,7 +3045,7 @@
       "path": {
         "list_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_lists__list_id__recipients": {
@@ -3062,7 +3062,7 @@
         "recipient_id1",
         "recipient_id2"
       ],
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_lists__list_id__recipients__recipient_id_": {
@@ -3076,7 +3076,7 @@
         "list_id": "<integer>",
         "recipient_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_lists__list_id__recipients__recipient_id_": {
@@ -3095,7 +3095,7 @@
         "recipient_id": "<string>"
       },
       "data": "<null>",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_recipients": {
@@ -3109,7 +3109,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_recipients": {
@@ -3133,7 +3133,7 @@
           "age": 25
         }
       ],
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_recipients": {
@@ -3147,7 +3147,7 @@
         "recipient_id1",
         "recipient_id2"
       ],
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_contactdb_recipients": {
@@ -3164,7 +3164,7 @@
           "first_name": "Guy"
         }
       ],
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_status": {
@@ -3174,7 +3174,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_recipients__recipient_id_": {
@@ -3187,7 +3187,7 @@
       "path": {
         "recipient_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_recipients__recipient_id_": {
@@ -3200,7 +3200,7 @@
       "path": {
         "recipient_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_recipients__recipient_id__lists": {
@@ -3213,7 +3213,7 @@
       "path": {
         "recipient_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_recipients_billable_count": {
@@ -3223,7 +3223,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_recipients_count": {
@@ -3233,7 +3233,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_recipients_search": {
@@ -3246,7 +3246,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_recipients_search": {
@@ -3282,7 +3282,7 @@
           }
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_custom_fields": {
@@ -3292,7 +3292,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_custom_fields": {
@@ -3306,7 +3306,7 @@
         "name": "pet",
         "type": "text"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_custom_fields__custom_field_id_": {
@@ -3319,7 +3319,7 @@
       "path": {
         "custom_field_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_custom_fields__custom_field_id_": {
@@ -3332,7 +3332,7 @@
       "path": {
         "custom_field_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_reserved_fields": {
@@ -3342,7 +3342,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_segments": {
@@ -3352,7 +3352,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_contactdb_segments": {
@@ -3386,7 +3386,7 @@
           }
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_segments__segment_id_": {
@@ -3402,7 +3402,7 @@
       "path": {
         "segment_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_contactdb_segments__segment_id_": {
@@ -3419,7 +3419,7 @@
         "segment_id": "<string>"
       },
       "data": "<null>",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_contactdb_segments__segment_id_": {
@@ -3447,7 +3447,7 @@
           }
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_contactdb_segments__segment_id__recipients": {
@@ -3464,7 +3464,7 @@
       "path": {
         "segment_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_categories": {
@@ -3479,7 +3479,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_categories_stats_sums": {
@@ -3498,7 +3498,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_categories_stats": {
@@ -3516,7 +3516,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_campaigns": {
@@ -3530,7 +3530,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_campaigns": {
@@ -3560,7 +3560,7 @@
         "html_content": "<html><head><title></title></head><body><p>Check out our spring line!</p></body></html>",
         "plain_content": "Check out our spring line!"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_campaigns__campaign_id_": {
@@ -3573,7 +3573,7 @@
       "path": {
         "campaign_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_campaigns__campaign_id_": {
@@ -3586,7 +3586,7 @@
       "path": {
         "campaign_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_campaigns__campaign_id_": {
@@ -3608,7 +3608,7 @@
         "html_content": "<html><head><title></title></head><body><p>Check out our summer line!</p></body></html>",
         "plain_content": "Check out our summer line!"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_campaigns__campaign_id__schedules_now": {
@@ -3621,7 +3621,7 @@
       "path": {
         "campaign_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_campaigns__campaign_id__schedules": {
@@ -3634,7 +3634,7 @@
       "path": {
         "campaign_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_campaigns__campaign_id__schedules": {
@@ -3650,7 +3650,7 @@
       "data": {
         "send_at": 1489771528
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_campaigns__campaign_id__schedules": {
@@ -3663,7 +3663,7 @@
       "path": {
         "campaign_id": "<integer>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_campaigns__campaign_id__schedules": {
@@ -3679,7 +3679,7 @@
       "data": {
         "send_at": 1489451436
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_campaigns__campaign_id__schedules_test": {
@@ -3695,7 +3695,7 @@
       "data": {
         "to": "your.email@example.com"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_templates": {
@@ -3710,7 +3710,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_templates": {
@@ -3724,7 +3724,7 @@
         "name": "example_name",
         "generation": "dynamic"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_templates__template_id_": {
@@ -3737,7 +3737,7 @@
       "path": {
         "template_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_templates__template_id_": {
@@ -3753,7 +3753,7 @@
       "data": {
         "name": "example_name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_templates__template_id_": {
@@ -3766,7 +3766,7 @@
       "path": {
         "template_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_templates__template_id_": {
@@ -3782,7 +3782,7 @@
       "data": {
         "name": "new_example_name"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_templates__template_id__versions": {
@@ -3804,7 +3804,7 @@
         "subject": "<Subject>",
         "editor": "design"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_templates__template_id__versions__version_id__activate": {
@@ -3818,7 +3818,7 @@
         "template_id": "<string>",
         "version_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_templates__template_id__versions__version_id_": {
@@ -3832,7 +3832,7 @@
         "template_id": "<string>",
         "version_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_templates__template_id__versions__version_id_": {
@@ -3846,7 +3846,7 @@
         "template_id": "<string>",
         "version_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_templates__template_id__versions__version_id_": {
@@ -3867,7 +3867,7 @@
         "plain_content": "<%body%>",
         "subject": "<%subject%>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_webhooks_event_settings": {
@@ -3877,7 +3877,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_user_webhooks_event_settings": {
@@ -3905,7 +3905,7 @@
         "oauth_client_secret": "ea in nostrud",
         "oauth_token_url": "cupidatat ad Ut"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_webhooks_parse_settings": {
@@ -3915,7 +3915,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_user_webhooks_parse_settings": {
@@ -3927,11 +3927,11 @@
       },
       "data": {
         "hostname": "myhostname.com",
-        "url": "http://email.myhosthame.com",
+        "url": "https://email.myhosthame.com",
         "spam_check": true,
         "send_raw": false
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_webhooks_parse_stats": {
@@ -3948,7 +3948,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_webhooks_event_settings_signed": {
@@ -3958,7 +3958,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_user_webhooks_event_settings_signed": {
@@ -3971,7 +3971,7 @@
       "data": {
         "enabled": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_user_webhooks_event_test": {
@@ -3987,7 +3987,7 @@
         "oauth_client_secret": "veniam commodo ex sunt",
         "oauth_token_url": "dolor Duis"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_messages": {
@@ -4003,7 +4003,7 @@
         "X-Cursor": "<string>",
         "Authorization": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_messages__msg_id_": {
@@ -4016,7 +4016,7 @@
       "path": {
         "msg_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_messages_download": {
@@ -4029,7 +4029,7 @@
       "headers": {
         "Authorization": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_messages_download__download_uuid_": {
@@ -4042,7 +4042,7 @@
       "path": {
         "download_uuid": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_tracking_settings": {
@@ -4052,7 +4052,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_tracking_settings_click": {
@@ -4062,7 +4062,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_tracking_settings_click": {
@@ -4075,7 +4075,7 @@
       "data": {
         "enabled": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_tracking_settings_google_analytics": {
@@ -4085,7 +4085,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_tracking_settings_google_analytics": {
@@ -4103,7 +4103,7 @@
         "utm_content": "",
         "utm_campaign": "website"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_tracking_settings_open": {
@@ -4113,7 +4113,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_tracking_settings_open": {
@@ -4126,7 +4126,7 @@
       "data": {
         "enabled": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_tracking_settings_subscription": {
@@ -4136,7 +4136,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_tracking_settings_subscription": {
@@ -4154,7 +4154,7 @@
         "html_content": "html content",
         "plain_content": "text content"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_stats": {
@@ -4171,7 +4171,7 @@
         "start_date": "<string>",
         "end_date": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_geo_stats": {
@@ -4189,7 +4189,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_devices_stats": {
@@ -4206,7 +4206,7 @@
         "start_date": "<string>",
         "end_date": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_clients_stats": {
@@ -4221,7 +4221,7 @@
         "end_date": "<string>",
         "aggregated_by": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_clients__client_type__stats": {
@@ -4239,7 +4239,7 @@
       "path": {
         "client_type": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_mailbox_providers_stats": {
@@ -4257,7 +4257,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_browsers_stats": {
@@ -4275,7 +4275,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_bounces": {
@@ -4290,7 +4290,7 @@
         "Accept": "<string>",
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_bounces": {
@@ -4307,7 +4307,7 @@
           "example2@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_bounces__email_": {
@@ -4320,7 +4320,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_bounces__email_": {
@@ -4337,7 +4337,7 @@
         "email": "<string>"
       },
       "data": "<null>",
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_blocks": {
@@ -4353,7 +4353,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_blocks": {
@@ -4370,7 +4370,7 @@
           "example2@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_blocks__email_": {
@@ -4383,7 +4383,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_blocks__email_": {
@@ -4396,7 +4396,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_spam_reports": {
@@ -4412,7 +4412,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_spam_reports": {
@@ -4429,7 +4429,7 @@
           "example2@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_spam_reports__email_": {
@@ -4442,7 +4442,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_spam_reports__email_": {
@@ -4455,7 +4455,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_asm_suppressions_global": {
@@ -4471,7 +4471,7 @@
           "test2@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_unsubscribes": {
@@ -4487,7 +4487,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_asm_suppressions_global__email_": {
@@ -4500,7 +4500,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_asm_suppressions_global__email_": {
@@ -4513,7 +4513,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_asm_groups": {
@@ -4526,7 +4526,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_asm_groups": {
@@ -4541,7 +4541,7 @@
         "description": "Suggestions for products our users might like.",
         "is_default": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_asm_groups__group_id_": {
@@ -4554,7 +4554,7 @@
       "path": {
         "group_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_asm_groups__group_id_": {
@@ -4567,7 +4567,7 @@
       "path": {
         "group_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_asm_groups__group_id_": {
@@ -4585,7 +4585,7 @@
         "name": "Item Suggestions",
         "description": "Suggestions for items our users might like."
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_asm_groups__group_id__suppressions": {
@@ -4598,7 +4598,7 @@
       "path": {
         "group_id": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_asm_groups__group_id__suppressions": {
@@ -4617,7 +4617,7 @@
           "test2@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "post_asm_groups__group_id__suppressions_search": {
@@ -4637,7 +4637,7 @@
           "doesnotexists@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_asm_suppressions": {
@@ -4647,7 +4647,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_asm_suppressions__email_": {
@@ -4660,7 +4660,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_asm_groups__group_id__suppressions__email_": {
@@ -4674,7 +4674,7 @@
         "group_id": "<string>",
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_invalid_emails": {
@@ -4690,7 +4690,7 @@
       "headers": {
         "on-behalf-of": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_invalid_emails": {
@@ -4707,7 +4707,7 @@
           "example2@example.com"
         ]
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_suppression_invalid_emails__email_": {
@@ -4720,7 +4720,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_suppression_invalid_emails__email_": {
@@ -4733,7 +4733,7 @@
       "path": {
         "email": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "get_user_webhooks_parse_settings__hostname_": {
@@ -4746,7 +4746,7 @@
       "path": {
         "hostname": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "delete_user_webhooks_parse_settings__hostname_": {
@@ -4759,7 +4759,7 @@
       "path": {
         "hostname": "<string>"
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   },
   "patch_user_webhooks_parse_settings__hostname_": {
@@ -4773,11 +4773,11 @@
         "hostname": "<string>"
       },
       "data": {
-        "url": "http://newdomain.com/parse",
+        "url": "https://newdomain.com/parse",
         "spam_check": false,
         "send_raw": true
       },
-      "baseURL": "http://api.sendgrid.com/v3"
+      "baseURL": "https://api.sendgrid.com/v3"
     }
   }
 }

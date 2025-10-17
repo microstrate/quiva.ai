@@ -10,7 +10,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_account_links": {
@@ -34,7 +34,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_account_sessions": {
@@ -178,7 +178,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts": {
@@ -196,7 +196,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts": {
@@ -701,7 +701,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account_": {
@@ -718,7 +718,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account_": {
@@ -1198,7 +1198,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_accounts__account_": {
@@ -1212,7 +1212,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__bank_accounts": {
@@ -1252,7 +1252,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__bank_accounts__id_": {
@@ -1270,7 +1270,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__bank_accounts__id_": {
@@ -1312,7 +1312,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_accounts__account__bank_accounts__id_": {
@@ -1327,7 +1327,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__capabilities": {
@@ -1344,7 +1344,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__capabilities__capability_": {
@@ -1362,7 +1362,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__capabilities__capability_": {
@@ -1382,7 +1382,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__external_accounts": {
@@ -1403,7 +1403,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__external_accounts": {
@@ -1443,7 +1443,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__external_accounts__id_": {
@@ -1461,7 +1461,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__external_accounts__id_": {
@@ -1503,7 +1503,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_accounts__account__external_accounts__id_": {
@@ -1518,7 +1518,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__login_links": {
@@ -1536,7 +1536,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__people": {
@@ -1557,7 +1557,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__people": {
@@ -1695,7 +1695,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__people__person_": {
@@ -1713,7 +1713,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__people__person_": {
@@ -1852,7 +1852,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_accounts__account__people__person_": {
@@ -1867,7 +1867,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__persons": {
@@ -1888,7 +1888,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__persons": {
@@ -2026,7 +2026,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_accounts__account__persons__person_": {
@@ -2044,7 +2044,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__persons__person_": {
@@ -2183,7 +2183,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_accounts__account__persons__person_": {
@@ -2198,7 +2198,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_accounts__account__reject": {
@@ -2217,7 +2217,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_apple_pay_domains": {
@@ -2235,7 +2235,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_apple_pay_domains": {
@@ -2251,7 +2251,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_apple_pay_domains__domain_": {
@@ -2268,7 +2268,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_apple_pay_domains__domain_": {
@@ -2282,7 +2282,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_application_fees": {
@@ -2301,7 +2301,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_application_fees__fee__refunds__id_": {
@@ -2319,7 +2319,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_application_fees__fee__refunds__id_": {
@@ -2341,7 +2341,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_application_fees__id_": {
@@ -2358,7 +2358,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_application_fees__id__refund": {
@@ -2378,7 +2378,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_application_fees__id__refunds": {
@@ -2398,7 +2398,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_application_fees__id__refunds": {
@@ -2420,7 +2420,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_apps_secrets": {
@@ -2438,7 +2438,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_apps_secrets": {
@@ -2460,7 +2460,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_apps_secrets_delete": {
@@ -2480,7 +2480,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_apps_secrets_find": {
@@ -2496,7 +2496,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_balance": {
@@ -2510,7 +2510,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_balance_history": {
@@ -2532,7 +2532,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_balance_history__id_": {
@@ -2549,7 +2549,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_balance_transactions": {
@@ -2571,7 +2571,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_balance_transactions__id_": {
@@ -2588,7 +2588,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_alerts": {
@@ -2607,7 +2607,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_alerts": {
@@ -2635,7 +2635,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_alerts__id_": {
@@ -2652,7 +2652,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_alerts__id__activate": {
@@ -2670,7 +2670,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_alerts__id__archive": {
@@ -2688,7 +2688,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_alerts__id__deactivate": {
@@ -2706,7 +2706,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_credit_balance_summary": {
@@ -2722,7 +2722,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_credit_balance_transactions": {
@@ -2741,7 +2741,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_credit_balance_transactions__id_": {
@@ -2758,7 +2758,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_credit_grants": {
@@ -2776,7 +2776,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_credit_grants": {
@@ -2817,7 +2817,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_credit_grants__id_": {
@@ -2834,7 +2834,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_credit_grants__id_": {
@@ -2856,7 +2856,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_credit_grants__id__expire": {
@@ -2874,7 +2874,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_credit_grants__id__void": {
@@ -2892,7 +2892,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_meter_event_adjustments": {
@@ -2912,7 +2912,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_meter_events": {
@@ -2933,7 +2933,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_meters": {
@@ -2951,7 +2951,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_meters": {
@@ -2979,7 +2979,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_meters__id_": {
@@ -2996,7 +2996,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_meters__id_": {
@@ -3015,7 +3015,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_meters__id__deactivate": {
@@ -3033,7 +3033,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_meters__id__event_summaries": {
@@ -3057,7 +3057,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_meters__id__reactivate": {
@@ -3075,7 +3075,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_portal_configurations": {
@@ -3094,7 +3094,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_portal_configurations": {
@@ -3168,7 +3168,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_billing_portal_configurations__configuration_": {
@@ -3185,7 +3185,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_portal_configurations__configuration_": {
@@ -3263,7 +3263,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_billing_portal_sessions": {
@@ -3323,7 +3323,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_charges": {
@@ -3344,7 +3344,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges": {
@@ -3417,7 +3417,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_charges_search": {
@@ -3434,7 +3434,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_charges__charge_": {
@@ -3451,7 +3451,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge_": {
@@ -3493,7 +3493,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge__capture": {
@@ -3521,7 +3521,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_charges__charge__dispute": {
@@ -3538,7 +3538,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge__dispute": {
@@ -3632,7 +3632,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge__dispute_close": {
@@ -3650,7 +3650,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge__refund": {
@@ -3677,7 +3677,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_charges__charge__refunds": {
@@ -3697,7 +3697,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge__refunds": {
@@ -3727,7 +3727,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_charges__charge__refunds__refund_": {
@@ -3745,7 +3745,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_charges__charge__refunds__refund_": {
@@ -3767,7 +3767,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_checkout_sessions": {
@@ -3791,7 +3791,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_checkout_sessions": {
@@ -4303,7 +4303,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_checkout_sessions__session_": {
@@ -4320,7 +4320,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_checkout_sessions__session_": {
@@ -4388,7 +4388,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_checkout_sessions__session__expire": {
@@ -4406,7 +4406,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_checkout_sessions__session__line_items": {
@@ -4426,7 +4426,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_climate_orders": {
@@ -4443,7 +4443,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_climate_orders": {
@@ -4468,7 +4468,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_climate_orders__order_": {
@@ -4485,7 +4485,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_climate_orders__order_": {
@@ -4509,7 +4509,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_climate_orders__order__cancel": {
@@ -4527,7 +4527,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_climate_products": {
@@ -4544,7 +4544,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_climate_products__product_": {
@@ -4561,7 +4561,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_climate_suppliers": {
@@ -4578,7 +4578,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_climate_suppliers__supplier_": {
@@ -4595,7 +4595,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_confirmation_tokens__confirmation_token_": {
@@ -4612,7 +4612,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_country_specs": {
@@ -4629,7 +4629,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_country_specs__country_": {
@@ -4646,7 +4646,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_coupons": {
@@ -4664,7 +4664,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_coupons": {
@@ -4701,7 +4701,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_coupons__coupon_": {
@@ -4718,7 +4718,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_coupons__coupon_": {
@@ -4745,7 +4745,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_coupons__coupon_": {
@@ -4759,7 +4759,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_credit_notes": {
@@ -4779,7 +4779,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_credit_notes": {
@@ -4836,7 +4836,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_credit_notes_preview": {
@@ -4863,7 +4863,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_credit_notes_preview_lines": {
@@ -4893,7 +4893,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_credit_notes__credit_note__lines": {
@@ -4913,7 +4913,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_credit_notes__id_": {
@@ -4930,7 +4930,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_credit_notes__id_": {
@@ -4952,7 +4952,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_credit_notes__id__void": {
@@ -4970,7 +4970,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customer_sessions": {
@@ -5007,7 +5007,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers": {
@@ -5027,7 +5027,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers": {
@@ -5108,7 +5108,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers_search": {
@@ -5125,7 +5125,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer_": {
@@ -5142,7 +5142,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer_": {
@@ -5248,7 +5248,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer_": {
@@ -5262,7 +5262,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__balance_transactions": {
@@ -5282,7 +5282,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__balance_transactions": {
@@ -5306,7 +5306,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__balance_transactions__transaction_": {
@@ -5324,7 +5324,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__balance_transactions__transaction_": {
@@ -5347,7 +5347,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__bank_accounts": {
@@ -5367,7 +5367,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__bank_accounts": {
@@ -5416,7 +5416,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__bank_accounts__id_": {
@@ -5434,7 +5434,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__bank_accounts__id_": {
@@ -5480,7 +5480,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__bank_accounts__id_": {
@@ -5499,7 +5499,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__bank_accounts__id__verify": {
@@ -5521,7 +5521,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__cards": {
@@ -5541,7 +5541,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__cards": {
@@ -5590,7 +5590,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__cards__id_": {
@@ -5608,7 +5608,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__cards__id_": {
@@ -5654,7 +5654,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__cards__id_": {
@@ -5673,7 +5673,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__cash_balance": {
@@ -5690,7 +5690,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__cash_balance": {
@@ -5711,7 +5711,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__cash_balance_transactions": {
@@ -5731,7 +5731,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__cash_balance_transactions__transaction_": {
@@ -5749,7 +5749,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__discount": {
@@ -5766,7 +5766,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__discount": {
@@ -5780,7 +5780,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__funding_instructions": {
@@ -5809,7 +5809,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__payment_methods": {
@@ -5831,7 +5831,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__payment_methods__payment_method_": {
@@ -5849,7 +5849,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__sources": {
@@ -5870,7 +5870,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__sources": {
@@ -5919,7 +5919,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__sources__id_": {
@@ -5937,7 +5937,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__sources__id_": {
@@ -5983,7 +5983,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__sources__id_": {
@@ -6002,7 +6002,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__sources__id__verify": {
@@ -6024,7 +6024,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__subscriptions": {
@@ -6044,7 +6044,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__subscriptions": {
@@ -6233,7 +6233,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__subscriptions__subscription_exposed_id_": {
@@ -6251,7 +6251,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__subscriptions__subscription_exposed_id_": {
@@ -6450,7 +6450,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__subscriptions__subscription_exposed_id_": {
@@ -6471,7 +6471,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__subscriptions__subscription_exposed_id__discount": {
@@ -6489,7 +6489,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__subscriptions__subscription_exposed_id__discount": {
@@ -6504,7 +6504,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__tax_ids": {
@@ -6524,7 +6524,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_customers__customer__tax_ids": {
@@ -6544,7 +6544,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_customers__customer__tax_ids__id_": {
@@ -6562,7 +6562,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_customers__customer__tax_ids__id_": {
@@ -6577,7 +6577,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_disputes": {
@@ -6597,7 +6597,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_disputes__dispute_": {
@@ -6614,7 +6614,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_disputes__dispute_": {
@@ -6708,7 +6708,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_disputes__dispute__close": {
@@ -6726,7 +6726,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_entitlements_active_entitlements": {
@@ -6744,7 +6744,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_entitlements_active_entitlements__id_": {
@@ -6761,7 +6761,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_entitlements_features": {
@@ -6780,7 +6780,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_entitlements_features": {
@@ -6800,7 +6800,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_entitlements_features__id_": {
@@ -6817,7 +6817,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_entitlements_features__id_": {
@@ -6840,7 +6840,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_ephemeral_keys": {
@@ -6859,7 +6859,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_ephemeral_keys__key_": {
@@ -6877,7 +6877,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_events": {
@@ -6898,7 +6898,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_events__id_": {
@@ -6915,7 +6915,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_exchange_rates": {
@@ -6932,7 +6932,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_exchange_rates__rate_id_": {
@@ -6949,7 +6949,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_external_accounts__id_": {
@@ -6990,7 +6990,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_file_links": {
@@ -7010,7 +7010,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_file_links": {
@@ -7030,7 +7030,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_file_links__link_": {
@@ -7047,7 +7047,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_file_links__link_": {
@@ -7069,7 +7069,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_files": {
@@ -7088,7 +7088,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_files": {
@@ -7112,7 +7112,7 @@
       "headers": {
         "Content-Type": "multipart/form-data"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_files__file_": {
@@ -7129,7 +7129,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_financial_connections_accounts": {
@@ -7148,7 +7148,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_financial_connections_accounts__account_": {
@@ -7165,7 +7165,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_financial_connections_accounts__account__disconnect": {
@@ -7183,7 +7183,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_financial_connections_accounts__account__owners": {
@@ -7204,7 +7204,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_financial_connections_accounts__account__refresh": {
@@ -7225,7 +7225,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_financial_connections_accounts__account__subscribe": {
@@ -7246,7 +7246,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_financial_connections_accounts__account__unsubscribe": {
@@ -7267,7 +7267,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_financial_connections_sessions": {
@@ -7302,7 +7302,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_financial_connections_sessions__session_": {
@@ -7319,7 +7319,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_financial_connections_transactions": {
@@ -7339,7 +7339,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_financial_connections_transactions__transaction_": {
@@ -7356,7 +7356,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_forwarding_requests": {
@@ -7374,7 +7374,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_forwarding_requests": {
@@ -7406,7 +7406,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_forwarding_requests__id_": {
@@ -7423,7 +7423,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_identity_verification_reports": {
@@ -7444,7 +7444,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_identity_verification_reports__report_": {
@@ -7461,7 +7461,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_identity_verification_sessions": {
@@ -7482,7 +7482,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_identity_verification_sessions": {
@@ -7519,7 +7519,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_identity_verification_sessions__session_": {
@@ -7536,7 +7536,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_identity_verification_sessions__session_": {
@@ -7572,7 +7572,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_identity_verification_sessions__session__cancel": {
@@ -7590,7 +7590,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_identity_verification_sessions__session__redact": {
@@ -7608,7 +7608,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoice_payments": {
@@ -7628,7 +7628,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoice_payments__invoice_payment_": {
@@ -7645,7 +7645,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoice_rendering_templates": {
@@ -7663,7 +7663,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoice_rendering_templates__template_": {
@@ -7681,7 +7681,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoice_rendering_templates__template__archive": {
@@ -7699,7 +7699,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoice_rendering_templates__template__unarchive": {
@@ -7717,7 +7717,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoiceitems": {
@@ -7738,7 +7738,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoiceitems": {
@@ -7791,7 +7791,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoiceitems__invoiceitem_": {
@@ -7808,7 +7808,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoiceitems__invoiceitem_": {
@@ -7860,7 +7860,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_invoiceitems__invoiceitem_": {
@@ -7874,7 +7874,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoices": {
@@ -7897,7 +7897,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices": {
@@ -8078,7 +8078,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices_create_preview": {
@@ -8352,7 +8352,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoices_search": {
@@ -8369,7 +8369,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoices__invoice_": {
@@ -8386,7 +8386,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice_": {
@@ -8562,7 +8562,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_invoices__invoice_": {
@@ -8576,7 +8576,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__add_lines": {
@@ -8662,7 +8662,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__attach_payment": {
@@ -8681,7 +8681,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__finalize": {
@@ -8700,7 +8700,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_invoices__invoice__lines": {
@@ -8720,7 +8720,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__lines__line_item_id_": {
@@ -8799,7 +8799,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__mark_uncollectible": {
@@ -8817,7 +8817,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__pay": {
@@ -8841,7 +8841,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__remove_lines": {
@@ -8868,7 +8868,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__send": {
@@ -8886,7 +8886,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__update_lines": {
@@ -8972,7 +8972,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_invoices__invoice__void": {
@@ -8990,7 +8990,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_authorizations": {
@@ -9011,7 +9011,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_authorizations__authorization_": {
@@ -9028,7 +9028,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_authorizations__authorization_": {
@@ -9049,7 +9049,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_authorizations__authorization__approve": {
@@ -9071,7 +9071,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_authorizations__authorization__decline": {
@@ -9092,7 +9092,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_cardholders": {
@@ -9114,7 +9114,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_cardholders": {
@@ -9199,7 +9199,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_cardholders__cardholder_": {
@@ -9216,7 +9216,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_cardholders__cardholder_": {
@@ -9302,7 +9302,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_cards": {
@@ -9327,7 +9327,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_cards": {
@@ -9401,7 +9401,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_cards__card_": {
@@ -9418,7 +9418,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_cards__card_": {
@@ -9489,7 +9489,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_disputes": {
@@ -9509,7 +9509,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_disputes": {
@@ -9591,7 +9591,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_disputes__dispute_": {
@@ -9608,7 +9608,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_disputes__dispute_": {
@@ -9689,7 +9689,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_disputes__dispute__submit": {
@@ -9710,7 +9710,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_personalization_designs": {
@@ -9730,7 +9730,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_personalization_designs": {
@@ -9762,7 +9762,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_personalization_designs__personalization_design_": {
@@ -9779,7 +9779,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_personalization_designs__personalization_design_": {
@@ -9814,7 +9814,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_physical_bundles": {
@@ -9833,7 +9833,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_physical_bundles__physical_bundle_": {
@@ -9850,7 +9850,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_settlements__settlement_": {
@@ -9867,7 +9867,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_settlements__settlement_": {
@@ -9888,7 +9888,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_tokens": {
@@ -9908,7 +9908,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_tokens__token_": {
@@ -9925,7 +9925,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_tokens__token_": {
@@ -9944,7 +9944,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_transactions": {
@@ -9965,7 +9965,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_issuing_transactions__transaction_": {
@@ -9982,7 +9982,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_issuing_transactions__transaction_": {
@@ -10003,7 +10003,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_link_account_sessions": {
@@ -10038,7 +10038,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_link_account_sessions__session_": {
@@ -10055,7 +10055,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_linked_accounts": {
@@ -10074,7 +10074,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_linked_accounts__account_": {
@@ -10091,7 +10091,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_linked_accounts__account__disconnect": {
@@ -10109,7 +10109,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_linked_accounts__account__owners": {
@@ -10130,7 +10130,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_linked_accounts__account__refresh": {
@@ -10151,7 +10151,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_mandates__mandate_": {
@@ -10168,7 +10168,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_intents": {
@@ -10187,7 +10187,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents": {
@@ -10665,7 +10665,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_intents_search": {
@@ -10682,7 +10682,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_intents__intent_": {
@@ -10700,7 +10700,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent_": {
@@ -11153,7 +11153,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent__apply_customer_balance": {
@@ -11173,7 +11173,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent__cancel": {
@@ -11192,7 +11192,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent__capture": {
@@ -11221,7 +11221,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent__confirm": {
@@ -11680,7 +11680,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent__increment_authorization": {
@@ -11708,7 +11708,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_intents__intent__verify_microdeposits": {
@@ -11731,7 +11731,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_links": {
@@ -11749,7 +11749,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_links": {
@@ -11950,7 +11950,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_links__payment_link_": {
@@ -11967,7 +11967,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_links__payment_link_": {
@@ -12138,7 +12138,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_links__payment_link__line_items": {
@@ -12158,7 +12158,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_method_configurations": {
@@ -12176,7 +12176,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_method_configurations": {
@@ -12453,7 +12453,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_method_configurations__configuration_": {
@@ -12470,7 +12470,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_method_configurations__configuration_": {
@@ -12750,7 +12750,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_method_domains": {
@@ -12769,7 +12769,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_method_domains": {
@@ -12786,7 +12786,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_method_domains__payment_method_domain_": {
@@ -12803,7 +12803,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_method_domains__payment_method_domain_": {
@@ -12822,7 +12822,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_method_domains__payment_method_domain__validate": {
@@ -12840,7 +12840,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_methods": {
@@ -12859,7 +12859,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_methods": {
@@ -12999,7 +12999,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payment_methods__payment_method_": {
@@ -13016,7 +13016,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_methods__payment_method_": {
@@ -13065,7 +13065,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_methods__payment_method__attach": {
@@ -13084,7 +13084,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payment_methods__payment_method__detach": {
@@ -13102,7 +13102,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payouts": {
@@ -13123,7 +13123,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payouts": {
@@ -13148,7 +13148,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_payouts__payout_": {
@@ -13165,7 +13165,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payouts__payout_": {
@@ -13186,7 +13186,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payouts__payout__cancel": {
@@ -13204,7 +13204,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_payouts__payout__reverse": {
@@ -13225,7 +13225,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_plans": {
@@ -13245,7 +13245,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_plans": {
@@ -13300,7 +13300,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_plans__plan_": {
@@ -13317,7 +13317,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_plans__plan_": {
@@ -13342,7 +13342,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_plans__plan_": {
@@ -13356,7 +13356,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_prices": {
@@ -13380,7 +13380,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_prices": {
@@ -13467,7 +13467,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_prices_search": {
@@ -13484,7 +13484,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_prices__price_": {
@@ -13501,7 +13501,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_prices__price_": {
@@ -13549,7 +13549,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_products": {
@@ -13571,7 +13571,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_products": {
@@ -13653,7 +13653,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_products_search": {
@@ -13670,7 +13670,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_products__id_": {
@@ -13687,7 +13687,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_products__id_": {
@@ -13731,7 +13731,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_products__id_": {
@@ -13745,7 +13745,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_products__product__features": {
@@ -13765,7 +13765,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_products__product__features": {
@@ -13784,7 +13784,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_products__product__features__id_": {
@@ -13802,7 +13802,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_products__product__features__id_": {
@@ -13817,7 +13817,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_promotion_codes": {
@@ -13839,7 +13839,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_promotion_codes": {
@@ -13873,7 +13873,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_promotion_codes__promotion_code_": {
@@ -13890,7 +13890,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_promotion_codes__promotion_code_": {
@@ -13919,7 +13919,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_quotes": {
@@ -13939,7 +13939,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_quotes": {
@@ -14035,7 +14035,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_quotes__quote_": {
@@ -14052,7 +14052,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_quotes__quote_": {
@@ -14147,7 +14147,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_quotes__quote__accept": {
@@ -14165,7 +14165,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_quotes__quote__cancel": {
@@ -14183,7 +14183,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_quotes__quote__computed_upfront_line_items": {
@@ -14203,7 +14203,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_quotes__quote__finalize": {
@@ -14222,7 +14222,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_quotes__quote__line_items": {
@@ -14242,7 +14242,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_quotes__quote__pdf": {
@@ -14259,7 +14259,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_radar_early_fraud_warnings": {
@@ -14279,7 +14279,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_radar_early_fraud_warnings__early_fraud_warning_": {
@@ -14296,7 +14296,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_radar_value_list_items": {
@@ -14316,7 +14316,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_radar_value_list_items": {
@@ -14333,7 +14333,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_radar_value_list_items__item_": {
@@ -14350,7 +14350,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_radar_value_list_items__item_": {
@@ -14364,7 +14364,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_radar_value_lists": {
@@ -14384,7 +14384,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_radar_value_lists": {
@@ -14405,7 +14405,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_radar_value_lists__value_list_": {
@@ -14422,7 +14422,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_radar_value_lists__value_list_": {
@@ -14445,7 +14445,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_radar_value_lists__value_list_": {
@@ -14459,7 +14459,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_refunds": {
@@ -14479,7 +14479,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_refunds": {
@@ -14507,7 +14507,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_refunds__refund_": {
@@ -14524,7 +14524,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_refunds__refund_": {
@@ -14545,7 +14545,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_refunds__refund__cancel": {
@@ -14563,7 +14563,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_reporting_report_runs": {
@@ -14581,7 +14581,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_reporting_report_runs": {
@@ -14609,7 +14609,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_reporting_report_runs__report_run_": {
@@ -14626,7 +14626,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_reporting_report_types": {
@@ -14640,7 +14640,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_reporting_report_types__report_type_": {
@@ -14657,7 +14657,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_reviews": {
@@ -14675,7 +14675,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_reviews__review_": {
@@ -14692,7 +14692,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_reviews__review__approve": {
@@ -14710,7 +14710,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_setup_attempts": {
@@ -14729,7 +14729,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_setup_intents": {
@@ -14750,7 +14750,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_setup_intents": {
@@ -15009,7 +15009,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_setup_intents__intent_": {
@@ -15027,7 +15027,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_setup_intents__intent_": {
@@ -15264,7 +15264,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_setup_intents__intent__cancel": {
@@ -15283,7 +15283,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_setup_intents__intent__confirm": {
@@ -15522,7 +15522,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_setup_intents__intent__verify_microdeposits": {
@@ -15545,7 +15545,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_shipping_rates": {
@@ -15565,7 +15565,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_shipping_rates": {
@@ -15607,7 +15607,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_shipping_rates__shipping_rate_token_": {
@@ -15624,7 +15624,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_shipping_rates__shipping_rate_token_": {
@@ -15655,7 +15655,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_sigma_saved_queries__id_": {
@@ -15675,7 +15675,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_sigma_scheduled_query_runs": {
@@ -15692,7 +15692,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_sigma_scheduled_query_runs__scheduled_query_run_": {
@@ -15709,7 +15709,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_sources": {
@@ -15802,7 +15802,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_sources__source_": {
@@ -15820,7 +15820,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_sources__source_": {
@@ -15902,7 +15902,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_sources__source__mandate_notifications__mandate_notification_": {
@@ -15920,7 +15920,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_sources__source__source_transactions": {
@@ -15940,7 +15940,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_sources__source__source_transactions__source_transaction_": {
@@ -15958,7 +15958,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_sources__source__verify": {
@@ -15979,7 +15979,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscription_items": {
@@ -15997,7 +15997,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscription_items": {
@@ -16045,7 +16045,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscription_items__item_": {
@@ -16062,7 +16062,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscription_items__item_": {
@@ -16113,7 +16113,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_subscription_items__item_": {
@@ -16131,7 +16131,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscription_schedules": {
@@ -16154,7 +16154,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscription_schedules": {
@@ -16319,7 +16319,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscription_schedules__schedule_": {
@@ -16336,7 +16336,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscription_schedules__schedule_": {
@@ -16502,7 +16502,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscription_schedules__schedule__cancel": {
@@ -16522,7 +16522,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscription_schedules__schedule__release": {
@@ -16541,7 +16541,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscriptions": {
@@ -16567,7 +16567,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscriptions": {
@@ -16763,7 +16763,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscriptions_search": {
@@ -16780,7 +16780,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_subscriptions__subscription_exposed_id_": {
@@ -16797,7 +16797,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscriptions__subscription_exposed_id_": {
@@ -16997,7 +16997,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_subscriptions__subscription_exposed_id_": {
@@ -17021,7 +17021,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_subscriptions__subscription_exposed_id__discount": {
@@ -17035,7 +17035,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_subscriptions__subscription__resume": {
@@ -17056,7 +17056,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_calculations": {
@@ -17122,7 +17122,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_calculations__calculation_": {
@@ -17139,7 +17139,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_calculations__calculation__line_items": {
@@ -17159,7 +17159,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_registrations": {
@@ -17177,7 +17177,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_registrations": {
@@ -17590,7 +17590,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_registrations__id_": {
@@ -17607,7 +17607,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_registrations__id_": {
@@ -17627,7 +17627,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_settings": {
@@ -17641,7 +17641,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_settings": {
@@ -17670,7 +17670,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_transactions_create_from_calculation": {
@@ -17691,7 +17691,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_transactions_create_reversal": {
@@ -17729,7 +17729,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_transactions__transaction_": {
@@ -17746,7 +17746,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_transactions__transaction__line_items": {
@@ -17766,7 +17766,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_codes": {
@@ -17783,7 +17783,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_codes__id_": {
@@ -17800,7 +17800,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_ids": {
@@ -17818,7 +17818,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_ids": {
@@ -17840,7 +17840,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_ids__id_": {
@@ -17857,7 +17857,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_tax_ids__id_": {
@@ -17871,7 +17871,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_rates": {
@@ -17891,7 +17891,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_rates": {
@@ -17918,7 +17918,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tax_rates__tax_rate_": {
@@ -17935,7 +17935,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tax_rates__tax_rate_": {
@@ -17963,7 +17963,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_terminal_configurations": {
@@ -17981,7 +17981,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_configurations": {
@@ -18179,7 +18179,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_terminal_configurations__configuration_": {
@@ -18196,7 +18196,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_configurations__configuration_": {
@@ -18397,7 +18397,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_terminal_configurations__configuration_": {
@@ -18411,7 +18411,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_connection_tokens": {
@@ -18427,7 +18427,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_terminal_locations": {
@@ -18444,7 +18444,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_locations": {
@@ -18472,7 +18472,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_terminal_locations__location_": {
@@ -18489,7 +18489,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_locations__location_": {
@@ -18520,7 +18520,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_terminal_locations__location_": {
@@ -18534,7 +18534,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_terminal_readers": {
@@ -18555,7 +18555,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers": {
@@ -18576,7 +18576,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_terminal_readers__reader_": {
@@ -18593,7 +18593,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader_": {
@@ -18615,7 +18615,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_terminal_readers__reader_": {
@@ -18629,7 +18629,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader__cancel_action": {
@@ -18647,7 +18647,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader__collect_inputs": {
@@ -18696,7 +18696,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader__process_payment_intent": {
@@ -18724,7 +18724,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader__process_setup_intent": {
@@ -18747,7 +18747,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader__refund_payment": {
@@ -18776,7 +18776,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_terminal_readers__reader__set_reader_display": {
@@ -18807,7 +18807,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_confirmation_tokens": {
@@ -18964,7 +18964,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_customers__customer__fund_cash_balance": {
@@ -18985,7 +18985,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations": {
@@ -19069,7 +19069,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations__authorization__capture": {
@@ -19150,7 +19150,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations__authorization__expire": {
@@ -19168,7 +19168,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations__authorization__finalize_amount": {
@@ -19217,7 +19217,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations__authorization__fraud_challenges_respond": {
@@ -19236,7 +19236,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations__authorization__increment": {
@@ -19256,7 +19256,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_authorizations__authorization__reverse": {
@@ -19275,7 +19275,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_cards__card__shipping_deliver": {
@@ -19293,7 +19293,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_cards__card__shipping_fail": {
@@ -19311,7 +19311,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_cards__card__shipping_return": {
@@ -19329,7 +19329,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_cards__card__shipping_ship": {
@@ -19347,7 +19347,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_cards__card__shipping_submit": {
@@ -19365,7 +19365,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_personalization_designs__personalization_design__activate": {
@@ -19383,7 +19383,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_personalization_designs__personalization_design__deactivate": {
@@ -19401,7 +19401,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_personalization_designs__personalization_design__reject": {
@@ -19427,7 +19427,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_settlements": {
@@ -19451,7 +19451,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_settlements__settlement__complete": {
@@ -19469,7 +19469,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_transactions_create_force_capture": {
@@ -19559,7 +19559,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_transactions_create_unlinked_refund": {
@@ -19649,7 +19649,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_issuing_transactions__transaction__refund": {
@@ -19668,7 +19668,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_refunds__refund__expire": {
@@ -19686,7 +19686,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_terminal_readers__reader__present_payment_method": {
@@ -19712,7 +19712,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_terminal_readers__reader__succeed_input_collection": {
@@ -19731,7 +19731,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_terminal_readers__reader__timeout_input_collection": {
@@ -19749,7 +19749,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_test_helpers_test_clocks": {
@@ -19766,7 +19766,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_test_clocks": {
@@ -19783,7 +19783,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_test_helpers_test_clocks__test_clock_": {
@@ -19800,7 +19800,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_test_helpers_test_clocks__test_clock_": {
@@ -19814,7 +19814,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_test_clocks__test_clock__advance": {
@@ -19833,7 +19833,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_inbound_transfers__id__fail": {
@@ -19854,7 +19854,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_inbound_transfers__id__return": {
@@ -19872,7 +19872,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_inbound_transfers__id__succeed": {
@@ -19890,7 +19890,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_payments__id_": {
@@ -19919,7 +19919,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_payments__id__fail": {
@@ -19937,7 +19937,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_payments__id__post": {
@@ -19955,7 +19955,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_payments__id__return": {
@@ -19976,7 +19976,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_transfers__outbound_transfer_": {
@@ -20005,7 +20005,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_transfers__outbound_transfer__fail": {
@@ -20023,7 +20023,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_transfers__outbound_transfer__post": {
@@ -20041,7 +20041,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_outbound_transfers__outbound_transfer__return": {
@@ -20062,7 +20062,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_received_credits": {
@@ -20090,7 +20090,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_test_helpers_treasury_received_debits": {
@@ -20118,7 +20118,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_tokens": {
@@ -20435,7 +20435,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_tokens__token_": {
@@ -20452,7 +20452,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_topups": {
@@ -20472,7 +20472,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_topups": {
@@ -20496,7 +20496,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_topups__topup_": {
@@ -20513,7 +20513,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_topups__topup_": {
@@ -20535,7 +20535,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_topups__topup__cancel": {
@@ -20553,7 +20553,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_transfers": {
@@ -20573,7 +20573,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_transfers": {
@@ -20598,7 +20598,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_transfers__id__reversals": {
@@ -20618,7 +20618,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_transfers__id__reversals": {
@@ -20642,7 +20642,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_transfers__transfer_": {
@@ -20659,7 +20659,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_transfers__transfer_": {
@@ -20681,7 +20681,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_transfers__transfer__reversals__id_": {
@@ -20699,7 +20699,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_transfers__transfer__reversals__id_": {
@@ -20721,7 +20721,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_credit_reversals": {
@@ -20741,7 +20741,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_credit_reversals": {
@@ -20760,7 +20760,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_credit_reversals__credit_reversal_": {
@@ -20777,7 +20777,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_debit_reversals": {
@@ -20798,7 +20798,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_debit_reversals": {
@@ -20817,7 +20817,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_debit_reversals__debit_reversal_": {
@@ -20834,7 +20834,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_financial_accounts": {
@@ -20852,7 +20852,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_financial_accounts": {
@@ -20915,7 +20915,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_financial_accounts__financial_account_": {
@@ -20932,7 +20932,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_financial_accounts__financial_account_": {
@@ -21000,7 +21000,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_financial_accounts__financial_account__close": {
@@ -21023,7 +21023,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_financial_accounts__financial_account__features": {
@@ -21040,7 +21040,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_financial_accounts__financial_account__features": {
@@ -21093,7 +21093,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_inbound_transfers": {
@@ -21112,7 +21112,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_inbound_transfers": {
@@ -21136,7 +21136,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_inbound_transfers__id_": {
@@ -21153,7 +21153,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_inbound_transfers__inbound_transfer__cancel": {
@@ -21171,7 +21171,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_outbound_payments": {
@@ -21192,7 +21192,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_outbound_payments": {
@@ -21253,7 +21253,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_outbound_payments__id_": {
@@ -21270,7 +21270,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_outbound_payments__id__cancel": {
@@ -21288,7 +21288,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_outbound_transfers": {
@@ -21307,7 +21307,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_outbound_transfers": {
@@ -21340,7 +21340,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_outbound_transfers__outbound_transfer_": {
@@ -21357,7 +21357,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_treasury_outbound_transfers__outbound_transfer__cancel": {
@@ -21375,7 +21375,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_received_credits": {
@@ -21395,7 +21395,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_received_credits__id_": {
@@ -21412,7 +21412,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_received_debits": {
@@ -21431,7 +21431,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_received_debits__id_": {
@@ -21448,7 +21448,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_transaction_entries": {
@@ -21470,7 +21470,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_transaction_entries__id_": {
@@ -21487,7 +21487,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_transactions": {
@@ -21509,7 +21509,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_treasury_transactions__id_": {
@@ -21526,7 +21526,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_webhook_endpoints": {
@@ -21543,7 +21543,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_webhook_endpoints": {
@@ -21568,7 +21568,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "get_v1_webhook_endpoints__webhook_endpoint_": {
@@ -21585,7 +21585,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "post_v1_webhook_endpoints__webhook_endpoint_": {
@@ -21612,7 +21612,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   },
   "delete_v1_webhook_endpoints__webhook_endpoint_": {
@@ -21626,7 +21626,7 @@
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      "baseURL": "https://api.stripe.com/"
+      "baseURL": "https://api.stripe.com"
     }
   }
 }
