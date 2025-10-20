@@ -1,49 +1,48 @@
 ---
 title: 'Condition'
-description: 'Branch your flow with if/then/else logic based on data or agent decisions'
+description: 'Branch your flow with conditional logic using the rules engine'
 icon: 'code-branch'
 ---
 
 # Condition Step
 
-The Condition step adds branching logic to your flows. Based on conditions you define, the flow takes different paths - like an "if/then/else" statement. Use it to route based on agent decisions, validate data, check thresholds, or implement any business logic that requires explicit branching.
+The Condition step adds branching logic to your flows by evaluating conditions using the **rules engine**. Based on the conditions you define, the flow routes to different next steps—or terminates with success or error.
 
 <Info>
-**When to use Conditions vs. Agents**: Use Conditions when you need explicit control over branching. Let agents handle the logic when the decision-making is complex or requires interpretation. Conditions are for rules you define; agents are for intelligence.
+**How Conditions Work**: The Condition step uses the same rules engine as the Rules step, but instead of calculating values, it routes the flow based on which condition matches first. Conditions are checked **top-to-bottom** until one matches.
 </Info>
 
 ---
 
-## How Conditions Work
+## How It Works
 
-Conditions evaluate one or more criteria and route the flow accordingly:
+The Condition step evaluates conditions in sequence and routes to the outcome of the first matching condition:
 
 <CodeGroup>
 ```text Simple Branch
 Previous Step
 ↓
 Condition: Is amount > 1000?
-↓ (true)        ↓ (false)
-High Value      Standard
-Processing      Processing
+↓ (true)           ↓ (false)
+High Value Step    Standard Step
 ```
 
 ```text Multiple Conditions
 Agent: Analyze request
 ↓
-Condition: What's the decision?
-↓
-├─ If "approve" → Process approval
-├─ If "reject" → Send rejection
-└─ If "escalate" → Human review
+Condition Step
+├─ If decision == "approve" → Approval Step
+├─ If decision == "reject" → Rejection Step  
+├─ If decision == "escalate" → Human Review Step
+└─ Default → Error Handler Step
 ```
 
-```text Nested Conditions
-Condition 1: Is urgent?
-↓ (true)
-Condition 2: Is high value?
-↓ (true)                ↓ (false)
-Priority handling       Standard urgent
+```text Terminate Flow
+Validation Check
+↓
+Condition Step
+├─ If valid → Continue Flow
+└─ If invalid → RESOLVE_ERROR
 ```
 </CodeGroup>
 
@@ -51,105 +50,210 @@ Priority handling       Standard urgent
 
 ## Configuration
 
-### Condition Logic
+### Facts
 
-<ParamField path="conditions" type="array" required>
-  Array of conditions to evaluate (checked in order)
-  
-  Each condition has:
-  - **Expression**: What to check (e.g., `${agent.decision} == "approve"`)
-  - **Label**: Name for this branch (e.g., "Approved")
-  - **Next Steps**: What happens when this condition is true
-  
-  **Evaluation order**: Conditions are checked top-to-bottom. First matching condition wins.
-</ParamField>
+Just like the Rules step, you define **facts** that will be evaluated by the conditions. Facts are populated using [variable mapping](/advanced/variable-mapping/overview) from previous steps:
 
-### Default/Else Branch
+```json
+{
+  "orderTotal": "$.checkout_step.total",
+  "customerTier": "$.customer_lookup.tier",
+  "agentDecision": "$.support_agent.output.decision",
+  "confidence": "$.support_agent.output.confidence"
+}
+```
 
-<ParamField path="defaultBranch" type="object">
-  What happens when no conditions match (the "else" branch)
-  
-  **Best practice**: Always define a default branch to handle unexpected values.
-  
-  <Warning>Without a default branch, flows fail if no conditions match</Warning>
-</ParamField>
+<Note>
+Fact keys don't need the `.value` suffix in the Condition step—the system handles this automatically.
+</Note>
+
+### Conditions Array
+
+Conditions are evaluated **top-to-bottom**. The first matching condition's outcome is used:
+
+```json
+{
+  "conditions": [
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          {"operator": ">", "input": ["@fact:orderTotal", 10000]},
+          {"operator": "=", "input": ["@fact:customerTier", "enterprise"]}
+        ]
+      },
+      "outcome": "enterprise_handler_step_id"
+    },
+    {
+      "condition": {
+        "operator": ">",
+        "input": ["@fact:orderTotal", 1000]
+      },
+      "outcome": "business_handler_step_id"
+    },
+    {
+      "outcome": "standard_handler_step_id"
+    }
+  ]
+}
+```
+
+<Warning>
+**Order matters!** Place most specific conditions first, more general conditions last. The first matching condition wins.
+</Warning>
+
+### Special Outcomes
+
+Instead of routing to another step, you can terminate the flow:
+
+- **`"RESOLVE_SUCCESS"`** - End the flow successfully
+- **`"RESOLVE_ERROR"`** - End the flow with an error
+
+```json
+{
+  "conditions": [
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:validationStatus", "valid"]
+      },
+      "outcome": "processing_step_id"
+    },
+    {
+      "outcome": "RESOLVE_ERROR"
+    }
+  ]
+}
+```
 
 ---
 
 ## Condition Syntax
 
-Use variable syntax to reference previous step outputs:
+Conditions use the same **operator-based syntax** as the Rules step. See the [Rules Operations Reference](/flows/steps/rules/operations) for all available operators.
 
 ### Basic Comparisons
 
-```javascript
+```json
 // Equality
-${agent.decision} == "approve"
-${order.total} == 100
+{
+  "operator": "=",
+  "input": ["@fact:status", "approved"]
+}
 
-// Inequality  
-${status} != "pending"
-${result} != null
+// Inequality
+{
+  "operator": "!=",
+  "input": ["@fact:status", "pending"]
+}
 
-// Greater/Less Than
-${amount} > 1000
-${score} >= 7
-${count} < 10
-${value} <= 100
+// Greater than
+{
+  "operator": ">",
+  "input": ["@fact:amount", 1000]
+}
+
+// Less than or equal
+{
+  "operator": "<=",
+  "input": ["@fact:score", 100]
+}
 ```
 
 ### Logical Operators
 
-```javascript
-// AND - Both must be true
-${amount} > 1000 && ${tier} == "gold"
+```json
+// AND - All conditions must be true
+{
+  "operator": "and",
+  "input": [
+    {"operator": ">", "input": ["@fact:amount", 1000]},
+    {"operator": "=", "input": ["@fact:tier", "gold"]}
+  ]
+}
 
-// OR - Either can be true
-${status} == "urgent" || ${priority} == "high"
+// OR - At least one condition must be true
+{
+  "operator": "or",
+  "input": [
+    {"operator": "=", "input": ["@fact:status", "urgent"]},
+    {"operator": "=", "input": ["@fact:priority", "high"]}
+  ]
+}
 
 // NOT - Invert condition
-!(${approved} == true)
+{
+  "operator": "not",
+  "input": [
+    {"operator": "=", "input": ["@fact:approved", true]}
+  ]
+}
+```
+
+### Null Checks
+
+```json
+// Check if value exists
+{
+  "operator": "notEmpty",
+  "input": ["@fact:email"]
+}
+
+// Check if value is empty/null
+{
+  "operator": "isEmpty",
+  "input": ["@fact:optionalField"]
+}
 ```
 
 ### String Operations
 
-```javascript
-// Contains
-${message}.includes("refund")
+```json
+// Contains substring
+{
+  "operator": "includes",
+  "input": ["@fact:message", "refund"]
+}
 
 // Starts with
-${email}.startsWith("admin@")
+{
+  "operator": "startsWith",
+  "input": ["@fact:email", "admin@"]
+}
 
 // Ends with
-${filename}.endsWith(".pdf")
+{
+  "operator": "endsWith",
+  "input": ["@fact:filename", ".pdf"]
+}
 
-// Case-insensitive
-${category}.toLowerCase() == "support"
+// Case-insensitive comparison
+{
+  "operator": "=",
+  "input": [
+    {"operator": "toLower", "input": ["@fact:category"]},
+    "support"
+  ]
+}
 ```
 
-### Null/Undefined Checks
+### Array Operations
 
-```javascript
-// Check if exists
-${value} != null
-${value} !== undefined
+```json
+// Check if array contains value
+{
+  "operator": "in",
+  "input": ["@fact:selectedTag", "@fact:availableTags"]
+}
 
-// Check if has value
-${array}.length > 0
-${object}.property != null
-```
-
-### Complex Expressions
-
-```javascript
-// Nested properties
-${agent.output.confidence} > 0.8
-
-// Array checks
-${tags}.includes("priority")
-
-// Multiple conditions
-(${amount} > 1000 && ${tier} == "gold") || ${vip} == true
+// Check array length
+{
+  "operator": ">",
+  "input": [
+    {"operator": "size", "input": ["@fact:items"]},
+    0
+  ]
+}
 ```
 
 ---
@@ -158,167 +262,287 @@ ${tags}.includes("priority")
 
 <AccordionGroup>
   <Accordion title="Agent Decision Routing" icon="robot">
-    Route based on agent's structured output
+    Route based on agent's structured output decision
     
-    **Setup**:
-    ```text
-    Agent with output schema:
+    **Facts**:
+    ```json
     {
-      "decision": "approve" | "reject" | "escalate",
-      "confidence": 0-1,
-      "reason": "..."
+      "decision": "$.support_agent.output.decision",
+      "confidence": "$.support_agent.output.confidence"
     }
     ```
     
-    **Condition**:
-    ```javascript
-    // Branch 1: Approved
-    ${agent.output.decision} == "approve"
-    
-    // Branch 2: Rejected  
-    ${agent.output.decision} == "reject"
-    
-    // Branch 3: Needs review
-    ${agent.output.decision} == "escalate"
-    
-    // Default: Error handling
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:decision", "approve"]
+        },
+        "outcome": "approval_flow_step"
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:decision", "reject"]
+        },
+        "outcome": "rejection_flow_step"
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:decision", "escalate"]
+        },
+        "outcome": "human_review_step"
+      },
+      {
+        "outcome": "error_handler_step"
+      }
+    ]
     ```
-    
-    **Use when**: Agent provides categorized decisions that need different handling
   </Accordion>
 
   <Accordion title="Threshold-Based Routing" icon="gauge-high">
     Route based on numeric thresholds
     
-    **Condition**:
-    ```javascript
-    // Branch 1: High value
-    ${order.total} >= 10000
-    
-    // Branch 2: Medium value
-    ${order.total} >= 1000
-    
-    // Branch 3: Standard
-    ${order.total} >= 0
-    
-    // Default: Invalid amount
+    **Facts**:
+    ```json
+    {
+      "orderTotal": "$.order.total"
+    }
     ```
     
-    **Use when**: Different processing for different value tiers (pricing, approval levels, SLAs)
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:orderTotal", 10000]
+        },
+        "outcome": "enterprise_sales_step"
+      },
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:orderTotal", 1000]
+        },
+        "outcome": "business_sales_step"
+      },
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:orderTotal", 0]
+        },
+        "outcome": "self_service_step"
+      },
+      {
+        "outcome": "RESOLVE_ERROR"
+      }
+    ]
+    ```
   </Accordion>
 
   <Accordion title="Multi-Factor Validation" icon="shield-check">
     Check multiple criteria before proceeding
     
-    **Condition**:
-    ```javascript
-    // Branch 1: Fully validated
-    ${email} != null && 
-    ${email}.includes("@") && 
-    ${age} >= 18 && 
-    ${terms_accepted} == true
-    
-    // Default: Validation failed
+    **Facts**:
+    ```json
+    {
+      "email": "$.form.email",
+      "age": "$.form.age",
+      "termsAccepted": "$.form.terms_accepted"
+    }
     ```
     
-    **Use when**: Multiple requirements must be met before proceeding
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": "notEmpty", "input": ["@fact:email"]},
+            {"operator": "includes", "input": ["@fact:email", "@"]},
+            {"operator": ">=", "input": ["@fact:age", 18]},
+            {"operator": "=", "input": ["@fact:termsAccepted", true]}
+          ]
+        },
+        "outcome": "validated_processing_step"
+      },
+      {
+        "outcome": "validation_failed_step"
+      }
+    ]
+    ```
   </Accordion>
 
   <Accordion title="Status-Based Routing" icon="traffic-light">
     Route based on status or category
     
-    **Condition**:
-    ```javascript
-    // Branch 1: New customers
-    ${customer.status} == "new"
-    
-    // Branch 2: Returning customers
-    ${customer.status} == "returning"
-    
-    // Branch 3: VIP customers
-    ${customer.tier} == "vip"
-    
-    // Default: Standard handling
+    **Facts**:
+    ```json
+    {
+      "customerStatus": "$.customer.status",
+      "customerTier": "$.customer.tier"
+    }
     ```
     
-    **Use when**: Different flows for different customer types, order statuses, or categories
-  </Accordion>
-
-  <Accordion title="Error Handling" icon="triangle-exclamation">
-    Route based on success or failure
-    
-    **Condition**:
-    ```javascript
-    // Branch 1: Success
-    ${api_response.status} == 200
-    
-    // Branch 2: Client error (4xx)
-    ${api_response.status} >= 400 && ${api_response.status} < 500
-    
-    // Branch 3: Server error (5xx)
-    ${api_response.status} >= 500
-    
-    // Default: Unknown error
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:customerStatus", "new"]
+        },
+        "outcome": "new_customer_flow_step"
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:customerTier", "vip"]
+        },
+        "outcome": "vip_flow_step"
+      },
+      {
+        "condition": {
+          "operator": "=",
+          "input": ["@fact:customerStatus", "returning"]
+        },
+        "outcome": "returning_customer_flow_step"
+      },
+      {
+        "outcome": "standard_flow_step"
+      }
+    ]
     ```
-    
-    **Use when**: Different error handling for different failure types
-  </Accordion>
-
-  <Accordion title="Time-Based Routing" icon="clock">
-    Route based on time or date
-    
-    **Condition**:
-    ```javascript
-    // Branch 1: Business hours
-    ${current_hour} >= 9 && ${current_hour} < 17
-    
-    // Branch 2: After hours
-    ${current_hour} >= 17 || ${current_hour} < 9
-    
-    // Branch 3: Weekend
-    ${day_of_week} == "Saturday" || ${day_of_week} == "Sunday"
-    
-    // Default: Holiday handling
-    ```
-    
-    **Use when**: Different behavior during business hours vs. after hours
   </Accordion>
 
   <Accordion title="Confidence-Based Routing" icon="chart-line">
     Route based on AI confidence scores
     
-    **Condition**:
-    ```javascript
-    // Branch 1: High confidence - proceed automatically
-    ${agent.confidence} >= 0.9
-    
-    // Branch 2: Medium confidence - human review
-    ${agent.confidence} >= 0.6
-    
-    // Branch 3: Low confidence - escalate
-    ${agent.confidence} < 0.6
-    
-    // Default: Error
+    **Facts**:
+    ```json
+    {
+      "confidence": "$.agent.output.confidence",
+      "decision": "$.agent.output.decision"
+    }
     ```
     
-    **Use when**: Different handling based on AI certainty
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:confidence", 0.9]
+        },
+        "outcome": "auto_approve_step"
+      },
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:confidence", 0.6]
+        },
+        "outcome": "manager_review_step"
+      },
+      {
+        "condition": {
+          "operator": "<",
+          "input": ["@fact:confidence", 0.6]
+        },
+        "outcome": "senior_review_step"
+      },
+      {
+        "outcome": "RESOLVE_ERROR"
+      }
+    ]
+    ```
+  </Accordion>
+
+  <Accordion title="Error Handling & Validation" icon="triangle-exclamation">
+    Validate data and route errors appropriately
+    
+    **Facts**:
+    ```json
+    {
+      "apiStatus": "$.http_request.status",
+      "hasData": "$.http_request.data"
+    }
+    ```
+    
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": "=", "input": ["@fact:apiStatus", 200]},
+            {"operator": "notEmpty", "input": ["@fact:hasData"]}
+          ]
+        },
+        "outcome": "success_processing_step"
+      },
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": ">=", "input": ["@fact:apiStatus", 400]},
+            {"operator": "<", "input": ["@fact:apiStatus", 500]}
+          ]
+        },
+        "outcome": "client_error_handler_step"
+      },
+      {
+        "condition": {
+          "operator": ">=",
+          "input": ["@fact:apiStatus", 500]
+        },
+        "outcome": "server_error_handler_step"
+      },
+      {
+        "outcome": "RESOLVE_ERROR"
+      }
+    ]
+    ```
   </Accordion>
 
   <Accordion title="Data Completeness Check" icon="list-check">
-    Verify required fields exist
+    Verify required fields exist before processing
     
-    **Condition**:
-    ```javascript
-    // Branch 1: Complete data
-    ${name} != null && 
-    ${email} != null && 
-    ${phone} != null && 
-    ${address} != null
-    
-    // Default: Missing required fields
+    **Facts**:
+    ```json
+    {
+      "name": "$.form.name",
+      "email": "$.form.email",
+      "phone": "$.form.phone",
+      "address": "$.form.address"
+    }
     ```
     
-    **Use when**: Validation before processing
+    **Conditions**:
+    ```json
+    [
+      {
+        "condition": {
+          "operator": "and",
+          "input": [
+            {"operator": "notEmpty", "input": ["@fact:name"]},
+            {"operator": "notEmpty", "input": ["@fact:email"]},
+            {"operator": "notEmpty", "input": ["@fact:phone"]},
+            {"operator": "notEmpty", "input": ["@fact:address"]}
+          ]
+        },
+        "outcome": "complete_data_processing_step"
+      },
+      {
+        "outcome": "missing_fields_error_step"
+      }
+    ]
+    ```
   </Accordion>
 </AccordionGroup>
 
@@ -328,345 +552,185 @@ ${tags}.includes("priority")
 
 <CardGroup cols={2}>
   <Card title="Always Have Default" icon="arrows-split-up-and-left">
-    Always define a default/else branch. Flows fail if no conditions match and no default exists.
+    Always include a final condition with no condition expression (just `{"outcome": "..."}`) to handle unexpected values.
   </Card>
   
   <Card title="Order Matters" icon="arrow-down-1-9">
     Conditions are evaluated top-to-bottom. Put most specific conditions first, most general last.
   </Card>
   
-  <Card title="Use Structured Output" icon="table">
-    When routing based on agent decisions, use output schemas. Makes conditions cleaner and more reliable.
+  <Card title="Use Agent Output Schemas" icon="table">
+    When routing based on agent decisions, use output schemas for clean, predictable conditions.
   </Card>
   
-  <Card title="Test Edge Cases" icon="vial">
-    Test with null values, unexpected data, and boundary conditions. Ensure all branches work correctly.
+  <Card title="Test All Branches" icon="vial">
+    Test each condition path with appropriate test data to ensure all outcomes work correctly.
   </Card>
   
   <Card title="Keep It Simple" icon="minimize">
-    Complex conditions are hard to debug. Consider using agents for complex decision-making instead.
+    For very complex logic, consider using a Rules step to calculate intermediate values, then use a Condition step for routing.
   </Card>
   
   <Card title="Document Branches" icon="message-lines">
-    Use clear branch labels. Future you will thank present you.
+    Use clear, descriptive names for outcome steps so the flow is easy to understand.
   </Card>
 </CardGroup>
 
 ---
 
-## When to Use Conditions vs. Agents
+## When to Use Conditions vs. Rules
 
-| Use Condition When | Use Agent When |
+| Use Condition When | Use Rules When |
 |-------------------|----------------|
-| Binary decision (yes/no) | Decision requires interpretation |
-| Simple threshold check | Multiple factors need weighing |
-| Exact value matching | Fuzzy matching or similarity |
-| You control the logic | Logic might need to adapt |
-| Fast routing needed | Deeper analysis required |
-| Rules are fixed | Rules are guidelines |
+| Need to **route** flow to different steps | Need to **calculate** values |
+| Binary or multi-way branching | Complex calculations or transformations |
+| Flow termination needed | Data reshaping needed |
+| Decision → Action mapping | Multiple derived values needed |
 
-**Example**: 
+**Example**:
 
-❌ **Don't use Condition for**: "Is this email a good fit for our product?"  
-✅ **Use Agent instead**: Too nuanced, requires interpretation
+**Use Condition for**: "If approved, go to approval step. If rejected, go to rejection step."
 
-✅ **Use Condition for**: "Is the email field valid and present?"  
-❌ **Don't use Agent**: Simple validation, no interpretation needed
+**Use Rules for**: "Calculate discount percentage based on order total, customer tier, and region."
 
----
-
-## Examples
-
-### Example 1: Agent Decision Routing
-
-**Scenario**: Customer support agent analyzes request, condition routes to appropriate handler
-
-```text
-Agent: Analyze customer request
-  Output: {decision: "refund", confidence: 0.95}
-↓
-Condition:
-  If decision == "refund" → Process refund flow
-  If decision == "replace" → Process replacement flow
-  If decision == "escalate" → Human review
-  Default → Error handling
-```
-
-**Configuration**:
-```javascript
-// Branch 1: Refund
-${support_agent.output.decision} == "refund"
-→ Next: Refund processing agent
-
-// Branch 2: Replacement
-${support_agent.output.decision} == "replace"  
-→ Next: Replacement flow
-
-// Branch 3: Escalate
-${support_agent.output.decision} == "escalate"
-→ Next: Human in the Loop
-
-// Default: Unexpected decision
-→ Next: Error notification
-```
+Often you'll use **Rules step → Condition step** together:
+1. Rules step calculates complex values
+2. Condition step routes based on those calculated values
 
 ---
 
-### Example 2: Multi-Tier Pricing
+## Complete Example
 
-**Scenario**: Different processing based on order value
+Here's a complete example showing Facts, Conditions, and routing:
 
-```text
-Order data received
-↓
-Condition:
-  If amount >= $10,000 → Enterprise sales team
-  If amount >= $1,000 → Business sales team
-  If amount < $1,000 → Self-service flow
+**Scenario**: Route customer support requests based on agent analysis
+
+**Step Configuration**:
+
+```json
+{
+  "facts": {
+    "requestType": "$.support_agent.output.type",
+    "priority": "$.support_agent.output.priority",
+    "confidence": "$.support_agent.output.confidence",
+    "requiresHuman": "$.support_agent.output.requires_human"
+  },
+  "conditions": [
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:requiresHuman", true]
+      },
+      "outcome": "human_review_step_id"
+    },
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          {"operator": "=", "input": ["@fact:requestType", "refund"]},
+          {"operator": ">=", "input": ["@fact:confidence", 0.8]}
+        ]
+      },
+      "outcome": "refund_processing_step_id"
+    },
+    {
+      "condition": {
+        "operator": "and",
+        "input": [
+          {"operator": "=", "input": ["@fact:requestType", "technical"]},
+          {"operator": ">=", "input": ["@fact:confidence", 0.8]}
+        ]
+      },
+      "outcome": "technical_support_step_id"
+    },
+    {
+      "condition": {
+        "operator": "=",
+        "input": ["@fact:priority", "urgent"]
+      },
+      "outcome": "urgent_escalation_step_id"
+    },
+    {
+      "condition": {
+        "operator": "<",
+        "input": ["@fact:confidence", 0.6]
+      },
+      "outcome": "low_confidence_review_step_id"
+    },
+    {
+      "outcome": "standard_support_step_id"
+    }
+  ]
+}
 ```
 
-**Configuration**:
-```javascript
-// Branch 1: Enterprise
-${order.total} >= 10000
-→ Next: Enterprise sales agent
-
-// Branch 2: Business
-${order.total} >= 1000
-→ Next: Business sales agent
-
-// Branch 3: Self-service  
-${order.total} > 0
-→ Next: Automated confirmation
-
-// Default: Invalid amount
-→ Next: Error handling
-```
-
----
-
-### Example 3: Confidence-Based Review
-
-**Scenario**: Automatic approval for high-confidence decisions, review for low
-
-```text
-Agent: Risk assessment
-  Output: {approved: true, confidence: 0.75}
-↓
-Condition:
-  If confidence >= 0.9 → Auto-approve
-  If confidence >= 0.6 → Manager review
-  If confidence < 0.6 → Senior review
-```
-
-**Configuration**:
-```javascript
-// Branch 1: High confidence - auto-approve
-${risk_agent.output.confidence} >= 0.9
-→ Next: Approval confirmation
-
-// Branch 2: Medium confidence - manager review
-${risk_agent.output.confidence} >= 0.6
-→ Next: Manager approval (Human in Loop)
-
-// Branch 3: Low confidence - senior review
-${risk_agent.output.confidence} < 0.6
-→ Next: Senior review (Human in Loop)
-
-// Default: Error
-→ Next: Error notification
-```
-
----
-
-### Example 4: Validation Flow
-
-**Scenario**: Validate required fields before processing
-
-```text
-Form submission
-↓
-Condition:
-  If all required fields present → Process
-  Else → Return validation errors
-```
-
-**Configuration**:
-```javascript
-// Branch 1: Valid submission
-${form.name} != null && 
-${form.email} != null && 
-${form.email}.includes("@") && 
-${form.phone} != null && 
-${form.message} != null
-→ Next: Processing agent
-
-// Default: Invalid submission
-→ Next: Return validation error message
-```
-
----
-
-### Example 5: Customer Tier Routing
-
-**Scenario**: Different support flows for different customer tiers
-
-```text
-Support ticket received
-↓
-Condition:
-  If tier == "enterprise" → Dedicated account manager
-  If tier == "business" → Priority support queue
-  If tier == "starter" → Standard support agent
-```
-
-**Configuration**:
-```javascript
-// Branch 1: Enterprise
-${customer.tier} == "enterprise"
-→ Next: Notify account manager + Priority agent
-
-// Branch 2: Business
-${customer.tier} == "business"
-→ Next: Priority support agent
-
-// Branch 3: Starter
-${customer.tier} == "starter"
-→ Next: Standard support agent
-
-// Default: Free tier
-→ Next: Self-service knowledge base
-```
-
----
-
-## Advanced Patterns
-
-<AccordionGroup>
-  <Accordion title="Nested Conditions" icon="sitemap">
-    Conditions within conditions for complex decision trees
-    
-    ```text
-    Condition 1: Check urgency
-    ↓ (urgent)
-      Condition 2: Check value
-      ↓ (high value)    ↓ (low value)
-      VIP handling      Standard urgent
-    ↓ (not urgent)
-      Standard flow
-    ```
-    
-    **Use when**: Multi-dimensional routing (urgency + value, type + status, etc.)
-    
-    **Alternative**: Consider using a Rules step for very complex decision trees
-  </Accordion>
-
-  <Accordion title="Conditional Retry Logic" icon="rotate">
-    Retry failed operations with conditions
-    
-    ```text
-    HTTP Request
-    ↓
-    Condition: Success?
-    ↓ (failed)
-      Delay: Wait 5 seconds
-      ↓
-      Condition: Retry count < 3?
-      ↓ (true)          ↓ (false)
-      Retry HTTP        Give up, notify
-    ↓ (success)
-      Continue flow
-    ```
-    
-    **Use when**: External API calls that might fail temporarily
-  </Accordion>
-
-  <Accordion title="Dynamic Tool Selection" icon="toolbox">
-    Choose which agent/tool to use based on request type
-    
-    ```text
-    Condition: Categorize request
-    ↓
-    ├─ If "technical" → Technical support agent (with tech tools)
-    ├─ If "billing" → Billing agent (with payment tools)
-    └─ If "sales" → Sales agent (with CRM tools)
-    ```
-    
-    **Use when**: Different request types need different specialized agents
-  </Accordion>
-
-  <Accordion title="A/B Testing" icon="flask">
-    Route randomly for experiments
-    
-    ```text
-    Function: Generate random number 0-1
-    ↓
-    Condition:
-    ↓
-    ├─ If random < 0.5 → Variant A
-    └─ If random >= 0.5 → Variant B
-    ```
-    
-    **Use when**: Testing different agent prompts, flows, or approaches
-  </Accordion>
-</AccordionGroup>
+**Flow Routing**:
+1. If agent says human required → Human review
+2. If refund with high confidence → Auto-process refund
+3. If technical with high confidence → Technical support flow
+4. If marked urgent → Urgent escalation
+5. If low confidence → Manual review
+6. Default → Standard support queue
 
 ---
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Flow fails at condition" icon="circle-exclamation">
+  <Accordion title="Flow fails at condition step" icon="circle-exclamation">
     **Possible causes**:
-    - No conditions matched and no default branch
-    - Variable reference is incorrect
+    - No conditions matched and no default outcome
+    - Fact reference is incorrect
     - Data type mismatch
+    - Variable mapping failed
     
     **Solutions**:
-    - Always add a default branch
-    - Verify variable paths (check previous step output)
-    - Check data types (string vs. number)
-    - Test with sample data
+    - Always add a default condition with no condition expression
+    - Verify fact keys match your facts object
+    - Check data types (comparing string to number won't match)
+    - Verify previous step output contains expected data
+    - Add logging steps before condition to inspect values
   </Accordion>
 
   <Accordion title="Wrong branch taken" icon="turn-down">
     **Possible causes**:
     - Condition order wrong (earlier condition matched first)
     - Logical operator error (AND vs. OR)
-    - Data type mismatch (comparing string "100" to number 100)
+    - Data type mismatch
+    - Operator precedence unexpected
     
     **Solutions**:
     - Reorder conditions (most specific first)
-    - Verify logical operators
-    - Ensure type consistency
-    - Add logging/debugging steps
+    - Verify logical operators are correct
+    - Check data types match (use type conversion if needed)
+    - Test each condition individually
+    - Add logging to see which condition matched
   </Accordion>
 
   <Accordion title="Condition always false" icon="ban">
     **Possible causes**:
-    - Variable doesn't exist or is null
-    - Incorrect variable path
+    - Fact doesn't exist or is null
+    - Variable mapping returned unexpected format
     - Case sensitivity issue
     - Whitespace in data
     
     **Solutions**:
     - Check previous step output structure
-    - Add null checks: `${value} != null && ${value} == "expected"`
-    - Use `.toLowerCase()` for case-insensitive comparison
-    - Trim whitespace: `${value}.trim() == "expected"`
+    - Add null checks using `notEmpty` operator
+    - Use `toLower` for case-insensitive comparison
+    - Use `trim` operator to remove whitespace
+    - Verify variable mapping path is correct
   </Accordion>
 
   <Accordion title="Can't access nested properties" icon="folder-tree">
     **Possible causes**:
-    - Incorrect nesting syntax
-    - Property doesn't exist
-    - Array access wrong
+    - Variable mapping didn't extract nested value
+    - Fact contains full object instead of specific property
     
     **Solutions**:
-    - Verify exact property path from previous step
-    - Use optional chaining if available
-    - Add existence checks
-    - Log previous step output to see structure
+    - Use JSONPath in variable mapping to extract specific property: `$.step.output.nested.property`
+    - If fact contains object, use `jPath` operator in condition to access nested value
+    - Consider using Map step before Condition to flatten data
   </Accordion>
 </AccordionGroup>
 
@@ -675,28 +739,28 @@ ${customer.tier} == "starter"
 ## Tips for Better Conditions
 
 <Steps>
+  <Step title="Map facts carefully">
+    Use variable mapping to extract exactly the values you need. Make facts simple values when possible.
+  </Step>
+  
   <Step title="Start simple">
     Begin with basic conditions. Add complexity only when needed.
   </Step>
   
-  <Step title="Use structured output from agents">
-    Define output schemas on agents for clean, predictable condition checks.
+  <Step title="Use structured agent output">
+    Define output schemas on agents for clean, predictable routing decisions.
   </Step>
   
-  <Step title="Test all branches">
-    In Test Mode, verify each branch works correctly with appropriate test data.
+  <Step title="Test all paths">
+    Test each branch with appropriate test data to verify routing works correctly.
   </Step>
   
   <Step title="Handle null values">
-    Always check for null/undefined before comparing values.
+    Always check for null/empty before comparing values using `notEmpty` or `isEmpty`.
   </Step>
   
-  <Step title="Document your logic">
-    Use clear branch labels that explain what each path does.
-  </Step>
-  
-  <Step title="Consider alternatives">
-    For very complex logic, consider using Rules step or letting agents decide.
+  <Step title="Consider Rules + Condition">
+    For complex logic, use Rules step to calculate, then Condition step to route based on results.
   </Step>
 </Steps>
 
@@ -705,16 +769,16 @@ ${customer.tier} == "starter"
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Agents Step" icon="robot" href="/flows/steps/agents">
-    Configure agents that feed into conditions
-  </Card>
-  
   <Card title="Rules Step" icon="gavel" href="/flows/steps/rules">
-    Complex business logic and calculations
+    Learn about the Rules step for complex calculations
   </Card>
   
-  <Card title="Variable Mapping" icon="brackets-curly" href="/flows/concepts/variable-mapping">
-    Reference data from previous steps
+  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
+    Master variable mapping to populate facts
+  </Card>
+  
+  <Card title="Rules Operations" icon="list-check" href="/flows/steps/rules/operations">
+    Complete reference for all available operators
   </Card>
   
   <Card title="Human in the Loop" icon="user-check" href="/flows/steps/human-in-the-loop">

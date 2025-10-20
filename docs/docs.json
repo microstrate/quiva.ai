@@ -17,17 +17,10 @@
           {
             "group": "Get Started",
             "pages": [
-              "welcome-to-microstrate/overview",
-              "welcome-to-microstrate/quick-start",
-              "hub/hub-description",
-              "welcome-to-microstrate/development"
-            ]
-          },
-          {
-            "group": "Getting Started",
-            "pages": [
-              "essentials/getting-started",
-              "essentials/plans-and-pricing"
+              "get-started/overview",
+              "get-started/getting-started",
+              "get-started/core-concepts",
+              "get-started/plans-and-pricing"
             ]
           },
           {
@@ -102,34 +95,44 @@
           {
             "group": "Account Management",
             "pages": [
-              "essentials/account/creating-account",
-              "essentials/account/account-settings",
-              "essentials/account/billing-subscriptions",
-              "essentials/account/closing-account"
+              {
+                "icon":"id-card",
+                "group": "Account Management",
+                "pages": [
+                  "essentials/account/creating-account",
+                  "essentials/account/account-settings",
+                  "essentials/account/billing-subscriptions",
+                  "essentials/account/closing-account"
+                ]
+              },
+              {
+                "icon":"people-group",
+                "group": "User Management",
+                "pages": [
+                  "essentials/users/user-management",
+                  "essentials/users/roles-permissions",
+                  "essentials/users/user-settings"
+                ]
+              },
+              {
+                
+                "icon": "lock",
+                "group": "Security",
+                "pages": [
+                  "essentials/security/overview",
+                  "essentials/security/authentication",
+                  "essentials/security/api-keys",
+                  "essentials/security/sessions",
+                  "essentials/security/incident-response"
+                ]
+              }
             ]
           },
-          {
-            "group": "User Management",
-            "pages": [
-              "essentials/users/user-management",
-              "essentials/users/roles-permissions",
-              "essentials/users/user-settings"
-            ]
-          },
-          {
-            "group": "Security",
-            "pages": [
-              "essentials/security/overview",
-              "essentials/security/authentication",
-              "essentials/security/api-keys",
-              "essentials/security/sessions",
-              "essentials/security/incident-response"
-            ]
-          },
+
           {
             "group": "Advanced",
             "pages": [
-              "advanced/overview",
+              "get-started/development",
               {
                 "group": "Variable Mapping",
                 "icon": "arrow-right-arrow-left",
@@ -156,24 +159,6 @@
                   "advanced/rules/examples",
                   "advanced/rules/advanced-techniques",
                   "advanced/rules/technical-reference"
-                ]
-              },
-              {
-                "group": "Data Transformation",
-                "icon": "wand-magic-sparkles",
-                "pages": [
-                  "advanced/data-transformation/overview",
-                  "advanced/data-transformation/filters",
-                  "advanced/data-transformation/aggregations"
-                ]
-              },
-              {
-                "group": "Integrations",
-                "icon": "plug",
-                "pages": [
-                  "advanced/integrations/custom-mcp-servers",
-                  "advanced/integrations/webhooks",
-                  "advanced/integrations/api-connections"
                 ]
               }
             ]
