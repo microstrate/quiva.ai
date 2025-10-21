@@ -14,6 +14,10 @@
   "servers": [
     {
       "url": "https://api.microstrate.io",
+      "description": "Staging API server"
+    },
+    {
+      "url": "https://api.microstrate.ai",
       "description": "Production API server"
     }
   ],
@@ -253,7 +257,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "$ref": "#/components/schemas/success_response"
                 },
                 "example": {
                   "message": "success"
@@ -692,7 +696,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "$ref": "#/components/schemas/success_response"
                 },
                 "example": {
                   "message": "success"
@@ -893,7 +897,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "$ref": "#/components/schemas/success_response"
                 },
                 "example": {
                   "message": "success"
@@ -1266,7 +1270,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "$ref": "#/components/schemas/success_response"
                 },
                 "example": {
                   "message": "success"
@@ -1296,7 +1300,7 @@
         "x-resource": "microstrate.compute.delete.container-instance",
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success_response"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
@@ -1352,13 +1356,13 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success_response"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/internal_server_error"
@@ -1392,13 +1396,13 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success_response"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/internal_server_error"
@@ -1432,13 +1436,13 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success_response"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/internal_server_error"
@@ -2600,7 +2604,7 @@
           }
         }
       },
-      "SuccessResponse": {
+      "success_response": {
         "type": "object",
         "properties": {
           "message": {
@@ -2611,6 +2615,25 @@
       }
     },
     "responses": {
+      "success_response":{
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Success message"
+                }
+              }
+            },
+            "example": {
+              "message": "Success"
+            }
+          }
+        }
+      },
       "bad_request": {
         "description": "Bad request",
         "content": {
