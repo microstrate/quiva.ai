@@ -1398,7 +1398,7 @@
                 "max_bytes": 1048576,
                 "max_value_size": 8192,
                 "replicas": 3,
-                "storage": 0,
+                "storage": "file",
                 "indexing": {
                   "mappings": [
                     {
@@ -1412,7 +1412,7 @@
                   ],
                   "partitions": 3,
                   "replicas": 2,
-                  "storage_type": 0
+                  "storage_type": "file"
                 }
               }
             }
@@ -1894,10 +1894,7 @@
                     "results": [
                       {
                         "key": "user123",
-                        "value": {
-                          "name": "John Doe",
-                          "age": 30
-                        }
+                        "value": "{\"name\":\"John Doe\",\"age\":30}"
                       }
                     ],
                     "results_total": 1
@@ -1977,17 +1974,11 @@
                     "results": [
                       {
                         "key": "user123",
-                        "value": {
-                          "name": "John Doe",
-                          "email": "john@example.com"
-                        }
+                        "value": "{\"name\":\"John Doe\",\"email\":\"john@example.com\"}"
                       },
                       {
                         "key": "user456",
-                        "value": {
-                          "name": "Jane Smith",
-                          "email": "jane@example.com"
-                        }
+                        "value": "{\"name\":\"Jane Smith\",\"email\":\"jane@example.com\"}"
                       }
                     ],
                     "results_total": 2
@@ -2084,7 +2075,7 @@
                 "description": "My object store bucket",
                 "max_bytes": 104857600,
                 "replicas": 3,
-                "storage": 0
+                "storage": "file"
               }
             }
           }
@@ -2443,7 +2434,7 @@
                 "discard": 0,
                 "max_msgs_per_subject": 1000,
                 "max_msg_size": 8192,
-                "storage": 0,
+                "storage": "file",
                 "num_replicas": 3
               }
             }
