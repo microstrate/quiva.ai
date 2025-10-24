@@ -422,6 +422,132 @@
           }
         }
       }
+    },
+    "/trigger/object-store": {
+      "post": {
+        "summary": "Create a Object Store trigger",
+        "description": "Creates a new Object Store trigger for data processing and routing.",
+        "operationId": "createObjectStoreTrigger",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.post.obj",
+        "tags": [
+          "Object Store Triggers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObjectStoreTriggerRequest"
+              },
+              "example": {
+                "name": "my-object-store-trigger",
+                "collection": "my-collection",
+                "description": "Object Store data processing trigger",
+                "trigger_type": "obj"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Object Store trigger created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectStoreTriggerResponse"
+                },
+                "example": {
+                  "body": {
+                    "name": "my-object-store-trigger",
+                    "collection": "my-collection",
+                    "description": "Object Store data processing trigger",
+                    "bucket": {
+                      "bucket": "flow-upload-123"
+                    },
+                    "subject": "ms.trigger.obj.my-object-store-trigger",
+                    "trigger_type": "obj",
+                    "type": "created"
+                  },
+                  "status_code": 201
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trigger/email": {
+      "post": {
+        "summary": "Create an Email trigger",
+        "description": "Creates a new email trigger for data processing and routing.",
+        "operationId": "createEmailTrigger",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.post.email",
+        "tags": [
+          "Email Triggers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailTriggerRequest"
+              },
+              "example": {
+                "name": "my-email-trigger",
+                "collection": "my-collection",
+                "description": "Email data processing trigger",
+                "trigger_type": "email"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Email trigger created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailTriggerResponse"
+                },
+                "example": {
+                  "body": {
+                    "name": "my-email-trigger",
+                    "collection": "my-collection",
+                    "description": "Email data processing trigger",
+                    "bucket": {
+                      "bucket": "flow-upload-123"
+                    },
+                    "subject": "ms.trigger.email.my-email-trigger",
+                    "trigger_type": "email",
+                    "type": "created"
+                  },
+                  "status_code": 201
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -892,6 +1018,176 @@
                 "type": "string",
                 "description": "Specific type identifier providing additional classification information.",
                 "example": "stream-trigger"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the operation.",
+            "example": 201
+          }
+        }
+      },
+      "ObjectStoreTriggerRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "trigger_type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+            "example": "my-object-store-trigger"
+          },
+          "collection": {
+            "type": "string",
+            "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+            "example": "my-collection"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description explaining the trigger's purpose and function.",
+            "example": "Object Store data processing trigger"
+          },
+          "trigger_type": {
+            "type": "string",
+            "enum": [
+              "obj"
+            ],
+            "description": "Must be 'obj' for this endpoint. Determines the trigger's behavior and available properties.",
+            "example": "obj"
+          }
+        }
+      },
+      "ObjectStoreTriggerResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+                "example": "my-object-store-trigger"
+              },
+              "collection": {
+                "type": "string",
+                "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+                "example": "my-collection"
+              },
+              "description": {
+                "type": "string",
+                "description": "Human-readable description explaining the trigger's purpose and function.",
+                "example": "Object Store data processing trigger"
+              },
+              "subject": {
+                "type": "string",
+                "description": "Full subject identifier for the trigger, following the pattern \"ms.trigger.obj.[name]\".",
+                "example": "ms.trigger.obj.my-object-store-trigger"
+              },
+              "trigger_type": {
+                "type": "string",
+                "enum": [
+                  "obj"
+                ],
+                "description": "Type of trigger, always 'obj' for object store triggers.",
+                "example": "obj"
+              },
+              "type": {
+                "type": "string",
+                "description": "Specific type identifier providing additional classification information.",
+                "example": "object-store-trigger"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the operation.",
+            "example": 201
+          }
+        }
+      },
+      "EmailTriggerRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "trigger_type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+            "example": "my-email-trigger"
+          },
+          "collection": {
+            "type": "string",
+            "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+            "example": "my-collection"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description explaining the trigger's purpose and function.",
+            "example": "Email data processing trigger"
+          },
+          "trigger_type": {
+            "type": "string",
+            "enum": [
+              "email"
+            ],
+            "description": "Must be 'email' for this endpoint. Determines the trigger's behavior and available properties.",
+            "example": "email"
+          }
+        }
+      },
+      "EmailTriggerResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+                "example": "my-email-trigger"
+              },
+              "collection": {
+                "type": "string",
+                "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+                "example": "my-collection"
+              },
+              "description": {
+                "type": "string",
+                "description": "Human-readable description explaining the trigger's purpose and function.",
+                "example": "Email data processing trigger"
+              },
+              "subject": {
+                "type": "string",
+                "description": "Full subject identifier for the trigger, following the pattern \"ms.trigger.email.[name]\".",
+                "example": "ms.trigger.email.my-email-trigger"
+              },
+              "email_published": {
+                "type": "string",
+                "description": "Email for proxying emails to trigger the published flow",
+                "example": "trigger+happysunnypanda123@microstrate.io"
+              },
+              "email_draft": {
+                "type": "string",
+                "description": "Email for proxying emails to trigger the draft flow",
+                "example": "trigger+drafthappysunnypanda123@microstrate.io"
+              },
+              "trigger_type": {
+                "type": "string",
+                "enum": [
+                  "email"
+                ],
+                "description": "Type of trigger, always 'email' for email triggers.",
+                "example": "email"
+              },
+              "type": {
+                "type": "string",
+                "description": "Specific type identifier providing additional classification information.",
+                "example": "email-trigger"
               }
             }
           },
