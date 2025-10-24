@@ -612,43 +612,6 @@
           }
         }
       },
-      "StorageType": {
-        "type": "string",
-        "enum": [
-          "file",
-          "memory"
-        ]
-      },
-      "TriggerObjectStoreBucket": {
-        "type": "object",
-        "required": [
-          "bucket"
-        ],
-        "properties": {
-          "bucket": {
-            "type": "string",
-            "description": "Name of the bucket to create"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description of the bucket"
-          },
-          "max_bytes": {
-            "type": "integer",
-            "description": "Maximum size of the bucket in bytes",
-            "minimum": 1
-          },
-          "replicas": {
-            "type": "integer",
-            "description": "Number of replicas",
-            "minimum": 1,
-            "default": 1
-          },
-          "storage": {
-            "$ref": "#/components/schemas/StorageType"
-          }
-        }
-      },
       "TriggerSource": {
         "type": "object",
         "properties": {
@@ -1094,9 +1057,6 @@
             ],
             "description": "Must be 'obj' for this endpoint. Determines the trigger's behavior and available properties.",
             "example": "obj"
-          },
-          "bucket": {
-            "$ref": "#/components/schemas/TriggerObjectStoreBucket"
           }
         }
       },
@@ -1120,9 +1080,6 @@
                 "type": "string",
                 "description": "Human-readable description explaining the trigger's purpose and function.",
                 "example": "Object Store data processing trigger"
-              },
-              "bucket": {
-                "$ref": "#/components/schemas/TriggerObjectStoreBucket"
               },
               "subject": {
                 "type": "string",
@@ -1209,10 +1166,15 @@
                 "description": "Full subject identifier for the trigger, following the pattern \"ms.trigger.email.[name]\".",
                 "example": "ms.trigger.email.my-email-trigger"
               },
-              "email": {
+              "email_published": {
                 "type": "string",
-                "description": "Temporary email for proxying emails to trigger the flow",
-                "example": "lRjM8DPzT6g2tCBy1TWEW7nQR20UNvrv8Fqcj5Uj9hM@microstrate.io"
+                "description": "Email for proxying emails to trigger the published flow",
+                "example": "trigger+happysunnypanda123@microstrate.io"
+              },
+              "email_draft": {
+                "type": "string",
+                "description": "Email for proxying emails to trigger the draft flow",
+                "example": "trigger+drafthappysunnypanda123@microstrate.io"
               },
               "trigger_type": {
                 "type": "string",
