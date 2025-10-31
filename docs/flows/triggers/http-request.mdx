@@ -6,15 +6,15 @@ icon: 'globe'
 
 # HTTP Request Trigger
 
-The HTTP Request trigger automatically creates a custom endpoint that accepts HTTP POST requests to trigger your flow. This is perfect for integrating Microstrate flows with your application, external services, or any system that can make HTTP requests.
+The HTTP Request trigger automatically creates a custom endpoint that accepts HTTP POST requests to trigger your flow. This is perfect for integrating Quiva flows with your application, external services, or any system that can make HTTP requests.
 
-When you add an HTTP Request trigger, Microstrate automatically generates a unique endpoint URL. You can then send JSON data to this endpoint from anywhere.
+When you add an HTTP Request trigger, Quiva automatically generates a unique endpoint URL. You can then send JSON data to this endpoint from anywhere.
 
 ---
 
 ## How It Works
 
-Add the trigger to your flow, and Microstrate generates a unique endpoint. Make an HTTP POST request from your application. Your flow receives the request data and executes all steps. The endpoint returns a response based on your configuration.
+Add the trigger to your flow, and Quiva generates a unique endpoint. Make an HTTP POST request from your application. Your flow receives the request data and executes all steps. The endpoint returns a response based on your configuration.
 
 ---
 
@@ -22,7 +22,7 @@ Add the trigger to your flow, and Microstrate generates a unique endpoint. Make 
 
 ### Endpoint URL
 
-When you add the trigger, Microstrate automatically generates a unique endpoint URL. Click "Copy Endpoint URL" in the trigger configuration. Use this URL in your application code. The URL is stable and doesn't change unless you regenerate it.
+When you add the trigger, Quiva automatically generates a unique endpoint URL. Click "Copy Endpoint URL" in the trigger configuration. Use this URL in your application code. The URL is stable and doesn't change unless you regenerate it.
 
 ### Request Method
 
@@ -88,7 +88,7 @@ Enable API key authentication to secure your endpoint. Toggle "Secure with API K
 Include the API key in the Authorization header:
 
 ```bash
-curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
+curl -X POST https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger \
   -H "Authorization: Bearer ms_sk_abc123..." \
   -H "Content-Type: application/json" \
   -d '{"data": "value"}'
@@ -111,7 +111,7 @@ const axios = require('axios');
 
 async function triggerFlow(data) {
   const response = await axios.post(
-    'https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger',
+    'https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger',
     data,
     {
       headers: {
@@ -135,7 +135,7 @@ Call flows from your frontend application. For frontend calls, either use public
 **Basic Request:**
 
 ```bash
-curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
+curl -X POST https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger \
   -H "Content-Type: application/json" \
   -d '{"customer_id": "CUST-123"}'
 ```
@@ -143,7 +143,7 @@ curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
 **With API Key:**
 
 ```bash
-curl -X POST https://api.microstrate.com/flows/YOUR_FLOW_ID/trigger \
+curl -X POST https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger \
   -H "Authorization: Bearer ms_sk_abc123..." \
   -H "Content-Type: application/json" \
   -d '{"customer_id": "CUST-123"}'

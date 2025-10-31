@@ -8,13 +8,13 @@ icon: 'envelope'
 
 The Email trigger allows you to trigger flows when emails are received at a specific email address. Perfect for automating customer support, processing lead inquiries, handling support tickets, and any workflow that starts with an email.
 
-When you add an Email trigger, Microstrate provides a unique email address. Any email sent to this address will trigger your flow with the full email content and attachments.
+When you add an Email trigger, Quiva provides a unique email address. Any email sent to this address will trigger your flow with the full email content and attachments.
 
 ---
 
 ## How It Works
 
-Add an Email trigger to your flow. Microstrate generates a unique email address for this trigger. Configure email forwarding or share the address with users. When emails arrive at this address, your flow triggers automatically. Flow receives email subject, body, sender, attachments, and metadata.
+Add an Email trigger to your flow. Quiva generates a unique email address for this trigger. Configure email forwarding or share the address with users. When emails arrive at this address, your flow triggers automatically. Flow receives email subject, body, sender, attachments, and metadata.
 
 ---
 
@@ -22,25 +22,25 @@ Add an Email trigger to your flow. Microstrate generates a unique email address 
 
 ### Email Address
 
-When you add the trigger, Microstrate automatically generates a unique email address:
+When you add the trigger, Quiva automatically generates a unique email address:
 
 ```
-flow-abc123@mail.microstrate.com
+flow-abc123@mail.quiva.ai
 ```
 
 Click "Copy Email Address" in the trigger configuration. Use this address to receive emails that trigger your flow. The email address is permanent and doesn't change.
 
 ### Email Forwarding
 
-You can forward emails from your existing email address to the Microstrate email:
+You can forward emails from your existing email address to the Quiva email:
 
 **Gmail:** Set up automatic forwarding in Gmail settings.
 
-**Outlook:** Create inbox rule to forward to Microstrate address.
+**Outlook:** Create inbox rule to forward to Quiva address.
 
 **Custom Domain:** Set up email forwarding at your domain provider.
 
-This allows you to use your branded email address (support@yourcompany.com) while triggering Microstrate flows.
+This allows you to use your branded email address (support@yourcompany.com) while triggering Quiva flows.
 
 ### Response Mode
 
@@ -86,7 +86,7 @@ const receivedAt = $.trigger.email.received_at;
 
 // Example values
 // from: "customer@example.com"
-// to: "flow-abc123@mail.microstrate.com"
+// to: "flow-abc123@mail.quiva.ai"
 // subject: "Help with my order"
 // receivedAt: "2025-10-14T10:30:00Z"
 ```
@@ -584,7 +584,7 @@ Support Team
 
 ### Emails Not Triggering Flow
 
-**Check email address:** Verify emails sent to correct Microstrate address.
+**Check email address:** Verify emails sent to correct Quiva address.
 
 **Check spam folder:** Email might be caught by spam filter.
 
@@ -685,9 +685,9 @@ Store thread IDs in database. Associate responses with original emails. Maintain
 
 Create multiple email triggers for different purposes:
 
-- support@mail.microstrate.com - Customer support
-- sales@mail.microstrate.com - Sales inquiries
-- invoices@mail.microstrate.com - Invoice processing
+- support@mail.quiva.ai - Customer support
+- sales@mail.quiva.ai - Sales inquiries
+- invoices@mail.quiva.ai - Invoice processing
 
 Each trigger can have different flows and processing logic.
 

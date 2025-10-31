@@ -1,17 +1,17 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Microstrate Gateway",
+    "title": "Quiva Gateway",
     "description": "A comprehensive interface for managing key-value stores, object stores, streams, and search indexing",
     "contact": {
-      "name": "Microstrate Support",
-      "url": "https://microstrate.ai/support"
+      "name": "Quiva Support",
+      "url": "https://quiva.ai/support"
     },
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.microstrate.ai",
+      "url": "https://api.quiva.ai",
       "description": "Production API server"
     }
   ],
@@ -1332,7 +1332,7 @@
         "description": "Retrieves a list of all key-value buckets in the system",
         "operationId": "getKVBucketList",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.kv-list",
+        "x-resource": "quiva.storage.get.kv-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved KV bucket list",
@@ -1382,7 +1382,7 @@
         "description": "Creates a new key-value bucket with optional indexing configuration",
         "operationId": "createKVBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.post.kv",
+        "x-resource": "quiva.storage.post.kv",
         "requestBody": {
           "required": true,
           "content": {
@@ -1443,7 +1443,7 @@
         "description": "Retrieves information about a specific KV bucket",
         "operationId": "getKVBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.kv",
+        "x-resource": "quiva.storage.get.kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1482,7 +1482,7 @@
         "description": "Creates a new key-value bucket with optional indexing or updates it if one does not exist",
         "operationId": "createOrUpdateKVBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.put.kv",
+        "x-resource": "quiva.storage.put.kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1524,7 +1524,7 @@
         "description": "Deletes a key-value bucket and all its contents",
         "operationId": "deleteKVBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.kv",
+        "x-resource": "quiva.storage.delete.kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1558,7 +1558,7 @@
         "description": "Purges all data from a key-value bucket while keeping the bucket configuration",
         "operationId": "purgeKVBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.kv-purge",
+        "x-resource": "quiva.storage.delete.kv-purge",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1592,7 +1592,7 @@
         "description": "Retrieves the latest entries from a key-value bucket",
         "operationId": "getKVLatestEntries",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.kv-entries",
+        "x-resource": "quiva.storage.get.kv-entries",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1670,7 +1670,7 @@
         "description": "Retrieves a specific entry from a key-value bucket",
         "operationId": "getKVEntry",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.kv-entry",
+        "x-resource": "quiva.storage.get.kv-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1725,7 +1725,7 @@
         "description": "Creates or updates a key-value entry in the specified bucket",
         "operationId": "putKVEntry",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.put.kv-entry",
+        "x-resource": "quiva.storage.put.kv-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1775,7 +1775,7 @@
         "description": "Deletes a specific entry from a key-value bucket",
         "operationId": "deleteKVEntry",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.kv-entry",
+        "x-resource": "quiva.storage.delete.kv-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1812,7 +1812,7 @@
         "description": "Searches for entries in a KV bucket based on indexed fields",
         "operationId": "searchKVEntries",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.search-kv",
+        "x-resource": "quiva.storage.get.search-kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1937,7 +1937,7 @@
         "description": "Searches for KV entries by key pattern (e.g., 'user*')",
         "operationId": "searchKVByKey",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.search-kv-by-key",
+        "x-resource": "quiva.storage.get.search-kv-by-key",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2025,7 +2025,7 @@
         "description": "Retrieves a list of all object store buckets",
         "operationId": "getObjectStoreBucketList",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.obj-list",
+        "x-resource": "quiva.storage.get.obj-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved object bucket list",
@@ -2071,7 +2071,7 @@
         "description": "Creates a new object store bucket",
         "operationId": "createObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.post.obj",
+        "x-resource": "quiva.storage.post.obj",
         "requestBody": {
           "required": true,
           "content": {
@@ -2114,7 +2114,7 @@
         "description": "Retrieves detailed information about a specific object store, including its configuration and current state.",
         "operationId": "getObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.obj",
+        "x-resource": "quiva.storage.get.obj",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2153,7 +2153,7 @@
         "description": "Creates a new object store bucket if one does not exist or updates it otherwise",
         "operationId": "createOrUpdateObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.put.obj",
+        "x-resource": "quiva.storage.put.obj",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2195,7 +2195,7 @@
         "description": "Deletes an object store bucket and all its contents",
         "operationId": "deleteObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.obj",
+        "x-resource": "quiva.storage.delete.obj",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2229,7 +2229,7 @@
         "description": "Purges all data from an object store bucket while keeping the bucket configuration",
         "operationId": "purgeObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.obj-purge",
+        "x-resource": "quiva.storage.delete.obj-purge",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2263,7 +2263,7 @@
         "description": "Retrieves entries from an object store bucket",
         "operationId": "getObjectStoreEntries",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.obj-entries",
+        "x-resource": "quiva.storage.get.obj-entries",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2335,7 +2335,7 @@
         "description": "Deletes a specific entry from an object store bucket",
         "operationId": "deleteObjectStoreEntry",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.obj-entry",
+        "x-resource": "quiva.storage.delete.obj-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2372,7 +2372,7 @@
         "description": "Retrieves a list of all streams",
         "operationId": "getStreamList",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.stream-list",
+        "x-resource": "quiva.storage.get.stream-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved stream list",
@@ -2422,7 +2422,7 @@
         "description": "Creates a new stream for message publishing",
         "operationId": "createStream",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.post.stream",
+        "x-resource": "quiva.storage.post.stream",
         "requestBody": {
           "required": true,
           "content": {
@@ -2474,7 +2474,7 @@
         "description": "Retrieves detailed information about a specific stream, including its configuration and current state. This endpoint provides metrics such as the number of messages, bytes used, first and last sequence numbers, and more.",
         "operationId": "getStream",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.stream",
+        "x-resource": "quiva.storage.get.stream",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2513,7 +2513,7 @@
         "description": "Creates a new stream or updates an existing stream with the provided configuration. If the stream does not exist, it will be created. If it exists, it will be updated with the new configuration.\n\nNote that some properties cannot be changed after a stream is created, such as the storage type. If you attempt to change these properties, the request will fail with a 400 error.",
         "operationId": "createOrUpdateStream",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.put.stream",
+        "x-resource": "quiva.storage.put.stream",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2555,7 +2555,7 @@
         "description": "Deletes a stream with all the messages and consumers attached to it.",
         "operationId": "deleteStream",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.stream",
+        "x-resource": "quiva.storage.delete.stream",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2589,7 +2589,7 @@
         "description": "Purges messages from a stream with optional filters",
         "operationId": "purgeStream",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.stream-purge",
+        "x-resource": "quiva.storage.delete.stream-purge",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2637,7 +2637,7 @@
         "description": "Publishes a message to a stream",
         "operationId": "publishMessage",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.post.message",
+        "x-resource": "quiva.storage.post.message",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2688,7 +2688,7 @@
         "description": "Deletes messages from a stream by sequence(seq).",
         "operationId": "deleteStreamMessages",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.delete.messages",
+        "x-resource": "quiva.storage.delete.messages",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2732,7 +2732,7 @@
         "description": "Searches for stream messages by subject pattern",
         "operationId": "searchStreamBySubject",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.search-stream-by-subject",
+        "x-resource": "quiva.storage.get.search-stream-by-subject",
         "parameters": [
           {
             "$ref": "#/components/parameters/stream"
@@ -2814,7 +2814,7 @@
         "description": "Performs a search on an index",
         "operationId": "searchIndex",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.search-index",
+        "x-resource": "quiva.storage.get.search-index",
         "parameters": [
           {
             "name": "index",
@@ -2954,7 +2954,7 @@
         "description": "Retrieves a list of all indexers",
         "operationId": "getIndexerList",
         "x-resource-type": "service",
-        "x-resource": "microstrate.storage.get.indexer-list",
+        "x-resource": "quiva.storage.get.indexer-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved indexer list",

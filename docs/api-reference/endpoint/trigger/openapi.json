@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Microstrate Gateway",
+    "title": "Quiva Gateway",
     "description": "# Bellerophon Trigger Service API\n\nThe Trigger Service is a Bellerophon API service that provides an interface for managing various types of triggers through a subject-based messaging system.\n\nThis API allows you to create, retrieve, and delete different types of triggers including gateway and stream triggers.\n\n## Core Concepts\n\n### Triggers\nTriggers are the foundation of the Bellerophon platform's event-driven architecture. A trigger connects different parts of the system, allowing events in one component to initiate actions in another. Each trigger has a unique subject identifier that follows a specific naming pattern.\n\n### Gateway Triggers\nGateway triggers create API endpoints that can be accessed from outside the system. They define HTTP methods, paths, rate limits, and connect incoming requests to processing functions.\n\n### Stream Triggers\nStream triggers connect data sources to targets, enabling real-time data flow between components. They define how data should be processed, transformed, and routed within the system.\n\n## Subject Structure\n\nThe service follows a subject naming pattern which typically expands to:\n```\nms.trigger.[trigger_type].[resource_name]\n```\n\nAll API endpoints use the /trigger/ prefix in their paths for consistency and to clearly identify the trigger service.",
     "contact": {
       "name": "Bellerophon Support"
@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://api.microstrate.ai",
+      "url": "https://api.quiva.ai",
       "description": "Production API server"
     }
   ],
@@ -21,7 +21,7 @@
         "description": "Retrieves all triggers matching a specific subject pattern. This endpoint provides a comprehensive view of all available triggers that match the given pattern, including their configurations, types, and associated metadata.\n\n**Usage Notes:**\n- Use wildcards in the subject pattern to match multiple triggers\n- Results include all trigger types (gateway, stream, subject)\n- Each trigger includes its complete configuration\n- The subject pattern forms part of the unique identifier for triggers\n- The response includes total count of matching triggers",
         "operationId": "getTriggers",
         "x-resource-type": "service",
-        "x-resource": "microstrate.trigger.get.triggers",
+        "x-resource": "quiva.trigger.get.triggers",
         "tags": [
           "Triggers"
         ],
@@ -53,7 +53,7 @@
                         "collection": "my-collection",
                         "description": "Trigger for API gateway endpoint",
                         "gateway_mapping_subject": "ms.trigger.gateway.123456",
-                        "stream": "microstrate-trigger-config",
+                        "stream": "quiva-trigger-config",
                         "subject": "ms.trigger.gateway.my-gateway-trigger",
                         "trigger_type": "gateway",
                         "type": "created"
@@ -62,7 +62,7 @@
                         "name": "my-stream-trigger",
                         "collection": "my-collection",
                         "description": "Stream data processing trigger",
-                        "stream": "microstrate-trigger-config",
+                        "stream": "quiva-trigger-config",
                         "subject": "ms.trigger.stream.my-stream-trigger",
                         "trigger_type": "stream",
                         "type": "created"
@@ -96,7 +96,7 @@
         "description": "Retrieves detailed information about a specific trigger identified by its type and topic. This endpoint returns comprehensive configuration data including all trigger properties, associated resources, and metadata.\n\n**Usage Notes:**\n- The `trigger_type` parameter identifies the category of trigger (gateway, stream, subject)\n- The `topic` parameter is the unique name identifier for the specific trigger\n- The system constructs the full subject using these parameters: `ms.trigger.{trigger_type}.{topic}`\n- Different trigger types will return different sets of properties in the response\n- The response includes the full subject identifier which may be needed for other operations",
         "operationId": "getTrigger",
         "x-resource-type": "service",
-        "x-resource": "microstrate.trigger.get.trigger",
+        "x-resource": "quiva.trigger.get.trigger",
         "tags": [
           "Triggers"
         ],
@@ -143,7 +143,7 @@
                         "collection": "my-collection",
                         "description": "Trigger for API gateway endpoint",
                         "gateway_mapping_subject": "ms.trigger.gateway.123456",
-                        "stream": "microstrate-trigger-config",
+                        "stream": "quiva-trigger-config",
                         "subject": "ms.trigger.gateway.my-gateway-trigger",
                         "trigger_type": "gateway",
                         "type": "created"
@@ -170,7 +170,7 @@
                           "account": "account_identifier",
                           "type": "stream"
                         },
-                        "stream": "microstrate-trigger-config",
+                        "stream": "quiva-trigger-config",
                         "subject": "ms.trigger.stream.my-stream-trigger",
                         "trigger_type": "stream",
                         "type": "created"
@@ -204,7 +204,7 @@
         "description": "Marks a trigger as deleted (poison-pilled). This operation logically removes the trigger from the system while preserving the record.\n\n**Usage Notes:**\n- This operation cannot be undone through the API\n- The `trigger_type` and `topic` parameters together identify the exact trigger to delete\n- The system constructs the full subject using these parameters: `ms.trigger.{trigger_type}.{topic}`\n- For gateway triggers, associated mappings remain but are no longer accessible\n- For stream triggers, connections between source and target are terminated\n- In-flight operations may still complete, but new operations will be rejected\n- The trigger remains in the system's history for audit purposes",
         "operationId": "deleteTrigger",
         "x-resource-type": "service",
-        "x-resource": "microstrate.trigger.delete.item",
+        "x-resource": "quiva.trigger.delete.item",
         "tags": [
           "Triggers"
         ],
@@ -277,7 +277,7 @@
         "description": "Creates a new gateway trigger for API endpoint management. A gateway trigger establishes an HTTP endpoint that can be accessed from outside the system and routes requests to appropriate handlers.\n\n**Usage Notes:**\n- The system automatically generates a unique topic for your gateway trigger\n- Default timeout is 30 seconds (30000ms) if not specified\n- Gateway mappings define the HTTP method, path, and access controls\n- Setting `is_public: true` allows the endpoint to be accessed without authentication\n- Rate limits can be configured per endpoint\n- After creation, the gateway endpoint is immediately available for traffic\n- The response includes the full subject identifier which may be needed for other operations",
         "operationId": "createGatewayTrigger",
         "x-resource-type": "service",
-        "x-resource": "microstrate.trigger.post.gateway",
+        "x-resource": "quiva.trigger.post.gateway",
         "tags": [
           "Gateway Triggers"
         ],
@@ -320,7 +320,7 @@
                     "name": "my-gateway-trigger",
                     "collection": "my-collection",
                     "gateway_mapping_subject": "ms.trigger.gateway.123456",
-                    "stream": "microstrate-trigger-config",
+                    "stream": "quiva-trigger-config",
                     "subject": "ms.trigger.gateway.my-gateway-trigger",
                     "trigger_type": "gateway",
                     "type": "created"
@@ -348,7 +348,7 @@
         "description": "Creates a new stream trigger for data processing and routing. A stream trigger connects a data source to a target, enabling real-time data flow between components.\n\n**Usage Notes:**\n- The system automatically creates necessary import/export pairs\n- Stream triggers define both source and target configurations\n- The source configuration specifies where data originates\n- The target configuration specifies where data should be delivered\n- Response types can be Singleton (single response), Stream (continuous), or Chunked (paginated)\n- Source and target types determine how data flows through the system\n- The trigger is active immediately after creation\n- Both synchronous and asynchronous data processing patterns are supported",
         "operationId": "createStreamTrigger",
         "x-resource-type": "service",
-        "x-resource": "microstrate.trigger.post.stream",
+        "x-resource": "quiva.trigger.post.stream",
         "tags": [
           "Stream Triggers"
         ],
@@ -401,7 +401,7 @@
                       "account": "account_identifier",
                       "type": "stream"
                     },
-                    "stream": "microstrate-trigger-config",
+                    "stream": "quiva-trigger-config",
                     "subject": "ms.trigger.stream.my-stream-trigger",
                     "trigger_type": "stream",
                     "type": "created"
@@ -459,7 +459,7 @@
           },
           "stream": {
             "type": "string",
-            "description": "Stream identifier where the trigger configuration is stored, typically \"microstrate-trigger-config\"."
+            "description": "Stream identifier where the trigger configuration is stored, typically \"quiva-trigger-config\"."
           },
           "subject": {
             "type": "string",
@@ -774,7 +774,7 @@
               "stream": {
                 "type": "string",
                 "description": "Stream identifier where the trigger configuration is stored.",
-                "example": "microstrate-trigger-config"
+                "example": "quiva-trigger-config"
               },
               "subject": {
                 "type": "string",
@@ -873,7 +873,7 @@
               "stream": {
                 "type": "string",
                 "description": "Stream identifier where the trigger configuration is stored.",
-                "example": "microstrate-trigger-config"
+                "example": "quiva-trigger-config"
               },
               "subject": {
                 "type": "string",

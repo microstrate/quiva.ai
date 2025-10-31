@@ -12,11 +12,11 @@ gateway-service/gateway-service
 go.work*
 kraken/kraken
 kronos/kronos
-microstrate/.env
-microstrate/.storybook
-microstrate/.svelte-kit
-microstrate/build
-!microstrate/**/docs/
+quiva/.env
+quiva/.storybook
+quiva/.svelte-kit
+quiva/build
+!quiva/**/docs/
 website/node_modules
 website/.env
 website/.storybook

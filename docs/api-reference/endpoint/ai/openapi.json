@@ -1,17 +1,17 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Microstrate Gateway",
-        "description": "API for managing Microstrate platform",
+        "title": "Quiva Gateway",
+        "description": "API for managing Quiva platform",
         "version": "1.0.0",
         "contact": {
-            "name": "Microstrate Support",
-            "url": "https://app.microstrate.ai"
+            "name": "Quiva Support",
+            "url": "https://app.quiva.ai"
         }
     },
     "servers": [
         {
-            "url": "https://api.microstrate.ai",
+            "url": "https://api.quiva.ai",
             "description": "Production API server"
         }
     ],
@@ -43,7 +43,7 @@
                 "description": "Submit a question to the AI and receive an answer without maintaining context",
                 "operationId": "askQuestion",
                 "x-resource-type": "service",
-                "x-resource": "microstrate.ai.post.ask",
+                "x-resource": "quiva.ai.post.ask",
                 "requestBody": {
                     "description": "Question to be answered",
                     "content": {
@@ -114,7 +114,7 @@
                         }
                     }
                 },
-                "x-original-subject": "microstrate.ai.post.ask"
+                "x-original-subject": "quiva.ai.post.ask"
             }
         },
         "/ai/sessions/{session_id}/questions": {
@@ -126,7 +126,7 @@
                 "description": "Submit a question to the AI within a session context, allowing for conversational interactions",
                 "operationId": "askSessionQuestion",
                 "x-resource-type": "service",
-                "x-resource": "microstrate.ai.post.session",
+                "x-resource": "quiva.ai.post.session",
                 "parameters": [
                     {
                         "name": "session_id",
