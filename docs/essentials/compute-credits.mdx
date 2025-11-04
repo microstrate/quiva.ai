@@ -4,17 +4,17 @@ description: "How compute credits are calculated and used"
 icon: "server"
 ---
 
-# Understanding Microstrate Compute Credits
+# Understanding quiva.ai Compute Credits
 
 ## The Smarter Way to Pay for Cloud Resources
 
-Microstrate's compute credit system represents a fundamental shift in how cloud resources are allocated and billed. Rather than paying for idle resources based on memory blocks, our innovative approach uses precision CPU allocation to ensure you only pay for what you actually use. This guide explains how our credit system works and how to estimate your needs.
+quiva.ai's compute credit system represents a fundamental shift in how cloud resources are allocated and billed. Rather than paying for idle resources based on memory blocks, our innovative approach uses precision CPU allocation to ensure you only pay for what you actually use. This guide explains how our credit system works and how to estimate your needs.
 
 ## What is a Compute Credit?
 
 A compute credit is our standardized unit of computation that represents a balance of CPU power, memory, and runtime. One credit equals a 128MB function or container running continuously for one hour at our base compute rate.
 
-What makes our credits unique is that they're calculated based on actual CPU consumption [(measured in millicores)](#understanding-millicores%3A-the-key-to-microstrate’s-efficiency) rather than allocated memory blocks that may sit idle. This is how we achieve 40-60% better resource utilization compared to traditional cloud platforms.
+What makes our credits unique is that they're calculated based on actual CPU consumption [(measured in millicores)](#understanding-millicores%3A-the-key-to-quiva’s-efficiency) rather than allocated memory blocks that may sit idle. This is how we achieve 40-60% better resource utilization compared to traditional cloud platforms.
 
 ## How Credits Are Calculated
 
@@ -22,7 +22,7 @@ Our credit calculation uses a precise formula that considers:
 
 1. **Base Rate**: Our foundation rate for compute time (per millisecond)
 2. **Memory Allocation**: The amount of memory assigned to your function
-3. **Memory Price Scaler**: A factor based on [millicores](#understanding-millicores%3A-the-key-to-microstrate’s-efficiency) assigned (proportional to memory)
+3. **Memory Price Scaler**: A factor based on [millicores](#understanding-millicores%3A-the-key-to-quiva’s-efficiency) assigned (proportional to memory)
 4. **Runtime**: How long your function executes (in milliseconds)
 5. **Compute Mode**: A performance adjustment that consumes more credits for boosting your functions (Basic, Balanced, Performant, Boosted)
 
@@ -34,7 +34,7 @@ Credit Cost = (Base Rate × Memory Price Scaler) × Runtime × Compute Mode Fact
 
 #### Memory Price Scaler Reference Table
 
-Each memory allocation has a specific Memory Price Scaler that reflects the proportional CPU resources [(millicores)](#understanding-millicores%3A-the-key-to-microstrate’s-efficiency) allocated:
+Each memory allocation has a specific Memory Price Scaler that reflects the proportional CPU resources [(millicores)](#understanding-millicores%3A-the-key-to-quiva’s-efficiency) allocated:
 
 | Memory  | Memory Price Scaler |
 | ------- | ------------------- |
@@ -47,7 +47,7 @@ Each memory allocation has a specific Memory Price Scaler that reflects the prop
 
 #### Compute Mode Factor Reference Table
 
-Microstrate offers different compute modes to optimize for various workload requirements:
+quiva.ai offers different compute modes to optimize for various workload requirements:
 
 | Compute Mode | Factor | Optimal Use Case                             |
 | ------------ | ------ | -------------------------------------------- |
@@ -60,7 +60,7 @@ Let's break down a practical example:
 
 | Component                | Value        | Description                               |
 | ------------------------ | ------------ | ----------------------------------------- |
-| Base Microstrate Rate    | 0.0000000210 | Per millisecond of compute time           |
+| Base quiva.ai Rate    | 0.0000000210 | Per millisecond of compute time           |
 | Memory Assigned          | 4096 MB      | Memory allocated to your function         |
 | Memory Price Scaler      | 5            | Based on the table above for 4096 MB      |
 | Runtime                  | 3,600,000 ms | 1 hour of continuous execution            |
@@ -157,14 +157,14 @@ A lightweight web server handling moderate traffic using 128MB memory in Basic m
 
 By optimizing this workload to run efficiently at the 128MB tier instead of 256MB, you save approximately 15% on your compute costs.
 
-## Why This Matters: The Microstrate Advantage
+## Why This Matters: The quiva.ai Advantage
 
 Our credit system delivers several key advantages:
 
-1. **Precise Resource Allocation**: Pay for exactly what you use down to the [millicore](#understanding-millicores%3A-the-key-to-microstrate’s-efficiency) level
+1. **Precise Resource Allocation**: Pay for exactly what you use down to the [millicore](#understanding-millicores%3A-the-key-to-quiva’s-efficiency) level
 2. **No Cold Start Penalties**: Our architecture eliminates the performance penalty of cold starts
 3. **Predictable Pricing**: Straightforward calculation makes forecasting costs easy
-4. **Better Utilization**: Our [millicore](#understanding-millicores%3A-the-key-to-microstrate’s-efficiency) approach provides more efficient resource usage compared to traditional serverless and compute platforms
+4. **Better Utilization**: Our [millicore](#understanding-millicores%3A-the-key-to-quiva’s-efficiency) approach provides more efficient resource usage compared to traditional serverless and compute platforms
 
 ## Credit Allocation by Plan
 
@@ -200,19 +200,19 @@ Here are some strategies to maximize the value of your compute credits:
 
 3. **Optimize Function Duration**: Refactor long-running functions into smaller, more efficient ones to reduce overall runtime
 
-## Understanding Millicores: The Key to Microstrate's Efficiency
+## Understanding Millicores: The Key to quiva.ai's Efficiency
 
 ### What Are Millicores?
 
-A millicore is a unit of CPU allocation that represents 1/1000th of a CPU core. This fine-grained approach to resource allocation is central to Microstrate's efficiency advantage:
+A millicore is a unit of CPU allocation that represents 1/1000th of a CPU core. This fine-grained approach to resource allocation is central to quiva.ai's efficiency advantage:
 
 - Traditional cloud platforms allocate entire CPU cores or rigid fractions (like 0.25 or 0.5 cores)
-- Microstrate allocates precise millicore amounts based on your workload needs
+- quiva.ai allocates precise millicore amounts based on your workload needs
 - 1000 millicores = 1 full CPU core
 
-### How Millicores Work in Microstrate
+### How Millicores Work in quiva.ai
 
-Unlike traditional serverless and container platforms that bundle CPU and memory into fixed configurations, Microstrate's Hydra compute engine decouples these resources:
+Unlike traditional serverless and container platforms that bundle CPU and memory into fixed configurations, quiva.ai's Hydra compute engine decouples these resources:
 
 1. **Precision Allocation**: When you select a memory tier (e.g., 128MB, 512MB), Hydra automatically assigns the appropriate number of millicores through the Memory Price Scaler. 
 
@@ -235,7 +235,7 @@ This approach delivers several key benefits:
 
 ### Memory and Millicores Relationship
 
-In Microstrate, memory tiers and millicores have a defined relationship expressed through the Memory Price Scaler:
+In quiva.ai, memory tiers and millicores have a defined relationship expressed through the Memory Price Scaler:
 
 | Memory | Memory Price Scaler | Approximate Millicores | Use Case |
 |--------|---------------------|------------------------|----------|

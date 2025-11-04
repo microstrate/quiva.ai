@@ -890,7 +890,7 @@ Agent: Use clean, structured data
 
 ## secret-key-get-node
 
-Retrieve secret values stored in Microstrate's secret manager. Use this to securely access API keys, tokens, and other sensitive configuration.
+Retrieve secret values stored in quiva.ai's secret manager. Use this to securely access API keys, tokens, and other sensitive configuration.
 
 ### Parameters
 
@@ -997,14 +997,14 @@ if (response.error) {
 </AccordionGroup>
 
 <Warning>
-**Security Best Practice**: Never hardcode secrets in flows. Always use the secret manager and retrieve secrets at runtime using this function. Secrets are stored in the microstrate-secrets KV bucket.
+**Security Best Practice**: Never hardcode secrets in flows. Always use the secret manager and retrieve secrets at runtime using this function. Secrets are stored in the quiva-secrets KV bucket.
 </Warning>
 
 ---
 
 ## function-invoke
 
-Invoke other Microstrate functions programmatically from within your flow. Useful for orchestrating complex workflows and modular function composition.
+Invoke other quiva.ai functions programmatically from within your flow. Useful for orchestrating complex workflows and modular function composition.
 
 ### Parameters
 
@@ -1156,7 +1156,7 @@ Functions: Async notification
 </AccordionGroup>
 
 <Info>
-**Implementation**: Uses Microstrate SDK func.invoke() method. Ensures proper function calling within the platform's execution environment.
+**Implementation**: Uses quiva.ai SDK func.invoke() method. Ensures proper function calling within the platform's execution environment.
 </Info>
 
 ---

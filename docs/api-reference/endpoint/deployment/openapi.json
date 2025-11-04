@@ -1,17 +1,17 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Microstrate Gateway",
-        "description": "API for managing Microstrate platform",
+        "title": "quiva.ai Gateway",
+        "description": "API for managing quiva.ai platform",
         "version": "1.0.0",
         "contact": {
-            "name": "Microstrate Support",
-            "url": "https://app.microstrate.ai"
+            "name": "quiva.ai Support",
+            "url": "https://app.quiva.ai"
         }
     },
     "servers": [
         {
-            "url": "https://api.microstrate.ai",
+            "url": "https://api.quiva.ai",
             "description": "Production API server"
         }
     ],
@@ -264,7 +264,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.get.stack-list",
+                "x-resource": "quiva.deployment.get.stack-list",
                 "responses": {
                     "200": {
                         "description": "Successfully retrieved list of stacks",
@@ -340,7 +340,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.post.deploy-stack",
+                "x-resource": "quiva.deployment.post.deploy-stack",
                 "requestBody": {
                     "description": "Stack configuration details",
                     "required": true,
@@ -355,7 +355,7 @@
                                 "description": "My application stack",
                                 "resources": {
                                     "gateway": {
-                                        "type": "microstrate::gateway",
+                                        "type": "quiva::gateway",
                                         "deletion_policy": "retain",
                                         "properties": {
                                             "name": "my-api",
@@ -363,7 +363,7 @@
                                         }
                                     },
                                     "function": {
-                                        "type": "microstrate::function",
+                                        "type": "quiva::function",
                                         "deletion_policy": "retain",
                                         "properties": {
                                             "runtime": "nodejs16.x",
@@ -392,7 +392,7 @@
                                         "status": "IN_PROGRESS",
                                         "resources": {
                                             "gateway": {
-                                                "type": "microstrate::gateway",
+                                                "type": "quiva::gateway",
                                                 "status": "IN_PROGRESS",
                                                 "properties": {
                                                     "name": "my-api",
@@ -400,7 +400,7 @@
                                                 }
                                             },
                                             "function": {
-                                                "type": "microstrate::function",
+                                                "type": "quiva::function",
                                                 "status": "IN_PROGRESS",
                                                 "properties": {
                                                     "runtime": "nodejs16.x",
@@ -475,7 +475,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.get.stack",
+                "x-resource": "quiva.deployment.get.stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -536,7 +536,7 @@
                                         "description": "My application stack",
                                         "resources": {
                                             "gateway": {
-                                                "type": "microstrate::gateway",
+                                                "type": "quiva::gateway",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "name": "my-api",
@@ -545,7 +545,7 @@
                                                 }
                                             },
                                             "function": {
-                                                "type": "microstrate::function",
+                                                "type": "quiva::function",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "runtime": "nodejs16.x",
@@ -609,7 +609,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.patch.stack",
+                "x-resource": "quiva.deployment.patch.stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -668,7 +668,7 @@
                                         "description": "Updated description for my application stack",
                                         "resources": {
                                             "gateway": {
-                                                "type": "microstrate::gateway",
+                                                "type": "quiva::gateway",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "name": "my-api",
@@ -676,7 +676,7 @@
                                                 }
                                             },
                                             "function": {
-                                                "type": "microstrate::function",
+                                                "type": "quiva::function",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "runtime": "nodejs16.x",
@@ -725,7 +725,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.delete.stack",
+                "x-resource": "quiva.deployment.delete.stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -808,7 +808,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.get.stack-history",
+                "x-resource": "quiva.deployment.get.stack-history",
                 "parameters": [
                     {
                         "name": "name",
@@ -881,7 +881,7 @@
                                             "description": "Updated description for my application stack",
                                             "resources": {
                                                 "gateway": {
-                                                    "type": "microstrate::gateway",
+                                                    "type": "quiva::gateway",
                                                     "deletion_policy": "retain",
                                                     "properties": {
                                                         "name": "my-api",
@@ -889,7 +889,7 @@
                                                     }
                                                 },
                                                 "function": {
-                                                    "type": "microstrate::function",
+                                                    "type": "quiva::function",
                                                     "deletion_policy": "retain",
                                                     "properties": {
                                                         "runtime": "nodejs16.x",
@@ -918,7 +918,7 @@
                                             "description": "My application stack",
                                             "resources": {
                                                 "gateway": {
-                                                    "type": "microstrate::gateway",
+                                                    "type": "quiva::gateway",
                                                     "deletion_policy": "retain",
                                                     "properties": {
                                                         "name": "my-api",
@@ -926,7 +926,7 @@
                                                     }
                                                 },
                                                 "function": {
-                                                    "type": "microstrate::function",
+                                                    "type": "quiva::function",
                                                     "deletion_policy": "retain",
                                                     "properties": {
                                                         "runtime": "nodejs16.x",
@@ -980,7 +980,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.post.redeploy-stack",
+                "x-resource": "quiva.deployment.post.redeploy-stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -1079,7 +1079,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.patch.attach-resources",
+                "x-resource": "quiva.deployment.patch.attach-resources",
                 "parameters": [
                     {
                         "name": "name",
@@ -1124,7 +1124,7 @@
                             "example": {
                                 "resources": {
                                     "new-function": {
-                                        "type": "microstrate::function",
+                                        "type": "quiva::function",
                                         "deletion_policy": "retain",
                                         "properties": {
                                             "runtime": "nodejs16.x",
@@ -1197,7 +1197,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.get.stack-resource",
+                "x-resource": "quiva.deployment.get.stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1268,7 +1268,7 @@
                                         "description": "My application stack",
                                         "resources": {
                                             "gateway": {
-                                                "type": "microstrate::gateway",
+                                                "type": "quiva::gateway",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "name": "my-api",
@@ -1325,7 +1325,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.delete.stack-resource",
+                "x-resource": "quiva.deployment.delete.stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1399,7 +1399,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.patch.detach-stack-resource",
+                "x-resource": "quiva.deployment.patch.detach-stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1475,7 +1475,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.get.stack-resource-history",
+                "x-resource": "quiva.deployment.get.stack-resource-history",
                 "parameters": [
                     {
                         "name": "name",
@@ -1557,7 +1557,7 @@
                                             "stage": "production",
                                             "resources": {
                                                 "gateway": {
-                                                    "type": "microstrate::gateway",
+                                                    "type": "quiva::gateway",
                                                     "deletion_policy": "retain",
                                                     "properties": {
                                                         "name": "my-api",
@@ -1580,7 +1580,7 @@
                                             "stage": "production",
                                             "resources": {
                                                 "gateway": {
-                                                    "type": "microstrate::gateway",
+                                                    "type": "quiva::gateway",
                                                     "deletion_policy": "retain",
                                                     "properties": {
                                                         "name": "my-api",
@@ -1645,7 +1645,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.post.redeploy-stack-resource",
+                "x-resource": "quiva.deployment.post.redeploy-stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1754,7 +1754,7 @@
                     "OpenAPI"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "microstrate.deployment.post.deploy-openapi",
+                "x-resource": "quiva.deployment.post.deploy-openapi",
                 "requestBody": {
                     "description": "OpenAPI specification with extensions",
                     "required": true,
@@ -1808,7 +1808,7 @@
                                         "description": "My API Description",
                                         "resources": {
                                             "gateway": {
-                                                "type": "microstrate::gateway",
+                                                "type": "quiva::gateway",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "name": "My API",
@@ -1817,7 +1817,7 @@
                                                 }
                                             },
                                             "getUsers_mapping": {
-                                                "type": "microstrate::gateway::mapping",
+                                                "type": "quiva::gateway::mapping",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "path": "/users",
@@ -1831,7 +1831,7 @@
                                                 }
                                             },
                                             "createUser_mapping": {
-                                                "type": "microstrate::gateway::mapping",
+                                                "type": "quiva::gateway::mapping",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "path": "/users",
@@ -1845,7 +1845,7 @@
                                                 }
                                             },
                                             "getUsers_mapping_version": {
-                                                "type": "microstrate::gateway::mapping::version",
+                                                "type": "quiva::gateway::mapping::version",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "active": true,
@@ -1856,7 +1856,7 @@
                                                 }
                                             },
                                             "createUser_mapping_version": {
-                                                "type": "microstrate::gateway::mapping::version",
+                                                "type": "quiva::gateway::mapping::version",
                                                 "deletion_policy": "retain",
                                                 "properties": {
                                                     "active": true,

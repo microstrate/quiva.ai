@@ -326,7 +326,7 @@ Combine multiple objects into one.
     "sources": [
       "${customer_data}",
       "${order_data}",
-      {"source": "microstrate"}
+      {"source": "quiva"}
     ]
   }
   ```
@@ -477,7 +477,7 @@ Custom JavaScript has performance implications. Use built-in transform types whe
           "last_name": "${input.name.split(' ')[1]}",
           "email": "${input.email}"
         },
-        "source": "microstrate"
+        "source": "quiva"
       }
     ↓
     HTTP Request: POST to CRM

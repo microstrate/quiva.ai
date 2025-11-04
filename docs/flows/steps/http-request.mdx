@@ -99,7 +99,7 @@ Condition: Check status code
   {
     "Content-Type": "application/json",
     "Authorization": "Bearer ${api_key}",
-    "User-Agent": "Microstrate-Flow/1.0",
+    "User-Agent": "quiva.ai-Flow/1.0",
     "Accept": "application/json"
   }
   ```
@@ -122,7 +122,7 @@ Condition: Check status code
     "name": "${form.name}",
     "email": "${form.email}",
     "data": {
-      "source": "microstrate",
+      "source": "quiva",
       "timestamp": "${now}"
     }
   }
@@ -541,7 +541,7 @@ HTTP Request: POST to CRM
     "email": "${agent.output.contact.email}",
     "company": "${agent.output.contact.company}",
     "score": ${agent.output.contact.score},
-    "source": "microstrate",
+    "source": "quiva",
     "custom_fields": {
       "qualification_notes": "${agent.output.notes}"
     }
@@ -777,7 +777,7 @@ Condition: Payment successful?
   </Accordion>
 
   <Accordion title="CORS Error" icon="globe">
-    **Note**: CORS errors don't apply to Microstrate flows (server-side). If you see CORS errors:
+    **Note**: CORS errors don't apply to quiva.ai flows (server-side). If you see CORS errors:
     
     - You're likely testing from browser console
     - Flows run server-side and don't have CORS restrictions

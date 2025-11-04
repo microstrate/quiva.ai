@@ -1,10 +1,10 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Microstrate Gateway",
+    "title": "quiva.ai Gateway",
     "description": "API service for managing compute resources including collections, functions, containers, and their assets",
     "contact": {
-      "email": "support@microstrate.ai"
+      "email": "support@quiva.ai"
     },
     "license": {
       "name": "Proprietary"
@@ -13,7 +13,7 @@
   },
   "servers": [
     {
-      "url": "https://api.microstrate.ai",
+      "url": "https://api.quiva.ai",
       "description": "Production API server"
     }
   ],
@@ -65,7 +65,7 @@
         "description": "Retrieves a list of all compute collections",
         "operationId": "getCollections",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.collections",
+        "x-resource": "quiva.compute.get.collections",
         "responses": {
           "200": {
             "description": "A list of collections",
@@ -122,7 +122,7 @@
         "description": "Creates a new compute collection",
         "operationId": "createCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.post.collection",
+        "x-resource": "quiva.compute.post.collection",
         "requestBody": {
           "description": "Collection to create",
           "required": true,
@@ -188,7 +188,7 @@
         "description": "Retrieves a specific collection by topic",
         "operationId": "getCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.collection",
+        "x-resource": "quiva.compute.get.collection",
         "responses": {
           "200": {
             "description": "Collection details",
@@ -231,7 +231,7 @@
         "description": "Updates an existing collection",
         "operationId": "updateCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.patch.collection",
+        "x-resource": "quiva.compute.patch.collection",
         "requestBody": {
           "description": "Collection properties to update",
           "required": true,
@@ -287,7 +287,7 @@
         "description": "Retrieves all containers belonging to a specific collection",
         "operationId": "getContainersByCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.containers-by-collection",
+        "x-resource": "quiva.compute.get.containers-by-collection",
         "responses": {
           "200": {
             "description": "A list of containers",
@@ -351,7 +351,7 @@
         "description": "Retrieves all functions belonging to a specific collection",
         "operationId": "getFunctionsByCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.functions-by-collection",
+        "x-resource": "quiva.compute.get.functions-by-collection",
         "responses": {
           "200": {
             "description": "A list of functions",
@@ -410,7 +410,7 @@
         "description": "Retrieves a list of all functions",
         "operationId": "getFunctions",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.functions",
+        "x-resource": "quiva.compute.get.functions",
         "responses": {
           "200": {
             "description": "A list of functions",
@@ -467,7 +467,7 @@
         "description": "Creates a new serverless function",
         "operationId": "createFunction",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.post.function",
+        "x-resource": "quiva.compute.post.function",
         "requestBody": {
           "description": "Function to create",
           "required": true,
@@ -608,7 +608,7 @@
         "description": "Retrieves a specific function by collection topic and function topic",
         "operationId": "getFunction",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.compute-item",
+        "x-resource": "quiva.compute.get.compute-item",
         "responses": {
           "200": {
             "description": "Function details",
@@ -667,7 +667,7 @@
         "description": "Updates an existing function",
         "operationId": "updateFunction",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.patch.function",
+        "x-resource": "quiva.compute.patch.function",
         "requestBody": {
           "description": "Function properties to update",
           "required": true,
@@ -736,7 +736,7 @@
         "description": "Invokes a function with the provided payload",
         "operationId": "invokeFunction",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.invoke.function",
+        "x-resource": "quiva.compute.invoke.function",
         "requestBody": {
           "description": "Function invocation parameters",
           "required": true,
@@ -808,7 +808,7 @@
         "description": "Retrieves all assets for a specific compute resource (function or container)",
         "operationId": "getComputeAssets",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.compute-assets",
+        "x-resource": "quiva.compute.get.compute-assets",
         "responses": {
           "200": {
             "description": "Compute resource assets",
@@ -859,7 +859,7 @@
         "description": "Updates assets for a specific compute resource (function or container)",
         "operationId": "updateComputeAssets",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.patch.compute-assets",
+        "x-resource": "quiva.compute.patch.compute-assets",
         "requestBody": {
           "description": "Compute asset properties to update",
           "required": true,
@@ -937,7 +937,7 @@
         "description": "Retrieves the history of a compute resource's assets (function or container)",
         "operationId": "getComputeAssetHistory",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.compute-asset-history",
+        "x-resource": "quiva.compute.get.compute-asset-history",
         "responses": {
           "200": {
             "description": "Compute asset history",
@@ -1025,7 +1025,7 @@
         "description": "Retrieves a list of all containers",
         "operationId": "getContainers",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.containers",
+        "x-resource": "quiva.compute.get.containers",
         "responses": {
           "200": {
             "description": "A list of containers",
@@ -1082,7 +1082,7 @@
         "description": "Creates a new container",
         "operationId": "createContainer",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.post.container",
+        "x-resource": "quiva.compute.post.container",
         "requestBody": {
           "description": "Container to create",
           "required": true,
@@ -1184,7 +1184,7 @@
         "description": "Retrieves a specific container by collection topic and container topic",
         "operationId": "getContainer",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.compute-item",
+        "x-resource": "quiva.compute.get.compute-item",
         "responses": {
           "200": {
             "description": "Container details",
@@ -1241,7 +1241,7 @@
         "description": "Updates an existing container",
         "operationId": "updateContainer",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.patch.container",
+        "x-resource": "quiva.compute.patch.container",
         "requestBody": {
           "description": "Container properties to update",
           "required": true,
@@ -1293,7 +1293,7 @@
         "description": "Terminates and deletes a specific container instance",
         "operationId": "deleteContainerInstance",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.delete.container-instance",
+        "x-resource": "quiva.compute.delete.container-instance",
         "responses": {
           "200": {
             "$ref": "#/components/responses/SuccessResponse"
@@ -1334,7 +1334,7 @@
         "description": "Scales the number of container instances up or down",
         "operationId": "scaleContainer",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.post.container-scale",
+        "x-resource": "quiva.compute.post.container-scale",
         "requestBody": {
           "description": "Container scaling parameters",
           "required": true,
@@ -1375,7 +1375,7 @@
         "description": "Starts a stopped container instance",
         "operationId": "startContainerInstance",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.post.container-instance-start",
+        "x-resource": "quiva.compute.post.container-instance-start",
         "requestBody": {
           "description": "Container instance start request",
           "required": false,
@@ -1415,7 +1415,7 @@
         "description": "Stops a running container instance",
         "operationId": "stopContainerInstance",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.post.container-instance-stop",
+        "x-resource": "quiva.compute.post.container-instance-stop",
         "requestBody": {
           "description": "Container instance stop request",
           "required": false,
@@ -1455,7 +1455,7 @@
         "description": "Retrieves information about Hydra compute machines with optional filtering",
         "operationId": "getMachines",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.machines",
+        "x-resource": "quiva.compute.get.machines",
         "parameters": [
           {
             "name": "machine",
@@ -1797,7 +1797,7 @@
         "description": "Retrieves all available runtimes",
         "operationId": "getRuntimes",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.runtimes",
+        "x-resource": "quiva.compute.get.runtimes",
         "responses": {
           "200": {
             "description": "A list of available runtimes",
@@ -1864,7 +1864,7 @@
         "description": "Retrieves a list of all available compute services",
         "operationId": "getServices",
         "x-resource-type": "service",
-        "x-resource": "microstrate.compute.get.services",
+        "x-resource": "quiva.compute.get.services",
         "responses": {
           "200": {
             "description": "List of compute services",

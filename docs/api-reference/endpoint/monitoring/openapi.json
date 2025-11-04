@@ -1,17 +1,17 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Microstrate Gateway",
-        "description": "API for managing Microstrate platform",
+        "title": "quiva.ai Gateway",
+        "description": "API for managing quiva.ai platform",
         "version": "1.0.0",
         "contact": {
-            "name": "Microstrate Support",
-            "url": "https://app.microstrate.ai"
+            "name": "quiva.ai Support",
+            "url": "https://app.quiva.ai"
         }
     },
     "servers": [
         {
-            "url": "https://api.microstrate.ai",
+            "url": "https://api.quiva.ai",
             "description": "Production API server"
         }
     ],
@@ -36,7 +36,7 @@
                 "description": "Retrieves metric values over a specified time range with a given interval",
                 "operationId": "getMetricStats",
                 "x-resource-type": "service",
-                "x-resource": "microstrate.monitoring.get.metric-stats",
+                "x-resource": "quiva.monitoring.get.metric-stats",
                 "tags": [
                     "metrics"
                 ],
@@ -254,7 +254,7 @@
                 "description": "Retrieves the latest value for a specific metric",
                 "operationId": "getCurrentMetric",
                 "x-resource-type": "service",
-                "x-resource": "microstrate.monitoring.get.metric-current",
+                "x-resource": "quiva.monitoring.get.metric-current",
                 "tags": [
                     "metrics"
                 ],
@@ -428,7 +428,7 @@
                 "description": "Retrieves the latest values for multiple metrics simultaneously",
                 "operationId": "getCurrentMetrics",
                 "x-resource-type": "service",
-                "x-resource": "microstrate.monitoring.get.metrics-current",
+                "x-resource": "quiva.monitoring.get.metrics-current",
                 "tags": [
                     "metrics"
                 ],

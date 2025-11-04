@@ -1,16 +1,16 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Microstrate Gateway",
-    "description": "API for managing collections, nodes, and workflows in Microstrate Hub",
+    "title": "quiva.ai Gateway",
+    "description": "API for managing collections, nodes, and workflows in quiva.ai Hub",
     "version": "0.1.0",
     "contact": {
-      "name": "Microstrate Support"
+      "name": "quiva.ai Support"
     }
   },
   "servers": [
     {
-      "url": "https://api.microstrate.ai",
+      "url": "https://api.quiva.ai",
       "description": "Production API server"
     }
   ],
@@ -24,7 +24,7 @@
         "description": "Creates a new collection for organizing nodes or workflows",
         "operationId": "createCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.post.collection",
+        "x-resource": "quiva.hub.post.collection",
         "requestBody": {
           "required": true,
           "content": {
@@ -104,7 +104,7 @@
         "description": "Retrieves a list of collections",
         "operationId": "getCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.list-collections",
+        "x-resource": "quiva.hub.get.list-collections",
         "parameters": [
           {
             "$ref": "#/components/parameters/queryCollectionType"
@@ -205,7 +205,7 @@
         "description": "Retrieves a specific collection",
         "operationId": "getCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.collection",
+        "x-resource": "quiva.hub.get.collection",
         "responses": {
           "200": {
             "description": "Collection retrieved successfully",
@@ -254,7 +254,7 @@
         "description": "Updates an existing collection's properties",
         "operationId": "updateFlowOrNodeCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.patch.collection",
+        "x-resource": "quiva.hub.patch.collection",
         "requestBody": {
           "required": true,
           "content": {
@@ -323,7 +323,7 @@
         "description": "Deletes a specific collection by subject",
         "operationId": "deleteCollection",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.delete.collection",
+        "x-resource": "quiva.hub.delete.collection",
         "parameters": [
           {
             "name": "move_resources_to_collection",
@@ -401,7 +401,7 @@
         "description": "Creates a new node template within a collection",
         "operationId": "createNode",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.post.node",
+        "x-resource": "quiva.hub.post.node",
         "requestBody": {
           "required": true,
           "content": {
@@ -414,7 +414,7 @@
                 "data": {
                   "name": "MyNode",
                   "node_type": "function",
-                  "subject": "microstrate-function.some-function",
+                  "subject": "quiva-function.some-function",
                   "payload": {
                     "param1": "value1",
                     "param2": "value2"
@@ -439,7 +439,7 @@
                     "id": "some-id",
                     "name": "MyNode",
                     "node_type": "function",
-                    "subject": "microstrate-function.some-function",
+                    "subject": "quiva-function.some-function",
                     "payload": {
                       "param1": "value1",
                       "param2": "value2"
@@ -533,7 +533,7 @@
         "description": "Retrieves a list of node templates, optionally filtered by collection and type",
         "operationId": "listNodeTemplates",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.list-nodes",
+        "x-resource": "quiva.hub.get.list-nodes",
         "parameters": [
           {
             "$ref": "#/components/parameters/collectionTopic"
@@ -557,7 +557,7 @@
                         "id": "some-id",
                         "name": "MyNode",
                         "node_type": "function",
-                        "subject": "microstrate-function.some-function",
+                        "subject": "quiva-function.some-function",
                         "payload": {
                           "param1": "value1",
                           "param2": "value2"
@@ -604,7 +604,7 @@
         "description": "Retrieves a specific node by subject",
         "operationId": "getNode",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.node",
+        "x-resource": "quiva.hub.get.node",
         "responses": {
           "200": {
             "description": "Node retrieved successfully",
@@ -620,7 +620,7 @@
                     "name": "MyNode",
                     "description": "Node description",
                     "node_type": "function",
-                    "subject": "microstrate-function.some-function",
+                    "subject": "quiva-function.some-function",
                     "payload": {
                       "param1": "value1",
                       "param2": "value2"
@@ -658,7 +658,7 @@
         "description": "Updates an existing node's properties",
         "operationId": "updateNode",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.patch.node",
+        "x-resource": "quiva.hub.patch.node",
         "requestBody": {
           "required": true,
           "content": {
@@ -744,7 +744,7 @@
         "description": "Deletes a specific node by subject",
         "operationId": "deleteNode",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.delete.node",
+        "x-resource": "quiva.hub.delete.node",
         "responses": {
           "200": {
             "description": "Node deleted successfully",
@@ -788,7 +788,7 @@
         "description": "Updates multiple existing nodes in a single request",
         "operationId": "updateMultipleNodes",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.patch.nodes",
+        "x-resource": "quiva.hub.patch.nodes",
         "requestBody": {
           "required": true,
           "content": {
@@ -802,7 +802,7 @@
                   "data": {
                     "name": "UpdatedNode1",
                     "node_type": "function",
-                    "subject": "microstrate-function.function1",
+                    "subject": "quiva-function.function1",
                     "payload": {
                       "param1": "value1"
                     }
@@ -837,7 +837,7 @@
                       "data": {
                         "name": "UpdatedNode1",
                         "node_type": "function",
-                        "subject": "microstrate-function.function1",
+                        "subject": "quiva-function.function1",
                         "payload": {
                           "param1": "value1"
                         }
@@ -877,7 +877,7 @@
                         "data": {
                           "name": "UpdatedNode1",
                           "node_type": "function",
-                          "subject": "microstrate-function.function1",
+                          "subject": "quiva-function.function1",
                           "payload": {
                             "param1": "value1"
                           }
@@ -891,7 +891,7 @@
                         "data": {
                           "name": "UpdatedNode2",
                           "node_type": "function",
-                          "subject": "microstrate-function.non-existing-function",
+                          "subject": "quiva-function.non-existing-function",
                           "payload": {
                             "param2": "value2"
                           }
@@ -917,7 +917,7 @@
         "description": "Creates a new workflow for defining node sequences",
         "operationId": "createWorkflow",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.post.workflow",
+        "x-resource": "quiva.hub.post.workflow",
         "requestBody": {
           "required": true,
           "content": {
@@ -946,7 +946,7 @@
                         "id": "process",
                         "name": "Process",
                         "node_type": "function",
-                        "subject": "microstrate-function.process-function",
+                        "subject": "quiva-function.process-function",
                         "payload": {
                           "input": "{start}"
                         }
@@ -996,7 +996,7 @@
                           "id": "process",
                           "name": "Process",
                           "node_type": "function",
-                          "subject": "microstrate-function.process-function",
+                          "subject": "quiva-function.process-function",
                           "payload": {
                             "input": "{start}"
                           }
@@ -1134,7 +1134,7 @@
         "description": "Retrieves a list of workflows, optionally filtered by collection and type",
         "operationId": "listWorkflows",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.list-workflows",
+        "x-resource": "quiva.hub.get.list-workflows",
         "parameters": [
           {
             "$ref": "#/components/parameters/collectionTopic"
@@ -1223,7 +1223,7 @@
         "description": "Retrieves a specific workflow by subject",
         "operationId": "getWorkflow",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.workflow",
+        "x-resource": "quiva.hub.get.workflow",
         "parameters": [
           {
             "$ref": "#/components/parameters/queryDraftFlag"
@@ -1258,7 +1258,7 @@
                           "id": "process",
                           "name": "Process",
                           "node_type": "function",
-                          "subject": "microstrate-function.process-function",
+                          "subject": "quiva-function.process-function",
                           "payload": {
                             "input": "{start}"
                           }
@@ -1306,7 +1306,7 @@
         "description": "Updates an existing draft workflow's properties",
         "operationId": "updateWorkflow",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.patch.workflow",
+        "x-resource": "quiva.hub.patch.workflow",
         "requestBody": {
           "required": true,
           "content": {
@@ -1334,7 +1334,7 @@
                         "id": "process",
                         "name": "Process",
                         "node_type": "function",
-                        "subject": "microstrate-function.updated-process-function",
+                        "subject": "quiva-function.updated-process-function",
                         "payload": {
                           "input": "{start}"
                         }
@@ -1383,7 +1383,7 @@
                           "id": "process",
                           "name": "Process",
                           "node_type": "function",
-                          "subject": "microstrate-function.updated-process-function",
+                          "subject": "quiva-function.updated-process-function",
                           "payload": {
                             "input": "{start}"
                           }
@@ -1449,7 +1449,7 @@
         "description": "Deletes a specific workflow by subject",
         "operationId": "deleteWorkflow",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.delete.workflow",
+        "x-resource": "quiva.hub.delete.workflow",
         "responses": {
           "200": {
             "description": "Workflow deleted successfully",
@@ -1504,7 +1504,7 @@
         "description": "Executes a workflow with the specified trigger data",
         "operationId": "runWorkflow",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.post.workflow-run",
+        "x-resource": "quiva.hub.post.workflow-run",
         "requestBody": {
           "required": true,
           "content": {
@@ -1644,7 +1644,7 @@
         "description": "Get workflow configuration history",
         "operationId": "workflowHistory",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.workflow-history",
+        "x-resource": "quiva.hub.get.workflow-history",
         "responses": {
           "200": {
             "description": "Workflow history",
@@ -1714,7 +1714,7 @@
         "description": "Publishes a draft workflow to make it available for execution",
         "operationId": "publishWorkflow",
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.post.workflow-publish",
+        "x-resource": "quiva.hub.post.workflow-publish",
         "requestBody": {
           "required": true,
           "content": {
@@ -1771,7 +1771,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.oauth-configs",
+        "x-resource": "quiva.hub.get.oauth-configs",
         "responses": {
           "200": {
             "description": "List of OAuth configurations",
@@ -1820,7 +1820,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.oauth-config",
+        "x-resource": "quiva.hub.get.oauth-config",
         "responses": {
           "200": {
             "description": "OAuth configuration",
@@ -1856,13 +1856,13 @@
       },
       "put": {
         "summary": "Update an OAuth configuration.",
-        "description": "[Microstrate admins only] Update the OAuth configuration for a specific integration - full configuration replacement",
+        "description": "[quiva.ai admins only] Update the OAuth configuration for a specific integration - full configuration replacement",
         "operationId": "putIntegrationsOauthConfig",
         "tags": [
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.put.oauth-config",
+        "x-resource": "quiva.hub.put.oauth-config",
         "requestBody": {
           "required": true,
           "content": {
@@ -1908,13 +1908,13 @@
       },
       "delete": {
         "summary": "Delete an OAuth configuration.",
-        "description": "[Microstrate admins only] Deletes an OAuth configuration for a specific integration",
+        "description": "[quiva.ai admins only] Deletes an OAuth configuration for a specific integration",
         "operationId": "deleteIntegrationsOauthConfig",
         "tags": [
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.delete.oauth-config",
+        "x-resource": "quiva.hub.delete.oauth-config",
         "responses": {
           "200": {
             "description": "OAuth configuration",
@@ -1958,7 +1958,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.oauth-connections",
+        "x-resource": "quiva.hub.get.oauth-connections",
         "responses": {
           "200": {
             "description": "List of OAuth connections",
@@ -2010,7 +2010,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.integration-oauth-token",
+        "x-resource": "quiva.hub.get.integration-oauth-token",
         "responses": {
           "200": {
             "description": "OAuth connection details",
@@ -2049,7 +2049,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.oauth-connection",
+        "x-resource": "quiva.hub.get.oauth-connection",
         "responses": {
           "200": {
             "description": "Connection deleted successfully",
@@ -2083,7 +2083,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.delete.oauth-connection",
+        "x-resource": "quiva.hub.delete.oauth-connection",
         "parameters": [
           {
             "$ref": "#/components/parameters/integrationId"
@@ -2125,7 +2125,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.accounts.get.oauth-callback",
+        "x-resource": "quiva.accounts.get.oauth-callback",
         "parameters": [
           {
             "name": "code",
@@ -2191,7 +2191,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "microstrate.hub.get.integration-oauth-refresh",
+        "x-resource": "quiva.hub.get.integration-oauth-refresh",
         "parameters": [
           {
             "$ref": "#/components/parameters/integrationId"

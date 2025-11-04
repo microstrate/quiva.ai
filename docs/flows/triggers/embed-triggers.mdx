@@ -6,7 +6,7 @@ icon: "window-maximize"
 
 # Embed Triggers
 
-Embed triggers allow you to add interactive elements to your website or web application that trigger Microstrate flows. With simple copy-paste embed code, you can add buttons, forms, or chat interfaces that connect directly to your intelligent agents.
+Embed triggers allow you to add interactive elements to your website or web application that trigger quiva.ai flows. With simple copy-paste embed code, you can add buttons, forms, or chat interfaces that connect directly to your intelligent agents.
 
 ## Overview
 
@@ -169,14 +169,14 @@ A button embed creates an interactive button that:
     
     **Example embed code:**
     ```html
-    <button id="microstrate-button" 
+    <button id="quiva-button" 
             data-flow-id="abc123"
             data-action="chat">
       Chat with Support
     </button>
-    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      MicrostrateEmbed.init({
+      quiva.aiEmbed.init({
         flowId: 'abc123',
         apiKey: 'your-api-key-here' // if secured
       });
@@ -215,7 +215,7 @@ A button embed creates an interactive button that:
     
     **Via CSS:**
     ```css
-    #microstrate-button {
+    #quiva-button {
       background-color: #4641F2;
       color: white;
       padding: 12px 24px;
@@ -227,7 +227,7 @@ A button embed creates an interactive button that:
       transition: all 0.2s;
     }
     
-    #microstrate-button:hover {
+    #quiva-button:hover {
       background-color: #3730d8;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(70, 65, 242, 0.3);
@@ -240,7 +240,7 @@ A button embed creates an interactive button that:
     
     **Loading State:**
     ```javascript
-    MicrostrateEmbed.init({
+    quiva.aiEmbed.init({
       flowId: 'abc123',
       onLoading: () => {
         // Show spinner
@@ -252,7 +252,7 @@ A button embed creates an interactive button that:
     
     **Success/Error:**
     ```javascript
-    MicrostrateEmbed.init({
+    quiva.aiEmbed.init({
       flowId: 'abc123',
       onSuccess: (response) => {
         // Show success message
@@ -270,7 +270,7 @@ A button embed creates an interactive button that:
     Pass data with button click:
     
     ```html
-    <button id="microstrate-button"
+    <button id="quiva-button"
             data-flow-id="abc123"
             data-product-id="prod_123"
             data-user-email="user@example.com">
@@ -500,7 +500,7 @@ A form embed creates a data collection interface that:
     
     **Via Custom CSS:**
     ```css
-    .microstrate-form {
+    .quiva-form {
       max-width: 600px;
       margin: 0 auto;
       padding: 32px;
@@ -509,8 +509,8 @@ A form embed creates a data collection interface that:
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     
-    .microstrate-form input,
-    .microstrate-form textarea {
+    .quiva-form input,
+    .quiva-form textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid #ddd;
@@ -518,7 +518,7 @@ A form embed creates a data collection interface that:
       font-size: 16px;
     }
     
-    .microstrate-form button[type="submit"] {
+    .quiva-form button[type="submit"] {
       background: #4641F2;
       color: white;
       padding: 14px 32px;
@@ -558,11 +558,11 @@ A form embed creates a data collection interface that:
     
     **Example embed code:**
     ```html
-    <div id="microstrate-form-container"></div>
-    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <div id="quiva-form-container"></div>
+    <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      MicrostrateEmbed.renderForm({
-        containerId: 'microstrate-form-container',
+      quiva.aiEmbed.renderForm({
+        containerId: 'quiva-form-container',
         flowId: 'abc123',
         apiKey: 'your-api-key' // if secured
       });
@@ -740,7 +740,7 @@ Client-side validation happens automatically:
 
 **Custom Validation:**
 ```javascript
-MicrostrateEmbed.renderForm({
+quiva.aiEmbed.renderForm({
   containerId: 'form-container',
   flowId: 'abc123',
   onValidate: (formData) => {
@@ -915,7 +915,7 @@ A chat embed creates a messaging interface that:
     
     **Via Custom CSS:**
     ```css
-    .microstrate-chat-widget {
+    .quiva-chat-widget {
       --primary-color: #4641F2;
       --text-color: #1a1a1a;
       --bg-color: #ffffff;
@@ -923,7 +923,7 @@ A chat embed creates a messaging interface that:
       --font-family: 'Inter', sans-serif;
     }
     
-    .microstrate-chat-bubble {
+    .quiva-chat-bubble {
       background: var(--primary-color);
       width: 60px;
       height: 60px;
@@ -931,7 +931,7 @@ A chat embed creates a messaging interface that:
       box-shadow: 0 4px 20px rgba(70, 65, 242, 0.3);
     }
     
-    .microstrate-chat-window {
+    .quiva-chat-window {
       width: 400px;
       height: 600px;
       border-radius: var(--border-radius);
@@ -954,7 +954,7 @@ A chat embed creates a messaging interface that:
     
     **To pass user data:**
     ```javascript
-    MicrostrateEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       containerId: 'chat-container',
       flowId: 'abc123',
       userData: {
@@ -978,9 +978,9 @@ A chat embed creates a messaging interface that:
     - Unobtrusive, always available
     
     ```html
-    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      MicrostrateEmbed.renderChat({
+      quiva.aiEmbed.renderChat({
         flowId: 'abc123',
         position: 'bottom-right',
         autoOpen: false
@@ -995,9 +995,9 @@ A chat embed creates a messaging interface that:
     
     ```html
     <div id="chat-container" style="height: 600px;"></div>
-    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      MicrostrateEmbed.renderChat({
+      quiva.aiEmbed.renderChat({
         containerId: 'chat-container',
         flowId: 'abc123',
         displayMode: 'inline'
@@ -1013,9 +1013,9 @@ A chat embed creates a messaging interface that:
     ```html
     <button id="open-chat-btn">Chat with Support</button>
     
-    <script src="https://cdn.microstrate.ai/embed.js"></script>
+    <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      const chat = MicrostrateEmbed.createChat({
+      const chat = quiva.aiEmbed.createChat({
         flowId: 'abc123',
         displayMode: 'modal'
       });
@@ -1070,7 +1070,7 @@ A chat embed creates a messaging interface that:
     Show when agent is "thinking":
     
     ```javascript
-    MicrostrateEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       showTypingIndicator: true,
       typingDelay: 500 // ms before showing indicator
@@ -1084,7 +1084,7 @@ A chat embed creates a messaging interface that:
     Maintain context across sessions:
     
     ```javascript
-    MicrostrateEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       persistConversation: true,
       sessionDuration: 24 * 60 * 60 * 1000 // 24 hours
@@ -1116,7 +1116,7 @@ A chat embed creates a messaging interface that:
     Allow users to upload files:
     
     ```javascript
-    MicrostrateEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       allowFileUpload: true,
       maxFileSize: 10 * 1024 * 1024, // 10MB
@@ -1131,7 +1131,7 @@ A chat embed creates a messaging interface that:
     React to chat events:
     
     ```javascript
-    MicrostrateEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       onOpen: () => {
         console.log('Chat opened');
@@ -1232,7 +1232,7 @@ For internal or secured embeds:
   <Step title="Add to Embed Code">
     The key is automatically included:
     ```javascript
-    MicrostrateEmbed.init({
+    quiva.aiEmbed.init({
       flowId: 'abc123',
       apiKey: 'ms_key_abc123xyz789' // Auto-included
     });
@@ -1422,7 +1422,7 @@ For internal or secured embeds:
     - Use browser dev tools to debug
     - Increase CSS specificity if needed:
       ```css
-      .microstrate-chat-widget.microstrate-chat-widget {
+      .quiva-chat-widget.quiva-chat-widget {
         /* Higher specificity */
       }
       ```

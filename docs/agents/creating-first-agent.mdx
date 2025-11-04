@@ -20,7 +20,7 @@ Before you begin:
 
 <Steps>
   <Step title="Create an Account">
-    Sign up at [app.microstrate.ai](https://app.microstrate.ai/en/signup)
+    Sign up at [app.quiva.ai](https://app.quiva.ai/en/signup)
   </Step>
   <Step title="Select a Plan">
     Free tier works great for learning
@@ -443,7 +443,7 @@ You can now call your agent via the HTTP endpoint:
 
 <CodeGroup>
 ```bash cURL
-curl -X POST https://api.microstrate.ai/trigger/your-endpoint-id \
+curl -X POST https://api.quiva.ai/trigger/your-endpoint-id \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Hi, I need help with my order"
@@ -451,7 +451,7 @@ curl -X POST https://api.microstrate.ai/trigger/your-endpoint-id \
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://api.microstrate.ai/trigger/your-endpoint-id', {
+const response = await fetch('https://api.quiva.ai/trigger/your-endpoint-id', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -469,7 +469,7 @@ console.log(data);
 import requests
 
 response = requests.post(
-    'https://api.microstrate.ai/trigger/your-endpoint-id',
+    'https://api.quiva.ai/trigger/your-endpoint-id',
     json={
         'message': 'Hi, I need help with my order'
     }
@@ -558,7 +558,7 @@ Now that you have a working agent, here are some ways to enhance it:
 ## Need Help?
 
 <CardGroup cols={3}>
-  <Card title="Community" icon="users" href="https://community.microstrate.ai">
+  <Card title="Community" icon="users" href="https://community.quiva.ai">
     Ask questions and get help
   </Card>
   
