@@ -140,6 +140,8 @@ An auto-reply can be triggered in the flow by either setting up agent behaviour 
 All email information is available under `$.trigger.{{EMAIL_TRIGGER_ID}}` e.g. email_trigger:
 
 These are exampled of how you might access properties using [variable mapping](/advanced/variable-mapping/overview)
+
+```
 $.trigger.email_trigger.email_from
 $.trigger.email_trigger.email_body
 $.trigger.email_trigger.email_html_body
@@ -147,6 +149,7 @@ $.trigger.email_trigger.email_date
 $.trigger.email_trigger.email_subject
 $.trigger.email_trigger.attachments_bucket; bucket name of attachments
 $.trigger.email_trigger.email_attachments; array of keys inside attachments_bucket
+```
 
 If you are running your agent off the back of an email trigger, they will have all this information available for them to make decisions on how to process this information.
 
