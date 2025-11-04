@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Quiva Gateway",
-    "description": "Quiva Gateway API for managing gateway infrastructure and routing API requests.",
+    "title": "quiva.ai Gateway",
+    "description": "quiva.ai Gateway API for managing gateway infrastructure and routing API requests.",
     "version": "1.0.0",
     "contact": {
-      "name": "Quiva Support",
+      "name": "quiva.ai Support",
       "email": "support@quiva.ai"
     }
   },

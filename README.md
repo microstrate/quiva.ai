@@ -1,1 +1,1 @@
-# What is Quiva
+# What is quiva.ai

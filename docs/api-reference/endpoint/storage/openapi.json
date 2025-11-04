@@ -1,10 +1,10 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Quiva Gateway",
+    "title": "quiva.ai Gateway",
     "description": "A comprehensive interface for managing key-value stores, object stores, streams, and search indexing",
     "contact": {
-      "name": "Quiva Support",
+      "name": "quiva.ai Support",
       "url": "https://quiva.ai/support"
     },
     "version": "1.0.0"

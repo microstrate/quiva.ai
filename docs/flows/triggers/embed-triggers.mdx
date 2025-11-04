@@ -6,7 +6,7 @@ icon: "window-maximize"
 
 # Embed Triggers
 
-Embed triggers allow you to add interactive elements to your website or web application that trigger Quiva flows. With simple copy-paste embed code, you can add buttons, forms, or chat interfaces that connect directly to your intelligent agents.
+Embed triggers allow you to add interactive elements to your website or web application that trigger quiva.ai flows. With simple copy-paste embed code, you can add buttons, forms, or chat interfaces that connect directly to your intelligent agents.
 
 ## Overview
 
@@ -176,7 +176,7 @@ A button embed creates an interactive button that:
     </button>
     <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      QuivaEmbed.init({
+      quiva.aiEmbed.init({
         flowId: 'abc123',
         apiKey: 'your-api-key-here' // if secured
       });
@@ -240,7 +240,7 @@ A button embed creates an interactive button that:
     
     **Loading State:**
     ```javascript
-    QuivaEmbed.init({
+    quiva.aiEmbed.init({
       flowId: 'abc123',
       onLoading: () => {
         // Show spinner
@@ -252,7 +252,7 @@ A button embed creates an interactive button that:
     
     **Success/Error:**
     ```javascript
-    QuivaEmbed.init({
+    quiva.aiEmbed.init({
       flowId: 'abc123',
       onSuccess: (response) => {
         // Show success message
@@ -561,7 +561,7 @@ A form embed creates a data collection interface that:
     <div id="quiva-form-container"></div>
     <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      QuivaEmbed.renderForm({
+      quiva.aiEmbed.renderForm({
         containerId: 'quiva-form-container',
         flowId: 'abc123',
         apiKey: 'your-api-key' // if secured
@@ -740,7 +740,7 @@ Client-side validation happens automatically:
 
 **Custom Validation:**
 ```javascript
-QuivaEmbed.renderForm({
+quiva.aiEmbed.renderForm({
   containerId: 'form-container',
   flowId: 'abc123',
   onValidate: (formData) => {
@@ -954,7 +954,7 @@ A chat embed creates a messaging interface that:
     
     **To pass user data:**
     ```javascript
-    QuivaEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       containerId: 'chat-container',
       flowId: 'abc123',
       userData: {
@@ -980,7 +980,7 @@ A chat embed creates a messaging interface that:
     ```html
     <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      QuivaEmbed.renderChat({
+      quiva.aiEmbed.renderChat({
         flowId: 'abc123',
         position: 'bottom-right',
         autoOpen: false
@@ -997,7 +997,7 @@ A chat embed creates a messaging interface that:
     <div id="chat-container" style="height: 600px;"></div>
     <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      QuivaEmbed.renderChat({
+      quiva.aiEmbed.renderChat({
         containerId: 'chat-container',
         flowId: 'abc123',
         displayMode: 'inline'
@@ -1015,7 +1015,7 @@ A chat embed creates a messaging interface that:
     
     <script src="https://cdn.quiva.ai/embed.js"></script>
     <script>
-      const chat = QuivaEmbed.createChat({
+      const chat = quiva.aiEmbed.createChat({
         flowId: 'abc123',
         displayMode: 'modal'
       });
@@ -1070,7 +1070,7 @@ A chat embed creates a messaging interface that:
     Show when agent is "thinking":
     
     ```javascript
-    QuivaEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       showTypingIndicator: true,
       typingDelay: 500 // ms before showing indicator
@@ -1084,7 +1084,7 @@ A chat embed creates a messaging interface that:
     Maintain context across sessions:
     
     ```javascript
-    QuivaEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       persistConversation: true,
       sessionDuration: 24 * 60 * 60 * 1000 // 24 hours
@@ -1116,7 +1116,7 @@ A chat embed creates a messaging interface that:
     Allow users to upload files:
     
     ```javascript
-    QuivaEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       allowFileUpload: true,
       maxFileSize: 10 * 1024 * 1024, // 10MB
@@ -1131,7 +1131,7 @@ A chat embed creates a messaging interface that:
     React to chat events:
     
     ```javascript
-    QuivaEmbed.renderChat({
+    quiva.aiEmbed.renderChat({
       flowId: 'abc123',
       onOpen: () => {
         console.log('Chat opened');
@@ -1232,7 +1232,7 @@ For internal or secured embeds:
   <Step title="Add to Embed Code">
     The key is automatically included:
     ```javascript
-    QuivaEmbed.init({
+    quiva.aiEmbed.init({
       flowId: 'abc123',
       apiKey: 'ms_key_abc123xyz789' // Auto-included
     });

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Quiva Gateway",
+    "title": "quiva.ai Gateway",
     "description": "API service for managing compute resources including collections, functions, containers, and their assets",
     "contact": {
       "email": "support@quiva.ai"

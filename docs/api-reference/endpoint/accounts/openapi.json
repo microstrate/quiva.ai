@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Quiva Gateway",
-    "description": "API for managing accounts, users, authentication, and payments in the Quiva platform",
+    "title": "quiva.ai Gateway",
+    "description": "API for managing accounts, users, authentication, and payments in the quiva.ai platform",
     "version": "1.0.0",
     "contact": {
-      "name": "Quiva Support",
+      "name": "quiva.ai Support",
       "url": "https://app.quiva.ai"
     }
   },
@@ -694,11 +694,11 @@
           },
           "cloud": {
             "type": "boolean",
-            "description": "Cloud functionality enabled. It true, the user has access to Quiva Cloud"
+            "description": "Cloud functionality enabled. It true, the user has access to quiva.ai Cloud"
           },
           "hub": {
             "type": "boolean",
-            "description": "Hub functionality enabled. It true, the user has access to Quiva Hub"
+            "description": "Hub functionality enabled. It true, the user has access to quiva.ai Hub"
           }
         }
       },
@@ -1396,7 +1396,7 @@
     "/accounts/api-key": {
       "post": {
         "summary": "Issue API key",
-        "description": "Issues a new API key for the specified user\n- This function nables users to generate programmatic access credentials for Quiva API as well as credentials for CLI access. This feature allows developers to integrate the platform's capabilities into external applications, automation scripts, or CI/CD pipelines without requiring interactive login sessions.",
+        "description": "Issues a new API key for the specified user\n- This function nables users to generate programmatic access credentials for quiva.ai API as well as credentials for CLI access. This feature allows developers to integrate the platform's capabilities into external applications, automation scripts, or CI/CD pipelines without requiring interactive login sessions.",
         "operationId": "issueApiKey",
         "x-resource-type": "service",
         "x-resource": "quiva.accounts.post.api-key",
@@ -2274,7 +2274,7 @@
                 },
                 "example": {
                   "data": {
-                    "otpauth_url": "otpauth://totp/Quiva:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Quiva",
+                    "otpauth_url": "otpauth://totp/quiva.ai:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=quiva.ai",
                     "secret": "JBSWY3DPEHPK3PXP"
                   }
                 }
@@ -4351,7 +4351,7 @@
                   }
                 },
                 "example": {
-                  "data": "-----BEGIN Quiva USER JWT-----\n[JWT TOKEN]\n------END Quiva USER JWT------\n************************* IMPORTANT *************************\nBKEY Seed printed below can be used to sign and prove identity.\nBKEYs are sensitive and should be treated as secrets.\n-----BEGIN USER BKEY SEED-----\n[BKEY SEED]\n------END USER BKEY SEED------\n*************************************************************"
+                  "data": "-----BEGIN quiva.ai USER JWT-----\n[JWT TOKEN]\n------END quiva.ai USER JWT------\n************************* IMPORTANT *************************\nBKEY Seed printed below can be used to sign and prove identity.\nBKEYs are sensitive and should be treated as secrets.\n-----BEGIN USER BKEY SEED-----\n[BKEY SEED]\n------END USER BKEY SEED------\n*************************************************************"
                 }
               }
             }
@@ -4934,7 +4934,7 @@
     "/accounts/submit-contact-form": {
       "post": {
         "summary": "Submit contact form",
-        "description": "Submits a contact form\n- The function provides a structured mechanism for authenticated users to send inquiries, feedback, or support requests directly to the Quiva team or specific team members. This communication channel is integrated within the platform, allowing users to reach out for assistance without leaving the application environment.",
+        "description": "Submits a contact form\n- The function provides a structured mechanism for authenticated users to send inquiries, feedback, or support requests directly to the quiva.ai team or specific team members. This communication channel is integrated within the platform, allowing users to reach out for assistance without leaving the application environment.",
         "operationId": "submitContactForm",
         "tags": [
           "Account Management"

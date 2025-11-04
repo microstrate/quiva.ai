@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Quiva Docs",
+  "name": "quiva.ai Docs",
   "description": "",
   "colors": {
     "primary": "#4641F2",

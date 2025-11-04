@@ -4,43 +4,122 @@ description: 'Trigger flows from incoming emails - automate email processing, su
 icon: 'envelope'
 ---
 
-# Email Trigger
-
 The Email trigger allows you to trigger flows when emails are received at a specific email address. Perfect for automating customer support, processing lead inquiries, handling support tickets, and any workflow that starts with an email.
 
-When you add an Email trigger, Quiva provides a unique email address. Any email sent to this address will trigger your flow with the full email content and attachments.
+When you add an Email trigger, you can generate unique email addresses for both draft and published versions of your flow. Any email sent to these addresses will trigger the corresponding version of your flow with the full email content and attachments.
 
 ---
 
 ## How It Works
 
-Add an Email trigger to your flow. Quiva generates a unique email address for this trigger. Configure email forwarding or share the address with users. When emails arrive at this address, your flow triggers automatically. Flow receives email subject, body, sender, attachments, and metadata.
+1. Add an Email trigger to your flow
+2. Click on "Trigger" in the left sidebar, then click "Get New" to generate unique email addresses
+3. quiva.ai generates two unique email addresses:
+   - One for triggering the **draft** version of your flow
+   - One for triggering the **published** version of your flow
+4. Save the trigger configuration
+5. Configure email forwarding or share the addresses with users
+6. When emails arrive at these addresses, your flow triggers automatically with the full email content, attachments, and metadata
 
 ---
 
 ## Configuration
 
-### Email Address
+### Generating Email Addresses
 
-When you add the trigger, Quiva automatically generates a unique email address:
+When you add an Email trigger to your flow:
 
+1. Click on **"Trigger"** in the left sidebar
+2. Click the **"Get New"** button
+3. quiva.ai automatically generates two unique email addresses:
+
+**Draft Flow Address:**
 ```
-flow-abc123@mail.quiva.ai
+trigger+draftsparklyjollybubble650@quiva.ai
 ```
 
-Click "Copy Email Address" in the trigger configuration. Use this address to receive emails that trigger your flow. The email address is permanent and doesn't change.
+**Published Flow Address:**
+```
+trigger+sparklyjollybubble650@quiva.ai
+```
+
+**Important Notes:**
+- The draft address triggers your draft flow (for testing before publishing)
+- The published address triggers your live published flow
+- Each flow gets unique addresses that are permanent and don't change
+- Click "Copy" next to each address to easily copy them to your clipboard
 
 ### Email Forwarding
 
-You can forward emails from your existing email address to the Quiva email:
+You can forward emails from your existing email address to the quiva.ai email addresses. This allows you to use your branded email address (like support@yourcompany.com) while triggering quiva.ai flows.
 
-**Gmail:** Set up automatic forwarding in Gmail settings.
+#### Gmail
 
-**Outlook:** Create inbox rule to forward to Quiva address.
+1. Open Gmail Settings (click the gear icon, then "See all settings")
+2. Go to the **"Forwarding and POP/IMAP"** tab
+3. Click **"Add a forwarding address"**
+4. Enter your quiva.ai trigger email address (e.g., `trigger+sparklyjollybubble650@quiva.ai`)
+5. Click **"Next"**, then **"Proceed"**, then **"OK"**
+6. Gmail will send a confirmation email to the forwarding address
+7. Check your quiva.ai flow execution logs or use the draft address to retrieve the confirmation code
+8. Enter the confirmation code in Gmail to verify
+9. Select **"Forward a copy of incoming mail"** and choose the quiva.ai address
+10. Click **"Save Changes"**
 
-**Custom Domain:** Set up email forwarding at your domain provider.
+[Official Gmail forwarding documentation](https://support.google.com/mail/answer/10957?hl=en)
 
-This allows you to use your branded email address (support@yourcompany.com) while triggering Quiva flows.
+#### Outlook / Hotmail
+
+1. Open Outlook Settings (click the gear icon, then "View all Outlook settings")
+2. Go to **Mail** → **Forwarding**
+3. Check **"Enable forwarding"**
+4. Enter your quiva.ai trigger email address
+5. Choose whether to keep a copy in Outlook
+6. Click **"Save"**
+
+[Official Outlook forwarding documentation](https://support.microsoft.com/en-us/office/turn-on-automatic-forwarding-in-outlook-7f2670a1-7fff-4475-8a3c-5822d63b0c8e)
+
+#### Yahoo Mail
+
+1. Click the **Settings icon** (gear), then **"More Settings"**
+2. Click **"Mailboxes"** in the left sidebar
+3. Select your email address
+4. Click **"Forwarding"**
+5. Enter your quiva.ai trigger email address
+6. Click **"Verify"** and follow the confirmation steps
+7. Check **"Enable forwarding"**
+8. Click **"Save"**
+
+[Official Yahoo Mail forwarding documentation](https://help.yahoo.com/kb/SLN28204.html)
+
+#### Apple iCloud Mail
+
+1. Go to [iCloud.com](https://www.icloud.com) and sign in
+2. Click **Mail**
+3. Click the **gear icon** (bottom left), then **"Preferences"**
+4. Click the **"General"** tab
+5. In the "Forwarding" section, enter your quiva.ai trigger email address
+6. Choose whether to keep a copy in iCloud
+7. Click **"Done"**
+
+[Official iCloud Mail documentation](https://support.apple.com/guide/icloud/forward-emails-mm6b1a4f5e/icloud)
+
+### Gmail Filters (Advanced)
+
+For more control, you can create Gmail filters to forward only specific emails:
+
+1. In Gmail, search for emails using the criteria you want (e.g., `subject:support`)
+2. Click the search options dropdown and refine your criteria
+3. Click **"Create filter"**
+4. Check **"Forward it to"** and select your quiva.ai address
+5. Optionally, choose other actions (like skip inbox, apply label, mark as read)
+6. Click **"Create filter"**
+
+**Examples:**
+- Forward only emails with "support" in subject
+- Forward only emails from specific domains
+- Forward only emails with attachments
+- Forward only unread emails
 
 ### Response Mode
 
@@ -76,7 +155,6 @@ Built-in spam filtering protects your flows. Common spam patterns blocked automa
 ### Email Metadata
 
 All email information is available under `$.trigger.email`:
-
 ```javascript
 // Basic info
 const from = $.trigger.email.from;
@@ -86,15 +164,14 @@ const receivedAt = $.trigger.email.received_at;
 
 // Example values
 // from: "customer@example.com"
-// to: "flow-abc123@mail.quiva.ai"
+// to: "trigger+sparklyjollybubble650@quiva.ai"
 // subject: "Help with my order"
-// receivedAt: "2025-10-14T10:30:00Z"
+// receivedAt: "2025-11-04T10:30:00Z"
 ```
 
 ### Email Body
 
 Access both plain text and HTML versions:
-
 ```javascript
 // Plain text body
 const textBody = $.trigger.email.text;
@@ -110,7 +187,6 @@ const isForward = $.trigger.email.subject.startsWith('FWD:');
 ### Sender Information
 
 Extract sender details:
-
 ```javascript
 // Full sender (name and email)
 const sender = $.trigger.email.from;
@@ -128,7 +204,6 @@ const senderName = $.trigger.email.from_name;
 ### Recipients
 
 Access all recipients:
-
 ```javascript
 // Primary recipient (To:)
 const to = $.trigger.email.to;
@@ -144,7 +219,6 @@ const bcc = $.trigger.email.bcc;
 ### Email Headers
 
 Access full email headers:
-
 ```javascript
 // All headers
 const headers = $.trigger.email.headers;
@@ -162,7 +236,6 @@ const customHeader = headers['x-custom-header'];
 ### Attachments
 
 Access email attachments:
-
 ```javascript
 // Check if email has attachments
 const hasAttachments = $.trigger.email.attachments.length > 0;
@@ -194,7 +267,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Automate customer support ticket creation
 
 **Flow:**
-- Trigger: Email (support@company.com)
+- Trigger: Email (support@company.com forwards to quiva.ai)
 - Agent: Analyze email content
   - Extract customer issue
   - Determine urgency level
@@ -213,7 +286,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process incoming lead inquiries from website contact form
 
 **Flow:**
-- Trigger: Email (leads@company.com)
+- Trigger: Email (leads@company.com forwards to quiva.ai)
 - Agent: Extract lead information
   - Company name, role, requirements
   - Budget indicators, timeline
@@ -231,7 +304,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process invoices received via email
 
 **Flow:**
-- Trigger: Email (invoices@company.com)
+- Trigger: Email (invoices@company.com forwards to quiva.ai)
 - Condition: Has PDF attachment?
 - Agent: Extract invoice data from attachment
   - Invoice number, amount, vendor, due date
@@ -248,7 +321,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process order confirmation emails from suppliers
 
 **Flow:**
-- Trigger: Email (orders@company.com)
+- Trigger: Email (orders@company.com forwards to quiva.ai)
 - Agent: Extract order details
   - Order number, items, quantities, delivery date
 - HTTP Request: Update inventory management system
@@ -264,7 +337,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process job applications received via email
 
 **Flow:**
-- Trigger: Email (careers@company.com)
+- Trigger: Email (careers@company.com forwards to quiva.ai)
 - Condition: Has resume attachment?
 - Agent: Extract candidate information
   - Name, contact, experience, skills
@@ -281,7 +354,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process newsletter subscription requests
 
 **Flow:**
-- Trigger: Email (subscribe@company.com)
+- Trigger: Email (subscribe@company.com forwards to quiva.ai)
 - Agent: Extract email address from body
 - HTTP Request: Check if already subscribed
 - Condition: Already subscribed?
@@ -296,7 +369,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process customer feedback emails
 
 **Flow:**
-- Trigger: Email (feedback@company.com)
+- Trigger: Email (feedback@company.com forwards to quiva.ai)
 - Agent: Analyze feedback sentiment
   - Positive, neutral, or negative
   - Extract key themes
@@ -313,7 +386,7 @@ const firstAttachment = $.trigger.email.attachments[0];
 **Scenario:** Process document approval requests
 
 **Flow:**
-- Trigger: Email (approvals@company.com)
+- Trigger: Email (approvals@company.com forwards to quiva.ai)
 - Agent: Extract document details from attachments
 - HTTP Request: Create approval request in system
 - HTTP Request: Notify approvers
@@ -326,12 +399,27 @@ const firstAttachment = $.trigger.email.attachments[0];
 
 ## Best Practices
 
+### Testing with Draft Address
+
+**Always test your flow using the draft address first:**
+
+1. Send test emails to your draft address (`trigger+draft...@quiva.ai`)
+2. Monitor the execution in your flow's draft environment
+3. Verify all steps work correctly with real email data
+4. Check that integrations and API calls function as expected
+5. Only use the published address once testing is complete
+
+**Benefits:**
+- Test with real emails without affecting production
+- Iterate quickly on your flow design
+- Avoid errors in your live workflow
+- Safely test with sensitive data
+
 ### Email Validation
 
 **Always validate email content:**
 
 Check sender is legitimate. Verify email has required content. Validate attachments if expected. Check for spam indicators.
-
 ```javascript
 // Validate sender domain
 const senderEmail = $.trigger.email.from_email;
@@ -358,7 +446,6 @@ if (!$.trigger.email.text || $.trigger.email.text.length < 10) {
 **Handle email processing errors gracefully:**
 
 Catch parsing errors. Handle missing attachments. Manage invalid email formats. Provide fallback processing.
-
 ```javascript
 try {
   // Process email
@@ -382,7 +469,6 @@ try {
 **Process attachments carefully:**
 
 Check attachment count. Validate file types. Scan for malware. Handle large attachments.
-
 ```javascript
 const attachments = $.trigger.email.attachments;
 
@@ -446,6 +532,18 @@ Validate sender domains. Check for phishing indicators. Scan attachments for mal
 - Requests for sensitive information
 - Urgency or threat language
 
+### Email Forwarding Tips
+
+**Best practices for email forwarding:**
+
+- **Always verify the forwarding address** before it becomes active
+- **Check if your email service allows filters** to forward only specific emails (recommended for high-volume inboxes)
+- **Be aware that some email services may disable forwarding** if you receive too many spam messages
+- **Keep your original inbox as a backup** in case forwarding fails
+- **Test with the draft address first** before using the published address
+- **Use Gmail filters** to forward only relevant emails and reduce noise
+- **Monitor your flow execution logs** to ensure emails are being received
+
 ### Performance Optimization
 
 **For high-volume email:**
@@ -463,7 +561,6 @@ Process asynchronously. Store attachments externally. Clean up after processing.
 ### Extract Information
 
 Use agents to extract structured data from emails:
-
 ```javascript
 // Agent prompt
 const agentPrompt = `
@@ -503,7 +600,6 @@ ${$.trigger.email.text}
 ### Handle Email Threads
 
 Detect if email is part of thread:
-
 ```javascript
 // Check for reply
 const isReply = $.trigger.email.headers['in-reply-to'] !== undefined;
@@ -524,7 +620,6 @@ const newContent = emailBody.split('On ')[0]; // Simple approach
 ### Send Reply Email
 
 Use HTTP Request step to send email response:
-
 ```javascript
 // Send via your email service
 await axios.post('https://api.sendgrid.com/v3/mail/send', {
@@ -584,13 +679,40 @@ Support Team
 
 ### Emails Not Triggering Flow
 
-**Check email address:** Verify emails sent to correct Quiva address.
+**Check email forwarding:** Verify forwarding is set up correctly in your email provider.
 
-**Check spam folder:** Email might be caught by spam filter.
+**Verify trigger addresses:** Ensure you're sending to the correct quiva.ai address (draft or published).
 
-**Check flow is active:** Ensure flow is published and trigger enabled.
+**Check flow is active:** Ensure flow is saved and trigger configuration is complete.
 
-**Review email logs:** Check trigger execution logs for delivery attempts.
+**Review email forwarding confirmation:** Some providers require confirmation before forwarding becomes active.
+
+**Check spam/junk folder:** Your email service might be filtering forwarded emails.
+
+**Review execution logs:** Check your flow's execution logs to see if emails are being received.
+
+### Email Forwarding Not Working
+
+**Gmail:**
+- Ensure you completed the verification step
+- Check that forwarding is enabled in settings
+- Verify the forwarding address is correct
+- Check for filters that might be blocking forwarding
+
+**Outlook:**
+- Confirm forwarding is enabled
+- Check if "keep a copy" is affecting delivery
+- Verify email isn't being moved to folders before forwarding
+
+**Yahoo Mail:**
+- Ensure verification was completed
+- Check that forwarding is enabled
+- Verify no filters are blocking forwarding
+
+**General tips:**
+- Wait a few minutes after setting up forwarding (propagation time)
+- Send a test email to verify forwarding works
+- Check your original inbox to see if email arrived before forwarding
 
 ### Missing Email Content
 
@@ -685,9 +807,9 @@ Store thread IDs in database. Associate responses with original emails. Maintain
 
 Create multiple email triggers for different purposes:
 
-- support@mail.quiva.ai - Customer support
-- sales@mail.quiva.ai - Sales inquiries
-- invoices@mail.quiva.ai - Invoice processing
+- `trigger+support123@quiva.ai` - Customer support
+- `trigger+sales456@quiva.ai` - Sales inquiries
+- `trigger+invoices789@quiva.ai` - Invoice processing
 
 Each trigger can have different flows and processing logic.
 

@@ -1,11 +1,11 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Quiva Gateway",
-        "description": "API for managing Quiva platform",
+        "title": "quiva.ai Gateway",
+        "description": "API for managing quiva.ai platform",
         "version": "1.0.0",
         "contact": {
-            "name": "Quiva Support",
+            "name": "quiva.ai Support",
             "url": "https://app.quiva.ai"
         }
     },

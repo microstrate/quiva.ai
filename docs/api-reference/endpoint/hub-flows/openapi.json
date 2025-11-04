@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Quiva Gateway",
-    "description": "API for managing collections, nodes, and workflows in Quiva Hub",
+    "title": "quiva.ai Gateway",
+    "description": "API for managing collections, nodes, and workflows in quiva.ai Hub",
     "version": "0.1.0",
     "contact": {
-      "name": "Quiva Support"
+      "name": "quiva.ai Support"
     }
   },
   "servers": [
@@ -1856,7 +1856,7 @@
       },
       "put": {
         "summary": "Update an OAuth configuration.",
-        "description": "[Quiva admins only] Update the OAuth configuration for a specific integration - full configuration replacement",
+        "description": "[quiva.ai admins only] Update the OAuth configuration for a specific integration - full configuration replacement",
         "operationId": "putIntegrationsOauthConfig",
         "tags": [
           "Oauth"
@@ -1908,7 +1908,7 @@
       },
       "delete": {
         "summary": "Delete an OAuth configuration.",
-        "description": "[Quiva admins only] Deletes an OAuth configuration for a specific integration",
+        "description": "[quiva.ai admins only] Deletes an OAuth configuration for a specific integration",
         "operationId": "deleteIntegrationsOauthConfig",
         "tags": [
           "Oauth"
