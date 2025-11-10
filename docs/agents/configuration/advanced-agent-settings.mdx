@@ -1,0 +1,1409 @@
+---
+title: 'Advanced Agent Settings'
+description: 'Configure memory, verification, branching, and enterprise-grade agent features'
+icon: 'microchip'
+---
+
+# Advanced Agent Settings
+
+Unlock enterprise-grade capabilities for your agents including smart memory systems, consensus-based verification, conversation branching, human oversight, and advanced observability.
+
+<Info>
+**When to use Advanced Settings**: Most agents work great with basic configuration. Use advanced settings when you need:
+- Learning from past interactions (Memory)
+- High-stakes decisions requiring validation (Verification)
+- Complex problem-solving with multiple approaches (Branching)
+- Human oversight for critical operations (Human-in-the-Loop)
+- Production debugging and monitoring (Observability)
+- Optimized knowledge retrieval (Knowledge Advanced)
+</Info>
+
+---
+
+## Configuration Overview
+
+Advanced agent settings are organized into these categories:
+
+<CardGroup cols={3}>
+  <Card title="Memory System" icon="brain">
+    Learn from historical resolutions
+  </Card>
+  
+  <Card title="Smart Context" icon="sparkles">
+    Optimize token usage and context
+  </Card>
+  
+  <Card title="Verification" icon="check-double">
+    Consensus-based validation
+  </Card>
+  
+  <Card title="Human-in-the-Loop" icon="user-check">
+    Escalation and checkpoints
+  </Card>
+  
+  <Card title="Branching" icon="code-branch">
+    Test multiple approaches
+  </Card>
+  
+  <Card title="Observability" icon="gauge">
+    Debugging and monitoring
+  </Card>
+  
+  <Card title="Knowledge Advanced" icon="book-sparkles">
+    RAG optimization
+  </Card>
+  
+  <Card title="LLM Config" icon="sliders">
+    Fine-tune model behavior
+  </Card>
+</CardGroup>
+
+---
+
+## Memory System
+
+Enable agents to learn from past interactions and improve over time by capturing and querying historical resolutions.
+
+<ParamField path="agent_settings.memory.enabled" type="boolean" default="false">
+  Enable smart memory system for learning from historical resolutions
+  
+  When enabled, agents capture significant moments from conversations and can query this memory bank to improve future responses.
+</ParamField>
+
+<ParamField path="agent_settings.memory.marker_types" type="string[]">
+  Types of markers to capture in memory
+  
+  **Options**:
+  - `error` - Error occurrences and resolutions
+  - `question` - Important questions and answers
+  - `escalation` - Escalation events and outcomes
+  - `tool_call` - Successful tool usage patterns
+  - `success` - Successful task completions
+  
+  **Example**: `["error", "question", "escalation", "tool_call", "success"]`
+  
+  <Tip>Start with `["error", "success"]` to capture what works and what doesn't</Tip>
+</ParamField>
+
+<ParamField path="agent_settings.memory.query_enabled" type="boolean" default="true">
+  Enable querying memory bank for similar historical problems
+  
+  When enabled, agents automatically search memory for similar past situations before responding.
+</ParamField>
+
+<ParamField path="agent_settings.memory.max_memory_entries" type="number" default="100">
+  Maximum number of memory entries to retain
+  
+  **Range**: 1-1000
+  
+  Older entries beyond this limit are automatically pruned. Higher limits provide more historical context but may slow queries.
+</ParamField>
+
+<ParamField path="agent_settings.memory.similarity_threshold" type="number" default="0.7">
+  Minimum similarity score for memory retrieval
+  
+  **Range**: 0.0-1.0
+  
+  - `0.5` - Very loose matching (more recall, less precision)
+  - `0.7` - Balanced (default)
+  - `0.9` - Very strict matching (less recall, more precision)
+</ParamField>
+
+### Memory Use Cases
+
+<AccordionGroup>
+  <Accordion title="Customer Support - Learn Common Issues" icon="headset">
+    **Scenario**: Support agent handles repetitive issues
+    
+    **Configuration**:
+    ```json
+    {
+      "memory": {
+        "enabled": true,
+        "marker_types": ["question", "success"],
+        "max_memory_entries": 500,
+        "similarity_threshold": 0.75
+      }
+    }
+    ```
+    
+    **How it works**:
+    1. Customer asks about password reset
+    2. Agent searches memory: "Have we solved this before?"
+    3. Finds 50 similar past resolutions
+    4. Uses best-performing solution
+    5. Stores this resolution for future reference
+  </Accordion>
+
+  <Accordion title="Error Resolution - Remember Solutions" icon="triangle-exclamation">
+    **Scenario**: Agent encounters errors and learns fixes
+    
+    **Configuration**:
+    ```json
+    {
+      "memory": {
+        "enabled": true,
+        "marker_types": ["error", "success"],
+        "max_memory_entries": 200,
+        "similarity_threshold": 0.8
+      }
+    }
+    ```
+    
+    **How it works**:
+    1. API call fails with timeout error
+    2. Agent searches memory for similar errors
+    3. Finds previous timeout was fixed by retry with backoff
+    4. Applies same solution
+    5. Stores pattern for future
+  </Accordion>
+
+  <Accordion title="Sales - Remember Objection Handling" icon="handshake">
+    **Scenario**: Sales agent learns effective responses to objections
+    
+    **Configuration**:
+    ```json
+    {
+      "memory": {
+        "enabled": true,
+        "marker_types": ["question", "escalation", "success"],
+        "max_memory_entries": 300,
+        "similarity_threshold": 0.7
+      }
+    }
+    ```
+    
+    **How it works**:
+    1. Lead raises pricing objection
+    2. Agent searches memory for similar objections
+    3. Finds successful past responses
+    4. Adapts best approach to current context
+    5. Stores outcome for learning
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Memory is scoped per agent. Different agent instances don't share memory unless explicitly configured to use the same memory store.
+</Warning>
+
+---
+
+## Smart Context Advanced
+
+Optimize token usage and context management with intelligent summarization and dynamic allocation.
+
+<ParamField path="agent_settings.smart_context_advanced.token_limit_auto_adjust" type="boolean" default="true">
+  Enable dynamic token allocation based on query complexity
+  
+  Automatically adjusts context window size based on the complexity of the query. Simple queries use fewer tokens, complex queries get more context.
+</ParamField>
+
+<ParamField path="agent_settings.smart_context_advanced.complexity_detection" type="boolean" default="true">
+  Enable automatic query complexity analysis
+  
+  Agent analyzes incoming queries to determine complexity level, which affects token allocation and summarization strategies.
+</ParamField>
+
+<ParamField path="agent_settings.smart_context_advanced.complexity_detection_method" type="enum" default="keyword">
+  Method for detecting query complexity
+  
+  **Options**:
+  - `keyword` - Fast pattern matching (looks for complexity indicators)
+  - `llm` - AI-based analysis (more accurate but slower)
+  - `rubric` - Rule-based scoring system
+  
+  **Recommendation**: Use `keyword` for speed, `llm` for accuracy
+</ParamField>
+
+<ParamField path="agent_settings.smart_context_advanced.message_summarization" type="boolean" default="true">
+  Enable summarizing multiple large messages into single summaries
+  
+  When conversation history grows large, agent automatically summarizes older messages to preserve context while reducing tokens.
+</ParamField>
+
+<ParamField path="agent_settings.smart_context_advanced.ephemeral_streams" type="boolean" default="false">
+  Enable ephemeral streams for context-relevant message queuing
+  
+  Creates temporary context windows containing only the most relevant parts of the conversation. Useful for very long conversations.
+</ParamField>
+
+<ParamField path="agent_settings.smart_context_advanced.min_messages_for_summary" type="number" default="3">
+  Minimum messages before summarization is triggered
+  
+  **Range**: 2-20
+  
+  Conversations shorter than this won't be summarized, preserving full context for brief interactions.
+</ParamField>
+
+### Smart Context Strategies
+
+<CodeGroup>
+```json Simple Tasks (Fast & Cheap)
+{
+  "smart_context_advanced": {
+    "token_limit_auto_adjust": true,
+    "complexity_detection": true,
+    "complexity_detection_method": "keyword",
+    "message_summarization": false,
+    "ephemeral_streams": false
+  }
+}
+```
+
+```json Long Conversations (Memory Efficient)
+{
+  "smart_context_advanced": {
+    "token_limit_auto_adjust": true,
+    "complexity_detection": true,
+    "complexity_detection_method": "llm",
+    "message_summarization": true,
+    "ephemeral_streams": true,
+    "min_messages_for_summary": 3
+  }
+}
+```
+
+```json High-Stakes Analysis (Maximum Context)
+{
+  "smart_context_advanced": {
+    "token_limit_auto_adjust": true,
+    "complexity_detection": true,
+    "complexity_detection_method": "llm",
+    "message_summarization": false,
+    "ephemeral_streams": false
+  }
+}
+```
+</CodeGroup>
+
+<Tip>
+**Cost vs. Quality Trade-off**:
+- Summarization reduces costs but may lose nuance
+- Ephemeral streams are best for conversations with 20+ messages
+- For critical decisions, disable summarization to preserve all context
+</Tip>
+
+---
+
+## Verification & Consensus
+
+Run agents multiple times and require consensus before returning results. Ideal for high-stakes decisions.
+
+<ParamField path="agent_settings.verification.enabled" type="boolean" default="false">
+  Enable consensus-based verification
+  
+  Agent runs multiple times and results must agree before being accepted. Dramatically improves accuracy for critical decisions.
+</ParamField>
+
+<ParamField path="agent_settings.verification.consensus_runs" type="number" default="3">
+  Number of runs for consensus
+  
+  **Range**: 2-10
+  
+  **Recommended**:
+  - `3` - Standard consensus (2 out of 3 must agree)
+  - `5` - High confidence (3 out of 5 must agree)
+  - `7+` - Mission critical (strong consensus required)
+  
+  <Warning>More runs = more API calls = higher costs. Use judiciously.</Warning>
+</ParamField>
+
+<ParamField path="agent_settings.verification.consensus_threshold" type="number" default="0.66">
+  Agreement threshold for consensus validation
+  
+  **Range**: 0.5-1.0
+  
+  - `0.5` - Simple majority (50%+1)
+  - `0.66` - Supermajority (2/3, default)
+  - `0.8` - Strong consensus (4/5)
+  - `1.0` - Unanimous agreement
+</ParamField>
+
+<ParamField path="agent_settings.verification.verifier_agent" type="string">
+  Specific agent to use for verification runs
+  
+  Use a different agent configuration for verification. For example, use GPT-4 to verify GPT-3.5 results.
+  
+  **Example**: `"specialist-verifier-agent"`
+</ParamField>
+
+### Verification Examples
+
+<AccordionGroup>
+  <Accordion title="Medical Diagnosis Support" icon="stethoscope">
+    **Why verification**: Life-critical decisions require high confidence
+    
+    **Configuration**:
+    ```json
+    {
+      "verification": {
+        "enabled": true,
+        "consensus_runs": 5,
+        "consensus_threshold": 0.8,
+        "verifier_agent": "medical-specialist-verifier"
+      }
+    }
+    ```
+    
+    **Process**:
+    1. Run diagnosis 5 times
+    2. Require 4/5 agreement (80%)
+    3. If consensus reached, return result
+    4. If no consensus, escalate to human review
+  </Accordion>
+
+  <Accordion title="Financial Transaction Approval" icon="dollar-sign">
+    **Why verification**: Costly errors must be prevented
+    
+    **Configuration**:
+    ```json
+    {
+      "verification": {
+        "enabled": true,
+        "consensus_runs": 3,
+        "consensus_threshold": 0.66,
+        "verifier_agent": "financial-auditor-agent"
+      }
+    }
+    ```
+    
+    **Process**:
+    1. Analyze transaction 3 times
+    2. Require 2/3 agreement
+    3. Different verifier agent double-checks
+    4. Only proceed if consensus reached
+  </Accordion>
+
+  <Accordion title="Legal Document Analysis" icon="gavel">
+    **Why verification**: Legal accuracy is critical
+    
+    **Configuration**:
+    ```json
+    {
+      "verification": {
+        "enabled": true,
+        "consensus_runs": 5,
+        "consensus_threshold": 1.0,
+        "verifier_agent": "legal-specialist-verifier"
+      }
+    }
+    ```
+    
+    **Process**:
+    1. Analyze document 5 times
+    2. Require 100% agreement (unanimous)
+    3. Any disagreement triggers human review
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+**When to use verification**:
+- ✅ High-stakes decisions (legal, medical, financial)
+- ✅ Accuracy more important than speed
+- ✅ Errors are very costly
+- ❌ Real-time responses required
+- ❌ Budget constrained
+- ❌ Low-stakes tasks
+</Note>
+
+---
+
+## Human-in-the-Loop
+
+Pause execution for human review at critical checkpoints or when conditions are met.
+
+<ParamField path="agent_settings.human_in_the_loop.enabled" type="boolean" default="false">
+  Enable human-in-the-loop escalation
+  
+  Agent can pause and request human approval before proceeding with certain actions.
+</ParamField>
+
+<ParamField path="agent_settings.human_in_the_loop.auto_escalate_on_error" type="boolean" default="false">
+  Automatically escalate to human when errors occur
+  
+  Any error during execution triggers immediate human review instead of agent attempting recovery.
+</ParamField>
+
+<ParamField path="agent_settings.human_in_the_loop.checkpoints" type="string[]">
+  Specific checkpoints requiring human review
+  
+  **Options**:
+  - `pre_tool_call` - Before calling any tool (review action before execution)
+  - `post_tool_call` - After tool calls (review results before proceeding)
+  - `pre_response` - Before sending final response (review before delivery)
+  - `post_validation` - After validation completes (review validated output)
+  
+  **Example**: `["pre_tool_call", "pre_response"]`
+</ParamField>
+
+<ParamField path="agent_settings.human_in_the_loop.escalation_threshold" type="object">
+  Conditions that trigger human escalation
+  
+  Define specific conditions that automatically pause for human review:
+  
+  **error_count** (number): Escalate after N consecutive errors
+  - Default: 3
+  - Range: 1+
+  
+  **confidence_score** (number): Escalate when confidence drops below threshold
+  - Default: 0.5
+  - Range: 0.0-1.0
+  
+  **turn_count** (number): Escalate after N turns without resolution
+  - Default: 10
+  - Range: 1+
+</ParamField>
+
+### Human-in-the-Loop Configuration
+
+<CodeGroup>
+```json Conservative (Pre-approve Everything)
+{
+  "human_in_the_loop": {
+    "enabled": true,
+    "auto_escalate_on_error": true,
+    "checkpoints": [
+      "pre_tool_call",
+      "post_tool_call",
+      "pre_response",
+      "post_validation"
+    ],
+    "escalation_threshold": {
+      "error_count": 1,
+      "confidence_score": 0.7,
+      "turn_count": 5
+    }
+  }
+}
+```
+
+```json Balanced (Review Critical Actions)
+{
+  "human_in_the_loop": {
+    "enabled": true,
+    "auto_escalate_on_error": false,
+    "checkpoints": [
+      "pre_tool_call",
+      "pre_response"
+    ],
+    "escalation_threshold": {
+      "error_count": 3,
+      "confidence_score": 0.5,
+      "turn_count": 10
+    }
+  }
+}
+```
+
+```json Minimal (Only When Stuck)
+{
+  "human_in_the_loop": {
+    "enabled": true,
+    "auto_escalate_on_error": false,
+    "checkpoints": [],
+    "escalation_threshold": {
+      "error_count": 5,
+      "confidence_score": 0.3,
+      "turn_count": 15
+    }
+  }
+}
+```
+</CodeGroup>
+
+### Escalation Workflow
+
+<Steps>
+  <Step title="Trigger Condition Met">
+    Agent encounters escalation trigger (error threshold, checkpoint, low confidence)
+  </Step>
+  
+  <Step title="Execution Pauses">
+    Flow pauses and agent state is saved
+  </Step>
+  
+  <Step title="Notification Sent">
+    Designated reviewers receive notification with context
+  </Step>
+  
+  <Step title="Human Reviews">
+    Reviewer examines agent state, conversation, and proposed action
+  </Step>
+  
+  <Step title="Decision Made">
+    Reviewer approves, rejects, or provides guidance
+  </Step>
+  
+  <Step title="Execution Resumes">
+    Flow continues based on reviewer decision
+  </Step>
+</Steps>
+
+<Tip>
+**Best Practice**: Combine with output schema to show reviewers structured data:
+```json
+{
+  "output_schema": {
+    "action": "string",
+    "reasoning": "string",
+    "confidence": "number",
+    "risk_level": "string"
+  },
+  "human_in_the_loop": {
+    "enabled": true,
+    "checkpoints": ["pre_response"]
+  }
+}
+```
+Reviewers see exactly what the agent plans to do and why.
+</Tip>
+
+---
+
+## Branching & Checkpoints
+
+Test multiple approaches in parallel and maintain conversation checkpoints for rollback.
+
+<ParamField path="agent_settings.branching.enabled" type="boolean" default="false">
+  Enable conversation branching for testing different approaches
+  
+  Agent can create parallel conversation branches to explore multiple solutions simultaneously.
+</ParamField>
+
+<ParamField path="agent_settings.branching.auto_checkpoint" type="boolean" default="true">
+  Automatically create checkpoints at critical decision points
+  
+  Agent identifies key decision points and creates restore points automatically.
+</ParamField>
+
+<ParamField path="agent_settings.branching.checkpoint_interval" type="number" default="5">
+  Create checkpoint every N turns
+  
+  **Range**: 1 or more
+  
+  Regular checkpoints allow rollback if agent goes down wrong path. Lower values = more checkpoints = more storage.
+</ParamField>
+
+<ParamField path="agent_settings.branching.max_branches" type="number" default="3">
+  Maximum number of active conversation branches
+  
+  **Range**: 1-10
+  
+  Limits parallel exploration to control costs. Higher values explore more solutions but use more API calls.
+</ParamField>
+
+### Branching Strategies
+
+<AccordionGroup>
+  <Accordion title="Parallel Problem Solving" icon="diagram-project">
+    **Use case**: Complex problem with multiple possible approaches
+    
+    **Configuration**:
+    ```json
+    {
+      "branching": {
+        "enabled": true,
+        "auto_checkpoint": true,
+        "checkpoint_interval": 3,
+        "max_branches": 5
+      }
+    }
+    ```
+    
+    **How it works**:
+    1. Agent identifies 3 possible approaches
+    2. Creates 3 branches, explores each in parallel
+    3. Compares results from all branches
+    4. Returns best solution
+    5. Discards unsuccessful branches
+  </Accordion>
+
+  <Accordion title="Safety Net for Risky Operations" icon="parachute-box">
+    **Use case**: Operations that might need rollback
+    
+    **Configuration**:
+    ```json
+    {
+      "branching": {
+        "enabled": true,
+        "auto_checkpoint": true,
+        "checkpoint_interval": 1,
+        "max_branches": 2
+      }
+    }
+    ```
+    
+    **How it works**:
+    1. Checkpoint before risky operation
+    2. Execute operation in branch
+    3. Validate results
+    4. If good: merge branch
+    5. If bad: discard branch, restore checkpoint
+  </Accordion>
+
+  <Accordion title="A B Testing Responses" icon="split">
+    **Use case**: Test different response strategies
+    
+    **Configuration**:
+    ```json
+    {
+      "branching": {
+        "enabled": true,
+        "auto_checkpoint": false,
+        "checkpoint_interval": 10,
+        "max_branches": 3
+      }
+    }
+    ```
+    
+    **How it works**:
+    1. Generate response in 3 different styles
+    2. Evaluate each for quality metrics
+    3. Select best performing style
+    4. Use winner for actual response
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Branching significantly increases API usage (N branches = N times the calls). Use sparingly for high-value tasks only.
+</Warning>
+
+---
+
+## Observability & Debugging
+
+Production-grade observability, instrumentation, and debugging capabilities.
+
+<ParamField path="agent_settings.observability.debug_mode" type="boolean" default="false">
+  Enable detailed debug logging and instrumentation
+  
+  Captures verbose execution details. Essential for development and troubleshooting but adds overhead.
+</ParamField>
+
+<ParamField path="agent_settings.observability.capture_thinking" type="boolean" default="true">
+  Capture and log LLM reasoning processes
+  
+  Records the agent's internal reasoning and decision-making process. Invaluable for understanding behavior.
+</ParamField>
+
+<ParamField path="agent_settings.observability.capture_tool_calls" type="boolean" default="true">
+  Capture detailed tool call information and results
+  
+  Logs all tool invocations, parameters, responses, and errors. Critical for debugging tool issues.
+</ParamField>
+
+<ParamField path="agent_settings.observability.metrics_enabled" type="boolean" default="true">
+  Enable performance metrics collection
+  
+  Tracks execution time, token usage, error rates, and other performance metrics.
+</ParamField>
+
+<ParamField path="agent_settings.observability.tracing_enabled" type="boolean" default="true">
+  Enable distributed tracing with OpenTelemetry
+  
+  Creates distributed traces for debugging complex multi-agent flows. Integrates with standard observability tools.
+</ParamField>
+
+<ParamField path="agent_settings.observability.log_level" type="enum" default="info">
+  Logging level
+  
+  **Options**:
+  - `debug` - Everything (verbose, use for development)
+  - `info` - Important events (default for production)
+  - `warn` - Warnings and errors only
+  - `error` - Errors only (minimal logging)
+</ParamField>
+
+### Observability Configurations
+
+<CodeGroup>
+```json Development (Maximum Visibility)
+{
+  "observability": {
+    "debug_mode": true,
+    "capture_thinking": true,
+    "capture_tool_calls": true,
+    "metrics_enabled": true,
+    "tracing_enabled": true,
+    "log_level": "debug"
+  }
+}
+```
+
+```json Production (Balanced)
+{
+  "observability": {
+    "debug_mode": false,
+    "capture_thinking": true,
+    "capture_tool_calls": true,
+    "metrics_enabled": true,
+    "tracing_enabled": true,
+    "log_level": "info"
+  }
+}
+```
+
+```json Production (Minimal Overhead)
+{
+  "observability": {
+    "debug_mode": false,
+    "capture_thinking": false,
+    "capture_tool_calls": true,
+    "metrics_enabled": true,
+    "tracing_enabled": false,
+    "log_level": "warn"
+  }
+}
+```
+</CodeGroup>
+
+### Monitoring Dashboard
+
+When observability is enabled, access real-time metrics:
+
+<CardGroup cols={2}>
+  <Card title="Execution Metrics" icon="gauge">
+    - Average response time
+    - Token usage per request
+    - API call success/failure rate
+    - Cost per execution
+  </Card>
+  
+  <Card title="Agent Performance" icon="chart-line">
+    - Resolution rate
+    - Escalation frequency
+    - Tool usage patterns
+    - Error trends
+  </Card>
+  
+  <Card title="Trace Explorer" icon="magnifying-glass">
+    - End-to-end request traces
+    - Tool call waterfall
+    - Reasoning chain visualization
+    - Performance bottlenecks
+  </Card>
+  
+  <Card title="Debug Logs" icon="terminal">
+    - Captured thinking process
+    - Tool call details
+    - Error stack traces
+    - State snapshots
+  </Card>
+</CardGroup>
+
+<Tip>
+**Integration**: Export traces to:
+- DataDog
+- New Relic
+- Grafana
+- Prometheus
+- Custom OpenTelemetry collectors
+</Tip>
+
+---
+
+## Knowledge Advanced
+
+Optimize RAG (Retrieval-Augmented Generation) performance with advanced knowledge retrieval.
+
+<ParamField path="agent_settings.knowledge_advanced.semantic_indexing" type="boolean" default="true">
+  Enable semantic indexing with llms.txt-style summaries
+  
+  Creates semantic indices over knowledge sources for faster, more accurate retrieval.
+</ParamField>
+
+<ParamField path="agent_settings.knowledge_advanced.image_detail_level" type="enum" default="low">
+  Initial detail level for images
+  
+  **Options**:
+  - `low` - Fast, low-cost (good for most cases)
+  - `high` - Detailed analysis (more expensive)
+  - `auto` - Agent decides based on query
+</ParamField>
+
+<ParamField path="agent_settings.knowledge_advanced.adaptive_image_resolution" type="boolean" default="true">
+  Allow LLM to request higher resolution for specific image regions
+  
+  Agent can zoom into specific parts of images when needed, balancing cost with quality.
+</ParamField>
+
+<ParamField path="agent_settings.knowledge_advanced.bucket_semantic_search" type="boolean" default="true">
+  Enable semantic search across entire knowledge buckets
+  
+  Search across all documents in a bucket using semantic similarity rather than keyword matching.
+</ParamField>
+
+<ParamField path="agent_settings.knowledge_advanced.section_based_retrieval" type="boolean" default="true">
+  Enable section-based retrieval from indexed documents
+  
+  Retrieve specific sections of documents rather than entire files, improving relevance and reducing tokens.
+</ParamField>
+
+<ParamField path="agent_settings.knowledge_advanced.max_retrieval_tokens" type="number" default="10000">
+  Maximum tokens to retrieve from knowledge sources
+  
+  **Range**: 1 or more
+  
+  Limits total tokens retrieved from knowledge base per query. Higher values = more context but slower and more expensive.
+</ParamField>
+
+### Knowledge Optimization Strategies
+
+<CodeGroup>
+```json Fast Lookup (Minimal Tokens)
+{
+  "knowledge_advanced": {
+    "semantic_indexing": true,
+    "image_detail_level": "low",
+    "adaptive_image_resolution": false,
+    "bucket_semantic_search": true,
+    "section_based_retrieval": true,
+    "max_retrieval_tokens": 5000
+  }
+}
+```
+
+```json Balanced (Good Quality)
+{
+  "knowledge_advanced": {
+    "semantic_indexing": true,
+    "image_detail_level": "auto",
+    "adaptive_image_resolution": true,
+    "bucket_semantic_search": true,
+    "section_based_retrieval": true,
+    "max_retrieval_tokens": 10000
+  }
+}
+```
+
+```json Deep Analysis (Maximum Context)
+{
+  "knowledge_advanced": {
+    "semantic_indexing": true,
+    "image_detail_level": "high",
+    "adaptive_image_resolution": true,
+    "bucket_semantic_search": true,
+    "section_based_retrieval": false,
+    "max_retrieval_tokens": 50000
+  }
+}
+```
+</CodeGroup>
+
+### RAG Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Optimize Document Structure" icon="file-lines">
+    **Best practices**:
+    - Use clear section headers (H1, H2, H3)
+    - Keep sections focused on single topics
+    - Add descriptive metadata
+    - Use semantic markup (lists, tables, code blocks)
+    
+    **Why**: Section-based retrieval works best with well-structured documents
+  </Accordion>
+
+  <Accordion title="Tune Retrieval Tokens" icon="sliders">
+    **Guidelines**:
+    - Start with 5,000 tokens for simple Q&A
+    - Use 10,000 tokens for standard analysis
+    - Go to 20,000+ for comprehensive research
+    
+    **Monitor**: If agent frequently says "I don't have enough context", increase limit
+  </Accordion>
+
+  <Accordion title="Image Optimization" icon="image">
+    **Strategy**:
+    - Use `low` for charts, diagrams, screenshots
+    - Use `high` for text-heavy images (invoices, forms)
+    - Use `auto` when image content varies
+    - Enable adaptive resolution for large images
+    
+    **Cost**: High resolution costs three to five times more tokens than low
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## LLM Config Overrides
+
+Fine-tune model behavior per agent with runtime configuration overrides.
+
+<ParamField path="llm_config.temperature" type="number">
+  Sampling temperature override
+  
+  **Range**: 0-2
+  
+  - `0` - Deterministic, focused
+  - `0.7` - Balanced (typical default)
+  - `1.5` - Creative, varied
+  
+  Overrides the default temperature for this specific agent.
+</ParamField>
+
+<ParamField path="llm_config.max_tokens" type="number">
+  Maximum tokens override
+  
+  **Range**: 1+
+  
+  Limits response length. Overrides default for this agent.
+</ParamField>
+
+<ParamField path="llm_config.max_turns" type="number">
+  Maximum turn count for LLM conversations
+  
+  **Range**: 1+
+  
+  Limits how many back-and-forth exchanges the agent can have per execution.
+</ParamField>
+
+<ParamField path="llm_config.stream" type="boolean">
+  Enable streaming mode for LLM responses
+  
+  **Required for**: Claude Sonnet extended operations and long-running tasks
+  
+  Stream tokens as they're generated rather than waiting for complete response. Improves perceived latency.
+</ParamField>
+
+<CodeGroup>
+```json Deterministic Tasks
+{
+  "llm_config": {
+    "temperature": 0.0,
+    "max_tokens": 1000,
+    "max_turns": 5,
+    "stream": false
+  }
+}
+```
+
+```json Creative Generation
+{
+  "llm_config": {
+    "temperature": 1.2,
+    "max_tokens": 4000,
+    "max_turns": 10,
+    "stream": true
+  }
+}
+```
+
+```json Extended Operations
+{
+  "llm_config": {
+    "temperature": 0.7,
+    "max_tokens": 8192,
+    "max_turns": 20,
+    "stream": true
+  }
+}
+```
+</CodeGroup>
+
+---
+
+## Complete Configuration Example
+
+Here's a fully configured agent using all advanced features:
+
+```json
+{
+  "name": "enterprise-support-agent",
+  "description": "Production-ready support agent with all safety features",
+  "llm_provider": "anthropic",
+  "model": "claude-3-5-sonnet-20241022",
+  
+  "llm_config": {
+    "temperature": 0.7,
+    "max_tokens": 8192,
+    "max_turns": 20,
+    "stream": true
+  },
+  
+  "agent_settings": {
+    "memory": {
+      "enabled": true,
+      "marker_types": ["error", "question", "success"],
+      "query_enabled": true,
+      "max_memory_entries": 500,
+      "similarity_threshold": 0.75
+    },
+    
+    "smart_context_advanced": {
+      "token_limit_auto_adjust": true,
+      "complexity_detection": true,
+      "complexity_detection_method": "llm",
+      "message_summarization": true,
+      "ephemeral_streams": true,
+      "min_messages_for_summary": 3
+    },
+    
+    "verification": {
+      "enabled": true,
+      "consensus_runs": 3,
+      "consensus_threshold": 0.66,
+      "verifier_agent": "quality-check-agent"
+    },
+    
+    "human_in_the_loop": {
+      "enabled": true,
+      "auto_escalate_on_error": true,
+      "checkpoints": ["pre_tool_call", "pre_response"],
+      "escalation_threshold": {
+        "error_count": 3,
+        "confidence_score": 0.6,
+        "turn_count": 10
+      }
+    },
+    
+    "branching": {
+      "enabled": true,
+      "auto_checkpoint": true,
+      "checkpoint_interval": 5,
+      "max_branches": 3
+    },
+    
+    "observability": {
+      "debug_mode": false,
+      "capture_thinking": true,
+      "capture_tool_calls": true,
+      "metrics_enabled": true,
+      "tracing_enabled": true,
+      "log_level": "info"
+    },
+    
+    "knowledge_advanced": {
+      "semantic_indexing": true,
+      "image_detail_level": "auto",
+      "adaptive_image_resolution": true,
+      "bucket_semantic_search": true,
+      "section_based_retrieval": true,
+      "max_retrieval_tokens": 15000
+    }
+  }
+}
+```
+
+---
+
+## Best Practices by Use Case
+
+<AccordionGroup>
+  <Accordion title="Customer Support" icon="headset">
+    **Recommended Settings**:
+    ```json
+    {
+      "memory": {
+        "enabled": true,
+        "marker_types": ["question", "success"],
+        "max_memory_entries": 500
+      },
+      "smart_context_advanced": {
+        "message_summarization": true,
+        "min_messages_for_summary": 3
+      },
+      "human_in_the_loop": {
+        "enabled": true,
+        "escalation_threshold": {
+          "error_count": 3,
+          "turn_count": 8
+        }
+      },
+      "observability": {
+        "capture_thinking": true,
+        "metrics_enabled": true
+      }
+    }
+    ```
+    
+    **Why**: Learn from resolutions, handle long conversations, escalate when stuck, track performance
+  </Accordion>
+  
+  <Accordion title="Financial Services" icon="dollar-sign">
+    **Recommended Settings**:
+    ```json
+    {
+      "verification": {
+        "enabled": true,
+        "consensus_runs": 5,
+        "consensus_threshold": 0.8
+      },
+      "human_in_the_loop": {
+        "enabled": true,
+        "checkpoints": ["pre_tool_call", "pre_response"],
+        "auto_escalate_on_error": true
+      },
+      "observability": {
+        "debug_mode": true,
+        "capture_thinking": true,
+        "tracing_enabled": true,
+        "log_level": "debug"
+      }
+    }
+    ```
+    
+    **Why**: High accuracy requirements, mandatory human oversight, audit trail, full traceability
+  </Accordion>
+  
+  <Accordion title="Research and Analysis" icon="chart-line">
+    **Recommended Settings**:
+    ```json
+    {
+      "branching": {
+        "enabled": true,
+        "max_branches": 5
+      },
+      "smart_context_advanced": {
+        "complexity_detection": true,
+        "complexity_detection_method": "llm",
+        "token_limit_auto_adjust": true
+      },
+      "knowledge_advanced": {
+        "semantic_indexing": true,
+        "section_based_retrieval": true,
+        "max_retrieval_tokens": 50000
+      },
+      "llm_config": {
+        "temperature": 0.3,
+        "max_tokens": 8192,
+        "max_turns": 20
+      }
+    }
+    ```
+    
+    **Why**: Explore multiple approaches, handle complex queries, deep knowledge retrieval, deterministic analysis
+  </Accordion>
+  
+  <Accordion title="Content Creation" icon="pen-to-square">
+    **Recommended Settings**:
+    ```json
+    {
+      "memory": {
+        "enabled": true,
+        "marker_types": ["success"],
+        "max_memory_entries": 200
+      },
+      "smart_context_advanced": {
+        "complexity_detection": true,
+        "message_summarization": false
+      },
+      "llm_config": {
+        "temperature": 1.0,
+        "max_tokens": 4000,
+        "stream": true
+      }
+    }
+    ```
+    
+    **Why**: Learn successful patterns, preserve full context for creativity, higher temperature, streaming for UX
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Performance Impact
+
+Understanding the cost and performance trade-offs of advanced features:
+
+<CardGroup cols={2}>
+  <Card title="Memory System" icon="brain">
+    **Impact**: Low
+    - Adds ~100ms query time
+    - Minimal token overhead
+    - Storage costs negligible
+    
+    **Recommendation**: Enable for most agents
+  </Card>
+  
+  <Card title="Smart Context" icon="sparkles">
+    **Impact**: Medium
+    - Can reduce tokens by 30-50%
+    - Adds ~200ms processing time
+    - Complexity detection (LLM) adds API call
+    
+    **Recommendation**: Enable for long conversations
+  </Card>
+  
+  <Card title="Verification" icon="check-double">
+    **Impact**: High
+    - Multiplies API calls by N (consensus runs)
+    - Cost multiplies by run count (3 runs = 3x cost)
+    - Adds 2-5 second latency
+    
+    **Recommendation**: Only for critical decisions
+  </Card>
+  
+  <Card title="Human-in-the-Loop" icon="user-check">
+    **Impact**: Variable
+    - No cost until triggered
+    - When triggered: flow pauses indefinitely
+    - Human response time: minutes to hours
+    
+    **Recommendation**: Set clear escalation criteria
+  </Card>
+  
+  <Card title="Branching" icon="code-branch">
+    **Impact**: High
+    - Multiplies API calls by branch count
+    - Cost scales with branches
+    - Can reduce overall attempts if successful
+    
+    **Recommendation**: Use for complex problems only
+  </Card>
+  
+  <Card title="Observability" icon="gauge">
+    **Impact**: Low-Medium
+    - Debug mode: minor performance overhead
+    - Metrics: minimal overhead
+    - Tracing: small overhead
+    - Storage costs for logs
+    
+    **Recommendation**: Adjust by environment
+  </Card>
+  
+  <Card title="Knowledge Advanced" icon="book-sparkles">
+    **Impact**: Medium
+    - Semantic indexing: one-time setup cost
+    - Section retrieval: reduces tokens by half or more
+    - High image detail: significantly more tokens vs low
+    
+    **Recommendation**: Tune max_retrieval_tokens
+  </Card>
+  
+  <Card title="LLM Config" icon="sliders">
+    **Impact**: Variable
+    - Streaming: Better UX, same cost
+    - Higher max_tokens: Higher cost per call
+    - Temperature: No cost impact
+    
+    **Recommendation**: Match to use case
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Memory not improving responses" icon="brain">
+    **Symptoms**: Agent doesn't seem to learn from past interactions
+    
+    **Possible causes**:
+    - Similarity threshold too high
+    - Not enough memory entries captured
+    - Wrong marker types selected
+    - Queries too dissimilar to stored memories
+    
+    **Solutions**:
+    1. Lower `similarity_threshold` to 0.6-0.65
+    2. Increase `max_memory_entries` to 500+
+    3. Add more marker types (especially "success")
+    4. Check memory dashboard to verify entries being captured
+    5. Review captured memories for relevance
+  </Accordion>
+
+  <Accordion title="Verification runs not reaching consensus" icon="check-double">
+    **Symptoms**: Verification always fails, no consensus reached
+    
+    **Possible causes**:
+    - Threshold too high (requiring too much agreement)
+    - Question too ambiguous
+    - Temperature too high (too much randomness)
+    - Verifier agent not configured correctly
+    
+    **Solutions**:
+    1. Lower `consensus_threshold` to 0.6 (60%)
+    2. Reduce `temperature` to 0.3-0.5 for more consistency
+    3. Make instructions more specific and deterministic
+    4. Review individual run outputs to understand disagreements
+    5. Try fewer `consensus_runs` (3 instead of 5)
+  </Accordion>
+
+  <Accordion title="Too many human escalations" icon="user-check">
+    **Symptoms**: Flow constantly pausing for human review
+    
+    **Possible causes**:
+    - Escalation thresholds too low
+    - Too many checkpoints enabled
+    - Agent confidence consistently low
+    - auto_escalate_on_error with common errors
+    
+    **Solutions**:
+    1. Increase `error_count` threshold (5 instead of 2)
+    2. Lower `confidence_score` threshold (0.4 instead of 0.6)
+    3. Remove unnecessary checkpoints
+    4. Fix underlying errors instead of auto-escalating
+    5. Improve agent instructions to boost confidence
+  </Accordion>
+
+  <Accordion title="Branching costs too high" icon="dollar-sign">
+    **Symptoms**: Unexpected API costs from parallel executions
+    
+    **Possible causes**:
+    - Too many max branches
+    - All branches exploring full paths
+    - Checkpoint interval too frequent
+    
+    **Solutions**:
+    1. Reduce `max_branches` to 2-3
+    2. Implement early branch termination logic
+    3. Increase `checkpoint_interval` to 10
+    4. Disable `auto_checkpoint` if not needed
+    5. Use branching only for highest-value tasks
+  </Accordion>
+
+  <Accordion title="Smart context over-summarizing" icon="sparkles">
+    **Symptoms**: Agent losing important context, responses less accurate
+    
+    **Possible causes**:
+    - `min_messages_for_summary` too low
+    - Summarization too aggressive
+    - Ephemeral streams discarding needed context
+    
+    **Solutions**:
+    1. Increase `min_messages_for_summary` to 5-7
+    2. Disable `ephemeral_streams` for critical conversations
+    3. Set `message_summarization: false` for high-stakes tasks
+    4. Review summaries in observability logs
+    5. Use `preserve_most_recent` to keep recent messages unsummarized
+  </Accordion>
+
+  <Accordion title="Knowledge retrieval returning irrelevant content" icon="book">
+    **Symptoms**: Agent citing wrong documents or sections
+    
+    **Possible causes**:
+    - `max_retrieval_tokens` too low
+    - Semantic indexing not enabled
+    - Section-based retrieval too granular
+    - Documents poorly structured
+    
+    **Solutions**:
+    1. Increase `max_retrieval_tokens` to 15,000-20,000
+    2. Enable `semantic_indexing` if disabled
+    3. Disable `section_based_retrieval` to get full documents
+    4. Improve document structure with clear headers
+    5. Add more context in queries
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Basic Agent Setup" icon="robot" href="/flows/steps/agents">
+    Learn core agent configuration
+  </Card>
+  
+  <Card title="Tool Integration" icon="wrench" href="/marketplace/mcp-servers">
+    Add MCP tools to agents
+  </Card>
+  
+  <Card title="Output Schemas" icon="brackets-curly" href="/agents/output-schemas">
+    Structure agent responses
+  </Card>
+  
+  <Card title="Flow Orchestration" icon="diagram-project" href="/flows/concepts/orchestration">
+    Chain multiple agents
+  </Card>
+</CardGroup>

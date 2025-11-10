@@ -84,7 +84,8 @@
                 "pages": [
                   "agents/configuration/information-settings",
                   "agents/configuration/provider-settings",
-                  "agents/configuration/context-settings"
+                  "agents/configuration/context-settings",
+                  "agents/configuration/advanced-agent-settings"
                 ]
               },
               "agents/tools-and-connectors",
