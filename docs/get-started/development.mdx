@@ -1,14 +1,14 @@
 ---
 title: "Architecture at a Glance"
-description: "Understand how quiva.ai's stream-first architecture delivers production-grade AI agent systems"
+description: "Understand how QuivaWorks' stream-first architecture delivers production-grade AI agent systems"
 ---
 
 ## System Architecture Overview
 
-quiva.ai is built on a **streaming-first architecture** where everything—from agent conversations to workflow executions—is represented as ordered, persistent streams of events. This foundational design makes quiva.ai uniquely suited for conversational AI and intelligent automation.
+QuivaWorks is built on a **streaming-first architecture** where everything—from agent conversations to workflow executions—is represented as ordered, persistent streams of events. This foundational design makes QuivaWorks uniquely suited for conversational AI and intelligent automation.
 
 <Info>
-**Why Streams for AI?** Conversations are inherently streaming and temporal. By building on streams from the ground up, quiva.ai naturally captures the conversational flow of AI interactions, maintains complete context history, and enables real-time processing without architectural complexity.
+**Why Streams for AI?** Conversations are inherently streaming and temporal. By building on streams from the ground up, QuivaWorks naturally captures the conversational flow of AI interactions, maintains complete context history, and enables real-time processing without architectural complexity.
 </Info>
 
 ```mermaid
@@ -58,7 +58,7 @@ graph TB
 
 ## Stream Foundation: The Core Architecture
 
-At the heart of quiva.ai is an **event streaming platform** that treats all data as ordered sequences of immutable events. This isn't just a storage layer—it's the architectural foundation that powers every component.
+At the heart of QuivaWorks is an **event streaming platform** that treats all data as ordered sequences of immutable events. This isn't just a storage layer—it's the architectural foundation that powers every component.
 
 ### Why Streams Are Perfect for AI Agents
 
@@ -66,7 +66,7 @@ At the heart of quiva.ai is an **event streaming platform** that treats all data
   <Card title="Conversational Flow" icon="comments">
     **Natural conversation modeling**
     
-    AI conversations are streaming by nature—messages flow back and forth in order. quiva.ai's streaming architecture captures this naturally without translation layers.
+    AI conversations are streaming by nature—messages flow back and forth in order. QuivaWorks' streaming architecture captures this naturally without translation layers.
     
     Each conversation turn is an event in a stream, preserving context and enabling replay.
   </Card>
@@ -102,7 +102,7 @@ At the heart of quiva.ai is an **event streaming platform** that treats all data
 **Think of Accounts as Applications, Not Users.** Each account is an isolated messaging container for one application. This architectural choice simplifies security and enables clean subject namespaces.
 </Info>
 
-quiva.ai's multi-tenancy is built into the streaming layer through **account isolation**. This provides secure, zero-configuration multi-tenancy without complex authorization rules.
+QuivaWorks' multi-tenancy is built into the streaming layer through **account isolation**. This provides secure, zero-configuration multi-tenancy without complex authorization rules.
 
 <Tabs>
   <Tab title="How It Works">
@@ -130,7 +130,7 @@ quiva.ai's multi-tenancy is built into the streaming layer through **account iso
     
     Traditional multi-tenant systems require complex subject naming patterns like `TENANT_123/orders/created` and elaborate ACL rules to prevent cross-tenant access.
     
-    quiva.ai eliminates this complexity through account isolation:
+    QuivaWorks eliminates this complexity through account isolation:
     
     ✅ **With Account Isolation:**
     - Use simple subjects: `orders.created`, `users.updated`
@@ -196,7 +196,7 @@ quiva.ai's multi-tenancy is built into the streaming layer through **account iso
   <Tab title="Event Sourcing">
     **State from history**
     
-    quiva.ai doesn't store current state—it derives it from event history through **stream aggregation**. This is event sourcing at the architectural level.
+    QuivaWorks doesn't store current state—it derives it from event history through **stream aggregation**. This is event sourcing at the architectural level.
     
     **How it works:**
     1. Events are published to subjects in order
@@ -484,7 +484,7 @@ graph LR
 
 The **Infrastructure Layer** provides the streaming platform and supporting services.
 
-### quiva.ai Streaming Platform
+### QuivaWorks Streaming Platform
 
 <Tabs>
   <Tab title="Stream Storage">
@@ -566,7 +566,7 @@ The **Infrastructure Layer** provides the streaming platform and supporting serv
 ## Security Architecture
 
 <Info>
-quiva.ai implements security at the stream level, with account isolation providing the foundation for multi-tenant security.
+QuivaWorks implements security at the stream level, with account isolation providing the foundation for multi-tenant security.
 </Info>
 
 <AccordionGroup>
@@ -667,7 +667,7 @@ The streaming architecture provides unique advantages for AI agent systems:
 ## Deployment Models
 
 <CardGroup cols={3}>
-  <Card title="quiva.ai Cloud" icon="cloud">
+  <Card title="QuivaCloud" icon="cloud">
     **Managed streaming platform**
     - Global stream infrastructure
     - Automatic scaling and replication
@@ -716,7 +716,7 @@ The streaming architecture provides unique advantages for AI agent systems:
 
 ### Auto-Scaling
 
-quiva.ai automatically scales stream infrastructure:
+QuivaWorks automatically scales stream infrastructure:
 
 - **Stream partitioning**: High-volume subjects automatically partition across servers
 - **Replica scaling**: Add replicas as subscriber count increases

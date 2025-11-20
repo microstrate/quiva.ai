@@ -14,7 +14,7 @@ Webhook triggers are optimized for receiving events from third-party services wi
 
 ## How It Works
 
-Add the trigger to your flow, and quiva.ai generates a unique webhook endpoint. Copy the webhook URL and paste it into the external service's webhook configuration. When events occur in the external service, they send webhook events to your endpoint. Your flow receives the webhook data and processes it automatically.
+Add the trigger to your flow, and QuivaWorks generates a unique webhook endpoint. Copy the webhook URL and paste it into the external service's webhook configuration. When events occur in the external service, they send webhook events to your endpoint. Your flow receives the webhook data and processes it automatically.
 
 ---
 
@@ -22,7 +22,7 @@ Add the trigger to your flow, and quiva.ai generates a unique webhook endpoint. 
 
 ### Webhook Endpoint
 
-When you add a webhook trigger, quiva.ai automatically generates a unique webhook endpoint. Click "Copy Webhook URL" in the trigger configuration. Paste this URL into the external service's webhook settings. The URL is stable and doesn't change unless you regenerate it.
+When you add a webhook trigger, QuivaWorks automatically generates a unique webhook endpoint. Click "Copy Webhook URL" in the trigger configuration. Paste this URL into the external service's webhook settings. The URL is stable and doesn't change unless you regenerate it.
 
 ### Supported Methods
 
@@ -66,7 +66,7 @@ Not all webhook services support custom headers or query parameters. Check your 
 
 ### Signature Verification
 
-Signature verification ensures webhooks are actually from the claimed service and haven't been tampered with. External service signs webhook payload with secret key. Signature included in webhook headers. quiva.ai verifies signature using same secret. Only valid signatures trigger flow.
+Signature verification ensures webhooks are actually from the claimed service and haven't been tampered with. External service signs webhook payload with secret key. Signature included in webhook headers. QuivaWorks verifies signature using same secret. Only valid signatures trigger flow.
 
 Common signature headers: Stripe uses Stripe-Signature, GitHub uses X-Hub-Signature-256, Slack uses X-Slack-Signature, Shopify uses X-Shopify-Hmac-Sha256.
 
@@ -84,23 +84,23 @@ Supported services include Stripe, GitHub, Slack, Shopify, Twilio, and custom HM
 
 ### Stripe
 
-Configure Stripe webhooks to send payment events to quiva.ai. Common events include payment_intent.succeeded, customer.subscription.created, invoice.payment_failed, and charge.refunded.
+Configure Stripe webhooks to send payment events to QuivaWorks. Common events include payment_intent.succeeded, customer.subscription.created, invoice.payment_failed, and charge.refunded.
 
-Go to Stripe Dashboard, navigate to Developers then Webhooks. Click "Add endpoint". Paste quiva.ai webhook URL. Select events to listen to. Copy signing secret. In quiva.ai, enable signature verification, select "Stripe" as service type, and paste signing secret.
+Go to Stripe Dashboard, navigate to Developers then Webhooks. Click "Add endpoint". Paste QuivaWorks webhook URL. Select events to listen to. Copy signing secret. In QuivaWorks, enable signature verification, select "Stripe" as service type, and paste signing secret.
 
 ### GitHub
 
-Configure GitHub webhooks to send repository events to quiva.ai. Common events include push, pull_request, issues, release, and workflow_run.
+Configure GitHub webhooks to send repository events to QuivaWorks. Common events include push, pull_request, issues, release, and workflow_run.
 
-Go to Repository Settings, navigate to Webhooks. Click "Add webhook". Paste quiva.ai webhook URL. Select "Content type: application/json". Generate and save secret. Select events to listen to. In quiva.ai, enable signature verification, select "GitHub" as service type, and paste webhook secret.
+Go to Repository Settings, navigate to Webhooks. Click "Add webhook". Paste QuivaWorks webhook URL. Select "Content type: application/json". Generate and save secret. Select events to listen to. In QuivaWorks, enable signature verification, select "GitHub" as service type, and paste webhook secret.
 
 ### Slack
 
-Configure Slack webhooks to send workspace events to quiva.ai. Common events include message.channels, app_mention, team_join, and reaction_added.
+Configure Slack webhooks to send workspace events to QuivaWorks. Common events include message.channels, app_mention, team_join, and reaction_added.
 
-Go to api.slack.com/apps. Create new app. Enable Event Subscriptions. Paste quiva.ai webhook URL in "Request URL". Slack will verify the URL. Subscribe to events. In quiva.ai, enable signature verification, select "Slack" as service type, and paste signing secret from app settings.
+Go to api.slack.com/apps. Create new app. Enable Event Subscriptions. Paste QuivaWorks webhook URL in "Request URL". Slack will verify the URL. Subscribe to events. In QuivaWorks, enable signature verification, select "Slack" as service type, and paste signing secret from app settings.
 
-Slack requires URL verification. quiva.ai automatically responds to Slack's challenge request.
+Slack requires URL verification. QuivaWorks automatically responds to Slack's challenge request.
 
 ---
 
@@ -155,7 +155,7 @@ const user = $.trigger.event.user;
 
 **Test with External Service:**
 
-Most services have a "Send test webhook" feature. In Stripe Dashboard, go to Webhooks, click endpoint, then "Send test webhook". In GitHub, go to Webhooks, click webhook, navigate to "Recent Deliveries", then "Redeliver". Verify flow executes in quiva.ai.
+Most services have a "Send test webhook" feature. In Stripe Dashboard, go to Webhooks, click endpoint, then "Send test webhook". In GitHub, go to Webhooks, click webhook, navigate to "Recent Deliveries", then "Redeliver". Verify flow executes in QuivaWorks.
 
 **Test with curl:**
 

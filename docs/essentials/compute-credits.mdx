@@ -4,11 +4,11 @@ description: "How compute credits are calculated and used"
 icon: "server"
 ---
 
-# Understanding quiva.ai Compute Credits
+# Understanding QuivaWorks Compute Credits
 
 ## The Smarter Way to Pay for Cloud Resources
 
-quiva.ai's compute credit system represents a fundamental shift in how cloud resources are allocated and billed. Rather than paying for idle resources based on memory blocks, our innovative approach uses precision CPU allocation to ensure you only pay for what you actually use. This guide explains how our credit system works and how to estimate your needs.
+QuivaWorks' compute credit system represents a fundamental shift in how cloud resources are allocated and billed. Rather than paying for idle resources based on memory blocks, our innovative approach uses precision CPU allocation to ensure you only pay for what you actually use. This guide explains how our credit system works and how to estimate your needs.
 
 ## What is a Compute Credit?
 
@@ -47,7 +47,7 @@ Each memory allocation has a specific Memory Price Scaler that reflects the prop
 
 #### Compute Mode Factor Reference Table
 
-quiva.ai offers different compute modes to optimize for various workload requirements:
+QuivaWorks offers different compute modes to optimize for various workload requirements:
 
 | Compute Mode | Factor | Optimal Use Case                             |
 | ------------ | ------ | -------------------------------------------- |
@@ -60,7 +60,7 @@ Let's break down a practical example:
 
 | Component                | Value        | Description                               |
 | ------------------------ | ------------ | ----------------------------------------- |
-| Base quiva.ai Rate    | 0.0000000210 | Per millisecond of compute time           |
+| Base QuivaWorks Rate    | 0.0000000210 | Per millisecond of compute time           |
 | Memory Assigned          | 4096 MB      | Memory allocated to your function         |
 | Memory Price Scaler      | 5            | Based on the table above for 4096 MB      |
 | Runtime                  | 3,600,000 ms | 1 hour of continuous execution            |
@@ -157,7 +157,7 @@ A lightweight web server handling moderate traffic using 128MB memory in Basic m
 
 By optimizing this workload to run efficiently at the 128MB tier instead of 256MB, you save approximately 15% on your compute costs.
 
-## Why This Matters: The quiva.ai Advantage
+## Why This Matters: The QuivaWorks Advantage
 
 Our credit system delivers several key advantages:
 
@@ -200,19 +200,19 @@ Here are some strategies to maximize the value of your compute credits:
 
 3. **Optimize Function Duration**: Refactor long-running functions into smaller, more efficient ones to reduce overall runtime
 
-## Understanding Millicores: The Key to quiva.ai's Efficiency
+## Understanding Millicores: The Key to QuivaWorks' Efficiency
 
 ### What Are Millicores?
 
-A millicore is a unit of CPU allocation that represents 1/1000th of a CPU core. This fine-grained approach to resource allocation is central to quiva.ai's efficiency advantage:
+A millicore is a unit of CPU allocation that represents 1/1000th of a CPU core. This fine-grained approach to resource allocation is central to QuivaWorks' efficiency advantage:
 
 - Traditional cloud platforms allocate entire CPU cores or rigid fractions (like 0.25 or 0.5 cores)
-- quiva.ai allocates precise millicore amounts based on your workload needs
+- QuivaWorks allocates precise millicore amounts based on your workload needs
 - 1000 millicores = 1 full CPU core
 
-### How Millicores Work in quiva.ai
+### How Millicores Work in QuivaWorks
 
-Unlike traditional serverless and container platforms that bundle CPU and memory into fixed configurations, quiva.ai's Hydra compute engine decouples these resources:
+Unlike traditional serverless and container platforms that bundle CPU and memory into fixed configurations, QuivaWorks' Hydra compute engine decouples these resources:
 
 1. **Precision Allocation**: When you select a memory tier (e.g., 128MB, 512MB), Hydra automatically assigns the appropriate number of millicores through the Memory Price Scaler. 
 
@@ -235,7 +235,7 @@ This approach delivers several key benefits:
 
 ### Memory and Millicores Relationship
 
-In quiva.ai, memory tiers and millicores have a defined relationship expressed through the Memory Price Scaler:
+In QuivaWorks, memory tiers and millicores have a defined relationship expressed through the Memory Price Scaler:
 
 | Memory | Memory Price Scaler | Approximate Millicores | Use Case |
 |--------|---------------------|------------------------|----------|

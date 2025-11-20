@@ -1,6 +1,6 @@
 # JSON Path Mapping
 
-Map data between nodes in your flows using JSON Path expressions. quiva.ai's mapping system allows you to reference data from previous nodes and transform it as needed.
+Map data between nodes in your flows using JSON Path expressions. QuivaWorks' mapping system allows you to reference data from previous nodes and transform it as needed.
 
 ## Quick Reference
 
@@ -10,15 +10,15 @@ Map data between nodes in your flows using JSON Path expressions. quiva.ai's map
 - All items: `$.NODE_ID.items[*]`
 - Filter: `$.NODE_ID.items[?(@.price>10)]`
 - Recursive: `$..email`
-- Concatenate: `text|$.NODE.value` (quiva.ai custom)
-- Join: `$.NODE.first| |$.NODE.last` (quiva.ai custom)
-- Fallback: `$.NODE.value|default` (quiva.ai custom)
+- Concatenate: `text|$.NODE.value` (QuivaWorks custom)
+- Join: `$.NODE.first| |$.NODE.last` (QuivaWorks custom)
+- Fallback: `$.NODE.value|default` (QuivaWorks custom)
 
 **Key points:**
 - Arrays are 0-based: `[0]` is first, `[-1]` is last
 - Use `===` for equality in filters, not `=`
 - Everything is case-sensitive
-- quiva.ai auto-detects `$.` anywhere in your mapping
+- QuivaWorks auto-detects `$.` anywhere in your mapping
 
 ---
 
@@ -74,7 +74,7 @@ Access array elements by index (0-based, like JavaScript):
 
 ## The Pipe Operator (`|`)
 
-quiva.ai extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+QuivaWorks extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
 
 ### Concatenating Values
 
@@ -186,7 +186,7 @@ If `$.order.status` is undefined or null, the value will be "pending".
 
 ## JSONPath Plus Features
 
-quiva.ai uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+QuivaWorks uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
 
 ### Wildcard Selection
 
@@ -344,7 +344,7 @@ Use backticks to escape special characters or property names:
 - Property names containing dots: `property.with.dots`
 - Property names that look like operators: `# JSON Path Mapping
 
-Map data between nodes in your flows using JSON Path expressions. quiva.ai's mapping system allows you to reference data from previous nodes and transform it as needed.
+Map data between nodes in your flows using JSON Path expressions. QuivaWorks' mapping system allows you to reference data from previous nodes and transform it as needed.
 
 ## Basic Syntax
 
@@ -398,7 +398,7 @@ Access array elements by index (0-based, like JavaScript):
 
 ## The Pipe Operator (`|`)
 
-quiva.ai extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+QuivaWorks extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
 
 ### Concatenating Values
 
@@ -510,7 +510,7 @@ If `$.order.status` is undefined or null, the value will be "pending".
 
 ## JSONPath Plus Features
 
-quiva.ai uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+QuivaWorks uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
 
 ### Wildcard Selection
 
@@ -772,7 +772,7 @@ Given this data from an API node:
 
 ## Automatic Detection
 
-quiva.ai automatically detects JSON Path expressions anywhere in your mapping by looking for the `$.` pattern. This means you can use JSON Path in:
+QuivaWorks automatically detects JSON Path expressions anywhere in your mapping by looking for the `$.` pattern. This means you can use JSON Path in:
 
 - Object property values
 - Array elements
@@ -1150,7 +1150,7 @@ Filter by type when processing mixed data:
 
 ### Caching and Reuse
 
-quiva.ai automatically caches JSONPath expressions, so repeated use of the same path is efficient. This means you can safely reference the same node multiple times without performance penalty:
+QuivaWorks automatically caches JSONPath expressions, so repeated use of the same path is efficient. This means you can safely reference the same node multiple times without performance penalty:
 
 ```json
 {
@@ -1343,9 +1343,9 @@ Use computed property names in filters:
 | `$.NODE.*` | All properties | `$.user.*` | Array |
 | `$.NODE.*~` | Property names | `$.store.*~` | Array of strings |
 | `$.NODE[?(@.x)]^` | Parent of filtered items | `$.items[?(@.price>100)]^` | Array |
-| `text\|$.NODE.prop` | Concatenation (quiva.ai) | `Hello \|$.user.name` | String |
-| `$.A\| \|$.B` | Join with separator (quiva.ai) | `$.first\| \|$.last` | String |
-| `$.NODE.prop\|default` | Fallback value (quiva.ai) | `$.user.name\|Guest` | String |
+| `text\|$.NODE.prop` | Concatenation (QuivaWorks) | `Hello \|$.user.name` | String |
+| `$.A\| \|$.B` | Join with separator (QuivaWorks) | `$.first\| \|$.last` | String |
+| `$.NODE.prop\|default` | Fallback value (QuivaWorks) | `$.user.name\|Guest` | String |
 | `` `special` `` | Escape special characters | `` $.`$property` `` | Single value |
 | `$['prop']` | Bracket notation | `$['property-name']` | Single value |
 | `$..*@string()` | Type selector | `$..*@number()` | Array |
@@ -1357,7 +1357,7 @@ Use computed property names in filters:
 |----------|-------------|---------|
 | `# JSON Path Mapping
 
-Map data between nodes in your flows using JSON Path expressions. quiva.ai's mapping system allows you to reference data from previous nodes and transform it as needed.
+Map data between nodes in your flows using JSON Path expressions. QuivaWorks' mapping system allows you to reference data from previous nodes and transform it as needed.
 
 ## Basic Syntax
 
@@ -1411,7 +1411,7 @@ Access array elements by index (0-based, like JavaScript):
 
 ## The Pipe Operator (`|`)
 
-quiva.ai extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+QuivaWorks extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
 
 ### Concatenating Values
 
@@ -1523,7 +1523,7 @@ If `$.order.status` is undefined or null, the value will be "pending".
 
 ## JSONPath Plus Features
 
-quiva.ai uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+QuivaWorks uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
 
 ### Wildcard Selection
 
@@ -1681,7 +1681,7 @@ Use backticks to escape special characters or property names:
 - Property names containing dots: `property.with.dots`
 - Property names that look like operators: `# JSON Path Mapping
 
-Map data between nodes in your flows using JSON Path expressions. quiva.ai's mapping system allows you to reference data from previous nodes and transform it as needed.
+Map data between nodes in your flows using JSON Path expressions. QuivaWorks' mapping system allows you to reference data from previous nodes and transform it as needed.
 
 ## Basic Syntax
 
@@ -1735,7 +1735,7 @@ Access array elements by index (0-based, like JavaScript):
 
 ## The Pipe Operator (`|`)
 
-quiva.ai extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
+QuivaWorks extends standard JSON Path with a pipe operator (`|`) that allows you to concatenate static text with dynamic values.
 
 ### Concatenating Values
 
@@ -1847,7 +1847,7 @@ If `$.order.status` is undefined or null, the value will be "pending".
 
 ## JSONPath Plus Features
 
-quiva.ai uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
+QuivaWorks uses [jsonpath-plus](https://www.npmjs.com/package/jsonpath-plus) v1.1.0, which supports standard JSONPath expressions:
 
 ### Wildcard Selection
 
@@ -2023,7 +2023,7 @@ Access properties with special characters using bracket notation:
 
 ## Automatic Detection
 
-quiva.ai automatically detects JSON Path expressions anywhere in your mapping by looking for the `$.` pattern. This means you can use JSON Path in:
+QuivaWorks automatically detects JSON Path expressions anywhere in your mapping by looking for the `$.` pattern. This means you can use JSON Path in:
 
 - Object property values
 - Array elements
@@ -2235,7 +2235,7 @@ When working with arrays, be explicit about what you want:
 - [JSONPath Comparison to XPath](https://goessner.net/articles/JsonPath/) - Original JSONPath specification
 - [JSON Schema](https://json-schema.org/) - For validating JSON structure
 
-### quiva.ai-Specific
+### QuivaWorks-Specific
 - [Help Center](/help) - General platform help and FAQs
 - [Community Forum](/community) - Ask questions and share solutions
 - [API Documentation](/api) - For programmatic flow creation and management
@@ -2249,7 +2249,7 @@ When working with arrays, be explicit about what you want:
 
 ## Version Information
 
-This documentation is based on **jsonpath-plus version 1.1.0**, which quiva.ai uses for JSON Path mapping. Key features of this version include:
+This documentation is based on **jsonpath-plus version 1.1.0**, which QuivaWorks uses for JSON Path mapping. Key features of this version include:
 
 - ✅ Full JSONPath specification compliance
 - ✅ Advanced filter expressions with `@root`, `@parent`, `@property`, etc.
@@ -2260,7 +2260,7 @@ This documentation is based on **jsonpath-plus version 1.1.0**, which quiva.ai u
 - ✅ Safe evaluation mode (default) for security
 - ✅ High performance with automatic caching
 
-**quiva.ai Custom Extensions:**
+**QuivaWorks Custom Extensions:**
 - 🔧 Pipe operator (`|`) for string concatenation
 - 🔧 Multiple pipe segments for complex string building
 - 🔧 Automatic JSONPath detection anywhere in mappings
@@ -2270,6 +2270,6 @@ This documentation is based on **jsonpath-plus version 1.1.0**, which quiva.ai u
 
 **Last Updated:** October 2025  
 **JSONPath Plus Version:** 1.1.0  
-**quiva.ai Platform Version:** Current
+**QuivaWorks Platform Version:** Current
 
 **Need Help?** Visit our [Help Center](/help) or join the [Community](/community) for support.

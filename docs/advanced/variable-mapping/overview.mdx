@@ -7,7 +7,7 @@ Variable mapping allows you to dynamically reference and transform data as it fl
 
 ## What is Variable Mapping?
 
-When building flows in quiva.ai, you work with two primary data sources:
+When building flows in QuivaWorks, you work with two primary data sources:
 
 1. **Node outputs** - Data produced by previous nodes in your flow
 2. **Trigger data** - Data provided when the flow is initiated
@@ -44,7 +44,7 @@ Variable mapping lets you:
 </CodeGroup>
 
 <Info>
-Variable mapping is powered by [JSONPath Plus v1.1.0](https://github.com/JSONPath-Plus/JSONPath) with custom quiva.ai extensions for enhanced functionality.
+Variable mapping is powered by [JSONPath Plus v1.1.0](https://github.com/JSONPath-Plus/JSONPath) with custom QuivaWorks extensions for enhanced functionality.
 </Info>
 
 ## Data Sources
@@ -154,7 +154,7 @@ Variable mapping is powered by [JSONPath Plus v1.1.0](https://github.com/JSONPat
 - Arrays are 0-based: `[0]` is first, `[-1]` is last
 - Use `===` for equality in filters, not `=`
 - Everything is case-sensitive
-- quiva.ai auto-detects `$.` anywhere in your mapping
+- QuivaWorks auto-detects `$.` anywhere in your mapping
 </Warning>
 
 ## How Variable Mapping Works
@@ -318,7 +318,7 @@ Variable mapping is powered by [JSONPath Plus v1.1.0](https://github.com/JSONPat
     Get comfortable with array indexing `[0]`, slicing `[0:3]`, and wildcards `[*]`
   </Step>
   <Step title="Try the Pipe Operator">
-    Build dynamic strings using quiva.ai's custom `|` concatenation
+    Build dynamic strings using QuivaWorks' custom `|` concatenation
   </Step>
   <Step title="Learn Filters">
     Filter data with conditions like `[?(@.price>10)]`
@@ -340,7 +340,7 @@ This comprehensive guide is organized into focused sections:
     Standard JSONPath capabilities and operators
   </Card>
   <Card title="Pipe Operator" icon="3" href="/advanced/variable-mapping/pipe-operator">
-    quiva.ai's string concatenation and fallbacks
+    QuivaWorks' string concatenation and fallbacks
   </Card>
   <Card title="Filters & Expressions" icon="4" href="/advanced/variable-mapping/filters-and-expressions">
     Query, filter, and select data

@@ -6,7 +6,7 @@ icon: "credit-card"
 
 # Billing & Subscriptions
 
-Manage your quiva.ai subscription, payment methods, and billing information. All billing is securely processed through Stripe.
+Manage your QuivaWorks subscription, payment methods, and billing information. All billing is securely processed through Stripe.
 
 ## Current Plan & Usage
 
@@ -26,10 +26,10 @@ Your usage is tracked in real-time. Monitor your consumption to avoid hitting pl
 ### Understanding Your Limits
 
 <CardGroup cols={2}>
-  <Card title="Flow Runs" icon="arrows-rotate">
+  <Card title="Flows" icon="arrows-rotate">
     Number of workflow executions per month
     
-    [What counts as a flow run? →](/get-started/plans-and-pricing#flow-runs)
+    [What counts as a flow? →](/get-started/plans-and-pricing#flows)
   </Card>
   
   <Card title="Storage" icon="database">
@@ -38,6 +38,12 @@ Your usage is tracked in real-time. Monitor your consumption to avoid hitting pl
   
   <Card title="Agents" icon="robot">
     Number of AI agents you can create
+  </Card>
+  
+  <Card title="Compute Hours" icon="microchip">
+    Processing power for workflow executions
+    
+    [About compute hours →](/get-started/plans-and-pricing#compute-hours)
   </Card>
   
   <Card title="Concurrent Executions" icon="layer-group">
@@ -108,7 +114,7 @@ Downgrades take effect at the end of your current billing period:
 - If over new limits, some functionality may be restricted
 
 <Warning>
-**Before downgrading:** Ensure your current usage fits within the new plan limits. If you exceed limits, flows may be queued or you'll need to upgrade again.
+**Before downgrading:** Ensure your current usage fits within the new plan limits. If you exceed limits after downgrading, flows may be queued or overage charges may apply.
 </Warning>
 
 ### Switching Between Monthly and Annual
@@ -118,8 +124,13 @@ Save 20% by switching to annual billing:
 **Monthly to Annual:**
 - Switch takes effect immediately
 - You're charged for the full year upfront
-- 20% discount applied
+- 20% discount applied automatically
 - Billing cycle changes to annual
+
+**Example savings:**
+- Starter: \$300/year → \$240/year (save \$60)
+- Pro: \$1,500/year → \$1,200/year (save \$300)
+- Team: \$7,500/year → \$6,000/year (save \$1,500)
 
 **Annual to Monthly:**
 - Change takes effect at the end of your annual period
@@ -149,7 +160,7 @@ Save 20% by switching to annual billing:
 </Steps>
 
 <Info>
-All payment information is securely processed and stored by Stripe. quiva.ai never stores your complete card details.
+All payment information is securely processed and stored by Stripe. QuivaWorks never stores your complete card details.
 </Info>
 
 ### Accepted Payment Methods
@@ -172,21 +183,20 @@ All payment information is securely processed and stored by Stripe. quiva.ai nev
 Access all past invoices:
 
 1. Navigate to **Account Management → Billing and Plans**
-2. Click "Billing History" or "Invoices"
-3. View, download, or email invoices
+2. Click "Billing History"
+3. Click on the invoice you want to download and choose your download method
 
 Each invoice includes:
 - Invoice date and number
 - Plan and billing period
-- Itemized charges
-- Payment method used
+- Itemized charges (base plan, overages, add-ons)
 - Total amount charged
 
 ### Downloading Invoices
 
 <Steps>
   <Step title="Access Billing History">
-    Go to billing section and find invoice list
+    Go to the Billing and Plans section, click on the "Billing" menu item and you will be redirected to a stripe page to manage your subscrption.
   </Step>
   
   <Step title="Select Invoice">
@@ -194,7 +204,7 @@ Each invoice includes:
   </Step>
   
   <Step title="Download PDF">
-    Click "Download PDF" to save to your device
+    Click "Download invoice" or "Download receipt" to save to your device
   </Step>
 </Steps>
 
@@ -208,15 +218,27 @@ Need invoices sent to multiple email addresses? Contact support to add additiona
 
 <Tabs>
   <Tab title="Monthly Billing">
+    **Pricing:**
+    - Starter: \$25/month
+    - Pro: \$125/month
+    - Team: \$625/month
+    
+    **Details:**
     - Charged on the same day each month
     - Based on your signup or upgrade date
     - Usage resets on billing date
     - Example: Signed up Jan 15 → billed on 15th of each month
   </Tab>
   
-  <Tab title="Annual Billing">
-    - Charged once per year
-    - Save 20% compared to monthly
+  <Tab title="Annual Billing (Save 20%)">
+    **Pricing:**
+    - Starter: \$20/month (\$240/year)
+    - Pro: \$100/month (\$1,200/year)
+    - Team: \$500/month (\$6,000/year)
+    
+    **Details:**
+    - Charged once per year upfront
+    - Save 20% compared to monthly billing
     - Usage limits are monthly (still reset monthly)
     - Example: Signed up Jan 15 → next charge Jan 15 next year
   </Tab>
@@ -232,10 +254,10 @@ When you upgrade mid-cycle, you're charged a prorated amount:
 3. Net difference is charged immediately
 
 **Example:**
-- Current plan: Starter ($20/month)
+- Current plan: Starter (\$20/month annual billing)
 - Upgrade on day 15 of 30-day cycle
-- New plan: Pro ($100/month)
-- Prorated charge ≈ $40 (half the difference for remaining days)
+- New plan: Pro (\$100/month annual billing)
+- Prorated charge ≈ \$40 (half the difference for remaining days)
 
 ### What You're Charged For
 
@@ -243,32 +265,114 @@ Your bill includes:
 
 <AccordionGroup>
   <Accordion title="Base Plan Price" icon="tag">
-    Monthly or annual subscription fee for your chosen plan
+    Monthly or annual subscription fee for your chosen plan:
+    
+    **Monthly:**
+    - Starter: \$25/month
+    - Pro: \$125/month
+    - Team: \$625/month
+    
+    **Annual (20% off):**
+    - Starter: \$20/month (\$240/year)
+    - Pro: \$100/month (\$1,200/year)
+    - Team: \$500/month (\$6,000/year)
+    
+    Free plan is always $0.
   </Accordion>
   
   <Accordion title="Overage Charges" icon="chart-line">
-    Currently not applicable - if you exceed limits:
-    - **Free plan:** Must upgrade to continue
-    - **Paid plans:** Flows queue when limits reached
+    **On Paid Plans only** (Starter, Pro, Team):
     
-    [What happens at limits →](/get-started/plans-and-pricing#exceeding-limits)
+    If you exceed your plan's included resources:
+    - **Storage:** \$1 per GB per month
+    - **Compute Hours:** \$3 per compute hour
+    
+    **On Free Plan:**
+    - No overage charges available
+    - Must upgrade to continue when limits are reached
+    
+    We notify you as you approach limits so you can upgrade before incurring overages.
+    
+    [What happens at limits →](/get-started/plans-and-pricing#what-happens-at-plan-limits)
   </Accordion>
   
   <Accordion title="Premium Marketplace Items" icon="store">
     Any paid agents, flows, or integrations from the marketplace
     
     Charges vary by item and are added to your monthly bill
+    
+    All paid plans include premium marketplace access.
   </Accordion>
   
-  <Accordion title="Add-ons" icon="puzzle-piece">
-    Enterprise features like:
-    - Additional edge locations
+  <Accordion title="Enterprise Add-ons" icon="puzzle-piece">
+    Custom features available on Enterprise plans:
+    - Additional data processing regions
+    - White-label branding
     - Custom SLAs
     - Dedicated support
+    - On-premise deployment
     
-    Available on Enterprise plans only
+    Pricing varies based on requirements.
   </Accordion>
 </AccordionGroup>
+
+## Understanding Plan Limits
+
+### What Happens When You Exceed Limits
+
+Different limits have different behaviors:
+
+<Tabs>
+  <Tab title="Flows Exceeded">
+    **On Free Plan:**
+    - You must upgrade to continue running flows
+    - Flows are not queued or saved
+    
+    **On Paid Plans:**
+    - Additional flows are added to an error queue
+    - Queued flows can be replayed next month when limits reset
+    - Or upgrade immediately to process queued flows
+    
+    No additional charges for exceeding flow limits.
+  </Tab>
+  
+  <Tab title="Storage Exceeded">
+    **On Free Plan:**
+    - You must upgrade to continue adding data
+    
+    **On Paid Plans:**
+    - Overage charges apply: **$1 per GB per month**
+    - Upgrade to a higher plan for better value at scale
+  </Tab>
+  
+  <Tab title="Compute Hours Exceeded">
+    **On Free Plan:**
+    - You must upgrade to continue running compute-intensive workflows
+    
+    **On Paid Plans:**
+    - Overage charges apply: **$3 per compute hour**
+    - Upgrade to a higher plan for better value at scale
+  </Tab>
+  
+  <Tab title="Concurrent Executions Exceeded">
+    **Request/Response Flows:**
+    - Return a 429 rate limit error
+    - Retry after a brief delay
+    
+    **Async Flows:**
+    - Automatically queued
+    - Processed when capacity becomes available
+    
+    **Solution:**
+    Upgrade to a plan with higher concurrency for peak workloads.
+    
+    No overage charges for concurrency limits.
+  </Tab>
+</Tabs>
+
+<Info>
+Monitor your usage in the billing dashboard to avoid unexpected charges or service interruptions.
+</Info>
 
 ## Managing Subscriptions
 
@@ -297,7 +401,12 @@ To cancel your subscription:
 **What happens:**
 - Subscription continues until end of current billing period
 - No further charges after current period
-- Account converts to Free plan
+- Account converts to Free plan with these limits:
+  - 3 agents (Discovery Agent included)
+  - 200 flows/month
+  - 1GB storage
+  - 1 compute hour/month
+  - 5 concurrent executions
 - Resources exceeding Free limits may be restricted
 - Data is retained (not deleted)
 
@@ -311,9 +420,10 @@ Reactivate at any time:
 
 1. Navigate to **Account Management → Billing and Plans**
 2. Click "Upgrade" or "Reactivate"
-3. Select your plan
-4. Enter payment information
-5. Subscription reactivates immediately
+3. Select your plan (Starter, Pro, or Team)
+4. Choose monthly or annual billing
+5. Enter payment information
+6. Subscription reactivates immediately
 
 ## Billing Troubleshooting
 
@@ -336,11 +446,33 @@ Reactivate at any time:
     **Check these items:**
     - Did you upgrade mid-cycle? (prorated charges)
     - Annual renewal? (charged once per year)
+    - Overage charges for storage or compute hours?
     - Premium marketplace items purchased?
     - Team member made changes?
     
+    **Review your invoice:**
+    - All charges are itemized
+    - Check billing history for details
+    
     **If still unclear:**
     Contact support with invoice number for clarification
+  </Accordion>
+  
+  <Accordion title="Understanding overage charges">
+    **How overages work:**
+    - Only on paid plans (Starter, Pro, Team)
+    - Charged only for what you use beyond your plan
+    - Storage: \$1/GB/month
+    - Compute: \$3/hour
+    
+    **Avoiding overages:**
+    - Monitor usage in billing dashboard
+    - Set up usage alerts
+    - Upgrade to a plan with higher limits for better value
+    
+    **On Free plan:**
+    - No overage charges
+    - Must upgrade when limits reached
   </Accordion>
   
   <Accordion title="Can't access billing">
@@ -377,7 +509,7 @@ Reactivate at any time:
 
 ## Enterprise Billing
 
-Enterprise plans offer custom billing options:
+Enterprise plans start at $2,000 and offer custom billing options:
 
 <CardGroup cols={2}>
   <Card title="Custom Terms" icon="file-contract">
@@ -394,6 +526,14 @@ Enterprise plans offer custom billing options:
   
   <Card title="Annual Contracts" icon="calendar-days">
     Commit to annual with custom pricing
+  </Card>
+  
+  <Card title="Custom Resources" icon="sliders">
+    Tailored allocations for agents, flows, storage, and compute
+  </Card>
+  
+  <Card title="Regional Deployment" icon="globe">
+    Choose data processing regions (EU, US, Australia)
   </Card>
 </CardGroup>
 
@@ -423,6 +563,23 @@ Taxes are automatically calculated based on:
 <Info>
 Invoices automatically include all applicable tax information for your records.
 </Info>
+
+## Plan Comparison Quick Reference
+
+| Plan | Monthly | Annual | Agents | Flows/Month | Storage | Compute/Month |
+|------|---------|--------|--------|-------------|---------|---------------|
+| **Free** | $0 | $0 | 3 | 200 | 1GB | 1 hour |
+| **Starter** | $25 | \$20 (\$240/year) | 10 | 2,500 | 5GB | 10 hours |
+| **Pro** | $125 | \$100 (\$1,200/year) | 50 | 10,000 | 25GB | 50 hours |
+| **Team** | $625 | \$500 (\$6,000/year) | Unlimited | 40,000 | 125GB | 250 hours |
+| **Enterprise** | Custom (from \$2,000) | Custom | Custom | Custom | Custom | Custom |
+
+**All plans include:**
+- Unlimited users
+- Premium marketplace access (paid plans)
+- $10 Gemini credits (paid plans)
+
+[See full comparison →](/get-started/plans-and-pricing)
 
 ## Billing Contact & Support
 

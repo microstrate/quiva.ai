@@ -22,7 +22,7 @@ Complete syntax reference, troubleshooting guide, and quick-lookup tables for JS
 | `~` | Property Name | Get key names | `$.NODE.*~` |
 | `\|` | Pipe | Concatenation (custom) | `First\|$\|Last` |
 
-### quiva.ai-Specific Extensions
+### QuivaWorks-Specific Extensions
 
 | Feature | Description | Example |
 |---------|-------------|---------|
@@ -32,7 +32,7 @@ Complete syntax reference, troubleshooting guide, and quick-lookup tables for JS
 | **Multi-pipe** | Multiple concatenations | `$.first\| \|$.last` |
 
 <Info>
-The pipe operator (`|`) is a quiva.ai custom extension not found in standard JSONPath implementations.
+The pipe operator (`|`) is a QuivaWorks custom extension not found in standard JSONPath implementations.
 </Info>
 
 ---
@@ -565,7 +565,7 @@ From highest to lowest priority:
 "Text|$.NODE.name"
 ```
 
-**Solutions:** Remove spaces around pipes, check all referenced values exist, and remember that `|` is a quiva.ai custom extension (not standard JSONPath).
+**Solutions:** Remove spaces around pipes, check all referenced values exist, and remember that `|` is a QuivaWorks custom extension (not standard JSONPath).
   </Accordion>
 
   <Accordion title="❌ Performance Issues" icon="gauge-high">
@@ -819,8 +819,8 @@ Check if you need an array `[...]` or single value, and adjust accordingly:
 {{2.order.items.0.price}}
 ```
 
-```json quiva.ai Equivalent
-// quiva.ai uses $.NODE_ID.path
+```json QuivaWorks Equivalent
+// QuivaWorks uses $.NODE_ID.path
 "$.step1.customer.name"
 "$.step2.order.items[0].price"
 ```
@@ -837,7 +837,7 @@ Check if you need an array `[...]` or single value, and adjust accordingly:
 {{2.items[].name}}
 ```
 
-```json quiva.ai Equivalent  
+```json QuivaWorks Equivalent  
 // Similar but with $ and proper array syntax
 "$.module1.name"
 "$.module2.items[*].name"
@@ -854,7 +854,7 @@ Check if you need an array `[...]` or single value, and adjust accordingly:
 {{$node["HTTP Request"].json.data.name}}
 ```
 
-```json quiva.ai Equivalent
+```json QuivaWorks Equivalent
 // Use node IDs instead of names
 "$.http_request.data.name"
 ```
@@ -862,7 +862,7 @@ Check if you need an array `[...]` or single value, and adjust accordingly:
 </CodeGroup>
 
 <Info>
-**Key Difference:** quiva.ai uses standard JSONPath syntax with custom extensions, making it more powerful for complex data transformations.
+**Key Difference:** QuivaWorks uses standard JSONPath syntax with custom extensions, making it more powerful for complex data transformations.
 </Info>
 
 ---
@@ -977,5 +977,5 @@ Create intermediate nodes to see transformation steps.
 </Accordion>
 
 <Tip>
-**Bookmark this page!** This reference guide contains everything you need for JSONPath mapping in quiva.ai flows.
+**Bookmark this page!** This reference guide contains everything you need for JSONPath mapping in QuivaWorks flows.
 </Tip>

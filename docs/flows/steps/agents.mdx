@@ -9,7 +9,7 @@ icon: 'robot'
 The Agents step runs AI agents within your flow. Unlike traditional automation that follows rigid rules, agents think, reason, and make decisions. Give them tools to access data and perform tasks, provide context to guide their behavior, and set boundaries to ensure safe, reliable execution.
 
 <Info>
-**Agent-Centric Flows**: Start here. Most quiva.ai flows begin with an Agent step. Attach tools (connectors) to let agents access your systems, and add other steps only when you need explicit control over branching, transformations, or integrations.
+**Agent-Centric Flows**: Start here. Most QuivaWorks flows begin with an Agent step. Attach tools (connectors) to let agents access your systems, and add other steps only when you need explicit control over branching, transformations, or integrations.
 </Info>
 
 ---
@@ -134,12 +134,10 @@ Select your LLM provider and model.
   LLM provider
   
   **Options**:
-  - `Workforce` - quiva.ai's custom model (recommended)
   - `OpenAI` - ChatGPT models
   - `Anthropic` - Claude models
   - `Google` - Gemini models
   
-  <Tip>Workforce is optimized for quiva.ai and includes built-in cost optimization</Tip>
 </ParamField>
 
 <ParamField path="model" type="string" required>
@@ -249,7 +247,7 @@ Agent: prompt = "Analyze this order: ${trigger.body.order}"
 Attach MCP servers (connectors) to give your agent access to data and the ability to perform actions.
 
 <Info>
-**Tools = Connectors**: In quiva.ai, tools and connectors are the same thing - MCP servers that agents can use. Find them in the Marketplace or create custom ones.
+**Tools = Connectors**: In QuivaWorks, integrations, tools and connectors are the same thing - MCP servers that agents can use. Find them in the Marketplace or create custom ones.
 </Info>
 
 ### Adding Tools
@@ -762,7 +760,7 @@ Agent: "Your order #12345 was delivered this morning!" ✅
   </Card>
   
   <Card title="Agent Overview" icon="robot" href="/agents/overview">
-    Learn more about agents in quiva.ai
+    Learn more about agents in QuivaWorks
   </Card>
   
   <Card title="Variable Mapping" icon="brackets-curly" href="/flows/concepts/variable-mapping">

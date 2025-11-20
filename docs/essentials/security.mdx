@@ -8,13 +8,13 @@ icon: "lock-keyhole"
 
 ## Introduction
 
-Security is foundational to quiva.ai's architecture. This guide outlines the security features available to protect your account and data, along with best practices for maintaining a strong security posture.
+Security is foundational to QuivaWorks' architecture. This guide outlines the security features available to protect your account and data, along with best practices for maintaining a strong security posture.
 
 ## Account Security Features
 
 ### Multi-Factor Authentication (MFA)
 
-quiva.ai provides robust MFA options to protect your account. If MFA is not active, everytime you log into your account you will be prompted to set up MFA:
+QuivaWorks provides robust MFA options to protect your account. If MFA is not active, everytime you log into your account you will be prompted to set up MFA:
 
 #### Setting Up MFA
 
@@ -48,7 +48,7 @@ Control how users interact with your account:
 
 ### API Keys
 
-Secure your programmatic access to quiva.ai:
+Secure your programmatic access to QuivaWorks:
 
 1. Navigate to **Account Settings → API → Keys**
 2. Keys are scoped to the user that generates them
@@ -56,7 +56,7 @@ Secure your programmatic access to quiva.ai:
 
 ### Secop Models
 
-quiva.ai implements Secop (Secure Operation) security models throughout the platform:
+QuivaWorks implements Secop (Secure Operation) security models throughout the platform:
 
 - **Resource-Based Security**: Granular permissions for every resource
 - **Intent-Based Authorization**: Access based on the operation being performed
@@ -74,16 +74,16 @@ quiva.ai implements Secop (Secure Operation) security models throughout the plat
 
 ### Password Recovery
 
-If you've forgotten your password, quiva.ai provides a secure recovery process:
+If you've forgotten your password, QuivaWorks provides a secure recovery process:
 
 1. **Initiating Password Recovery**
-   - Visit the quiva.ai login page at [https://app.staging.quiva.ai/en/login](https://app.staging.quiva.ai/en/login)
+   - Visit the QuivaWorks login page at [https://app.quiva.ai/en/login](https://app.quiva.ai/en/login)
    - Click "Forgot password?" below the login form
    - Enter the email address associated with your account
    - Click "Send Recovery Email"
 
 2. **Completing the Recovery Process**
-   - Check your email for a message from quiva.ai (subject: "Reset Your quiva.ai Password")
+   - Check your email for a message from quiva.ai (subject: "Reset Your QuivaWorks Password")
    - You'll receive either:
      - A "Reset Password" link (recommended method)
      - A temporary recovery code (alternative method)
@@ -114,14 +114,14 @@ If you've forgotten your password, quiva.ai provides a secure recovery process:
 
 ### Network Security
 
-- Access the quiva.ai console over HTTPS only
+- Access the QuivaWorks console over HTTPS only
 - When possible, use a dedicated device for administrative access
 - Implement corporate network controls like VPNs when accessing from untrusted networks
 - Consider setting up dedicated admin workstations for highest-privilege users
 
 ### Monitoring and Auditing
 
-quiva.ai provides comprehensive security monitoring tools:
+QuivaWorks provides comprehensive security monitoring tools (Enterprise only):
 
 1. Navigate to **Account Settings → Security → Audit Logs**
 2. Monitor:
@@ -192,7 +192,7 @@ If you believe your account has been compromised, take these immediate steps in 
    - Consider implementing SSO with stricter controls
 
 6. **Report the Incident**
-   - Contact quiva.ai security team at [security@quiva.ai](mailto:security@quiva.ai)
+   - Contact QuivaWorks security team at [support@quiva.ai](mailto:support@quiva.ai)
    - Call the emergency response line at the number provided in your account portal
    - Provide all collected evidence and timeline of events
    - Follow guidance from the security team for further actions
@@ -215,17 +215,17 @@ For urgent security assistance:
 3. Select "Security Incident" from the dropdown menu
 4. Provide brief details about the suspected compromise
 
-Report security incidents to [security@quiva.ai](mailto:security@quiva.ai) or call the emergency response line at the number provided in your account portal.
+Report security incidents to [support@quiva.ai](mailto:support@quiva.ai) or call the emergency response line at the number provided in your account portal.
 
 ## Security Compliance
 
-quiva.ai maintains the following certifications and compliance standards:
+QuivaWorks maintains the following certifications and compliance standards:
 
-- SOC 2 Type II
+- SOC 2 Type II (In Progress)
 - ISO 27001
 - GDPR Compliance
 - HIPAA Compliance (Enterprise Plan only)
-- PCI DSS (for billing data)
+- PCI DSS (Stripe our our payment provider of choice)
 
 View detailed compliance information:
 
@@ -236,20 +236,20 @@ View detailed compliance information:
 
 ### Data Encryption
 
-- All data within quiva.ai is encrypted at rest using AES-256
+- All data within QuivaWorks is encrypted at rest using AES-256
 - All data in transit is protected using TLS 1.3
 - Enterprise customers can use customer-managed encryption keys (CMEK)
 
 ### Vulnerability Management
 
-- quiva.ai conducts regular penetration testing
+- QuivaWorks conducts regular penetration testing
 - Security patches are applied automatically to the platform
 - Critical vulnerabilities are addressed within 24 hours
 - Subscribe to security notifications at **Account Settings → Security → Notifications**
 
 ## Security Resources
 
-- [quiva.ai Security Whitepaper](https://docs.quiva.ai/security/whitepaper)
+- [QuivaWorks Security Whitepaper](https://docs.quiva.ai/security/whitepaper)
 - [Security Best Practices Guide](https://docs.quiva.ai/security/best-practices)
 - [Compliance Documentation](https://docs.quiva.ai/security/compliance)
 - [Security Changelog](https://docs.quiva.ai/security/updates)

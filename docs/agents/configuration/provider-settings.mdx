@@ -21,29 +21,6 @@ Choose the AI model provider that powers your agent.
 ### Available Providers
 
 <Tabs>
-  <Tab title="Workforce (Recommended)">
-    <div className="space-y-4">
-      <p><strong>quiva.ai's custom model</strong> optimized for business automation and agent workflows.</p>
-      
-      **Best for:**
-      - Getting started quickly (no API key needed)
-      - Cost-effective automation
-      - Standard business use cases
-      - Testing and prototyping
-      
-      **Advantages:**
-      - ✅ Included in all plans (no additional API costs)
-      - ✅ Optimized for quiva.ai's agent architecture
-      - ✅ Balanced performance and cost
-      - ✅ No external API key management
-      - ✅ Predictable pricing
-      
-      **Limitations:**
-      - ⚠️ Less customization than bringing your own models
-      - ⚠️ May not have cutting-edge features of latest GPT-4 or Claude releases
-    </div>
-  </Tab>
-  
   <Tab title="OpenAI">
     <div className="space-y-4">
       <p><strong>OpenAI's GPT models</strong> - Industry-leading language models with broad capabilities.</p>
@@ -55,15 +32,14 @@ Choose the AI model provider that powers your agent.
       - When you need GPT-4's latest features
       
       **Advantages:**
-      - ✅ GPT-4 is most capable model available
+      - ✅ GPT-5 is most capable model available
       - ✅ Extensive training on diverse data
       - ✅ Strong general intelligence
       - ✅ Excellent for creative tasks
-      - ✅ Fast inference (especially GPT-3.5)
+      - ✅ Fast inference
       
       **Considerations:**
       - ⚠️ Requires OpenAI API key
-      - ⚠️ GPT-4 is more expensive than alternatives
       - ⚠️ Costs based on token usage
       - ⚠️ Rate limits apply to your API key
       
@@ -94,7 +70,6 @@ Choose the AI model provider that powers your agent.
       - ⚠️ Requires Anthropic API key
       - ⚠️ Opus model is premium-priced
       - ⚠️ Costs based on token usage
-      - ⚠️ May be slower than GPT-3.5 for simple tasks
       
       <Info>
       Get your Anthropic API key at [console.anthropic.com](https://console.anthropic.com/)
@@ -121,9 +96,7 @@ Choose the AI model provider that powers your agent.
       
       **Considerations:**
       - ⚠️ Requires Google Cloud API key
-      - ⚠️ Newer models (less battle-tested)
       - ⚠️ Costs based on token usage
-      - ⚠️ May not match GPT-4 on complex reasoning
       
       <Info>
       Get your Google AI API key at [ai.google.dev](https://ai.google.dev)
@@ -134,17 +107,17 @@ Choose the AI model provider that powers your agent.
 
 ### Provider Comparison
 
-| Feature | Workforce | OpenAI | Claude | Gemini |
+| Feature | OpenAI | Claude | Gemini |
 |---------|-----------|---------|---------|---------|
-| **Setup** | Instant | API Key | API Key | API Key |
-| **Cost** | Included | Usage-based | Usage-based | Usage-based |
-| **Best at** | Business automation | General intelligence | Long context | Multimodal |
-| **Speed** | Fast | Fast | Moderate | Fast |
-| **Context** | 50K-100K | 128K | 200K | 32K-128K |
-| **Learning Curve** | Low | Low | Low | Moderate |
+| **Setup** | API Key | API Key | API Key |
+| **Cost** | Usage-based | Usage-based | Usage-based |
+| **Best at** | General intelligence | Long context | Multimodal |
+| **Speed** | Fast | Moderate | Fast |
+| **Context** | 128K | 200K | 32K-128K |
+| **Learning Curve**  | Low | Low | Moderate |
 
 <Tip>
-**Start with Workforce** for simplicity. Upgrade to external providers when you need specific capabilities or have exhausted included usage.
+**Start with Gemini credits** for simplicity. Upgrade to external providers when you need specific capabilities or have exhausted included usage.
 </Tip>
 
 ---
@@ -341,7 +314,7 @@ Once you've selected a provider, choose the specific model version.
 For OpenAI, Claude, and Gemini, you need to provide an API key from the respective provider. This section provides detailed, step-by-step instructions for obtaining and configuring API keys for each provider.
 
 <Info>
-**Why do I need an API key?** API keys authenticate your requests to the AI provider and allow them to track usage and bill accordingly. Keys are encrypted and securely stored in quiva.ai.
+**Why do I need an API key?** API keys authenticate your requests to the AI provider and allow them to track usage and bill accordingly. Keys are encrypted and securely stored in QuivaWorks.
 </Info>
 
 ---
@@ -411,7 +384,7 @@ OpenAI provides access to GPT-4, GPT-4 Turbo, and GPT-3.5 Turbo models.
        - Or navigate directly to [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
     2. Click the **+ Create new secret key** button
     3. In the popup dialog:
-       - **Name**: Give your key a descriptive name (e.g., "quiva.ai Production" or "quiva.ai Development")
+       - **Name**: Give your key a descriptive name (e.g., "QuivaWorks Production" or "QuivaWorks Development")
        - **Project**: Select "Default project" (or create a new project if you want to organize by use case)
        - **Permissions**: Leave as "All" for full access, or select "Restricted" if you want to limit specific endpoints
     4. Click **Create secret key**
@@ -433,7 +406,7 @@ OpenAI provides access to GPT-4, GPT-4 Turbo, and GPT-3.5 Turbo models.
     />
   </Step>
   
-  <Step title="Add Key to quiva.ai">
+  <Step title="Add Key to QuivaWorks">
     1. In quiva.ai, open your agent configuration
     2. Click the **Provider** tab
     3. Select **OpenAI** from the Provider dropdown
@@ -559,7 +532,7 @@ Anthropic provides access to Claude 3 models: Opus, Sonnet, and Haiku.
     2. Click **Create Key** button
     3. In the dialog that appears:
        - **Name**: Enter a descriptive name for your key
-         - Examples: "quiva.ai Production", "Customer Service Agent", "Development Testing"
+         - Examples: "QuivaWorks Production", "Customer Service Agent", "Development Testing"
        - **Workspace**: Leave as default (or select specific workspace if you have multiple)
     4. Click **Create Key**
     5. **CRITICAL:** Copy your API key immediately
@@ -581,7 +554,7 @@ Anthropic provides access to Claude 3 models: Opus, Sonnet, and Haiku.
     />
   </Step>
   
-  <Step title="Add Key to quiva.ai">
+  <Step title="Add Key to QuivaWorks">
     1. In quiva.ai, open your agent configuration
     2. Navigate to the **Provider** tab
     3. Select **Claude** from the Provider dropdown
@@ -593,7 +566,7 @@ Anthropic provides access to Claude 3 models: Opus, Sonnet, and Haiku.
        - Paste your Anthropic API key (starts with `sk-ant-`)
        - The field will mask the key for security
     6. Press Enter or click outside the field to save
-    7. quiva.ai encrypts and securely stores your key
+    7. QuivaWorks encrypts and securely stores your key
     8. Test your configuration:
        - Click **Test** in the flow builder
        - Run a sample query
@@ -712,7 +685,7 @@ Google provides access to Gemini Pro and Gemini Pro Vision models.
        - Or click **Create a new Google Cloud project**
     3. You'll be redirected to Google Cloud Console
     4. Create your project:
-       - Enter a **Project name** (e.g., "quiva.ai Agents", "AI Development")
+       - Enter a **Project name** (e.g., "QuivaWorks Agents", "AI Development")
        - **Project ID** will auto-generate (you can customize it)
        - **Location**: Select your organization (or leave as "No organization")
     5. Click **Create**
@@ -761,7 +734,7 @@ Google provides access to Gemini Pro and Gemini Pro Vision models.
     />
   </Step>
   
-  <Step title="Add Key to quiva.ai">
+  <Step title="Add Key to QuivaWorks">
     1. In quiva.ai, open your agent configuration
     2. Go to the **Provider** tab
     3. Select **Gemini** from the Provider dropdown
@@ -876,9 +849,9 @@ Google provides access to Gemini Pro and Gemini Pro Vision models.
 
 ---
 
-### Adding Your API Key to quiva.ai
+### Adding Your API Key to QuivaWorks
 
-Once you have an API key from any provider, follow these steps to add it to quiva.ai:
+Once you have an API key from any provider, follow these steps to add it to QuivaWorks:
 
 <Steps>
   <Step title="Open Agent Configuration">
