@@ -85,7 +85,8 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of collections"
+                          "description": "Total number of collections",
+                          "example": 1
                         }
                       }
                     }
@@ -2048,27 +2049,37 @@
         "properties": {
           "collection_type": {
             "type": "string",
-            "description": "Collection type"
+            "description": "Collection type",
+            "example": "function",
+            "enum": [
+              "container",
+              "function"
+            ]
           },
           "description": {
             "type": "string",
-            "description": "Collection description"
+            "description": "Collection description",
+            "example": "A collection for my compute resources"
           },
           "name": {
             "type": "string",
-            "description": "Collection name"
+            "description": "Collection name",
+            "example": "my-collection"
           },
           "subject": {
             "type": "string",
-            "description": "Collection subject identifier"
+            "description": "Collection subject identifier",
+            "example": "ms.compute.123456789.collection"
           },
           "type": {
             "type": "string",
-            "description": "Resource type"
+            "description": "Resource type",
+            "example": "created"
           },
           "modified": {
             "type": "integer",
-            "description": "Last modification timestamp"
+            "description": "Last modification timestamp",
+            "example": 1714378974
           }
         }
       },
@@ -2080,15 +2091,22 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Collection name"
+            "description": "Collection name",
+            "example": "my-collection"
           },
           "description": {
             "type": "string",
-            "description": "Collection description"
+            "description": "Collection description",
+            "example": "A collection for my compute resources"
           },
           "collection_type": {
             "type": "string",
-            "description": "Collection type"
+            "description": "Collection type",
+            "example": "function",
+            "enum": [
+              "container",
+              "function"
+            ]
           }
         }
       },
@@ -2097,15 +2115,22 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Collection name"
+            "description": "Collection name",
+            "example": "my-collection"
           },
           "description": {
             "type": "string",
-            "description": "Collection description"
+            "description": "Collection description",
+            "example": "A collection for my compute resources"
           },
           "collection_type": {
             "type": "string",
-            "description": "Collection type"
+            "description": "Collection type",
+            "example": "function",
+            "enum": [
+              "container",
+              "function"
+            ]
           }
         }
       },
