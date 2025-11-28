@@ -264,7 +264,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.get.stack-list",
+                "x-resource": "microstrate.deployment.get.stack-list",
                 "responses": {
                     "200": {
                         "description": "Successfully retrieved list of stacks",
@@ -340,7 +340,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.post.deploy-stack",
+                "x-resource": "microstrate.deployment.post.deploy-stack",
                 "requestBody": {
                     "description": "Stack configuration details",
                     "required": true,
@@ -475,7 +475,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.get.stack",
+                "x-resource": "microstrate.deployment.get.stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -609,7 +609,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.patch.stack",
+                "x-resource": "microstrate.deployment.patch.stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -725,7 +725,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.delete.stack",
+                "x-resource": "microstrate.deployment.delete.stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -808,7 +808,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.get.stack-history",
+                "x-resource": "microstrate.deployment.get.stack-history",
                 "parameters": [
                     {
                         "name": "name",
@@ -980,7 +980,7 @@
                     "Stacks"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.post.redeploy-stack",
+                "x-resource": "microstrate.deployment.post.redeploy-stack",
                 "parameters": [
                     {
                         "name": "name",
@@ -1079,7 +1079,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.patch.attach-resources",
+                "x-resource": "microstrate.deployment.patch.attach-resources",
                 "parameters": [
                     {
                         "name": "name",
@@ -1197,7 +1197,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.get.stack-resource",
+                "x-resource": "microstrate.deployment.get.stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1325,7 +1325,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.delete.stack-resource",
+                "x-resource": "microstrate.deployment.delete.stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1399,7 +1399,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.patch.detach-stack-resource",
+                "x-resource": "microstrate.deployment.patch.detach-stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1475,7 +1475,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.get.stack-resource-history",
+                "x-resource": "microstrate.deployment.get.stack-resource-history",
                 "parameters": [
                     {
                         "name": "name",
@@ -1645,7 +1645,7 @@
                     "Resources"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.post.redeploy-stack-resource",
+                "x-resource": "microstrate.deployment.post.redeploy-stack-resource",
                 "parameters": [
                     {
                         "name": "name",
@@ -1754,7 +1754,7 @@
                     "OpenAPI"
                 ],
                 "x-resource-type": "service",
-                "x-resource": "quiva.deployment.post.deploy-openapi",
+                "x-resource": "microstrate.deployment.post.deploy-openapi",
                 "requestBody": {
                     "description": "OpenAPI specification with extensions",
                     "required": true,

@@ -1332,7 +1332,7 @@
         "description": "Retrieves a list of all key-value buckets in the system",
         "operationId": "getKVBucketList",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.kv-list",
+        "x-resource": "microstrate.storage.get.kv-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved KV bucket list",
@@ -1382,7 +1382,7 @@
         "description": "Creates a new key-value bucket with optional indexing configuration",
         "operationId": "createKVBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.post.kv",
+        "x-resource": "microstrate.storage.post.kv",
         "requestBody": {
           "required": true,
           "content": {
@@ -1390,29 +1390,57 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateKVBucketRequest"
               },
-              "example": {
-                "bucket": "my-bucket",
-                "description": "My test bucket",
-                "compression": true,
-                "history": 5,
-                "max_bytes": 1048576,
-                "max_value_size": 8192,
-                "replicas": 3,
-                "storage": 0,
-                "indexing": {
-                  "mappings": [
-                    {
-                      "field": "name",
-                      "field_type": "text"
-                    },
-                    {
-                      "field": "age",
-                      "field_type": "number"
+              "examples": {
+                "simple": {
+                  "summary": "Simple bucket without indexing",
+                  "value": {
+                    "bucket": "user-preferences",
+                    "description": "Stores user preference settings",
+                    "compression": false,
+                    "history": 1,
+                    "replicas": 1,
+                    "storage": "file"
+                  }
+                },
+                "with-indexing": {
+                  "summary": "Bucket with full-text indexing",
+                  "value": {
+                    "bucket": "products",
+                    "description": "Product catalog with search",
+                    "compression": true,
+                    "history": 5,
+                    "max_bytes": 10737418240,
+                    "max_value_size": 1048576,
+                    "replicas": 3,
+                    "storage": "file",
+                    "indexing": {
+                      "mappings": [
+                        {
+                          "field": "name",
+                          "field_type": "text"
+                        },
+                        {
+                          "field": "price",
+                          "field_type": "number"
+                        }
+                      ],
+                      "partitions": 3,
+                      "replicas": 2,
+                      "storage_type": "file"
                     }
-                  ],
-                  "partitions": 3,
-                  "replicas": 2,
-                  "storage_type": 0
+                  }
+                },
+                "memory-cache": {
+                  "summary": "In-memory bucket for caching",
+                  "value": {
+                    "bucket": "rate-limits",
+                    "description": "Rate limiting counters",
+                    "compression": false,
+                    "history": 1,
+                    "max_bytes": 104857600,
+                    "replicas": 1,
+                    "storage": "memory"
+                  }
                 }
               }
             }
@@ -1443,7 +1471,7 @@
         "description": "Retrieves information about a specific KV bucket",
         "operationId": "getKVBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.kv",
+        "x-resource": "microstrate.storage.get.kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1456,6 +1484,67 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/KVBucketResponse"
+                },
+                "example": {
+                  "body": {
+                    "status": {
+                      "backing_store": "BStream",
+                      "bucket": "products",
+                      "description": "Product catalog",
+                      "bytes": 52428800,
+                      "history": 5,
+                      "ttl": 0,
+                      "is_compressed": true
+                    },
+                    "config": {
+                      "bucket": "products",
+                      "max_bytes": 10737418240,
+                      "max_value_size": 1048576,
+                      "history": 5,
+                      "num_replicas": 3
+                    },
+                    "stream_info": {
+                      "cluster": {
+                        "leader": "node-1",
+                        "name": "quiva-cluster",
+                        "replicas": [
+                          {
+                            "active": 0,
+                            "current": true,
+                            "name": "node-2"
+                          },
+                          {
+                            "active": 0,
+                            "current": true,
+                            "name": "node-3"
+                          }
+                        ]
+                      },
+                      "config": {
+                        "name": "KV_products",
+                        "subjects": [
+                          "$KV.products.>"
+                        ],
+                        "retention": "Limits",
+                        "storage": "file",
+                        "num_replicas": 3,
+                        "discard": "old"
+                      },
+                      "created": "2025-05-08T12:49:45.029Z",
+                      "state": {
+                        "messages": 1250,
+                        "bytes": 52428800,
+                        "first_seq": 1,
+                        "last_seq": 1250,
+                        "consumer_count": 2,
+                        "num_subjects": 1250
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "bucket": "products",
+                    "duration": "3ms"
+                  }
                 }
               }
             }
@@ -1482,7 +1571,7 @@
         "description": "Creates a new key-value bucket with optional indexing or updates it if one does not exist",
         "operationId": "createOrUpdateKVBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.put.kv",
+        "x-resource": "microstrate.storage.put.kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1494,6 +1583,41 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateKVBucketRequest"
+              },
+              "examples": {
+                "update-description": {
+                  "summary": "Update bucket description",
+                  "value": {
+                    "description": "Updated product catalog with extended metadata"
+                  }
+                },
+                "update-limits": {
+                  "summary": "Update storage limits",
+                  "value": {
+                    "max_bytes": 21474836480,
+                    "max_value_size": 2097152
+                  }
+                },
+                "add-indexing": {
+                  "summary": "Add indexing to existing bucket",
+                  "value": {
+                    "indexing": {
+                      "mappings": [
+                        {
+                          "field": "title",
+                          "field_type": "text"
+                        },
+                        {
+                          "field": "category",
+                          "field_type": "keyword"
+                        }
+                      ],
+                      "partitions": 2,
+                      "replicas": 1,
+                      "storage_type": "file"
+                    }
+                  }
+                }
               }
             }
           }
@@ -1524,7 +1648,7 @@
         "description": "Deletes a key-value bucket and all its contents",
         "operationId": "deleteKVBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.kv",
+        "x-resource": "microstrate.storage.delete.kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1558,7 +1682,7 @@
         "description": "Purges all data from a key-value bucket while keeping the bucket configuration",
         "operationId": "purgeKVBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.kv-purge",
+        "x-resource": "microstrate.storage.delete.kv-purge",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1592,7 +1716,7 @@
         "description": "Retrieves the latest entries from a key-value bucket",
         "operationId": "getKVLatestEntries",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.kv-entries",
+        "x-resource": "microstrate.storage.get.kv-entries",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1607,7 +1731,8 @@
               "default": 10,
               "minimum": 1,
               "maximum": 1000
-            }
+            },
+            "example": 25
           }
         ],
         "responses": {
@@ -1670,7 +1795,7 @@
         "description": "Retrieves a specific entry from a key-value bucket",
         "operationId": "getKVEntry",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.kv-entry",
+        "x-resource": "microstrate.storage.get.kv-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1725,7 +1850,7 @@
         "description": "Creates or updates a key-value entry in the specified bucket",
         "operationId": "putKVEntry",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.put.kv-entry",
+        "x-resource": "microstrate.storage.put.kv-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1775,7 +1900,7 @@
         "description": "Deletes a specific entry from a key-value bucket",
         "operationId": "deleteKVEntry",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.kv-entry",
+        "x-resource": "microstrate.storage.delete.kv-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1812,7 +1937,7 @@
         "description": "Searches for entries in a KV bucket based on indexed fields",
         "operationId": "searchKVEntries",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.search-kv",
+        "x-resource": "microstrate.storage.get.search-kv",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1824,7 +1949,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "name"
           },
           {
             "name": "search",
@@ -1833,7 +1959,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "keyboard"
           },
           {
             "name": "search_type",
@@ -1848,7 +1975,8 @@
                 "prefix",
                 "range"
               ]
-            }
+            },
+            "example": "fuzzy"
           },
           {
             "name": "min",
@@ -1857,7 +1985,8 @@
             "required": false,
             "schema": {
               "type": "number"
-            }
+            },
+            "example": 50
           },
           {
             "name": "max",
@@ -1866,7 +1995,8 @@
             "required": false,
             "schema": {
               "type": "number"
-            }
+            },
+            "example": 200
           },
           {
             "name": "limit",
@@ -1878,7 +2008,8 @@
               "default": 10,
               "minimum": 1,
               "maximum": 1000
-            }
+            },
+            "example": 20
           }
         ],
         "responses": {
@@ -1937,7 +2068,7 @@
         "description": "Searches for KV entries by key pattern (e.g., 'user*')",
         "operationId": "searchKVByKey",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.search-kv-by-key",
+        "x-resource": "microstrate.storage.get.search-kv-by-key",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -1949,7 +2080,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "user*"
           },
           {
             "name": "limit",
@@ -1961,7 +2093,8 @@
               "default": 10,
               "minimum": 1,
               "maximum": 1000
-            }
+            },
+            "example": 50
           }
         ],
         "responses": {
@@ -2025,7 +2158,7 @@
         "description": "Retrieves a list of all object store buckets",
         "operationId": "getObjectStoreBucketList",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.obj-list",
+        "x-resource": "microstrate.storage.get.obj-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved object bucket list",
@@ -2034,22 +2167,63 @@
                 "schema": {
                   "$ref": "#/components/schemas/BucketListResponse"
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "name": "obj-bucket1",
-                        "description": "First object bucket"
+                "examples": {
+                  "multiple_buckets": {
+                    "summary": "Multiple buckets",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "name": "media-assets",
+                            "description": "Production media files",
+                            "entry_total": 1523,
+                            "metadata": {
+                              "environment": "production",
+                              "team": "content"
+                            },
+                            "placement": {
+                              "cluster": "us-east-1",
+                              "tags": [
+                                "ssd",
+                                "high-iops"
+                              ]
+                            },
+                            "created": "2024-01-15T10:30:00Z"
+                          },
+                          {
+                            "name": "user-uploads",
+                            "description": "User-generated content",
+                            "entry_total": 8492,
+                            "metadata": {
+                              "environment": "production"
+                            },
+                            "placement": {
+                              "cluster": "us-west-2",
+                              "tags": [
+                                "standard"
+                              ]
+                            },
+                            "created": "2024-02-20T14:15:00Z"
+                          }
+                        ],
+                        "results_total": 2
                       },
-                      {
-                        "name": "obj-bucket2",
-                        "description": "Second object bucket"
+                      "metadata": {
+                        "duration": "12ms"
                       }
-                    ],
-                    "results_total": 2
+                    }
                   },
-                  "metadata": {
-                    "duration": "5ms"
+                  "empty_list": {
+                    "summary": "No buckets",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      },
+                      "metadata": {
+                        "duration": "3ms"
+                      }
+                    }
                   }
                 }
               }
@@ -2071,7 +2245,7 @@
         "description": "Creates a new object store bucket",
         "operationId": "createObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.post.obj",
+        "x-resource": "microstrate.storage.post.obj",
         "requestBody": {
           "required": true,
           "content": {
@@ -2079,12 +2253,34 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateObjectBucketRequest"
               },
-              "example": {
-                "bucket": "my-obj-bucket",
-                "description": "My object store bucket",
-                "max_bytes": 104857600,
-                "replicas": 3,
-                "storage": 0
+              "examples": {
+                "basic": {
+                  "summary": "Basic bucket creation",
+                  "value": {
+                    "bucket": "app-documents",
+                    "description": "Application document storage"
+                  }
+                },
+                "with_limits": {
+                  "summary": "Bucket with size limits",
+                  "value": {
+                    "bucket": "user-uploads",
+                    "description": "User file uploads with 10GB limit",
+                    "max_bytes": 10737418240,
+                    "replicas": 3,
+                    "storage": "file"
+                  }
+                },
+                "memory_storage": {
+                  "summary": "In-memory bucket for caching",
+                  "value": {
+                    "bucket": "temp-cache",
+                    "description": "Temporary cache storage",
+                    "max_bytes": 536870912,
+                    "replicas": 1,
+                    "storage": "memory"
+                  }
+                }
               }
             }
           }
@@ -2114,7 +2310,7 @@
         "description": "Retrieves detailed information about a specific object store, including its configuration and current state.",
         "operationId": "getObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.obj",
+        "x-resource": "microstrate.storage.get.obj",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2127,6 +2323,61 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ObjectBucketResponse"
+                },
+                "example": {
+                  "body": {
+                    "status": {
+                      "bucket": "media-assets",
+                      "description": "Production media files",
+                      "bytes": 5368709120,
+                      "objects": 1523,
+                      "sealed": false
+                    },
+                    "config": {
+                      "bucket": "media-assets",
+                      "max_bytes": 10737418240,
+                      "num_replicas": 3,
+                      "storage": "file",
+                      "placement": {
+                        "cluster": "us-east-1",
+                        "tags": [
+                          "ssd",
+                          "high-iops"
+                        ]
+                      }
+                    },
+                    "stream_info": {
+                      "cluster": {
+                        "name": "prod-cluster",
+                        "leader": "node-1",
+                        "replicas": [
+                          {
+                            "name": "node-2",
+                            "current": true,
+                            "active": 0
+                          },
+                          {
+                            "name": "node-3",
+                            "current": true,
+                            "active": 0
+                          }
+                        ]
+                      },
+                      "created": "2024-01-15T10:30:00Z",
+                      "state": {
+                        "bytes": 5368709120,
+                        "messages": 1523,
+                        "first_seq": 1,
+                        "last_seq": 1523,
+                        "first_ts": "2024-01-15T10:31:00Z",
+                        "last_ts": "2024-11-28T09:45:00Z"
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "bucket": "media-assets",
+                    "duration": "8ms"
+                  }
                 }
               }
             }
@@ -2153,7 +2404,7 @@
         "description": "Creates a new object store bucket if one does not exist or updates it otherwise",
         "operationId": "createOrUpdateObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.put.obj",
+        "x-resource": "microstrate.storage.put.obj",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2165,6 +2416,27 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateObjectBucketRequest"
+              },
+              "examples": {
+                "update_description": {
+                  "summary": "Update description only",
+                  "value": {
+                    "description": "Updated bucket description"
+                  }
+                },
+                "increase_capacity": {
+                  "summary": "Increase storage capacity",
+                  "value": {
+                    "max_bytes": 21474836480
+                  }
+                },
+                "full_update": {
+                  "summary": "Update multiple properties",
+                  "value": {
+                    "description": "Expanded media storage",
+                    "max_bytes": 53687091200
+                  }
+                }
               }
             }
           }
@@ -2195,7 +2467,7 @@
         "description": "Deletes an object store bucket and all its contents",
         "operationId": "deleteObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.obj",
+        "x-resource": "microstrate.storage.delete.obj",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2229,7 +2501,7 @@
         "description": "Purges all data from an object store bucket while keeping the bucket configuration",
         "operationId": "purgeObjectStoreBucket",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.obj-purge",
+        "x-resource": "microstrate.storage.delete.obj-purge",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2263,7 +2535,7 @@
         "description": "Retrieves entries from an object store bucket",
         "operationId": "getObjectStoreEntries",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.obj-entries",
+        "x-resource": "microstrate.storage.get.obj-entries",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2289,23 +2561,51 @@
                 "schema": {
                   "$ref": "#/components/schemas/ObjectEntriesResponse"
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "key": "object1",
-                        "size": 1024
+                "examples": {
+                  "media_files": {
+                    "summary": "Media file entries",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "key": "images/logo.png",
+                            "size": 24576
+                          },
+                          {
+                            "key": "images/banner.jpg",
+                            "size": 1048576
+                          },
+                          {
+                            "key": "videos/intro.mp4",
+                            "size": 52428800
+                          },
+                          {
+                            "key": "documents/readme.pdf",
+                            "size": 204800
+                          }
+                        ],
+                        "results_total": 4
                       },
-                      {
-                        "key": "object2",
-                        "size": 2048
+                      "metadata": {
+                        "bucket": "media-assets",
+                        "limit": 10,
+                        "duration": "15ms"
                       }
-                    ],
-                    "results_total": 2
+                    }
                   },
-                  "metadata": {
-                    "bucket": "my-obj-bucket",
-                    "limit": 10
+                  "empty_bucket": {
+                    "summary": "Empty bucket",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      },
+                      "metadata": {
+                        "bucket": "new-bucket",
+                        "limit": 10,
+                        "duration": "2ms"
+                      }
+                    }
                   }
                 }
               }
@@ -2335,7 +2635,7 @@
         "description": "Deletes a specific entry from an object store bucket",
         "operationId": "deleteObjectStoreEntry",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.obj-entry",
+        "x-resource": "microstrate.storage.delete.obj-entry",
         "parameters": [
           {
             "$ref": "#/components/parameters/bucketName"
@@ -2372,7 +2672,7 @@
         "description": "Retrieves a list of all streams",
         "operationId": "getStreamList",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.stream-list",
+        "x-resource": "microstrate.storage.get.stream-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved stream list",
@@ -2381,26 +2681,62 @@
                 "schema": {
                   "$ref": "#/components/schemas/StreamListResponse"
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "name": "stream1",
-                        "subjects": [
-                          "events.*"
-                        ]
+                "examples": {
+                  "multiple_streams": {
+                    "summary": "Multiple streams",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "name": "user-events",
+                            "description": "User activity events",
+                            "subjects": [
+                              "events.user.*"
+                            ],
+                            "metadata": {},
+                            "created": "2024-01-15T10:30:00Z",
+                            "messages_total": 15420
+                          },
+                          {
+                            "name": "system-logs",
+                            "description": "System log aggregation",
+                            "subjects": [
+                              "logs.system.*",
+                              "logs.app.*"
+                            ],
+                            "metadata": {},
+                            "created": "2024-01-10T08:00:00Z",
+                            "messages_total": 892341
+                          },
+                          {
+                            "name": "order-processing",
+                            "description": "E-commerce order events",
+                            "subjects": [
+                              "orders.*"
+                            ],
+                            "metadata": {},
+                            "created": "2024-02-01T14:20:00Z",
+                            "messages_total": 5230
+                          }
+                        ],
+                        "results_total": 3
                       },
-                      {
-                        "name": "stream2",
-                        "subjects": [
-                          "logs.*"
-                        ]
+                      "metadata": {
+                        "duration": "12ms"
                       }
-                    ],
-                    "results_total": 2
+                    }
                   },
-                  "metadata": {
-                    "duration": "5ms"
+                  "empty_list": {
+                    "summary": "No streams configured",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      },
+                      "metadata": {
+                        "duration": "2ms"
+                      }
+                    }
                   }
                 }
               }
@@ -2422,7 +2758,7 @@
         "description": "Creates a new stream for message publishing",
         "operationId": "createStream",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.post.stream",
+        "x-resource": "microstrate.storage.post.stream",
         "requestBody": {
           "required": true,
           "content": {
@@ -2430,21 +2766,86 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateStreamRequest"
               },
-              "example": {
-                "name": "my-stream",
-                "description": "My event stream",
-                "subjects": [
-                  "events.*",
-                  "logs.*"
-                ],
-                "max_consumers": 5,
-                "max_msgs": 1000000,
-                "max_bytes": 104857600,
-                "discard": 0,
-                "max_msgs_per_subject": 1000,
-                "max_msg_size": 8192,
-                "storage": 0,
-                "num_replicas": 3
+              "examples": {
+                "basic_stream": {
+                  "summary": "Basic event stream",
+                  "value": {
+                    "name": "user-events",
+                    "description": "Stream for user activity events",
+                    "subjects": [
+                      "events.user.*"
+                    ]
+                  }
+                },
+                "full_configuration": {
+                  "summary": "Fully configured stream",
+                  "value": {
+                    "name": "order-processing",
+                    "description": "High-throughput order processing stream",
+                    "subjects": [
+                      "orders.created",
+                      "orders.updated",
+                      "orders.completed",
+                      "orders.cancelled"
+                    ],
+                    "max_consumers": 10,
+                    "max_msgs": 5000000,
+                    "max_bytes": 536870912,
+                    "discard": 0,
+                    "max_msgs_per_subject": 100000,
+                    "max_msg_size": 65536,
+                    "storage": "file",
+                    "num_replicas": 3,
+                    "deny_delete": false,
+                    "deny_purge": false
+                  }
+                },
+                "mirror_stream": {
+                  "summary": "Mirror stream from another source",
+                  "value": {
+                    "name": "orders-mirror",
+                    "description": "Mirror of order-processing stream",
+                    "mirror": {
+                      "name": "order-processing",
+                      "opt_start_seq": 1
+                    },
+                    "storage": "file",
+                    "num_replicas": 2
+                  }
+                },
+                "aggregated_stream": {
+                  "summary": "Stream aggregating multiple sources",
+                  "value": {
+                    "name": "all-events",
+                    "description": "Aggregated stream from multiple sources",
+                    "sources": [
+                      {
+                        "name": "user-events",
+                        "filter_subject": "events.user.login"
+                      },
+                      {
+                        "name": "order-processing",
+                        "filter_subject": "orders.completed"
+                      }
+                    ],
+                    "storage": "file",
+                    "num_replicas": 2
+                  }
+                },
+                "memory_stream": {
+                  "summary": "In-memory stream for real-time processing",
+                  "value": {
+                    "name": "realtime-notifications",
+                    "description": "Fast in-memory stream for notifications",
+                    "subjects": [
+                      "notifications.*"
+                    ],
+                    "storage": "memory",
+                    "max_msgs": 10000,
+                    "max_bytes": 10485760,
+                    "num_replicas": 1
+                  }
+                }
               }
             }
           }
@@ -2474,7 +2875,7 @@
         "description": "Retrieves detailed information about a specific stream, including its configuration and current state. This endpoint provides metrics such as the number of messages, bytes used, first and last sequence numbers, and more.",
         "operationId": "getStream",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.stream",
+        "x-resource": "microstrate.storage.get.stream",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2487,6 +2888,86 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/StreamResponse"
+                },
+                "examples": {
+                  "active_stream": {
+                    "summary": "Active stream with messages",
+                    "value": {
+                      "body": {
+                        "config": {
+                          "name": "user-events",
+                          "description": "User activity events",
+                          "subjects": [
+                            "events.user.*"
+                          ],
+                          "retention": "Limits",
+                          "max_consumers": -1,
+                          "max_msgs": 1000000,
+                          "max_bytes": 104857600,
+                          "max_age": 0,
+                          "max_msg_size": -1,
+                          "storage": "file",
+                          "discard": "old",
+                          "num_replicas": 3,
+                          "duplicate_window": 120000000000,
+                          "deny_delete": false,
+                          "deny_purge": false
+                        },
+                        "state": {
+                          "messages": 15420,
+                          "bytes": 2458320,
+                          "first_seq": 1,
+                          "first_ts": "2024-01-15T10:30:00Z",
+                          "last_seq": 15420,
+                          "last_ts": "2024-03-15T14:22:33Z",
+                          "consumer_count": 3,
+                          "num_subjects": 12
+                        },
+                        "created": "2024-01-15T10:30:00Z",
+                        "cluster": {
+                          "name": "nats-cluster",
+                          "leader": "nats-1",
+                          "replicas": [
+                            {
+                              "name": "nats-2",
+                              "current": true,
+                              "active": 0
+                            },
+                            {
+                              "name": "nats-3",
+                              "current": true,
+                              "active": 0
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "empty_stream": {
+                    "summary": "Newly created empty stream",
+                    "value": {
+                      "body": {
+                        "config": {
+                          "name": "new-stream",
+                          "subjects": [
+                            "new.*"
+                          ],
+                          "retention": "Limits",
+                          "storage": "file",
+                          "num_replicas": 1
+                        },
+                        "state": {
+                          "messages": 0,
+                          "bytes": 0,
+                          "first_seq": 0,
+                          "last_seq": 0,
+                          "consumer_count": 0,
+                          "num_subjects": 0
+                        },
+                        "created": "2024-03-15T14:00:00Z"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2513,7 +2994,7 @@
         "description": "Creates a new stream or updates an existing stream with the provided configuration. If the stream does not exist, it will be created. If it exists, it will be updated with the new configuration.\n\nNote that some properties cannot be changed after a stream is created, such as the storage type. If you attempt to change these properties, the request will fail with a 400 error.",
         "operationId": "createOrUpdateStream",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.put.stream",
+        "x-resource": "microstrate.storage.put.stream",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2525,6 +3006,31 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateStreamRequest"
+              },
+              "examples": {
+                "update_description": {
+                  "summary": "Update stream description",
+                  "value": {
+                    "description": "Updated description for the user events stream"
+                  }
+                },
+                "update_limits": {
+                  "summary": "Update stream limits",
+                  "value": {
+                    "max_msgs": 2000000,
+                    "max_bytes": 209715200,
+                    "max_msg_size": 131072
+                  }
+                },
+                "full_update": {
+                  "summary": "Full stream configuration update",
+                  "value": {
+                    "description": "High-capacity event stream",
+                    "max_msgs": 10000000,
+                    "max_bytes": 1073741824,
+                    "max_msg_size": 262144
+                  }
+                }
               }
             }
           }
@@ -2555,7 +3061,7 @@
         "description": "Deletes a stream with all the messages and consumers attached to it.",
         "operationId": "deleteStream",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.stream",
+        "x-resource": "microstrate.storage.delete.stream",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2589,7 +3095,7 @@
         "description": "Purges messages from a stream with optional filters",
         "operationId": "purgeStream",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.stream-purge",
+        "x-resource": "microstrate.storage.delete.stream-purge",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2602,9 +3108,36 @@
               "schema": {
                 "$ref": "#/components/schemas/PurgeStreamRequest"
               },
-              "example": {
-                "keep": 100,
-                "subject": "events.user.*"
+              "examples": {
+                "purge_all": {
+                  "summary": "Purge all messages",
+                  "value": {}
+                },
+                "keep_recent": {
+                  "summary": "Keep the 100 most recent messages",
+                  "value": {
+                    "keep": 100
+                  }
+                },
+                "purge_by_sequence": {
+                  "summary": "Purge messages up to sequence 5000",
+                  "value": {
+                    "up_to_sequence": 5000
+                  }
+                },
+                "purge_by_subject": {
+                  "summary": "Purge messages for specific subject pattern",
+                  "value": {
+                    "subject": "events.user.deleted.*"
+                  }
+                },
+                "combined_purge": {
+                  "summary": "Purge by subject keeping recent messages",
+                  "value": {
+                    "subject": "events.user.login",
+                    "keep": 50
+                  }
+                }
               }
             }
           }
@@ -2637,7 +3170,7 @@
         "description": "Publishes a message to a stream",
         "operationId": "publishMessage",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.post.message",
+        "x-resource": "microstrate.storage.post.message",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2650,13 +3183,78 @@
               "schema": {
                 "$ref": "#/components/schemas/PublishMessageRequest"
               },
-              "example": {
-                "stream": "users_stream",
-                "subject": "users.accounting.123",
-                "body": {
-                  "user_id": "123",
-                  "name": "John Doe",
-                  "timestamp": "2024-01-20T10:30:00Z"
+              "examples": {
+                "user_login_event": {
+                  "summary": "User login event",
+                  "value": {
+                    "stream": "user-events",
+                    "subject": "events.user.login",
+                    "body": {
+                      "user_id": "usr_abc123",
+                      "email": "user@example.com",
+                      "ip_address": "192.168.1.100",
+                      "user_agent": "Mozilla/5.0",
+                      "timestamp": "2024-03-15T14:30:00Z"
+                    }
+                  }
+                },
+                "order_created_event": {
+                  "summary": "Order created event",
+                  "value": {
+                    "stream": "order-processing",
+                    "subject": "orders.created",
+                    "body": {
+                      "order_id": "ord_xyz789",
+                      "customer_id": "cust_456",
+                      "items": [
+                        {
+                          "sku": "PROD-001",
+                          "quantity": 2,
+                          "price": 29.99
+                        },
+                        {
+                          "sku": "PROD-002",
+                          "quantity": 1,
+                          "price": 49.99
+                        }
+                      ],
+                      "total": 109.97,
+                      "currency": "USD",
+                      "created_at": "2024-03-15T14:35:00Z"
+                    }
+                  }
+                },
+                "system_metric": {
+                  "summary": "System metric event",
+                  "value": {
+                    "stream": "system-logs",
+                    "subject": "logs.system.metrics",
+                    "body": {
+                      "host": "api-server-01",
+                      "cpu_usage": 45.2,
+                      "memory_usage": 68.5,
+                      "disk_usage": 32.1,
+                      "active_connections": 1250,
+                      "timestamp": "2024-03-15T14:40:00Z"
+                    }
+                  }
+                },
+                "notification_event": {
+                  "summary": "Notification event",
+                  "value": {
+                    "stream": "realtime-notifications",
+                    "subject": "notifications.email",
+                    "body": {
+                      "notification_id": "notif_001",
+                      "type": "email",
+                      "recipient": "user@example.com",
+                      "template": "welcome_email",
+                      "variables": {
+                        "name": "John Doe",
+                        "activation_link": "https://example.com/activate/abc123"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2688,7 +3286,7 @@
         "description": "Deletes messages from a stream by sequence(seq).",
         "operationId": "deleteStreamMessages",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.delete.messages",
+        "x-resource": "microstrate.storage.delete.messages",
         "parameters": [
           {
             "$ref": "#/components/parameters/streamName"
@@ -2701,7 +3299,16 @@
             "schema": {
               "type": "string"
             },
-            "example": "1,2,3"
+            "examples": {
+              "single": {
+                "summary": "Delete single message",
+                "value": "42"
+              },
+              "multiple": {
+                "summary": "Delete multiple messages",
+                "value": "1,2,3,10,15"
+              }
+            }
           }
         ],
         "responses": {
@@ -2732,7 +3339,7 @@
         "description": "Searches for stream messages by subject pattern",
         "operationId": "searchStreamBySubject",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.search-stream-by-subject",
+        "x-resource": "microstrate.storage.get.search-stream-by-subject",
         "parameters": [
           {
             "$ref": "#/components/parameters/stream"
@@ -2744,6 +3351,20 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "examples": {
+              "exact": {
+                "summary": "Exact subject match",
+                "value": "events.user.login"
+              },
+              "wildcard_single": {
+                "summary": "Single-level wildcard",
+                "value": "events.user.*"
+              },
+              "wildcard_multi": {
+                "summary": "Multi-level wildcard",
+                "value": "events.>"
+              }
             }
           },
           {
@@ -2756,6 +3377,16 @@
               "default": 10,
               "minimum": 1,
               "maximum": 1000
+            },
+            "examples": {
+              "default": {
+                "summary": "Default limit",
+                "value": 10
+              },
+              "large": {
+                "summary": "Large result set",
+                "value": 100
+              }
             }
           }
         ],
@@ -2767,24 +3398,52 @@
                 "schema": {
                   "$ref": "#/components/schemas/StreamSearchResponse"
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "subject": "events.created",
-                        "data": "..."
+                "examples": {
+                  "user_events": {
+                    "summary": "User event search results",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "subject": "events.user.login",
+                            "value": "{\"user_id\":\"usr_abc123\",\"timestamp\":\"2024-03-15T14:30:00Z\"}",
+                            "created": "2024-03-15T14:30:00Z"
+                          },
+                          {
+                            "subject": "events.user.logout",
+                            "value": "{\"user_id\":\"usr_abc123\",\"timestamp\":\"2024-03-15T16:45:00Z\"}",
+                            "created": "2024-03-15T16:45:00Z"
+                          },
+                          {
+                            "subject": "events.user.profile_update",
+                            "value": "{\"user_id\":\"usr_def456\",\"field\":\"email\",\"timestamp\":\"2024-03-15T17:00:00Z\"}",
+                            "created": "2024-03-15T17:00:00Z"
+                          }
+                        ],
+                        "results_total": 3
                       },
-                      {
-                        "subject": "events.updated",
-                        "data": "..."
+                      "metadata": {
+                        "stream": "user-events",
+                        "search": "events.user.*",
+                        "hits": 3,
+                        "duration": "8ms"
                       }
-                    ],
-                    "results_total": 2
+                    }
                   },
-                  "metadata": {
-                    "stream": "my-stream",
-                    "search": "events.*",
-                    "hits": 2
+                  "no_results": {
+                    "summary": "No matching messages",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      },
+                      "metadata": {
+                        "stream": "user-events",
+                        "search": "events.admin.*",
+                        "hits": 0,
+                        "duration": "2ms"
+                      }
+                    }
                   }
                 }
               }
@@ -2814,7 +3473,7 @@
         "description": "Performs a search on an index",
         "operationId": "searchIndex",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.search-index",
+        "x-resource": "microstrate.storage.get.search-index",
         "parameters": [
           {
             "name": "index",
@@ -2823,6 +3482,16 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "examples": {
+              "users": {
+                "summary": "Users index",
+                "value": "users-index"
+              },
+              "products": {
+                "summary": "Products index",
+                "value": "products-index"
+              }
             }
           },
           {
@@ -2832,6 +3501,20 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "examples": {
+              "name": {
+                "summary": "Search by name",
+                "value": "name"
+              },
+              "email": {
+                "summary": "Search by email",
+                "value": "email"
+              },
+              "description": {
+                "summary": "Search by description",
+                "value": "description"
+              }
             }
           },
           {
@@ -2841,6 +3524,16 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "examples": {
+              "name_search": {
+                "summary": "Search for name",
+                "value": "John"
+              },
+              "partial_search": {
+                "summary": "Partial term search",
+                "value": "acme"
+              }
             }
           },
           {
@@ -2856,6 +3549,20 @@
                 "prefix",
                 "range"
               ]
+            },
+            "examples": {
+              "exact": {
+                "summary": "Exact match",
+                "value": "exact"
+              },
+              "fuzzy": {
+                "summary": "Fuzzy match (typo-tolerant)",
+                "value": "fuzzy"
+              },
+              "prefix": {
+                "summary": "Prefix match",
+                "value": "prefix"
+              }
             }
           },
           {
@@ -2865,6 +3572,16 @@
             "required": false,
             "schema": {
               "type": "number"
+            },
+            "examples": {
+              "age_min": {
+                "summary": "Minimum age",
+                "value": 18
+              },
+              "price_min": {
+                "summary": "Minimum price",
+                "value": 9.99
+              }
             }
           },
           {
@@ -2874,6 +3591,16 @@
             "required": false,
             "schema": {
               "type": "number"
+            },
+            "examples": {
+              "age_max": {
+                "summary": "Maximum age",
+                "value": 65
+              },
+              "price_max": {
+                "summary": "Maximum price",
+                "value": 99.99
+              }
             }
           },
           {
@@ -2886,6 +3613,20 @@
               "default": 10,
               "minimum": 1,
               "maximum": 1000
+            },
+            "examples": {
+              "small": {
+                "summary": "Small result set",
+                "value": 5
+              },
+              "medium": {
+                "summary": "Medium result set",
+                "value": 25
+              },
+              "large": {
+                "summary": "Large result set",
+                "value": 100
+              }
             }
           },
           {
@@ -2895,6 +3636,20 @@
             "required": false,
             "schema": {
               "type": "string"
+            },
+            "examples": {
+              "by_name": {
+                "summary": "Sort by name",
+                "value": "name"
+              },
+              "by_date": {
+                "summary": "Sort by date",
+                "value": "created_at"
+              },
+              "by_score": {
+                "summary": "Sort by relevance score",
+                "value": "_score"
+              }
             }
           }
         ],
@@ -2906,25 +3661,109 @@
                 "schema": {
                   "$ref": "#/components/schemas/IndexSearchResponse"
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "id": "1",
-                        "fields": {
-                          "name": "John Doe",
-                          "age": 30
-                        },
-                        "score": 0.95
+                "examples": {
+                  "user_search": {
+                    "summary": "User search results",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "id": "usr_abc123",
+                            "stream": "user-events",
+                            "subject": "users.profiles",
+                            "fields": {
+                              "name": "John Doe",
+                              "email": "john.doe@example.com",
+                              "age": 32,
+                              "department": "Engineering"
+                            },
+                            "score": 0.98,
+                            "partition": 0,
+                            "sequence": 1542,
+                            "timestamp": 1710512400
+                          },
+                          {
+                            "id": "usr_def456",
+                            "stream": "user-events",
+                            "subject": "users.profiles",
+                            "fields": {
+                              "name": "Johnny Smith",
+                              "email": "johnny.smith@example.com",
+                              "age": 28,
+                              "department": "Marketing"
+                            },
+                            "score": 0.85,
+                            "partition": 1,
+                            "sequence": 2103,
+                            "timestamp": 1710598800
+                          }
+                        ],
+                        "results_total": 2
+                      },
+                      "metadata": {
+                        "field": "name",
+                        "search": "John",
+                        "index_name": "users-index",
+                        "index_duration": "5ms",
+                        "index_hits": 2,
+                        "index_partitions": 4
                       }
-                    ],
-                    "results_total": 1
+                    }
                   },
-                  "metadata": {
-                    "field": "name",
-                    "search": "John",
-                    "index_duration": "3ms",
-                    "index_hits": 1
+                  "range_search": {
+                    "summary": "Range search results",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "id": "prod_001",
+                            "fields": {
+                              "name": "Basic Widget",
+                              "price": 19.99,
+                              "category": "widgets"
+                            },
+                            "score": 1.0,
+                            "partition": 0,
+                            "sequence": 501
+                          },
+                          {
+                            "id": "prod_002",
+                            "fields": {
+                              "name": "Premium Widget",
+                              "price": 49.99,
+                              "category": "widgets"
+                            },
+                            "score": 1.0,
+                            "partition": 0,
+                            "sequence": 502
+                          }
+                        ],
+                        "results_total": 2
+                      },
+                      "metadata": {
+                        "field": "price",
+                        "search": "range",
+                        "index_name": "products-index",
+                        "index_duration": "3ms",
+                        "index_hits": 2
+                      }
+                    }
+                  },
+                  "no_results": {
+                    "summary": "No matching results",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      },
+                      "metadata": {
+                        "field": "name",
+                        "search": "nonexistent",
+                        "index_name": "users-index",
+                        "index_duration": "1ms",
+                        "index_hits": 0
+                      }
+                    }
                   }
                 }
               }
@@ -2954,7 +3793,7 @@
         "description": "Retrieves a list of all indexers",
         "operationId": "getIndexerList",
         "x-resource-type": "service",
-        "x-resource": "quiva.storage.get.indexer-list",
+        "x-resource": "microstrate.storage.get.indexer-list",
         "responses": {
           "200": {
             "description": "Successfully retrieved indexer list",
@@ -2963,36 +3802,169 @@
                 "schema": {
                   "$ref": "#/components/schemas/IndexerListResponse"
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "name": "index1",
-                        "mappings": [
+                "examples": {
+                  "multiple_indexers": {
+                    "summary": "Multiple indexers configured",
+                    "value": {
+                      "body": {
+                        "results": [
                           {
-                            "field": "name",
-                            "field_type": "text"
+                            "name": "users-index",
+                            "description": "Full-text search index for user profiles",
+                            "subjects": [
+                              "users.profiles.*"
+                            ],
+                            "index_config": {
+                              "mappings": [
+                                {
+                                  "field": "name",
+                                  "field_type": "text"
+                                },
+                                {
+                                  "field": "email",
+                                  "field_type": "keyword"
+                                },
+                                {
+                                  "field": "age",
+                                  "field_type": "number"
+                                },
+                                {
+                                  "field": "created_at",
+                                  "field_type": "date"
+                                },
+                                {
+                                  "field": "active",
+                                  "field_type": "boolean"
+                                }
+                              ],
+                              "engine": "bleve",
+                              "idBy": "user_id",
+                              "partitions": 4,
+                              "version": 1
+                            }
                           },
                           {
-                            "field": "age",
-                            "field_type": "number"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "index2",
-                        "mappings": [
+                            "name": "products-index",
+                            "description": "Product catalog search index",
+                            "subjects": [
+                              "products.*"
+                            ],
+                            "index_config": {
+                              "mappings": [
+                                {
+                                  "field": "name",
+                                  "field_type": "text"
+                                },
+                                {
+                                  "field": "description",
+                                  "field_type": "text"
+                                },
+                                {
+                                  "field": "price",
+                                  "field_type": "number"
+                                },
+                                {
+                                  "field": "category",
+                                  "field_type": "keyword"
+                                },
+                                {
+                                  "field": "in_stock",
+                                  "field_type": "boolean"
+                                }
+                              ],
+                              "engine": "bleve",
+                              "idBy": "product_id",
+                              "partitions": 2,
+                              "version": 1
+                            }
+                          },
                           {
-                            "field": "title",
-                            "field_type": "text"
+                            "name": "logs-index",
+                            "description": "System logs search index",
+                            "subjects": [
+                              "logs.system.*",
+                              "logs.app.*"
+                            ],
+                            "index_config": {
+                              "mappings": [
+                                {
+                                  "field": "message",
+                                  "field_type": "text"
+                                },
+                                {
+                                  "field": "level",
+                                  "field_type": "keyword"
+                                },
+                                {
+                                  "field": "service",
+                                  "field_type": "keyword"
+                                },
+                                {
+                                  "field": "timestamp",
+                                  "field_type": "date"
+                                }
+                              ],
+                              "engine": "bleve",
+                              "idBy": "log_id",
+                              "partitions": 8,
+                              "version": 2
+                            }
                           }
-                        ]
+                        ],
+                        "results_total": 3
+                      },
+                      "metadata": {
+                        "duration": "15ms"
                       }
-                    ],
-                    "results_total": 2
+                    }
                   },
-                  "metadata": {
-                    "duration": "10ms"
+                  "single_indexer": {
+                    "summary": "Single indexer configured",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "name": "default-index",
+                            "description": "Default search index",
+                            "subjects": [
+                              "data.*"
+                            ],
+                            "index_config": {
+                              "mappings": [
+                                {
+                                  "field": "content",
+                                  "field_type": "text"
+                                },
+                                {
+                                  "field": "tags",
+                                  "field_type": "keyword"
+                                }
+                              ],
+                              "engine": "bleve",
+                              "idBy": "id",
+                              "partitions": 1,
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "results_total": 1
+                      },
+                      "metadata": {
+                        "duration": "5ms"
+                      }
+                    }
+                  },
+                  "empty_list": {
+                    "summary": "No indexers configured",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      },
+                      "metadata": {
+                        "duration": "2ms"
+                      }
+                    }
                   }
                 }
               }

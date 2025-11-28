@@ -1184,7 +1184,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.oauth-login",
+        "x-resource": "microstrate.accounts.post.oauth-login",
         "security": [],
         "operationId": "getOAuthLoginUrl",
         "parameters": [
@@ -1285,7 +1285,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.oauth-callback",
+        "x-resource": "microstrate.accounts.get.oauth-callback",
         "security": [],
         "operationId": "handleOAuthCallback",
         "parameters": [
@@ -1357,7 +1357,7 @@
         "description": "Retrieves comprehensive information about the authenticated user's current account in a public-facing format (no sensitive data is returned).",
         "operationId": "getAccountInfo",
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.info",
+        "x-resource": "microstrate.accounts.get.info",
         "tags": [
           "Account Management"
         ],
@@ -1399,7 +1399,7 @@
         "description": "Issues a new API key for the specified user\n- This function nables users to generate programmatic access credentials for quiva.ai API as well as credentials for CLI access. This feature allows developers to integrate the platform's capabilities into external applications, automation scripts, or CI/CD pipelines without requiring interactive login sessions.",
         "operationId": "issueApiKey",
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.api-key",
+        "x-resource": "microstrate.accounts.post.api-key",
         "tags": [
           "API Keys"
         ],
@@ -1449,7 +1449,7 @@
         "description": "Delete an API key.\n- A key can be delted by providing the full key or by id.\n- Deleted API keys cannot be recovered",
         "operationId": "deleteApiKey",
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.api-key",
+        "x-resource": "microstrate.accounts.delete.api-key",
         "tags": [
           "API Keys"
         ],
@@ -1511,7 +1511,7 @@
         "description": "Retrieves the metadate for all API keys for the specified user.\n- The function allows users to view the metadata for all active API keys for their own account\n- Root and administrator users can view API keys metadata associated with other users on the same account.",
         "operationId": "viewApiKeys",
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.api-keys",
+        "x-resource": "microstrate.accounts.get.api-keys",
         "tags": [
           "API Keys"
         ],
@@ -1569,7 +1569,7 @@
         "summary": "Authenticate with password",
         "description": "Authenticates a user with their email and password. If MFA is enabled, returns an MFA token that must be used with a subsequent authentication request.",
         "operationId": "authWithPassword",
-        "x-resource": "quiva.accounts.post.auth-with-password",
+        "x-resource": "microstrate.accounts.post.auth-with-password",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -1678,7 +1678,7 @@
         "description": "Uploads a profile image for the user",
         "operationId": "uploadProfileImage",
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.profile-image",
+        "x-resource": "microstrate.accounts.post.profile-image",
         "tags": [
           "User Management"
         ],
@@ -1730,7 +1730,7 @@
         "description": "Deletes the user's profile image",
         "operationId": "deleteProfileImage",
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.profile-image",
+        "x-resource": "microstrate.accounts.delete.profile-image",
         "tags": [
           "User Management"
         ],
@@ -1767,7 +1767,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.recovery-codes",
+        "x-resource": "microstrate.accounts.post.recovery-codes",
         "requestBody": {
           "required": false,
           "content": {
@@ -1847,7 +1847,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.recovery-codes",
+        "x-resource": "microstrate.accounts.get.recovery-codes",
         "parameters": [
           {
             "name": "email",
@@ -1910,7 +1910,7 @@
         "summary": "Authenticate with recovery code",
         "description": "Complete authentication using a recovery code after initial password verification. Recovery codes are one-time use.",
         "operationId": "authWithRecoveryCode",
-        "x-resource": "quiva.accounts.post.auth-with-recovery-code",
+        "x-resource": "microstrate.accounts.post.auth-with-recovery-code",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -1971,7 +1971,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.user",
+        "x-resource": "microstrate.accounts.delete.user",
         "requestBody": {
           "required": true,
           "content": {
@@ -2028,7 +2028,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.request-reset-password",
+        "x-resource": "microstrate.accounts.post.request-reset-password",
         "security": [],
         "requestBody": {
           "required": true,
@@ -2076,7 +2076,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.reset-password",
+        "x-resource": "microstrate.accounts.post.reset-password",
         "security": [],
         "requestBody": {
           "required": true,
@@ -2159,7 +2159,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.set-password",
+        "x-resource": "microstrate.accounts.post.set-password",
         "security": [],
         "requestBody": {
           "required": true,
@@ -2245,7 +2245,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.generate-totp-key",
+        "x-resource": "microstrate.accounts.post.generate-totp-key",
         "responses": {
           "200": {
             "description": "TOTP key generated successfully",
@@ -2303,7 +2303,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.confirm-totp-registration",
+        "x-resource": "microstrate.accounts.post.confirm-totp-registration",
         "requestBody": {
           "required": true,
           "content": {
@@ -2391,7 +2391,7 @@
         "summary": "Authenticate with TOTP",
         "description": "Complete authentication using a Time-based One-Time Password (TOTP) after initial password verification.",
         "operationId": "authWithTotp",
-        "x-resource": "quiva.accounts.post.auth-with-totp",
+        "x-resource": "microstrate.accounts.post.auth-with-totp",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -2452,7 +2452,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.totp",
+        "x-resource": "microstrate.accounts.delete.totp",
         "requestBody": {
           "required": false,
           "content": {
@@ -2516,7 +2516,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.set-emergency-credit",
+        "x-resource": "microstrate.accounts.patch.set-emergency-credit",
         "requestBody": {
           "required": true,
           "content": {
@@ -2583,7 +2583,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.rename-account",
+        "x-resource": "microstrate.accounts.patch.rename-account",
         "requestBody": {
           "required": true,
           "content": {
@@ -2665,7 +2665,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.create-account",
+        "x-resource": "microstrate.accounts.post.create-account",
         "security": [],
         "requestBody": {
           "required": true,
@@ -2739,7 +2739,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.update-account",
+        "x-resource": "microstrate.accounts.patch.update-account",
         "requestBody": {
           "required": true,
           "content": {
@@ -2812,7 +2812,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.create-user",
+        "x-resource": "microstrate.accounts.post.create-user",
         "requestBody": {
           "required": true,
           "content": {
@@ -2872,7 +2872,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.account",
+        "x-resource": "microstrate.accounts.delete.account",
         "requestBody": {
           "required": true,
           "content": {
@@ -2956,7 +2956,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.cancel-account-deletion",
+        "x-resource": "microstrate.accounts.post.cancel-account-deletion",
         "responses": {
           "200": {
             "description": "Account deletion cancelled successfully",
@@ -3000,7 +3000,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.user",
+        "x-resource": "microstrate.accounts.delete.user",
         "parameters": [
           {
             "name": "email_code",
@@ -3052,7 +3052,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.update-user",
+        "x-resource": "microstrate.accounts.patch.update-user",
         "requestBody": {
           "required": true,
           "content": {
@@ -3112,7 +3112,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.request-email-address-change",
+        "x-resource": "microstrate.accounts.post.request-email-address-change",
         "requestBody": {
           "required": true,
           "content": {
@@ -3188,7 +3188,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.change-email-address-action",
+        "x-resource": "microstrate.accounts.post.change-email-address-action",
         "security": [],
         "requestBody": {
           "required": true,
@@ -3245,7 +3245,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.email-code",
+        "x-resource": "microstrate.accounts.get.email-code",
         "responses": {
           "200": {
             "description": "Email code sent successfully",
@@ -3279,7 +3279,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.import",
+        "x-resource": "microstrate.accounts.post.import",
         "requestBody": {
           "required": true,
           "content": {
@@ -3331,7 +3331,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.import",
+        "x-resource": "microstrate.accounts.delete.import",
         "requestBody": {
           "required": true,
           "content": {
@@ -3397,7 +3397,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.export",
+        "x-resource": "microstrate.accounts.post.export",
         "requestBody": {
           "required": true,
           "content": {
@@ -3449,7 +3449,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.export",
+        "x-resource": "microstrate.accounts.delete.export",
         "requestBody": {
           "required": true,
           "content": {
@@ -3515,7 +3515,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.list-users-by-account",
+        "x-resource": "microstrate.accounts.get.list-users-by-account",
         "responses": {
           "200": {
             "description": "Users retrieved successfully",
@@ -3560,7 +3560,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.list-accounts-by-user",
+        "x-resource": "microstrate.accounts.get.list-accounts-by-user",
         "responses": {
           "200": {
             "description": "Accounts retrieved successfully",
@@ -3611,7 +3611,7 @@
           "Mesh Nodes"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.put.update-mesh-nodes",
+        "x-resource": "microstrate.accounts.put.update-mesh-nodes",
         "requestBody": {
           "required": true,
           "content": {
@@ -3697,7 +3697,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.begin-passkey-registration",
+        "x-resource": "microstrate.accounts.post.begin-passkey-registration",
         "responses": {
           "200": {
             "description": "Passkey registration initiated successfully",
@@ -3740,7 +3740,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.complete-passkey-registration",
+        "x-resource": "microstrate.accounts.post.complete-passkey-registration",
         "requestBody": {
           "required": true,
           "content": {
@@ -3827,7 +3827,7 @@
         "summary": "Begin passkey authentication",
         "description": "Initiates the WebAuthn passkey authentication flow. Returns a challenge for the client to sign with the user's passkey.",
         "operationId": "beginAuthWithPasskey",
-        "x-resource": "quiva.accounts.post.begin-auth-with-passkey",
+        "x-resource": "microstrate.accounts.post.begin-auth-with-passkey",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -3895,7 +3895,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.passkey",
+        "x-resource": "microstrate.accounts.delete.passkey",
         "requestBody": {
           "required": true,
           "content": {
@@ -3977,7 +3977,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.update-role",
+        "x-resource": "microstrate.accounts.patch.update-role",
         "requestBody": {
           "required": true,
           "content": {
@@ -4056,7 +4056,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.suspend-user",
+        "x-resource": "microstrate.accounts.patch.suspend-user",
         "requestBody": {
           "required": true,
           "content": {
@@ -4129,7 +4129,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.user-mfa-info",
+        "x-resource": "microstrate.accounts.get.user-mfa-info",
         "parameters": [
           {
             "name": "email",
@@ -4182,7 +4182,7 @@
           "User Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.user-login-data",
+        "x-resource": "microstrate.accounts.get.user-login-data",
         "responses": {
           "200": {
             "description": "User login data retrieved successfully",
@@ -4262,7 +4262,7 @@
         "summary": "Validate token",
         "description": "Validates an authentication or refresh token.",
         "operationId": "validateToken",
-        "x-resource": "quiva.accounts.post.token-validate",
+        "x-resource": "microstrate.accounts.post.token-validate",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -4321,7 +4321,7 @@
           "API Keys"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.api-creds",
+        "x-resource": "microstrate.accounts.get.api-creds",
         "parameters": [
           {
             "name": "key",
@@ -4388,7 +4388,7 @@
         "summary": "Authenticate with API key",
         "description": "Authenticates a user using an API key.",
         "operationId": "authWithApiKey",
-        "x-resource": "quiva.accounts.post.auth-with-api-key",
+        "x-resource": "microstrate.accounts.post.auth-with-api-key",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -4448,7 +4448,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.mfa-settings",
+        "x-resource": "microstrate.accounts.patch.mfa-settings",
         "requestBody": {
           "required": true,
           "content": {
@@ -4516,7 +4516,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.session-tokens",
+        "x-resource": "microstrate.accounts.session-tokens",
         "responses": {
           "200": {
             "description": "Session tokens retrieved successfully",
@@ -4572,7 +4572,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.auth-token",
+        "x-resource": "microstrate.accounts.delete.auth-token",
         "parameters": [
           {
             "name": "token",
@@ -4618,7 +4618,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.refresh-token",
+        "x-resource": "microstrate.accounts.delete.refresh-token",
         "parameters": [
           {
             "name": "token",
@@ -4661,7 +4661,7 @@
         "summary": "Refresh authentication token",
         "description": "Issues a new authentication token using a valid refresh token.",
         "operationId": "refreshToken",
-        "x-resource": "quiva.accounts.post.refresh-token",
+        "x-resource": "microstrate.accounts.post.refresh-token",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -4722,7 +4722,7 @@
           "Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.tokens",
+        "x-resource": "microstrate.accounts.delete.tokens",
         "requestBody": {
           "required": true,
           "content": {
@@ -4779,7 +4779,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.confirm-email",
+        "x-resource": "microstrate.accounts.post.confirm-email",
         "security": [],
         "requestBody": {
           "required": true,
@@ -4881,7 +4881,7 @@
         "operationId": "resendAccountConfirmation",
         "security": [],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.resend-confirmation",
+        "x-resource": "microstrate.accounts.post.resend-confirmation",
         "requestBody": {
           "required": true,
           "content": {
@@ -4940,7 +4940,7 @@
           "Account Management"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.submit-contact-form",
+        "x-resource": "microstrate.accounts.post.submit-contact-form",
         "requestBody": {
           "required": true,
           "content": {
@@ -4992,7 +4992,7 @@
         "summary": "Complete passkey authentication",
         "description": "Completes the WebAuthn passkey authentication flow by verifying the signed challenge.",
         "operationId": "completeAuthWithPasskey",
-        "x-resource": "quiva.accounts.post.complete-auth-with-passkey",
+        "x-resource": "microstrate.accounts.post.complete-auth-with-passkey",
         "x-resource-type": "service",
         "security": [],
         "requestBody": {
@@ -5046,7 +5046,7 @@
           "Multi-Factor Authentication"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.all-passkeys",
+        "x-resource": "microstrate.accounts.delete.all-passkeys",
         "requestBody": {
           "required": false,
           "content": {
@@ -5110,7 +5110,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.payment.webhook",
+        "x-resource": "microstrate.accounts.post.payment.webhook",
         "security": [],
         "requestBody": {
           "required": true,
@@ -5156,7 +5156,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.payment.products",
+        "x-resource": "microstrate.accounts.get.payment.products",
         "responses": {
           "200": {
             "description": "Products retrieved successfully",
@@ -5201,7 +5201,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.payment.prices",
+        "x-resource": "microstrate.accounts.get.payment.prices",
         "responses": {
           "200": {
             "description": "Prices retrieved successfully",
@@ -5246,7 +5246,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.payment.checkout-url",
+        "x-resource": "microstrate.accounts.post.payment.checkout-url",
         "requestBody": {
           "required": true,
           "content": {
@@ -5322,7 +5322,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.payment.dashboard-url",
+        "x-resource": "microstrate.accounts.get.payment.dashboard-url",
         "responses": {
           "200": {
             "description": "Dashboard URL generated successfully",
@@ -5368,7 +5368,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.payment.subscription-items",
+        "x-resource": "microstrate.accounts.get.payment.subscription-items",
         "responses": {
           "200": {
             "description": "Subscription items retrieved successfully",
@@ -5431,7 +5431,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.payment.subscription",
+        "x-resource": "microstrate.accounts.get.payment.subscription",
         "responses": {
           "200": {
             "description": "Subscription retrieved successfully",
@@ -5482,7 +5482,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.patch.payment.subscription",
+        "x-resource": "microstrate.accounts.patch.payment.subscription",
         "requestBody": {
           "required": true,
           "content": {
@@ -5572,7 +5572,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.delete.payment.subscription",
+        "x-resource": "microstrate.accounts.delete.payment.subscription",
         "responses": {
           "200": {
             "description": "Subscription cancelled successfully",
@@ -5625,7 +5625,7 @@
           "Payment"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.post.payment.free-subscription",
+        "x-resource": "microstrate.accounts.post.payment.free-subscription",
         "responses": {
           "200": {
             "description": "Free subscription created successfully",

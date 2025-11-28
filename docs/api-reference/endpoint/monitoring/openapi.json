@@ -36,7 +36,7 @@
                 "description": "Retrieves metric values over a specified time range with a given interval",
                 "operationId": "getMetricStats",
                 "x-resource-type": "service",
-                "x-resource": "quiva.monitoring.get.metric-stats",
+                "x-resource": "microstrate.monitoring.get.metric-stats",
                 "tags": [
                     "metrics"
                 ],
@@ -254,7 +254,7 @@
                 "description": "Retrieves the latest value for a specific metric",
                 "operationId": "getCurrentMetric",
                 "x-resource-type": "service",
-                "x-resource": "quiva.monitoring.get.metric-current",
+                "x-resource": "microstrate.monitoring.get.metric-current",
                 "tags": [
                     "metrics"
                 ],
@@ -428,7 +428,7 @@
                 "description": "Retrieves the latest values for multiple metrics simultaneously",
                 "operationId": "getCurrentMetrics",
                 "x-resource-type": "service",
-                "x-resource": "quiva.monitoring.get.metrics-current",
+                "x-resource": "microstrate.monitoring.get.metrics-current",
                 "tags": [
                     "metrics"
                 ],

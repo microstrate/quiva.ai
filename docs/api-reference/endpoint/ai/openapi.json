@@ -43,7 +43,7 @@
                 "description": "Submit a question to the AI and receive an answer without maintaining context",
                 "operationId": "askQuestion",
                 "x-resource-type": "service",
-                "x-resource": "quiva.ai.post.ask",
+                "x-resource": "microstrate.ai.post.ask",
                 "requestBody": {
                     "description": "Question to be answered",
                     "content": {
@@ -126,7 +126,7 @@
                 "description": "Submit a question to the AI within a session context, allowing for conversational interactions",
                 "operationId": "askSessionQuestion",
                 "x-resource-type": "service",
-                "x-resource": "quiva.ai.post.session",
+                "x-resource": "microstrate.ai.post.session",
                 "parameters": [
                     {
                         "name": "session_id",

@@ -65,7 +65,7 @@
         "description": "Retrieves a list of all compute collections",
         "operationId": "getCollections",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.collections",
+        "x-resource": "microstrate.compute.get.collections",
         "responses": {
           "200": {
             "description": "A list of collections",
@@ -85,25 +85,66 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of collections"
+                          "description": "Total number of collections",
+                          "example": 1
                         }
                       }
                     }
                   }
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "collection_type": "function",
-                        "description": "A collection for my compute resources",
-                        "name": "my-collection",
-                        "subject": "ms.compute.123456789.collection",
-                        "type": "created",
-                        "modified": 1714378974
+                "examples": {
+                  "multiple_collections": {
+                    "summary": "Multiple collections",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "collection_type": "function",
+                            "description": "Production serverless functions",
+                            "name": "prod-functions",
+                            "subject": "ms.compute.123456789.collection",
+                            "type": "created",
+                            "modified": 1714378974
+                          },
+                          {
+                            "collection_type": "container",
+                            "description": "Staging container workloads",
+                            "name": "staging-containers",
+                            "subject": "ms.compute.123456789.collection",
+                            "type": "created",
+                            "modified": 1714378000
+                          }
+                        ],
+                        "results_total": 2
                       }
-                    ],
-                    "results_total": 1
+                    }
+                  },
+                  "empty": {
+                    "summary": "No collections",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      }
+                    }
+                  },
+                  "single_collection": {
+                    "summary": "Single collection",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "collection_type": "function",
+                            "description": "A collection for my compute resources",
+                            "name": "my-collection",
+                            "subject": "ms.compute.123456789.collection",
+                            "type": "created",
+                            "modified": 1714378974
+                          }
+                        ],
+                        "results_total": 1
+                      }
+                    }
                   }
                 }
               }
@@ -122,7 +163,7 @@
         "description": "Creates a new compute collection",
         "operationId": "createCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.post.collection",
+        "x-resource": "microstrate.compute.post.collection",
         "requestBody": {
           "description": "Collection to create",
           "required": true,
@@ -131,10 +172,23 @@
               "schema": {
                 "$ref": "#/components/schemas/CollectionCreate"
               },
-              "example": {
-                "name": "my-collection",
-                "description": "A collection for my compute resources",
-                "collection_type": "function"
+              "examples": {
+                "function_collection": {
+                  "summary": "Function collection",
+                  "value": {
+                    "name": "api-functions",
+                    "description": "API endpoint serverless functions",
+                    "collection_type": "function"
+                  }
+                },
+                "container_collection": {
+                  "summary": "Container collection",
+                  "value": {
+                    "name": "web-services",
+                    "description": "Web service containers",
+                    "collection_type": "container"
+                  }
+                }
               }
             }
           }
@@ -152,14 +206,32 @@
                     }
                   }
                 },
-                "example": {
-                  "body": {
-                    "collection_type": "function",
-                    "description": "A collection for my compute resources",
-                    "name": "my-collection",
-                    "subject": "compute.123456789.collection",
-                    "type": "created",
-                    "modified": 1714378974
+                "examples": {
+                  "function_collection_created": {
+                    "summary": "Function collection created",
+                    "value": {
+                      "body": {
+                        "collection_type": "function",
+                        "description": "API endpoint serverless functions",
+                        "name": "api-functions",
+                        "subject": "ms.compute.123456789.collection",
+                        "type": "created",
+                        "modified": 1714378974
+                      }
+                    }
+                  },
+                  "container_collection_created": {
+                    "summary": "Container collection created",
+                    "value": {
+                      "body": {
+                        "collection_type": "container",
+                        "description": "Web service containers",
+                        "name": "web-services",
+                        "subject": "ms.compute.123456789.collection",
+                        "type": "created",
+                        "modified": 1714378974
+                      }
+                    }
                   }
                 }
               }
@@ -188,7 +260,7 @@
         "description": "Retrieves a specific collection by topic",
         "operationId": "getCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.collection",
+        "x-resource": "microstrate.compute.get.collection",
         "responses": {
           "200": {
             "description": "Collection details",
@@ -202,14 +274,32 @@
                     }
                   }
                 },
-                "example": {
-                  "body": {
-                    "collection_type": "function",
-                    "description": "A collection for my compute resources",
-                    "name": "my-collection",
-                    "subject": "compute.123456789.collection",
-                    "type": "created",
-                    "modified": 1714378974
+                "examples": {
+                  "function_collection": {
+                    "summary": "Function collection",
+                    "value": {
+                      "body": {
+                        "collection_type": "function",
+                        "description": "Production serverless functions",
+                        "name": "prod-functions",
+                        "subject": "ms.compute.1714378974.collection",
+                        "type": "created",
+                        "modified": 1714378974
+                      }
+                    }
+                  },
+                  "container_collection": {
+                    "summary": "Container collection",
+                    "value": {
+                      "body": {
+                        "collection_type": "container",
+                        "description": "Microservices containers",
+                        "name": "microservices",
+                        "subject": "ms.compute.1714378974.collection",
+                        "type": "created",
+                        "modified": 1714378974
+                      }
+                    }
                   }
                 }
               }
@@ -231,7 +321,7 @@
         "description": "Updates an existing collection",
         "operationId": "updateCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.patch.collection",
+        "x-resource": "microstrate.compute.patch.collection",
         "requestBody": {
           "description": "Collection properties to update",
           "required": true,
@@ -240,9 +330,27 @@
               "schema": {
                 "$ref": "#/components/schemas/CollectionUpdate"
               },
-              "example": {
-                "description": "Updated collection description",
-                "collection_type": "function"
+              "examples": {
+                "update_description": {
+                  "summary": "Update description",
+                  "value": {
+                    "description": "Updated collection description"
+                  }
+                },
+                "update_type": {
+                  "summary": "Change type",
+                  "value": {
+                    "collection_type": "container"
+                  }
+                },
+                "full_update": {
+                  "summary": "Full update",
+                  "value": {
+                    "name": "renamed-collection",
+                    "description": "New description",
+                    "collection_type": "function"
+                  }
+                }
               }
             }
           }
@@ -287,7 +395,7 @@
         "description": "Retrieves all containers belonging to a specific collection",
         "operationId": "getContainersByCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.containers-by-collection",
+        "x-resource": "microstrate.compute.get.containers-by-collection",
         "responses": {
           "200": {
             "description": "A list of containers",
@@ -307,25 +415,40 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of containers"
+                          "description": "Total number of containers",
+                          "example": 1
                         }
                       }
                     }
                   }
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "description": "A container for my application",
-                        "name": "my-container",
-                        "runtime": "docker",
-                        "subject": "ms.compute.my-namespace.container.123456789",
-                        "type": "created",
-                        "modified": 1714378974
+                "examples": {
+                  "containers_list": {
+                    "summary": "Running machines",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "description": "A container for my application",
+                            "name": "my-container",
+                            "runtime": "docker",
+                            "subject": "ms.compute.987654321.container.123456789",
+                            "type": "created",
+                            "modified": 1714378974
+                          }
+                        ],
+                        "results_total": 1
                       }
-                    ],
-                    "results_total": 1
+                    }
+                  },
+                  "empty": {
+                    "summary": "No machines",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      }
+                    }
                   }
                 }
               }
@@ -351,7 +474,7 @@
         "description": "Retrieves all functions belonging to a specific collection",
         "operationId": "getFunctionsByCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.functions-by-collection",
+        "x-resource": "microstrate.compute.get.functions-by-collection",
         "responses": {
           "200": {
             "description": "A list of functions",
@@ -371,25 +494,40 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of functions"
+                          "description": "Total number of functions",
+                          "example": 1
                         }
                       }
                     }
                   }
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "description": "A serverless function",
-                        "name": "my-function",
-                        "runtime": "nodejs",
-                        "subject": "ms.compute.my-namespace.function.123456789",
-                        "type": "created",
-                        "modified": 1714378974
+                "examples": {
+                  "functions_list": {
+                    "summary": "Running machines",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "description": "A serverless function",
+                            "name": "my-function",
+                            "runtime": "nodejs",
+                            "subject": "ms.compute.987654321.function.123456789",
+                            "type": "created",
+                            "modified": 1714378974
+                          }
+                        ],
+                        "results_total": 1
                       }
-                    ],
-                    "results_total": 1
+                    }
+                  },
+                  "empty": {
+                    "summary": "No machines",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      }
+                    }
                   }
                 }
               }
@@ -410,7 +548,7 @@
         "description": "Retrieves a list of all functions",
         "operationId": "getFunctions",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.functions",
+        "x-resource": "microstrate.compute.get.functions",
         "responses": {
           "200": {
             "description": "A list of functions",
@@ -430,25 +568,40 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of functions"
+                          "description": "Total number of functions",
+                          "example": 1
                         }
                       }
                     }
                   }
                 },
-                "example": {
-                  "body": {
-                    "results": [
-                      {
-                        "description": "A serverless function",
-                        "name": "my-function",
-                        "runtime": "nodejs",
-                        "subject": "ms.compute.my-namespace.function.123456789",
-                        "type": "created",
-                        "modified": 1714378974
+                "examples": {
+                  "functions_list": {
+                    "summary": "Running machines",
+                    "value": {
+                      "body": {
+                        "results": [
+                          {
+                            "description": "A serverless function",
+                            "name": "my-function",
+                            "runtime": "nodejs",
+                            "subject": "ms.compute.987654321.function.123456789",
+                            "type": "created",
+                            "modified": 1714378974
+                          }
+                        ],
+                        "results_total": 1
                       }
-                    ],
-                    "results_total": 1
+                    }
+                  },
+                  "empty": {
+                    "summary": "No machines",
+                    "value": {
+                      "body": {
+                        "results": [],
+                        "results_total": 0
+                      }
+                    }
                   }
                 }
               }
@@ -467,7 +620,7 @@
         "description": "Creates a new serverless function",
         "operationId": "createFunction",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.post.function",
+        "x-resource": "microstrate.compute.post.function",
         "requestBody": {
           "description": "Function to create",
           "required": true,
@@ -485,8 +638,14 @@
                   "assets": [
                     {
                       "asset_name": "index.js",
-                      "asset_type": "file",
-                      "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBXb3JsZCEiKTsK",
+                      "asset_type": "js",
+                      "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
+                      "link": false
+                    },
+                    {
+                      "asset_name": "index.js",
+                      "asset_type": "archive",
+                      "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                       "link": false
                     }
                   ],
@@ -537,7 +696,7 @@
                     "description": "A serverless function",
                     "name": "my-function",
                     "runtime": "nodejs",
-                    "subject": "ms.compute.my-namespace.function.123456789",
+                    "subject": "ms.compute.987654321.function.123456789",
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
@@ -608,7 +767,7 @@
         "description": "Retrieves a specific function by collection topic and function topic",
         "operationId": "getFunction",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.compute-item",
+        "x-resource": "microstrate.compute.get.compute-item",
         "responses": {
           "200": {
             "description": "Function details",
@@ -627,7 +786,7 @@
                     "description": "A serverless function",
                     "name": "my-function",
                     "runtime": "nodejs",
-                    "subject": "compute.my-namespace.function.123456789",
+                    "subject": "ms.compute.987654321.function.123456789",
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
@@ -638,8 +797,8 @@
                       "assets": [
                         {
                           "asset_name": "index.js",
-                          "asset_type": "file",
-                          "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBXb3JsZCEiKTsK",
+                          "asset_type": "js",
+                          "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                           "link": false
                         }
                       ],
@@ -667,7 +826,7 @@
         "description": "Updates an existing function",
         "operationId": "updateFunction",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.patch.function",
+        "x-resource": "microstrate.compute.patch.function",
         "requestBody": {
           "description": "Function properties to update",
           "required": true,
@@ -736,7 +895,7 @@
         "description": "Invokes a function with the provided payload",
         "operationId": "invokeFunction",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.invoke.function",
+        "x-resource": "microstrate.compute.invoke.function",
         "requestBody": {
           "description": "Function invocation parameters",
           "required": true,
@@ -808,7 +967,7 @@
         "description": "Retrieves all assets for a specific compute resource (function or container)",
         "operationId": "getComputeAssets",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.compute-assets",
+        "x-resource": "microstrate.compute.get.compute-assets",
         "responses": {
           "200": {
             "description": "Compute resource assets",
@@ -827,8 +986,8 @@
                     "assets": [
                       {
                         "asset_name": "index.js",
-                        "asset_type": "file",
-                        "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBXb3JsZCEiKTsK",
+                        "asset_type": "js",
+                        "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                         "link": false
                       }
                     ],
@@ -859,7 +1018,7 @@
         "description": "Updates assets for a specific compute resource (function or container)",
         "operationId": "updateComputeAssets",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.patch.compute-assets",
+        "x-resource": "microstrate.compute.patch.compute-assets",
         "requestBody": {
           "description": "Compute asset properties to update",
           "required": true,
@@ -873,7 +1032,7 @@
                 "assets": [
                   {
                     "asset_name": "index.js",
-                    "asset_type": "file",
+                    "asset_type": "js",
                     "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBVcGRhdGVkIFdvcmxkISIpOwo=",
                     "link": false
                   }
@@ -937,7 +1096,7 @@
         "description": "Retrieves the history of a compute resource's assets (function or container)",
         "operationId": "getComputeAssetHistory",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.compute-asset-history",
+        "x-resource": "microstrate.compute.get.compute-asset-history",
         "responses": {
           "200": {
             "description": "Compute asset history",
@@ -957,7 +1116,8 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of history entries"
+                          "description": "Total number of history entries",
+                          "example": 1
                         }
                       }
                     }
@@ -974,8 +1134,8 @@
                         "assets": [
                           {
                             "asset_name": "index.js",
-                            "asset_type": "file",
-                            "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBXb3JsZCEiKTsK",
+                            "asset_type": "js",
+                            "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                             "link": false
                           }
                         ],
@@ -991,7 +1151,7 @@
                         "assets": [
                           {
                             "asset_name": "index.js",
-                            "asset_type": "file",
+                            "asset_type": "js",
                             "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBVcGRhdGVkIFdvcmxkISIpOwo=",
                             "link": false
                           }
@@ -1025,7 +1185,7 @@
         "description": "Retrieves a list of all containers",
         "operationId": "getContainers",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.containers",
+        "x-resource": "microstrate.compute.get.containers",
         "responses": {
           "200": {
             "description": "A list of containers",
@@ -1045,7 +1205,8 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of containers"
+                          "description": "Total number of containers",
+                          "example": 1
                         }
                       }
                     }
@@ -1058,7 +1219,7 @@
                         "description": "A container for my application",
                         "name": "my-container",
                         "runtime": "docker",
-                        "subject": "ms.compute.my-namespace.container.123456789",
+                        "subject": "ms.compute.987654321.container.123456789",
                         "type": "created",
                         "modified": 1714378974
                       }
@@ -1082,7 +1243,7 @@
         "description": "Creates a new container",
         "operationId": "createContainer",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.post.container",
+        "x-resource": "microstrate.compute.post.container",
         "requestBody": {
           "description": "Container to create",
           "required": true,
@@ -1133,7 +1294,7 @@
                     "description": "A container for my application",
                     "name": "my-container",
                     "runtime": "docker",
-                    "subject": "compute.my-namespace.container.123456789",
+                    "subject": "ms.compute.987654321.container.123456789",
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
@@ -1184,7 +1345,7 @@
         "description": "Retrieves a specific container by collection topic and container topic",
         "operationId": "getContainer",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.compute-item",
+        "x-resource": "microstrate.compute.get.compute-item",
         "responses": {
           "200": {
             "description": "Container details",
@@ -1203,7 +1364,7 @@
                     "description": "A container for my application",
                     "name": "my-container",
                     "runtime": "docker",
-                    "subject": "compute.my-namespace.container.123456789",
+                    "subject": "ms.compute.987654321.container.123456789",
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
@@ -1241,7 +1402,7 @@
         "description": "Updates an existing container",
         "operationId": "updateContainer",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.patch.container",
+        "x-resource": "microstrate.compute.patch.container",
         "requestBody": {
           "description": "Container properties to update",
           "required": true,
@@ -1293,10 +1454,10 @@
         "description": "Terminates and deletes a specific container instance",
         "operationId": "deleteContainerInstance",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.delete.container-instance",
+        "x-resource": "microstrate.compute.delete.container-instance",
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
@@ -1334,7 +1495,7 @@
         "description": "Scales the number of container instances up or down",
         "operationId": "scaleContainer",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.post.container-scale",
+        "x-resource": "microstrate.compute.post.container-scale",
         "requestBody": {
           "description": "Container scaling parameters",
           "required": true,
@@ -1352,13 +1513,13 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/internal_server_error"
@@ -1375,7 +1536,7 @@
         "description": "Starts a stopped container instance",
         "operationId": "startContainerInstance",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.post.container-instance-start",
+        "x-resource": "microstrate.compute.post.container-instance-start",
         "requestBody": {
           "description": "Container instance start request",
           "required": false,
@@ -1385,20 +1546,20 @@
                 "$ref": "#/components/schemas/BasicRequest"
               },
               "example": {
-                "subject": "ms.compute.my-namespace.container.123456789.instance.abc123"
+                "subject": "ms.compute.987654321.container.123456789.instance.abc123"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/internal_server_error"
@@ -1415,7 +1576,7 @@
         "description": "Stops a running container instance",
         "operationId": "stopContainerInstance",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.post.container-instance-stop",
+        "x-resource": "microstrate.compute.post.container-instance-stop",
         "requestBody": {
           "description": "Container instance stop request",
           "required": false,
@@ -1425,20 +1586,20 @@
                 "$ref": "#/components/schemas/BasicRequest"
               },
               "example": {
-                "subject": "ms.compute.my-namespace.container.123456789.instance.abc123"
+                "subject": "ms.compute.987654321.container.123456789.instance.abc123"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SuccessResponse"
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/internal_server_error"
@@ -1455,7 +1616,7 @@
         "description": "Retrieves information about Hydra compute machines with optional filtering",
         "operationId": "getMachines",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.machines",
+        "x-resource": "microstrate.compute.get.machines",
         "parameters": [
           {
             "name": "machine",
@@ -1523,7 +1684,8 @@
                         },
                         "results_total": {
                           "type": "integer",
-                          "description": "Total number of machines"
+                          "description": "Total number of machines",
+                          "example": 1
                         }
                       }
                     }
@@ -1797,7 +1959,7 @@
         "description": "Retrieves all available runtimes",
         "operationId": "getRuntimes",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.runtimes",
+        "x-resource": "microstrate.compute.get.runtimes",
         "responses": {
           "200": {
             "description": "A list of available runtimes",
@@ -1864,7 +2026,7 @@
         "description": "Retrieves a list of all available compute services",
         "operationId": "getServices",
         "x-resource-type": "service",
-        "x-resource": "quiva.compute.get.services",
+        "x-resource": "microstrate.compute.get.services",
         "responses": {
           "200": {
             "description": "List of compute services",
@@ -1931,7 +2093,7 @@
         "schema": {
           "type": "string"
         },
-        "example": "123456789"
+        "example": "ms.compute.1714378974.collection"
       }
     },
     "schemas": {
@@ -2048,27 +2210,37 @@
         "properties": {
           "collection_type": {
             "type": "string",
-            "description": "Collection type"
+            "description": "Collection type",
+            "example": "function",
+            "enum": [
+              "container",
+              "function"
+            ]
           },
           "description": {
             "type": "string",
-            "description": "Collection description"
+            "description": "Collection description",
+            "example": "A collection for my compute resources"
           },
           "name": {
             "type": "string",
-            "description": "Collection name"
+            "description": "Collection name",
+            "example": "my-collection"
           },
           "subject": {
             "type": "string",
-            "description": "Collection subject identifier"
+            "description": "Collection subject identifier",
+            "example": "ms.compute.123456789.collection"
           },
           "type": {
             "type": "string",
-            "description": "Resource type"
+            "description": "Resource type",
+            "example": "created"
           },
           "modified": {
             "type": "integer",
-            "description": "Last modification timestamp"
+            "description": "Last modification timestamp",
+            "example": 1714378974
           }
         }
       },
@@ -2080,15 +2252,22 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Collection name"
+            "description": "Collection name",
+            "example": "my-collection"
           },
           "description": {
             "type": "string",
-            "description": "Collection description"
+            "description": "Collection description",
+            "example": "A collection for my compute resources"
           },
           "collection_type": {
             "type": "string",
-            "description": "Collection type"
+            "description": "Collection type",
+            "example": "function",
+            "enum": [
+              "container",
+              "function"
+            ]
           }
         }
       },
@@ -2097,15 +2276,22 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Collection name"
+            "description": "Collection name",
+            "example": "my-collection"
           },
           "description": {
             "type": "string",
-            "description": "Collection description"
+            "description": "Collection description",
+            "example": "A collection for my compute resources"
           },
           "collection_type": {
             "type": "string",
-            "description": "Collection type"
+            "description": "Collection type",
+            "example": "function",
+            "enum": [
+              "container",
+              "function"
+            ]
           }
         }
       },
@@ -2599,8 +2785,10 @@
             "description": "Size configuration for container resources"
           }
         }
-      },
-      "SuccessResponse": {
+      }
+    },
+    "responses": {
+      "success": {
         "type": "object",
         "properties": {
           "message": {
@@ -2608,9 +2796,7 @@
             "description": "Success message"
           }
         }
-      }
-    },
-    "responses": {
+      },
       "bad_request": {
         "description": "Bad request",
         "content": {

@@ -47,7 +47,7 @@
         "description": "Creates a new gateway with a unique topic and URL.",
         "operationId": "postGateway",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.post.gateway",
+        "x-resource": "microstrate.gateway.post.gateway",
         "requestBody": {
           "required": true,
           "content": {
@@ -112,7 +112,7 @@
         "description": "Retrieves details about a specific gateway.",
         "operationId": "getGateway",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.gateway",
+        "x-resource": "microstrate.gateway.get.gateway",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -161,7 +161,7 @@
         "description": "Updates an existing gateway's configuration.",
         "operationId": "patchGateway",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.patch.gateway",
+        "x-resource": "microstrate.gateway.patch.gateway",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -217,7 +217,7 @@
         "description": "Marks a gateway as deleted (poison-pilled).",
         "operationId": "deleteGateway",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.delete.item",
+        "x-resource": "microstrate.gateway.delete.item",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -252,7 +252,7 @@
         "description": "Retrieves a list of all available gateways.",
         "operationId": "getAllGateways",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.all-gateways",
+        "x-resource": "microstrate.gateway.get.all-gateways",
         "responses": {
           "200": {
             "description": "List of gateways retrieved successfully",
@@ -315,7 +315,7 @@
         "description": "Creates a new path mapping within the specified gateway.",
         "operationId": "postGatewayMapping",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.post.mapping",
+        "x-resource": "microstrate.gateway.post.mapping",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -389,7 +389,7 @@
         "description": "Retrieves all mappings defined for the specified gateway.",
         "operationId": "getGatewayMappings",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.mappings",
+        "x-resource": "microstrate.gateway.get.mappings",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -464,7 +464,7 @@
         "description": "Retrieves information about a specific gateway mapping.",
         "operationId": "getGatewayMapping",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.mapping",
+        "x-resource": "microstrate.gateway.get.mapping",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -521,7 +521,7 @@
         "description": "Updates an existing gateway mapping configuration.",
         "operationId": "patchGatewayMapping",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.patch.mapping",
+        "x-resource": "microstrate.gateway.patch.mapping",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -582,7 +582,7 @@
         "description": "Marks a gateway mapping as deleted (poison-pilled).",
         "operationId": "deleteMapping",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.delete.item",
+        "x-resource": "microstrate.gateway.delete.item",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -623,7 +623,7 @@
         "description": "Retrieves a list of all available gateway mappings.",
         "operationId": "getAllGatewayMappings",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.all-mappings",
+        "x-resource": "microstrate.gateway.get.all-mappings",
         "responses": {
           "200": {
             "description": "List of mappings retrieved successfully",
@@ -688,7 +688,7 @@
         "description": "Creates a new version for an existing mapping.",
         "operationId": "postGatewayMappingVersion",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.post.mapping-version",
+        "x-resource": "microstrate.gateway.post.mapping-version",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -760,7 +760,7 @@
         "description": "Retrieves all versions defined for a specific mapping.",
         "operationId": "getGatewayMappingVersions",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.mapping-versions",
+        "x-resource": "microstrate.gateway.get.mapping-versions",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -833,7 +833,7 @@
         "description": "Retrieves information about a specific mapping version.",
         "operationId": "getGatewayMappingVersion",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.mapping-version",
+        "x-resource": "microstrate.gateway.get.mapping-version",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -888,7 +888,7 @@
         "description": "Updates an existing mapping version configuration.",
         "operationId": "patchGatewayMappingVersion",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.patch.mapping-version",
+        "x-resource": "microstrate.gateway.patch.mapping-version",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -947,7 +947,7 @@
         "description": "Marks a mapping version as deleted (poison-pilled).",
         "operationId": "deleteMappingVersion",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.delete.item",
+        "x-resource": "microstrate.gateway.delete.item",
         "parameters": [
           {
             "$ref": "#/components/parameters/gateway_topic_param"
@@ -991,7 +991,7 @@
         "description": "Retrieves a list of all available mapping versions.",
         "operationId": "getAllGatewayMappingVersions",
         "x-resource-type": "service",
-        "x-resource": "quiva.gateway.get.all-mapping-versions",
+        "x-resource": "microstrate.gateway.get.all-mapping-versions",
         "responses": {
           "200": {
             "description": "List of mapping versions retrieved successfully",

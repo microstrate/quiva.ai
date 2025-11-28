@@ -24,7 +24,7 @@
         "description": "Creates a new collection for organizing nodes or workflows",
         "operationId": "createCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.post.collection",
+        "x-resource": "microstrate.hub.post.collection",
         "requestBody": {
           "required": true,
           "content": {
@@ -32,10 +32,30 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateCollectionRequest"
               },
-              "example": {
-                "name": "MyNewCollection",
-                "collection_type": "node",
-                "description": "Collection for storing node templates"
+              "examples": {
+                "NodeCollection": {
+                  "summary": "Create a node collection",
+                  "value": {
+                    "name": "Payment Processing Nodes",
+                    "collection_type": "node",
+                    "description": "Collection of reusable payment processing node templates"
+                  }
+                },
+                "WorkflowCollection": {
+                  "summary": "Create a workflow collection",
+                  "value": {
+                    "name": "Order Management Flows",
+                    "collection_type": "workflow",
+                    "description": "Workflows for handling order lifecycle"
+                  }
+                },
+                "MinimalCollection": {
+                  "summary": "Create collection with minimal fields",
+                  "value": {
+                    "name": "Utilities",
+                    "collection_type": "node"
+                  }
+                }
               }
             }
           }
@@ -48,13 +68,29 @@
                 "schema": {
                   "$ref": "#/components/schemas/CreateCollectionResponse"
                 },
-                "example": {
-                  "subject": "ms.hub.config.collection.node.1234567890",
-                  "name": "MyNewCollection",
-                  "collection_type": "node",
-                  "topic": "1234567890",
-                  "description": "Collection for storing node templates",
-                  "modified": 1651395678
+                "examples": {
+                  "NodeCollectionCreated": {
+                    "summary": "Node collection created",
+                    "value": {
+                      "subject": "ms.hub.config.collection.node.805092869",
+                      "name": "Payment Processing Nodes",
+                      "collection_type": "node",
+                      "topic": "805092869",
+                      "description": "Collection of reusable payment processing node templates",
+                      "modified": 1748533179
+                    }
+                  },
+                  "WorkflowCollectionCreated": {
+                    "summary": "Workflow collection created",
+                    "value": {
+                      "subject": "ms.hub.config.collection.workflow.1508781670",
+                      "name": "Order Management Flows",
+                      "collection_type": "workflow",
+                      "topic": "1508781670",
+                      "description": "Workflows for handling order lifecycle",
+                      "modified": 1748533200
+                    }
+                  }
                 }
               }
             }
@@ -104,7 +140,7 @@
         "description": "Retrieves a list of collections",
         "operationId": "getCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.list-collections",
+        "x-resource": "microstrate.hub.get.list-collections",
         "parameters": [
           {
             "$ref": "#/components/parameters/queryCollectionType"
@@ -140,30 +176,118 @@
                     }
                   }
                 },
-                "example": {
-                  "results_total": 2,
-                  "results": [
-                    {
-                      "collection_type": "node",
-                      "description": "test",
-                      "modified": 1746655609,
-                      "name": "Test",
-                      "sequence": 16,
-                      "subject": "ms.hub.config.collection.node.805092869",
-                      "topic": "805092869",
-                      "type": "created"
-                    },
-                    {
-                      "collection_type": "node",
-                      "description": "",
-                      "modified": 1747731829,
-                      "name": "Business Flow Nodes",
-                      "sequence": 31,
-                      "subject": "ms.hub.config.collection.node.1025086208",
-                      "topic": "1025086208",
-                      "type": "created"
+                "examples": {
+                  "AllCollections": {
+                    "summary": "List all collections (no filter)",
+                    "value": {
+                      "results_total": 4,
+                      "results": [
+                        {
+                          "collection_type": "node",
+                          "description": "Payment processing node templates",
+                          "modified": 1748533179,
+                          "name": "Payment Nodes",
+                          "sequence": 16,
+                          "subject": "ms.hub.config.collection.node.805092869",
+                          "topic": "805092869",
+                          "type": "created"
+                        },
+                        {
+                          "collection_type": "node",
+                          "description": "Utility functions for data transformation",
+                          "modified": 1748533200,
+                          "name": "Data Transform Nodes",
+                          "sequence": 24,
+                          "subject": "ms.hub.config.collection.node.1025086208",
+                          "topic": "1025086208",
+                          "type": "updated"
+                        },
+                        {
+                          "collection_type": "workflow",
+                          "description": "Order lifecycle management",
+                          "modified": 1748533250,
+                          "name": "Order Flows",
+                          "sequence": 31,
+                          "subject": "ms.hub.config.collection.workflow.1508781670",
+                          "topic": "1508781670",
+                          "type": "created"
+                        },
+                        {
+                          "collection_type": "workflow",
+                          "description": "",
+                          "modified": 1748533300,
+                          "name": "Notification Flows",
+                          "sequence": 45,
+                          "subject": "ms.hub.config.collection.workflow.2098761234",
+                          "topic": "2098761234",
+                          "type": "created"
+                        }
+                      ]
                     }
-                  ]
+                  },
+                  "NodeCollectionsOnly": {
+                    "summary": "List node collections only",
+                    "value": {
+                      "results_total": 2,
+                      "results": [
+                        {
+                          "collection_type": "node",
+                          "description": "Payment processing node templates",
+                          "modified": 1748533179,
+                          "name": "Payment Nodes",
+                          "sequence": 16,
+                          "subject": "ms.hub.config.collection.node.805092869",
+                          "topic": "805092869",
+                          "type": "created"
+                        },
+                        {
+                          "collection_type": "node",
+                          "description": "Utility functions for data transformation",
+                          "modified": 1748533200,
+                          "name": "Data Transform Nodes",
+                          "sequence": 24,
+                          "subject": "ms.hub.config.collection.node.1025086208",
+                          "topic": "1025086208",
+                          "type": "updated"
+                        }
+                      ]
+                    }
+                  },
+                  "WorkflowCollectionsOnly": {
+                    "summary": "List workflow collections only",
+                    "value": {
+                      "results_total": 2,
+                      "results": [
+                        {
+                          "collection_type": "workflow",
+                          "description": "Order lifecycle management",
+                          "modified": 1748533250,
+                          "name": "Order Flows",
+                          "sequence": 31,
+                          "subject": "ms.hub.config.collection.workflow.1508781670",
+                          "topic": "1508781670",
+                          "type": "created"
+                        },
+                        {
+                          "collection_type": "workflow",
+                          "description": "",
+                          "modified": 1748533300,
+                          "name": "Notification Flows",
+                          "sequence": 45,
+                          "subject": "ms.hub.config.collection.workflow.2098761234",
+                          "topic": "2098761234",
+                          "type": "created"
+                        }
+                      ]
+                    }
+                  },
+                  "EmptyResult": {
+                    "summary": "No collections found",
+                    "value": {
+                      "results_total": 0,
+                      "results": []
+                    }
+                  }
                 }
               }
             }
@@ -205,7 +329,7 @@
         "description": "Retrieves a specific collection",
         "operationId": "getCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.collection",
+        "x-resource": "microstrate.hub.get.collection",
         "responses": {
           "200": {
             "description": "Collection retrieved successfully",
@@ -214,15 +338,33 @@
                 "schema": {
                   "$ref": "#/components/schemas/GetCollectionResponse"
                 },
-                "example": {
-                  "collection_type": "workflow",
-                  "description": "",
-                  "modified": 1747956678,
-                  "name": "Business Flows",
-                  "sequence": 124,
-                  "subject": "ms.hub.config.collection.workflow.1508781670",
-                  "topic": "1508781670",
-                  "type": "created"
+                "examples": {
+                  "NodeCollection": {
+                    "summary": "Retrieved node collection",
+                    "value": {
+                      "collection_type": "node",
+                      "description": "Payment processing node templates",
+                      "modified": 1748533179,
+                      "name": "Payment Nodes",
+                      "sequence": 16,
+                      "subject": "ms.hub.config.collection.node.805092869",
+                      "topic": "805092869",
+                      "type": "created"
+                    }
+                  },
+                  "WorkflowCollection": {
+                    "summary": "Retrieved workflow collection",
+                    "value": {
+                      "collection_type": "workflow",
+                      "description": "Order lifecycle management workflows",
+                      "modified": 1748533250,
+                      "name": "Order Flows",
+                      "sequence": 124,
+                      "subject": "ms.hub.config.collection.workflow.1508781670",
+                      "topic": "1508781670",
+                      "type": "updated"
+                    }
+                  }
                 }
               }
             }
@@ -254,7 +396,7 @@
         "description": "Updates an existing collection's properties",
         "operationId": "updateFlowOrNodeCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.patch.collection",
+        "x-resource": "microstrate.hub.patch.collection",
         "requestBody": {
           "required": true,
           "content": {
@@ -262,9 +404,21 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateCollectionRequest"
               },
-              "example": {
-                "subject": "ms.hub.config.collection.node.1234567890",
-                "description": "Updated collection description"
+              "examples": {
+                "UpdateDescription": {
+                  "summary": "Update collection description",
+                  "value": {
+                    "subject": "ms.hub.config.collection.node.805092869",
+                    "description": "Updated: Payment and billing node templates for all transaction types"
+                  }
+                },
+                "ClearDescription": {
+                  "summary": "Clear collection description",
+                  "value": {
+                    "subject": "ms.hub.config.collection.workflow.1508781670",
+                    "description": ""
+                  }
+                }
               }
             }
           }
@@ -323,7 +477,7 @@
         "description": "Deletes a specific collection by subject",
         "operationId": "deleteCollection",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.delete.collection",
+        "x-resource": "microstrate.hub.delete.collection",
         "parameters": [
           {
             "name": "move_resources_to_collection",
@@ -401,7 +555,7 @@
         "description": "Creates a new node template within a collection",
         "operationId": "createNode",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.post.node",
+        "x-resource": "microstrate.hub.post.node",
         "requestBody": {
           "required": true,
           "content": {
@@ -409,15 +563,110 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateNodeRequest"
               },
-              "example": {
-                "collection": "ms.hub.config.collection.node.1234567890",
-                "data": {
-                  "name": "MyNode",
-                  "node_type": "function",
-                  "subject": "quiva-function.some-function",
-                  "payload": {
-                    "param1": "value1",
-                    "param2": "value2"
+              "examples": {
+                "FunctionNode": {
+                  "summary": "Create a function node",
+                  "value": {
+                    "collection": "ms.hub.config.collection.node.805092869",
+                    "data": {
+                      "name": "ProcessPayment",
+                      "description": "Processes a payment transaction via Stripe",
+                      "node_type": "function",
+                      "subject": "quiva-function.stripe-charge",
+                      "payload": {
+                        "amount": "{{trigger.amount}}",
+                        "currency": "{{trigger.currency}}",
+                        "customer_id": "{{trigger.customer_id}}"
+                      },
+                      "options": {
+                        "timeout": 30000,
+                        "attempts": 3,
+                        "backoff_ms": 1000
+                      }
+                    }
+                  }
+                },
+                "MapNode": {
+                  "summary": "Create a map/transformation node",
+                  "value": {
+                    "collection": "ms.hub.config.collection.node.1025086208",
+                    "data": {
+                      "name": "TransformOrderData",
+                      "description": "Transforms order data for downstream processing",
+                      "node_type": "map",
+                      "payload": {
+                        "order_id": "{{trigger.id}}",
+                        "total_amount": "{{trigger.items | sum('price')}}",
+                        "customer": {
+                          "email": "{{trigger.customer.email}}",
+                          "name": "{{trigger.customer.full_name}}"
+                        }
+                      }
+                    }
+                  }
+                },
+                "ConditionNode": {
+                  "summary": "Create a condition/branching node",
+                  "value": {
+                    "collection": "ms.hub.config.collection.node.805092869",
+                    "data": {
+                      "name": "CheckOrderAmount",
+                      "description": "Routes high-value orders to priority processing",
+                      "node_type": "condition",
+                      "payload": {
+                        "condition": "{{trigger.total > 1000}}",
+                        "true_branch": "priority_handler",
+                        "false_branch": "standard_handler"
+                      }
+                    }
+                  }
+                },
+                "EvalNode": {
+                  "summary": "Create an eval node for calculations",
+                  "value": {
+                    "collection": "ms.hub.config.collection.node.1025086208",
+                    "data": {
+                      "name": "CalculateDiscount",
+                      "description": "Calculates discount based on order value",
+                      "node_type": "eval",
+                      "payload": {
+                        "code": "const total = trigger.total; return total > 500 ? total * 0.1 : total * 0.05;"
+                      }
+                    }
+                  }
+                },
+                "FlowNode": {
+                  "summary": "Create a flow invocation node",
+                  "value": {
+                    "collection": "ms.hub.config.collection.node.805092869",
+                    "data": {
+                      "name": "SendNotification",
+                      "description": "Invokes the notification workflow",
+                      "node_type": "flow",
+                      "subject": "ms.hub.config.workflow.1508781670.notification-flow",
+                      "payload": {
+                        "recipient": "{{trigger.customer.email}}",
+                        "template": "order_confirmation",
+                        "data": "{{trigger}}"
+                      },
+                      "await": false
+                    }
+                  }
+                },
+                "IntegrationNode": {
+                  "summary": "Create an integration node",
+                  "value": {
+                    "collection": "ms.hub.config.collection.node.805092869",
+                    "data": {
+                      "name": "SlackNotify",
+                      "description": "Sends notification to Slack channel",
+                      "node_type": "integration",
+                      "subject": "integration.slack.post-message",
+                      "payload": {
+                        "channel": "#orders",
+                        "message": "New order received: {{trigger.order_id}}"
+                      }
+                    }
                   }
                 }
               }
@@ -432,21 +681,52 @@
                 "schema": {
                   "$ref": "#/components/schemas/CreateNodeResponse"
                 },
-                "example": {
-                  "subject": "ms.hub.config.node.1234567890.98765432",
-                  "collection": "ms.hub.config.collection.node.1234567890",
-                  "data": {
-                    "id": "some-id",
-                    "name": "MyNode",
-                    "node_type": "function",
-                    "subject": "quiva-function.some-function",
-                    "payload": {
-                      "param1": "value1",
-                      "param2": "value2"
+                "examples": {
+                  "FunctionNodeCreated": {
+                    "summary": "Function node created",
+                    "value": {
+                      "subject": "ms.hub.config.node.805092869.98765432",
+                      "collection": "ms.hub.config.collection.node.805092869",
+                      "data": {
+                        "id": "98765432",
+                        "name": "ProcessPayment",
+                        "description": "Processes a payment transaction via Stripe",
+                        "node_type": "function",
+                        "subject": "quiva-function.stripe-charge",
+                        "payload": {
+                          "amount": "{{trigger.amount}}",
+                          "currency": "{{trigger.currency}}",
+                          "customer_id": "{{trigger.customer_id}}"
+                        },
+                        "options": {
+                          "timeout": 30000,
+                          "attempts": 3,
+                          "backoff_ms": 1000
+                        }
+                      },
+                      "type": "created",
+                      "modified": 1748533179
                     }
                   },
-                  "type": "created",
-                  "modified": 1651395678
+                  "MapNodeCreated": {
+                    "summary": "Map node created",
+                    "value": {
+                      "subject": "ms.hub.config.node.1025086208.12345678",
+                      "collection": "ms.hub.config.collection.node.1025086208",
+                      "data": {
+                        "id": "12345678",
+                        "name": "TransformOrderData",
+                        "description": "Transforms order data for downstream processing",
+                        "node_type": "map",
+                        "payload": {
+                          "order_id": "{{trigger.id}}",
+                          "total_amount": "{{trigger.items | sum('price')}}"
+                        }
+                      },
+                      "type": "created",
+                      "modified": 1748533200
+                    }
+                  }
                 }
               }
             }
@@ -533,7 +813,7 @@
         "description": "Retrieves a list of node templates, optionally filtered by collection and type",
         "operationId": "listNodeTemplates",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.list-nodes",
+        "x-resource": "microstrate.hub.get.list-nodes",
         "parameters": [
           {
             "$ref": "#/components/parameters/collectionTopic"
@@ -547,26 +827,99 @@
                 "schema": {
                   "$ref": "#/components/schemas/ListNodesResponse"
                 },
-                "example": {
-                  "results_total": 1,
-                  "results": [
-                    {
-                      "subject": "ms.hub.config.node.1234567890.98765432",
-                      "collection": "ms.hub.config.collection.node.1234567890",
-                      "data": {
-                        "id": "some-id",
-                        "name": "MyNode",
-                        "node_type": "function",
-                        "subject": "quiva-function.some-function",
-                        "payload": {
-                          "param1": "value1",
-                          "param2": "value2"
+                "examples": {
+                  "AllNodes": {
+                    "summary": "List all nodes",
+                    "value": {
+                      "results_total": 3,
+                      "results": [
+                        {
+                          "subject": "ms.hub.config.node.805092869.98765432",
+                          "collection": "ms.hub.config.collection.node.805092869",
+                          "data": {
+                            "id": "98765432",
+                            "name": "ProcessPayment",
+                            "description": "Processes payment via Stripe",
+                            "node_type": "function",
+                            "subject": "quiva-function.stripe-charge",
+                            "payload": {
+                              "amount": "{{trigger.amount}}"
+                            }
+                          },
+                          "type": "created",
+                          "modified": 1748533179
+                        },
+                        {
+                          "subject": "ms.hub.config.node.805092869.11223344",
+                          "collection": "ms.hub.config.collection.node.805092869",
+                          "data": {
+                            "id": "11223344",
+                            "name": "ValidateCard",
+                            "node_type": "function",
+                            "subject": "quiva-function.card-validator",
+                            "payload": {
+                              "card_number": "{{trigger.card}}"
+                            }
+                          },
+                          "type": "updated",
+                          "modified": 1748533200
+                        },
+                        {
+                          "subject": "ms.hub.config.node.1025086208.55667788",
+                          "collection": "ms.hub.config.collection.node.1025086208",
+                          "data": {
+                            "id": "55667788",
+                            "name": "TransformData",
+                            "node_type": "map",
+                            "payload": {
+                              "output": "{{trigger.input | uppercase}}"
+                            }
+                          },
+                          "type": "created",
+                          "modified": 1748533250
                         }
-                      },
-                      "type": "created",
-                      "modified": 1651395678
+                      ]
                     }
-                  ]
+                  },
+                  "FilteredByCollection": {
+                    "summary": "Nodes filtered by collection",
+                    "value": {
+                      "results_total": 2,
+                      "results": [
+                        {
+                          "subject": "ms.hub.config.node.805092869.98765432",
+                          "collection": "ms.hub.config.collection.node.805092869",
+                          "data": {
+                            "id": "98765432",
+                            "name": "ProcessPayment",
+                            "node_type": "function",
+                            "subject": "quiva-function.stripe-charge"
+                          },
+                          "type": "created",
+                          "modified": 1748533179
+                        },
+                        {
+                          "subject": "ms.hub.config.node.805092869.11223344",
+                          "collection": "ms.hub.config.collection.node.805092869",
+                          "data": {
+                            "id": "11223344",
+                            "name": "ValidateCard",
+                            "node_type": "function",
+                            "subject": "quiva-function.card-validator"
+                          },
+                          "type": "updated",
+                          "modified": 1748533200
+                        }
+                      ]
+                    }
+                  },
+                  "EmptyResult": {
+                    "summary": "No nodes found",
+                    "value": {
+                      "results_total": 0,
+                      "results": []
+                    }
+                  }
                 }
               }
             }
@@ -604,7 +957,7 @@
         "description": "Retrieves a specific node by subject",
         "operationId": "getNode",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.node",
+        "x-resource": "microstrate.hub.get.node",
         "responses": {
           "200": {
             "description": "Node retrieved successfully",
@@ -613,20 +966,94 @@
                 "schema": {
                   "$ref": "#/components/schemas/GetNodeResponse"
                 },
-                "example": {
-                  "subject": "ms.hub.config.node.1234567890.98765432",
-                  "data": {
-                    "id": "node-id",
-                    "name": "MyNode",
-                    "description": "Node description",
-                    "node_type": "function",
-                    "subject": "quiva-function.some-function",
-                    "payload": {
-                      "param1": "value1",
-                      "param2": "value2"
+                "examples": {
+                  "FunctionNode": {
+                    "summary": "Retrieved function node",
+                    "value": {
+                      "subject": "ms.hub.config.node.805092869.98765432",
+                      "data": {
+                        "id": "98765432",
+                        "name": "ProcessPayment",
+                        "description": "Processes a payment transaction via Stripe",
+                        "node_type": "function",
+                        "subject": "quiva-function.stripe-charge",
+                        "payload": {
+                          "amount": "{{trigger.amount}}",
+                          "currency": "{{trigger.currency}}",
+                          "customer_id": "{{trigger.customer_id}}"
+                        },
+                        "options": {
+                          "timeout": 30000,
+                          "attempts": 3,
+                          "backoff_ms": 1000,
+                          "ignore_response_codes": [
+                            404,
+                            429
+                          ]
+                        }
+                      },
+                      "modified": 1748533179
                     }
                   },
-                  "modified": 1651395678
+                  "MapNode": {
+                    "summary": "Retrieved map node",
+                    "value": {
+                      "subject": "ms.hub.config.node.1025086208.55667788",
+                      "data": {
+                        "id": "55667788",
+                        "name": "TransformOrderData",
+                        "description": "Transforms order data structure",
+                        "node_type": "map",
+                        "payload": {
+                          "order_id": "{{trigger.id}}",
+                          "total": "{{trigger.items | sum('price')}}",
+                          "customer_email": "{{trigger.customer.email}}"
+                        },
+                        "response_map": {
+                          "processed_order": "{{result}}"
+                        }
+                      },
+                      "modified": 1748533200
+                    }
+                  },
+                  "ConditionNode": {
+                    "summary": "Retrieved condition node",
+                    "value": {
+                      "subject": "ms.hub.config.node.805092869.33445566",
+                      "data": {
+                        "id": "33445566",
+                        "name": "CheckOrderValue",
+                        "description": "Routes orders based on value threshold",
+                        "node_type": "condition",
+                        "payload": {
+                          "condition": "{{trigger.total > 1000}}"
+                        }
+                      },
+                      "modified": 1748533250
+                    }
+                  },
+                  "FlowNode": {
+                    "summary": "Retrieved flow invocation node",
+                    "value": {
+                      "subject": "ms.hub.config.node.805092869.77889900",
+                      "data": {
+                        "id": "77889900",
+                        "name": "TriggerNotificationFlow",
+                        "description": "Invokes notification workflow asynchronously",
+                        "node_type": "flow",
+                        "subject": "ms.hub.config.workflow.1508781670.notify",
+                        "payload": {
+                          "recipient": "{{trigger.email}}",
+                          "message": "{{trigger.message}}"
+                        },
+                        "await": false,
+                        "options": {
+                          "timeout": 60000
+                        }
+                      },
+                      "modified": 1748533300
+                    }
+                  }
                 }
               }
             }
@@ -658,7 +1085,7 @@
         "description": "Updates an existing node's properties",
         "operationId": "updateNode",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.patch.node",
+        "x-resource": "microstrate.hub.patch.node",
         "requestBody": {
           "required": true,
           "content": {
@@ -666,15 +1093,74 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateNodeRequest"
               },
-              "example": {
-                "subject": "ms.hub.config.node.1234567890.98765432",
-                "data": {
-                  "name": "UpdatedNode",
-                  "description": "Updated node description",
-                  "node_type": "function",
-                  "payload": {
-                    "param1": "updated-value1",
-                    "param2": "updated-value2"
+              "examples": {
+                "UpdatePayload": {
+                  "summary": "Update node payload",
+                  "value": {
+                    "subject": "ms.hub.config.node.805092869.98765432",
+                    "data": {
+                      "name": "ProcessPayment",
+                      "node_type": "function",
+                      "subject": "quiva-function.stripe-charge",
+                      "payload": {
+                        "amount": "{{trigger.amount}}",
+                        "currency": "{{trigger.currency}}",
+                        "customer_id": "{{trigger.customer_id}}",
+                        "metadata": {
+                          "order_id": "{{trigger.order_id}}"
+                        }
+                      }
+                    }
+                  }
+                },
+                "UpdateOptions": {
+                  "summary": "Update node options",
+                  "value": {
+                    "subject": "ms.hub.config.node.805092869.98765432",
+                    "data": {
+                      "name": "ProcessPayment",
+                      "node_type": "function",
+                      "subject": "quiva-function.stripe-charge",
+                      "payload": {
+                        "amount": "{{trigger.amount}}"
+                      },
+                      "options": {
+                        "timeout": 60000,
+                        "attempts": 5,
+                        "backoff_ms": 2000,
+                        "ignore_response_codes": [
+                          404,
+                          429,
+                          503
+                        ]
+                      }
+                    }
+                  }
+                },
+                "UpdateDescription": {
+                  "summary": "Update node description",
+                  "value": {
+                    "subject": "ms.hub.config.node.1025086208.55667788",
+                    "data": {
+                      "name": "TransformOrderData",
+                      "description": "Updated: Transforms and enriches order data for analytics",
+                      "node_type": "map",
+                      "payload": {
+                        "order_id": "{{trigger.id}}"
+                      }
+                    }
+                  }
+                },
+                "ArchiveNode": {
+                  "summary": "Archive a node",
+                  "value": {
+                    "subject": "ms.hub.config.node.805092869.11223344",
+                    "data": {
+                      "name": "DeprecatedValidator",
+                      "node_type": "function",
+                      "subject": "quiva-function.old-validator"
+                    },
+                    "archived": true
                   }
                 }
               }
@@ -744,7 +1230,7 @@
         "description": "Deletes a specific node by subject",
         "operationId": "deleteNode",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.delete.node",
+        "x-resource": "microstrate.hub.delete.node",
         "responses": {
           "200": {
             "description": "Node deleted successfully",
@@ -788,7 +1274,7 @@
         "description": "Updates multiple existing nodes in a single request",
         "operationId": "updateMultipleNodes",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.patch.nodes",
+        "x-resource": "microstrate.hub.patch.nodes",
         "requestBody": {
           "required": true,
           "content": {
@@ -796,29 +1282,100 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateMultiNodeRequest"
               },
-              "example": [
-                {
-                  "subject": "ms.hub.config.node.1234567890.98765432",
-                  "data": {
-                    "name": "UpdatedNode1",
-                    "node_type": "function",
-                    "subject": "quiva-function.function1",
-                    "payload": {
-                      "param1": "value1"
+              "examples": {
+                "UpdateMultipleFunctionNodes": {
+                  "summary": "Update multiple function nodes",
+                  "value": [
+                    {
+                      "subject": "ms.hub.config.node.805092869.98765432",
+                      "data": {
+                        "name": "ProcessPaymentV2",
+                        "node_type": "function",
+                        "subject": "quiva-function.stripe-charge-v2",
+                        "payload": {
+                          "amount": "{{trigger.amount}}",
+                          "currency": "{{trigger.currency}}"
+                        },
+                        "options": {
+                          "timeout": 45000
+                        }
+                      }
+                    },
+                    {
+                      "subject": "ms.hub.config.node.805092869.11223344",
+                      "data": {
+                        "name": "ValidateCardV2",
+                        "node_type": "function",
+                        "subject": "quiva-function.card-validator-v2",
+                        "payload": {
+                          "card_number": "{{trigger.card}}",
+                          "cvv": "{{trigger.cvv}}"
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
-                {
-                  "subject": "ms.hub.config.node.1234567890.12345678",
-                  "data": {
-                    "name": "UpdatedNode2",
-                    "node_type": "map",
-                    "payload": {
-                      "param2": "value2"
+                "UpdateMixedNodeTypes": {
+                  "summary": "Update nodes of different types",
+                  "value": [
+                    {
+                      "subject": "ms.hub.config.node.805092869.98765432",
+                      "data": {
+                        "name": "ProcessPayment",
+                        "node_type": "function",
+                        "subject": "quiva-function.stripe-charge",
+                        "payload": {
+                          "amount": "{{trigger.amount}}"
+                        }
+                      }
+                    },
+                    {
+                      "subject": "ms.hub.config.node.1025086208.55667788",
+                      "data": {
+                        "name": "TransformOrder",
+                        "node_type": "map",
+                        "payload": {
+                          "order_id": "{{trigger.id}}",
+                          "status": "processed"
+                        }
+                      }
+                    },
+                    {
+                      "subject": "ms.hub.config.node.805092869.33445566",
+                      "data": {
+                        "name": "CheckThreshold",
+                        "node_type": "condition",
+                        "payload": {
+                          "condition": "{{trigger.total > 500}}"
+                        }
+                      }
                     }
-                  }
+                  ]
+                },
+                "ArchiveMultipleNodes": {
+                  "summary": "Archive multiple deprecated nodes",
+                  "value": [
+                    {
+                      "subject": "ms.hub.config.node.805092869.oldnode1",
+                      "data": {
+                        "name": "DeprecatedNode1",
+                        "node_type": "function",
+                        "subject": "quiva-function.old-function"
+                      },
+                      "archived": true
+                    },
+                    {
+                      "subject": "ms.hub.config.node.805092869.oldnode2",
+                      "data": {
+                        "name": "DeprecatedNode2",
+                        "node_type": "map",
+                        "payload": {}
+                      },
+                      "archived": true
+                    }
+                  ]
                 }
-              ]
+              }
             }
           }
         },
@@ -830,35 +1387,41 @@
                 "schema": {
                   "$ref": "#/components/schemas/UpdateMultiNodeResponse"
                 },
-                "example": [
-                  {
-                    "node": {
-                      "subject": "ms.hub.config.node.1234567890.98765432",
-                      "data": {
-                        "name": "UpdatedNode1",
-                        "node_type": "function",
-                        "subject": "quiva-function.function1",
-                        "payload": {
-                          "param1": "value1"
-                        }
+                "examples": {
+                  "AllSuccess": {
+                    "summary": "All nodes updated successfully",
+                    "value": [
+                      {
+                        "node": {
+                          "subject": "ms.hub.config.node.805092869.98765432",
+                          "data": {
+                            "name": "ProcessPaymentV2",
+                            "node_type": "function",
+                            "subject": "quiva-function.stripe-charge-v2",
+                            "payload": {
+                              "amount": "{{trigger.amount}}"
+                            }
+                          }
+                        },
+                        "result": "success"
+                      },
+                      {
+                        "node": {
+                          "subject": "ms.hub.config.node.805092869.11223344",
+                          "data": {
+                            "name": "ValidateCardV2",
+                            "node_type": "function",
+                            "subject": "quiva-function.card-validator-v2",
+                            "payload": {
+                              "card_number": "{{trigger.card}}"
+                            }
+                          }
+                        },
+                        "result": "success"
                       }
-                    },
-                    "result": "succes"
-                  },
-                  {
-                    "node": {
-                      "subject": "ms.hub.config.node.1234567890.12345678",
-                      "data": {
-                        "name": "UpdatedNode2",
-                        "node_type": "map",
-                        "payload": {
-                          "param2": "value2"
-                        }
-                      }
-                    },
-                    "result": "succes"
+                    ]
                   }
-                ]
+                }
               }
             }
           },
@@ -917,7 +1480,7 @@
         "description": "Creates a new workflow for defining node sequences",
         "operationId": "createWorkflow",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.post.workflow",
+        "x-resource": "microstrate.hub.post.workflow",
         "requestBody": {
           "required": true,
           "content": {
@@ -925,42 +1488,327 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateWorkflowRequest"
               },
-              "example": {
-                "name": "MyWorkflow",
-                "collection": "ms.hub.config.collection.workflow.1234567890",
-                "description": "A workflow that processes data",
-                "config": {
-                  "nodes": [
-                    {
-                      "data": {
-                        "id": "start",
-                        "name": "Start",
-                        "node_type": "map",
-                        "payload": {
-                          "message": "Start of workflow"
+              "examples": {
+                "simpleWorkflow": {
+                  "summary": "Simple two-node workflow",
+                  "value": {
+                    "name": "MyWorkflow",
+                    "collection": "ms.hub.config.collection.workflow.1234567890",
+                    "description": "A workflow that processes data",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "start",
+                            "name": "Start",
+                            "node_type": "map",
+                            "payload": {
+                              "message": "Start of workflow"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "process",
+                            "name": "Process",
+                            "node_type": "function",
+                            "subject": "quiva-function.process-function",
+                            "payload": {
+                              "input": "{start}"
+                            }
+                          }
                         }
-                      }
-                    },
-                    {
-                      "data": {
-                        "id": "process",
-                        "name": "Process",
-                        "node_type": "function",
-                        "subject": "quiva-function.process-function",
-                        "payload": {
-                          "input": "{start}"
+                      ],
+                      "edges": [
+                        {
+                          "source": "start",
+                          "target": "process",
+                          "id": "edge1"
                         }
+                      ],
+                      "result": "process"
+                    }
+                  }
+                },
+                "conditionalWorkflow": {
+                  "summary": "Workflow with conditional branching",
+                  "value": {
+                    "name": "ConditionalProcessing",
+                    "collection": "ms.hub.config.collection.workflow.9876543210",
+                    "description": "A workflow with conditional logic",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "input",
+                            "name": "Input Handler",
+                            "node_type": "map",
+                            "payload": {
+                              "data": "{trigger.body}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "check_type",
+                            "name": "Check Type",
+                            "node_type": "condition",
+                            "payload": {
+                              "condition": "{input.type} == 'premium'"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "premium_handler",
+                            "name": "Premium Handler",
+                            "node_type": "function",
+                            "subject": "quiva-function.premium-processor",
+                            "payload": {
+                              "input": "{input}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "standard_handler",
+                            "name": "Standard Handler",
+                            "node_type": "function",
+                            "subject": "quiva-function.standard-processor",
+                            "payload": {
+                              "input": "{input}"
+                            }
+                          }
+                        }
+                      ],
+                      "edges": [
+                        {
+                          "source": "input",
+                          "target": "check_type",
+                          "id": "e1"
+                        },
+                        {
+                          "source": "check_type",
+                          "target": "premium_handler",
+                          "id": "e2",
+                          "sourceHandle": "true"
+                        },
+                        {
+                          "source": "check_type",
+                          "target": "standard_handler",
+                          "id": "e3",
+                          "sourceHandle": "false"
+                        }
+                      ],
+                      "result": "{check_type} ? {premium_handler} : {standard_handler}"
+                    }
+                  }
+                },
+                "debouncedWorkflow": {
+                  "summary": "Workflow with debouncing",
+                  "value": {
+                    "name": "DebouncedNotifications",
+                    "collection": "ms.hub.config.collection.workflow.5555555555",
+                    "description": "Debounces rapid notifications by user",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "aggregate",
+                            "name": "Aggregate Events",
+                            "node_type": "map",
+                            "payload": {
+                              "user_id": "{trigger.user_id}",
+                              "events": "{trigger.events}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "send_notification",
+                            "name": "Send Notification",
+                            "node_type": "function",
+                            "subject": "quiva-function.send-email",
+                            "payload": {
+                              "to": "{aggregate.user_id}",
+                              "body": "{aggregate.events}"
+                            }
+                          }
+                        }
+                      ],
+                      "edges": [
+                        {
+                          "source": "aggregate",
+                          "target": "send_notification",
+                          "id": "e1"
+                        }
+                      ],
+                      "result": "send_notification",
+                      "options": {
+                        "run_type": "debounced",
+                        "debounce_on": "{trigger.user_id}",
+                        "debounce_time": 5000,
+                        "debounce_max": 30000
                       }
                     }
-                  ],
-                  "edges": [
-                    {
-                      "source": "start",
-                      "target": "process",
-                      "id": "edge1"
+                  }
+                },
+                "evalWorkflow": {
+                  "summary": "Workflow using eval node for calculations",
+                  "value": {
+                    "name": "PriceCalculator",
+                    "collection": "ms.hub.config.collection.workflow.7777777777",
+                    "description": "Calculates pricing with discounts",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "get_prices",
+                            "name": "Get Base Prices",
+                            "node_type": "function",
+                            "subject": "quiva-function.get-pricing",
+                            "payload": {
+                              "product_ids": "{trigger.products}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "calculate_total",
+                            "name": "Calculate Total",
+                            "node_type": "eval",
+                            "payload": {
+                              "code": "const prices = get_prices.items; const subtotal = prices.reduce((sum, p) => sum + p.price * p.quantity, 0); const discount = trigger.discount_percent || 0; return { subtotal, discount: subtotal * discount / 100, total: subtotal * (1 - discount / 100) };"
+                            }
+                          }
+                        }
+                      ],
+                      "edges": [
+                        {
+                          "source": "get_prices",
+                          "target": "calculate_total",
+                          "id": "e1"
+                        }
+                      ],
+                      "result": "calculate_total"
                     }
-                  ],
-                  "result": "process"
+                  }
+                },
+                "nestedFlowWorkflow": {
+                  "summary": "Workflow calling another flow",
+                  "value": {
+                    "name": "OrderProcessor",
+                    "collection": "ms.hub.config.collection.workflow.8888888888",
+                    "description": "Processes orders by calling sub-workflows",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "validate",
+                            "name": "Validate Order",
+                            "node_type": "function",
+                            "subject": "quiva-function.validate-order",
+                            "payload": {
+                              "order": "{trigger.order}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "process_payment",
+                            "name": "Process Payment",
+                            "node_type": "flow",
+                            "subject": "ms.hub.config.workflow.8888888888.payment-flow",
+                            "await": true,
+                            "payload": {
+                              "amount": "{validate.total}",
+                              "customer_id": "{trigger.customer_id}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "fulfill",
+                            "name": "Fulfill Order",
+                            "node_type": "flow",
+                            "subject": "ms.hub.config.workflow.8888888888.fulfillment-flow",
+                            "await": false,
+                            "payload": {
+                              "order_id": "{validate.order_id}",
+                              "payment_ref": "{process_payment.reference}"
+                            }
+                          }
+                        }
+                      ],
+                      "edges": [
+                        {
+                          "source": "validate",
+                          "target": "process_payment",
+                          "id": "e1"
+                        },
+                        {
+                          "source": "process_payment",
+                          "target": "fulfill",
+                          "id": "e2"
+                        }
+                      ],
+                      "result": "fulfill"
+                    }
+                  }
+                },
+                "integrationWorkflow": {
+                  "summary": "Workflow with external integration",
+                  "value": {
+                    "name": "SlackNotifier",
+                    "collection": "ms.hub.config.collection.workflow.3333333333",
+                    "description": "Sends notifications to Slack",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "format_message",
+                            "name": "Format Message",
+                            "node_type": "map",
+                            "payload": {
+                              "channel": "#alerts",
+                              "text": "Alert: {trigger.message}",
+                              "blocks": [
+                                {
+                                  "type": "section",
+                                  "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*{trigger.title}*\n{trigger.message}"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "send_slack",
+                            "name": "Send to Slack",
+                            "node_type": "integration",
+                            "subject": "slack.chat.postMessage",
+                            "payload": "{format_message}",
+                            "options": {
+                              "timeout": 10000,
+                              "attempts": 3,
+                              "backoff_ms": 1000
+                            }
+                          }
+                        }
+                      ],
+                      "edges": [
+                        {
+                          "source": "format_message",
+                          "target": "send_slack",
+                          "id": "e1"
+                        }
+                      ],
+                      "result": "send_slack"
+                    }
+                  }
                 }
               }
             }
@@ -974,45 +1822,50 @@
                 "schema": {
                   "$ref": "#/components/schemas/CreateWorkflowResponse"
                 },
-                "example": {
-                  "subject": "ms.hub.config.workflow.draft.1234567890.98765432",
-                  "name": "MyWorkflow",
-                  "collection": "ms.hub.config.collection.workflow.1234567890",
-                  "description": "A workflow that processes data",
-                  "config": {
-                    "nodes": [
-                      {
-                        "data": {
-                          "id": "start",
-                          "name": "Start",
-                          "node_type": "map",
-                          "payload": {
-                            "message": "Start of workflow"
+                "examples": {
+                  "simpleWorkflowCreated": {
+                    "summary": "Simple workflow created",
+                    "value": {
+                      "subject": "ms.hub.config.workflow.draft.1234567890.98765432",
+                      "name": "MyWorkflow",
+                      "collection": "ms.hub.config.collection.workflow.1234567890",
+                      "description": "A workflow that processes data",
+                      "config": {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "start",
+                              "name": "Start",
+                              "node_type": "map",
+                              "payload": {
+                                "message": "Start of workflow"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "process",
+                              "name": "Process",
+                              "node_type": "function",
+                              "subject": "quiva-function.process-function",
+                              "payload": {
+                                "input": "{start}"
+                              }
+                            }
                           }
-                        }
+                        ],
+                        "edges": [
+                          {
+                            "source": "start",
+                            "target": "process",
+                            "id": "edge1"
+                          }
+                        ],
+                        "result": "process"
                       },
-                      {
-                        "data": {
-                          "id": "process",
-                          "name": "Process",
-                          "node_type": "function",
-                          "subject": "quiva-function.process-function",
-                          "payload": {
-                            "input": "{start}"
-                          }
-                        }
-                      }
-                    ],
-                    "edges": [
-                      {
-                        "source": "start",
-                        "target": "process",
-                        "id": "edge1"
-                      }
-                    ],
-                    "result": "process"
-                  },
-                  "modified": 1651395678
+                      "modified": 1651395678
+                    }
+                  }
                 }
               }
             }
@@ -1134,7 +1987,7 @@
         "description": "Retrieves a list of workflows, optionally filtered by collection and type",
         "operationId": "listWorkflows",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.list-workflows",
+        "x-resource": "microstrate.hub.get.list-workflows",
         "parameters": [
           {
             "$ref": "#/components/parameters/collectionTopic"
@@ -1151,7 +2004,16 @@
                 "published"
               ]
             },
-            "example": "draft"
+            "examples": {
+              "draft": {
+                "summary": "List only draft workflows",
+                "value": "draft"
+              },
+              "published": {
+                "summary": "List only published workflows",
+                "value": "published"
+              }
+            }
           }
         ],
         "responses": {
@@ -1162,30 +2024,96 @@
                 "schema": {
                   "$ref": "#/components/schemas/ListWorkflowsResponse"
                 },
-                "example": {
-                  "results": [
-                    {
-                      "subject": "ms.hub.config.workflow.draft.1234567890.98765432",
-                      "name": "Workflow1",
-                      "description": "First workflow",
-                      "config": {
-                        "nodes": [],
-                        "edges": []
-                      },
-                      "modified": 1651395678
-                    },
-                    {
-                      "subject": "ms.hub.config.workflow.draft.1234567890.12345678",
-                      "name": "Workflow2",
-                      "description": "Second workflow",
-                      "config": {
-                        "nodes": [],
-                        "edges": []
-                      },
-                      "modified": 1651395679
+                "examples": {
+                  "multipleWorkflows": {
+                    "summary": "Multiple workflows returned",
+                    "value": {
+                      "results": [
+                        {
+                          "subject": "ms.hub.config.workflow.draft.1234567890.98765432",
+                          "name": "DataProcessor",
+                          "description": "Processes incoming data",
+                          "config": {
+                            "nodes": [
+                              {
+                                "data": {
+                                  "id": "input",
+                                  "name": "Input",
+                                  "node_type": "map",
+                                  "payload": {
+                                    "data": "{trigger}"
+                                  }
+                                }
+                              }
+                            ],
+                            "edges": [],
+                            "result": "input"
+                          },
+                          "modified": 1651395678
+                        },
+                        {
+                          "subject": "ms.hub.config.workflow.draft.1234567890.12345678",
+                          "name": "NotificationSender",
+                          "description": "Sends notifications to users",
+                          "config": {
+                            "nodes": [
+                              {
+                                "data": {
+                                  "id": "send",
+                                  "name": "Send",
+                                  "node_type": "function",
+                                  "subject": "quiva-function.send-email",
+                                  "payload": {
+                                    "to": "{trigger.email}"
+                                  }
+                                }
+                              }
+                            ],
+                            "edges": [],
+                            "result": "send"
+                          },
+                          "modified": 1651395679
+                        }
+                      ],
+                      "results_total": 2
                     }
-                  ],
-                  "results_total": 2
+                  },
+                  "emptyList": {
+                    "summary": "No workflows found",
+                    "value": {
+                      "results": [],
+                      "results_total": 0
+                    }
+                  },
+                  "singleWorkflow": {
+                    "summary": "Single workflow returned",
+                    "value": {
+                      "results": [
+                        {
+                          "subject": "ms.hub.config.workflow.1234567890.11111111",
+                          "name": "ProductionWorkflow",
+                          "description": "Published production workflow",
+                          "config": {
+                            "nodes": [
+                              {
+                                "data": {
+                                  "id": "process",
+                                  "name": "Process",
+                                  "node_type": "function",
+                                  "subject": "quiva-function.processor",
+                                  "payload": {}
+                                }
+                              }
+                            ],
+                            "edges": [],
+                            "result": "process"
+                          },
+                          "modified": 1651400000
+                        }
+                      ],
+                      "results_total": 1
+                    }
+                  }
                 }
               }
             }
@@ -1223,7 +2151,7 @@
         "description": "Retrieves a specific workflow by subject",
         "operationId": "getWorkflow",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.workflow",
+        "x-resource": "microstrate.hub.get.workflow",
         "parameters": [
           {
             "$ref": "#/components/parameters/queryDraftFlag"
@@ -1237,44 +2165,195 @@
                 "schema": {
                   "$ref": "#/components/schemas/GetWorkflowResponse"
                 },
-                "example": {
-                  "subject": "ms.hub.config.workflow.1234567890.98765432",
-                  "name": "MyWorkflow",
-                  "description": "Workflow description",
-                  "config": {
-                    "nodes": [
-                      {
-                        "data": {
-                          "id": "start",
-                          "name": "Start",
-                          "node_type": "map",
-                          "payload": {
-                            "message": "Start of workflow"
+                "examples": {
+                  "simpleWorkflow": {
+                    "summary": "Simple workflow with map and function nodes",
+                    "value": {
+                      "subject": "ms.hub.config.workflow.1234567890.98765432",
+                      "name": "MyWorkflow",
+                      "description": "Workflow description",
+                      "config": {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "start",
+                              "name": "Start",
+                              "node_type": "map",
+                              "payload": {
+                                "message": "Start of workflow"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "process",
+                              "name": "Process",
+                              "node_type": "function",
+                              "subject": "quiva-function.process-function",
+                              "payload": {
+                                "input": "{start}"
+                              }
+                            }
                           }
-                        }
+                        ],
+                        "edges": [
+                          {
+                            "source": "start",
+                            "target": "process",
+                            "id": "edge1"
+                          }
+                        ],
+                        "result": "process"
                       },
-                      {
-                        "data": {
-                          "id": "process",
-                          "name": "Process",
-                          "node_type": "function",
-                          "subject": "quiva-function.process-function",
-                          "payload": {
-                            "input": "{start}"
-                          }
-                        }
-                      }
-                    ],
-                    "edges": [
-                      {
-                        "source": "start",
-                        "target": "process",
-                        "id": "edge1"
-                      }
-                    ],
-                    "result": "process"
+                      "modified": 1651395678
+                    }
                   },
-                  "modified": 1651395678
+                  "draftWorkflow": {
+                    "summary": "Draft workflow with static data",
+                    "value": {
+                      "subject": "ms.hub.config.workflow.draft.1234567890.55555555",
+                      "name": "DraftWorkflow",
+                      "description": "Work in progress workflow",
+                      "config": {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "init",
+                              "name": "Initialize",
+                              "node_type": "map",
+                              "payload": {
+                                "config": "{static.defaultConfig}",
+                                "input": "{trigger}"
+                              }
+                            }
+                          }
+                        ],
+                        "edges": [],
+                        "static": {
+                          "defaultConfig": {
+                            "timeout": 30000,
+                            "retries": 3
+                          }
+                        },
+                        "result": "init"
+                      },
+                      "modified": 1651400000
+                    }
+                  },
+                  "complexWorkflow": {
+                    "summary": "Complex workflow with multiple node types",
+                    "value": {
+                      "subject": "ms.hub.config.workflow.1234567890.77777777",
+                      "name": "OrderProcessingWorkflow",
+                      "description": "Complete order processing pipeline",
+                      "config": {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "validate_input",
+                              "name": "Validate Input",
+                              "node_type": "function",
+                              "subject": "quiva-function.validate-order",
+                              "payload": {
+                                "order": "{trigger.order}"
+                              },
+                              "options": {
+                                "timeout": 5000
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "check_inventory",
+                              "name": "Check Inventory",
+                              "node_type": "function",
+                              "subject": "quiva-function.check-stock",
+                              "payload": {
+                                "items": "{validate_input.items}"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "has_stock",
+                              "name": "Has Stock?",
+                              "node_type": "condition",
+                              "payload": {
+                                "condition": "{check_inventory.available} == true"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "process_order",
+                              "name": "Process Order",
+                              "node_type": "flow",
+                              "subject": "ms.hub.config.workflow.1234567890.order-processor",
+                              "await": true,
+                              "payload": {
+                                "order": "{validate_input}"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "backorder",
+                              "name": "Create Backorder",
+                              "node_type": "function",
+                              "subject": "quiva-function.create-backorder",
+                              "payload": {
+                                "order": "{validate_input}"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "notify_customer",
+                              "name": "Notify Customer",
+                              "node_type": "integration",
+                              "subject": "email.send",
+                              "payload": {
+                                "to": "{trigger.customer_email}",
+                                "template": "order_confirmation",
+                                "data": "{process_order}"
+                              }
+                            }
+                          }
+                        ],
+                        "edges": [
+                          {
+                            "source": "validate_input",
+                            "target": "check_inventory",
+                            "id": "e1"
+                          },
+                          {
+                            "source": "check_inventory",
+                            "target": "has_stock",
+                            "id": "e2"
+                          },
+                          {
+                            "source": "has_stock",
+                            "target": "process_order",
+                            "id": "e3",
+                            "sourceHandle": "true"
+                          },
+                          {
+                            "source": "has_stock",
+                            "target": "backorder",
+                            "id": "e4",
+                            "sourceHandle": "false"
+                          },
+                          {
+                            "source": "process_order",
+                            "target": "notify_customer",
+                            "id": "e5"
+                          }
+                        ],
+                        "result": "{has_stock} ? {notify_customer} : {backorder}"
+                      },
+                      "modified": 1651450000
+                    }
+                  }
                 }
               }
             }
@@ -1306,7 +2385,7 @@
         "description": "Updates an existing draft workflow's properties",
         "operationId": "updateWorkflow",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.patch.workflow",
+        "x-resource": "microstrate.hub.patch.workflow",
         "requestBody": {
           "required": true,
           "content": {
@@ -1314,41 +2393,114 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateWorkflowRequest"
               },
-              "example": {
-                "name": "UpdatedWorkflow",
-                "description": "Updated workflow description",
-                "config": {
-                  "nodes": [
-                    {
-                      "data": {
-                        "id": "start",
-                        "name": "Start",
-                        "node_type": "map",
-                        "payload": {
-                          "message": "Updated start of workflow"
+              "examples": {
+                "updateNameAndDescription": {
+                  "summary": "Update name and description only",
+                  "value": {
+                    "name": "UpdatedWorkflowName",
+                    "description": "Updated workflow description"
+                  }
+                },
+                "updateConfig": {
+                  "summary": "Update workflow configuration",
+                  "value": {
+                    "name": "UpdatedWorkflow",
+                    "description": "Updated workflow description",
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "start",
+                            "name": "Start",
+                            "node_type": "map",
+                            "payload": {
+                              "message": "Updated start of workflow"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "process",
+                            "name": "Process",
+                            "node_type": "function",
+                            "subject": "quiva-function.updated-process-function",
+                            "payload": {
+                              "input": "{start}"
+                            }
+                          }
                         }
-                      }
-                    },
-                    {
-                      "data": {
-                        "id": "process",
-                        "name": "Process",
-                        "node_type": "function",
-                        "subject": "quiva-function.updated-process-function",
-                        "payload": {
-                          "input": "{start}"
+                      ],
+                      "edges": [
+                        {
+                          "source": "start",
+                          "target": "process",
+                          "id": "edge1"
                         }
-                      }
+                      ],
+                      "result": "process"
                     }
-                  ],
-                  "edges": [
-                    {
-                      "source": "start",
-                      "target": "process",
-                      "id": "edge1"
+                  }
+                },
+                "addNode": {
+                  "summary": "Add a new node to existing workflow",
+                  "value": {
+                    "config": {
+                      "nodes": [
+                        {
+                          "data": {
+                            "id": "start",
+                            "name": "Start",
+                            "node_type": "map",
+                            "payload": {
+                              "message": "Start"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "process",
+                            "name": "Process",
+                            "node_type": "function",
+                            "subject": "quiva-function.process",
+                            "payload": {
+                              "input": "{start}"
+                            }
+                          }
+                        },
+                        {
+                          "data": {
+                            "id": "notify",
+                            "name": "Notify",
+                            "node_type": "integration",
+                            "subject": "slack.chat.postMessage",
+                            "payload": {
+                              "channel": "#alerts",
+                              "text": "Processed: {process.result}"
+                            }
+                          }
+                        }
+                      ],
+                      "edges": [
+                        {
+                          "source": "start",
+                          "target": "process",
+                          "id": "e1"
+                        },
+                        {
+                          "source": "process",
+                          "target": "notify",
+                          "id": "e2"
+                        }
+                      ],
+                      "result": "notify"
                     }
-                  ],
-                  "result": "process"
+                  }
+                },
+                "archiveWorkflow": {
+                  "summary": "Archive a workflow",
+                  "value": {
+                    "archived": true
+                  }
                 }
               }
             }
@@ -1362,44 +2514,49 @@
                 "schema": {
                   "$ref": "#/components/schemas/UpdateWorkflowResponse"
                 },
-                "example": {
-                  "subject": "ms.hub.config.workflow.draft.1234567890.98765432",
-                  "name": "UpdatedWorkflow",
-                  "description": "Updated workflow description",
-                  "config": {
-                    "nodes": [
-                      {
-                        "data": {
-                          "id": "start",
-                          "name": "Start",
-                          "node_type": "map",
-                          "payload": {
-                            "message": "Updated start of workflow"
+                "examples": {
+                  "updated": {
+                    "summary": "Workflow updated successfully",
+                    "value": {
+                      "subject": "ms.hub.config.workflow.draft.1234567890.98765432",
+                      "name": "UpdatedWorkflow",
+                      "description": "Updated workflow description",
+                      "config": {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "start",
+                              "name": "Start",
+                              "node_type": "map",
+                              "payload": {
+                                "message": "Updated start of workflow"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "process",
+                              "name": "Process",
+                              "node_type": "function",
+                              "subject": "quiva-function.updated-process-function",
+                              "payload": {
+                                "input": "{start}"
+                              }
+                            }
                           }
-                        }
+                        ],
+                        "edges": [
+                          {
+                            "source": "start",
+                            "target": "process",
+                            "id": "edge1"
+                          }
+                        ],
+                        "result": "process"
                       },
-                      {
-                        "data": {
-                          "id": "process",
-                          "name": "Process",
-                          "node_type": "function",
-                          "subject": "quiva-function.updated-process-function",
-                          "payload": {
-                            "input": "{start}"
-                          }
-                        }
-                      }
-                    ],
-                    "edges": [
-                      {
-                        "source": "start",
-                        "target": "process",
-                        "id": "edge1"
-                      }
-                    ],
-                    "result": "process"
-                  },
-                  "modified": 1651395678
+                      "modified": 1651395678
+                    }
+                  }
                 }
               }
             }
@@ -1449,7 +2606,7 @@
         "description": "Deletes a specific workflow by subject",
         "operationId": "deleteWorkflow",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.delete.workflow",
+        "x-resource": "microstrate.hub.delete.workflow",
         "responses": {
           "200": {
             "description": "Workflow deleted successfully",
@@ -1504,7 +2661,7 @@
         "description": "Executes a workflow with the specified trigger data",
         "operationId": "runWorkflow",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.post.workflow-run",
+        "x-resource": "microstrate.hub.post.workflow-run",
         "requestBody": {
           "required": true,
           "content": {
@@ -1513,32 +2670,123 @@
                 "$ref": "#/components/schemas/RunWorkflowRequest"
               },
               "examples": {
-                "SingleTrigger": {
+                "singleTriggerSync": {
+                  "summary": "Single trigger with synchronous execution",
                   "value": {
-                    "subject": "ms.hub.config.workflow.1234567890.98765432",
                     "trigger": {
-                      "data": "some input data",
-                      "timestamp": 1651395678
+                      "user_id": "user_123",
+                      "action": "process_order",
+                      "data": {
+                        "order_id": "ORD-456",
+                        "items": [
+                          {
+                            "sku": "PROD-001",
+                            "quantity": 2
+                          },
+                          {
+                            "sku": "PROD-002",
+                            "quantity": 1
+                          }
+                        ],
+                        "total": 149.99
+                      }
                     },
                     "enable_log": true,
                     "await": true
                   }
                 },
-                "MultipleTriggers": {
+                "singleTriggerAsync": {
+                  "summary": "Single trigger with asynchronous execution",
                   "value": {
-                    "subject": "ms.hub.config.workflow.1234567890.98765432",
+                    "trigger": {
+                      "event_type": "webhook",
+                      "payload": {
+                        "source": "external_system",
+                        "data": {
+                          "key": "value"
+                        }
+                      }
+                    },
+                    "enable_log": false,
+                    "await": false
+                  }
+                },
+                "multipleTriggers": {
+                  "summary": "Multiple triggers for batch processing",
+                  "value": {
                     "triggers": [
                       {
-                        "data": "input data 1",
-                        "timestamp": 1651395678
+                        "user_id": "user_001",
+                        "email": "user1@example.com",
+                        "notification_type": "welcome"
                       },
                       {
-                        "data": "input data 2",
-                        "timestamp": 1651395679
+                        "user_id": "user_002",
+                        "email": "user2@example.com",
+                        "notification_type": "welcome"
+                      },
+                      {
+                        "user_id": "user_003",
+                        "email": "user3@example.com",
+                        "notification_type": "welcome"
                       }
                     ],
                     "enable_log": true,
                     "await": false
+                  }
+                },
+                "minimalTrigger": {
+                  "summary": "Minimal trigger with just data",
+                  "value": {
+                    "trigger": {
+                      "message": "Hello, World!"
+                    }
+                  }
+                },
+                "complexTrigger": {
+                  "summary": "Complex trigger with nested data",
+                  "value": {
+                    "trigger": {
+                      "timestamp": 1651395678,
+                      "source": "api",
+                      "customer": {
+                        "id": "cust_789",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "tier": "premium"
+                      },
+                      "order": {
+                        "id": "ORD-12345",
+                        "items": [
+                          {
+                            "product_id": "P001",
+                            "name": "Widget",
+                            "quantity": 5,
+                            "unit_price": 19.99
+                          },
+                          {
+                            "product_id": "P002",
+                            "name": "Gadget",
+                            "quantity": 2,
+                            "unit_price": 49.99
+                          }
+                        ],
+                        "shipping": {
+                          "method": "express",
+                          "address": {
+                            "street": "123 Main St",
+                            "city": "Springfield",
+                            "country": "US"
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "utm_source": "google",
+                        "campaign_id": "summer_sale"
+                      }
+                    },
+                    "enable_log": true,
+                    "await": true
                   }
                 }
               }
@@ -1554,26 +2802,68 @@
                   "$ref": "#/components/schemas/RunWorkflowResponse"
                 },
                 "examples": {
-                  "Awaited": {
+                  "awaitedSuccess": {
+                    "summary": "Synchronous execution completed",
                     "value": {
                       "trackingId": "ms.hub.run.abcdef-1234-5678-90ab-cdef12345678.ms.hub.config.workflow.1234567890.98765432",
                       "result": {
-                        "outputData": "processed result"
+                        "status": "completed",
+                        "order_id": "ORD-456",
+                        "processed_at": "2024-01-15T10:30:00Z",
+                        "confirmation_number": "CONF-789012"
                       }
                     }
                   },
-                  "NotAwaited": {
+                  "notAwaitedSuccess": {
+                    "summary": "Asynchronous execution started",
                     "value": {
-                      "trackingId": "ms.hub.run.abcdef-1234-5678-90ab-cdef12345678.ms.hub.config.workflow.1234567890.98765432"
+                      "trackingId": "ms.hub.run.fedcba-9876-5432-10ab-cdef98765432.ms.hub.config.workflow.1234567890.98765432"
                     }
                   },
-                  "Debounced": {
+                  "debouncedRun": {
+                    "summary": "Debounced execution",
                     "value": {
-                      "body": "debounced run: key-value"
+                      "body": "debounced run: user_123-notifications"
                     }
                   },
-                  "Ordered": {
-                    "value": "ordered run: key-value"
+                  "orderedRun": {
+                    "summary": "Ordered execution queued",
+                    "value": "ordered run: order_queue-ORD-456"
+                  },
+                  "complexResult": {
+                    "summary": "Complex workflow result",
+                    "value": {
+                      "trackingId": "ms.hub.run.12345678-abcd-efgh-ijkl-mnopqrstuvwx.ms.hub.config.workflow.9876543210.11111111",
+                      "result": {
+                        "validation": {
+                          "status": "passed",
+                          "checks": [
+                            "inventory",
+                            "payment",
+                            "fraud"
+                          ]
+                        },
+                        "processing": {
+                          "order_id": "ORD-12345",
+                          "payment_id": "PAY-67890",
+                          "fulfillment_id": "FUL-11111"
+                        },
+                        "notifications_sent": [
+                          {
+                            "type": "email",
+                            "status": "sent"
+                          },
+                          {
+                            "type": "sms",
+                            "status": "sent"
+                          }
+                        ],
+                        "metadata": {
+                          "duration_ms": 1523,
+                          "nodes_executed": 7
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -1644,7 +2934,7 @@
         "description": "Get workflow configuration history",
         "operationId": "workflowHistory",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.workflow-history",
+        "x-resource": "microstrate.hub.get.workflow-history",
         "responses": {
           "200": {
             "description": "Workflow history",
@@ -1655,6 +2945,137 @@
                   "description": "An array of full configuration versions",
                   "items": {
                     "$ref": "#/components/schemas/WorkflowConfig"
+                  }
+                },
+                "examples": {
+                  "multipleVersions": {
+                    "summary": "Multiple configuration versions",
+                    "value": [
+                      {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "start",
+                              "name": "Start",
+                              "node_type": "map",
+                              "payload": {
+                                "message": "Version 3 - Current"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "process",
+                              "name": "Process",
+                              "node_type": "function",
+                              "subject": "quiva-function.process-v3",
+                              "payload": {
+                                "input": "{start}"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "notify",
+                              "name": "Notify",
+                              "node_type": "integration",
+                              "subject": "slack.chat.postMessage",
+                              "payload": {
+                                "channel": "#alerts",
+                                "text": "{process.result}"
+                              }
+                            }
+                          }
+                        ],
+                        "edges": [
+                          {
+                            "source": "start",
+                            "target": "process",
+                            "id": "e1"
+                          },
+                          {
+                            "source": "process",
+                            "target": "notify",
+                            "id": "e2"
+                          }
+                        ],
+                        "result": "notify"
+                      },
+                      {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "start",
+                              "name": "Start",
+                              "node_type": "map",
+                              "payload": {
+                                "message": "Version 2"
+                              }
+                            }
+                          },
+                          {
+                            "data": {
+                              "id": "process",
+                              "name": "Process",
+                              "node_type": "function",
+                              "subject": "quiva-function.process-v2",
+                              "payload": {
+                                "input": "{start}"
+                              }
+                            }
+                          }
+                        ],
+                        "edges": [
+                          {
+                            "source": "start",
+                            "target": "process",
+                            "id": "e1"
+                          }
+                        ],
+                        "result": "process"
+                      },
+                      {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "start",
+                              "name": "Start",
+                              "node_type": "map",
+                              "payload": {
+                                "message": "Version 1 - Initial"
+                              }
+                            }
+                          }
+                        ],
+                        "edges": [],
+                        "result": "start"
+                      }
+                    ]
+                  },
+                  "singleVersion": {
+                    "summary": "Single version (new workflow)",
+                    "value": [
+                      {
+                        "nodes": [
+                          {
+                            "data": {
+                              "id": "init",
+                              "name": "Initialize",
+                              "node_type": "map",
+                              "payload": {
+                                "status": "ready"
+                              }
+                            }
+                          }
+                        ],
+                        "edges": [],
+                        "result": "init"
+                      }
+                    ]
+                  },
+                  "emptyHistory": {
+                    "summary": "No history available",
+                    "value": []
                   }
                 }
               }
@@ -1714,7 +3135,7 @@
         "description": "Publishes a draft workflow to make it available for execution",
         "operationId": "publishWorkflow",
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.post.workflow-publish",
+        "x-resource": "microstrate.hub.post.workflow-publish",
         "requestBody": {
           "required": true,
           "content": {
@@ -1771,7 +3192,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.oauth-configs",
+        "x-resource": "microstrate.hub.get.oauth-configs",
         "responses": {
           "200": {
             "description": "List of OAuth configurations",
@@ -1779,6 +3200,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConfigList"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "integration_id": "slack",
+                      "name": "Slack API",
+                      "scopes": "channels:read,chat:write,users:read",
+                      "subject": "ms.integration.oauth.config.slack"
+                    },
+                    {
+                      "integration_id": "xero",
+                      "name": "Xero API's",
+                      "scopes": "email,openid,profile,assets,assets.read,files,files.read,projects,projects.read",
+                      "subject": "ms.integration.oauth.config.xero"
+                    },
+                    {
+                      "integration_id": "google",
+                      "name": "Google Workspace",
+                      "scopes": "https://www.googleapis.com/auth/gmail.readonly,https://www.googleapis.com/auth/calendar",
+                      "subject": "ms.integration.oauth.config.google"
+                    }
+                  ],
+                  "results_total": 3
                 }
               }
             }
@@ -1820,7 +3264,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.oauth-config",
+        "x-resource": "microstrate.hub.get.oauth-config",
         "responses": {
           "200": {
             "description": "OAuth configuration",
@@ -1828,6 +3272,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConfigBasicData"
+                },
+                "examples": {
+                  "slack": {
+                    "summary": "Slack OAuth config",
+                    "value": {
+                      "integration_id": "slack",
+                      "name": "Slack API",
+                      "scopes": "channels:read,chat:write,users:read",
+                      "subject": "ms.integration.oauth.config.slack"
+                    }
+                  },
+                  "xero": {
+                    "summary": "Xero OAuth config",
+                    "value": {
+                      "integration_id": "xero",
+                      "name": "Xero API's",
+                      "scopes": "email,openid,profile,assets,assets.read",
+                      "subject": "ms.integration.oauth.config.xero"
+                    }
+                  }
                 }
               }
             }
@@ -1862,13 +3326,41 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.put.oauth-config",
+        "x-resource": "microstrate.hub.put.oauth-config",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/IntegrationOauthConfig"
+              },
+              "examples": {
+                "slack": {
+                  "summary": "Slack OAuth configuration",
+                  "value": {
+                    "integration_id": "slack",
+                    "name": "Slack API",
+                    "scopes": "channels:read,chat:write,users:read,files:read",
+                    "client_id": "123456789.987654321",
+                    "client_secret": "abcdef1234567890abcdef",
+                    "auth_url": "https://slack.com/oauth/v2/authorize",
+                    "token_url": "https://slack.com/api/oauth.v2.access",
+                    "redirect_url": "https://api.quiva.ai/hub/integrations/oauth-callback"
+                  }
+                },
+                "github": {
+                  "summary": "GitHub OAuth configuration",
+                  "value": {
+                    "integration_id": "github",
+                    "name": "GitHub API",
+                    "scopes": "repo,read:user,read:org",
+                    "client_id": "Iv1.a1b2c3d4e5f6g7h8",
+                    "client_secret": "secret123456789abcdef",
+                    "auth_url": "https://github.com/login/oauth/authorize",
+                    "token_url": "https://github.com/login/oauth/access_token",
+                    "redirect_url": "https://api.quiva.ai/hub/integrations/oauth-callback"
+                  }
+                }
               }
             }
           }
@@ -1914,7 +3406,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.delete.oauth-config",
+        "x-resource": "microstrate.hub.delete.oauth-config",
         "responses": {
           "200": {
             "description": "OAuth configuration",
@@ -1958,7 +3450,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.oauth-connections",
+        "x-resource": "microstrate.hub.get.oauth-connections",
         "responses": {
           "200": {
             "description": "List of OAuth connections",
@@ -1966,6 +3458,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConnectionsList"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "access_token": "eyJhbGciOiJSUzI1Ni...",
+                      "token_type": "Bearer",
+                      "refresh_token": "xoxr-123456789012-refresh-token",
+                      "expiry": "2025-06-15T14:30:00.000000+00:00",
+                      "expires_in": 43200,
+                      "sequence": 42,
+                      "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.slack.workspace1",
+                      "modified": 1749912600
+                    },
+                    {
+                      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+                      "token_type": "Bearer",
+                      "refresh_token": "ulpL_xero_refresh_token_abc123",
+                      "expiry": "2025-06-15T15:00:00.000000+00:00",
+                      "expires_in": 1800,
+                      "sequence": 85,
+                      "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.xero.demo",
+                      "modified": 1749914400
+                    },
+                    {
+                      "access_token": "eyJhbGciOiJSUzI1Ni...",
+                      "token_type": "Bearer",
+                      "expiry": "2025-12-31T23:59:59.000000+00:00",
+                      "expires_in": 31536000,
+                      "sequence": 12,
+                      "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.github.personal",
+                      "modified": 1749900000
+                    }
+                  ],
+                  "results_total": 3
                 }
               }
             }
@@ -2010,7 +3536,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.integration-oauth-token",
+        "x-resource": "microstrate.hub.get.integration-oauth-token",
         "responses": {
           "200": {
             "description": "OAuth connection details",
@@ -2018,6 +3544,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConnection"
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "token_type": "Bearer",
+                  "refresh_token": "ulpL_xGHJwk9RmT2PnCq...",
+                  "expiry": "2025-05-29T17:09:39.816102+01:00",
+                  "expires_in": 1800,
+                  "sequence": 85,
+                  "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.xero.demo",
+                  "modified": 1748533179
                 }
               }
             }
@@ -2049,7 +3585,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.oauth-connection",
+        "x-resource": "microstrate.hub.get.oauth-connection",
         "responses": {
           "200": {
             "description": "Connection deleted successfully",
@@ -2057,6 +3593,31 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConnection"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "access_token": "eyJhbGciOiJSUzI1NiIs...",
+                      "token_type": "Bearer",
+                      "refresh_token": "ulpL_...",
+                      "expiry": "2025-05-29T17:09:39.816102+01:00",
+                      "expires_in": 1800,
+                      "sequence": 85,
+                      "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.xero.demo",
+                      "modified": 1748533179
+                    },
+                    {
+                      "access_token": "eyJhbGciOiJSUzI1NiIs...",
+                      "token_type": "Bearer",
+                      "refresh_token": "pSn5h...",
+                      "expiry": "2025-05-29T17:11:54.397804+01:00",
+                      "expires_in": 1800,
+                      "sequence": 86,
+                      "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.xero.maria",
+                      "modified": 1748533314
+                    }
+                  ],
+                  "results_total": 2
                 }
               }
             }
@@ -2083,7 +3644,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.delete.oauth-connection",
+        "x-resource": "microstrate.hub.delete.oauth-connection",
         "parameters": [
           {
             "$ref": "#/components/parameters/integrationId"
@@ -2125,7 +3686,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.accounts.get.oauth-callback",
+        "x-resource": "microstrate.accounts.get.oauth-callback",
         "parameters": [
           {
             "name": "code",
@@ -2155,6 +3716,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConnection"
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJSUzI1Ni...",
+                  "token_type": "Bearer",
+                  "refresh_token": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...",
+                  "expiry": "2025-06-01T12:00:00.000000+00:00",
+                  "expires_in": 3600,
+                  "sequence": 1,
+                  "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.slack.workspace1",
+                  "modified": 1748620800
                 }
               }
             }
@@ -2191,7 +3762,7 @@
           "Oauth"
         ],
         "x-resource-type": "service",
-        "x-resource": "quiva.hub.get.integration-oauth-refresh",
+        "x-resource": "microstrate.hub.get.integration-oauth-refresh",
         "parameters": [
           {
             "$ref": "#/components/parameters/integrationId"
@@ -2217,6 +3788,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OauthConnection"
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJSUzI1Ni...",
+                  "token_type": "Bearer",
+                  "refresh_token": "bmV3UmVmcmVzaFRva2VuVmFsdWU...",
+                  "expiry": "2025-05-30T18:00:00.000000+01:00",
+                  "expires_in": 1800,
+                  "sequence": 87,
+                  "subject": "ms.integration.oauth.AC75JGNMJHTRQNXCBDMIAJCJ57HAEWP2RGWXJCIFFGW2K64OKG267A2D.xero.maria",
+                  "modified": 1748622000
                 }
               }
             }

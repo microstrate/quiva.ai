@@ -91,7 +91,7 @@
                     }
                 },
                 "x-resource-type": "service",
-                "x-resource": "quiva.secrets-manager.get.secret-list"
+                "x-resource": "microstrate.secrets-manager.get.secret-list"
             },
             "put": {
                 "summary": "Create or update a secret",
@@ -150,7 +150,7 @@
                     }
                 },
                 "x-resource-type": "service",
-                "x-resource": "quiva.secrets-manager.put.secret"
+                "x-resource": "microstrate.secrets-manager.put.secret"
             }
         },
         "/secrets/{key}": {
@@ -215,7 +215,7 @@
                     }
                 },
                 "x-resource-type": "service",
-                "x-resource": "quiva.secrets-manager.get.secret"
+                "x-resource": "microstrate.secrets-manager.get.secret"
             },
             "delete": {
                 "summary": "Delete a secret",
@@ -283,7 +283,7 @@
                     }
                 },
                 "x-resource-type": "service",
-                "x-resource": "quiva.secrets-manager.delete.secret"
+                "x-resource": "microstrate.secrets-manager.delete.secret"
             }
         }
     },
