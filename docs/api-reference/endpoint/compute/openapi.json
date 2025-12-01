@@ -358,17 +358,7 @@
         },
         "responses": {
           "200": {
-            "description": "Collection patched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "message": "success"
-                }
-              }
-            }
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
@@ -578,20 +568,212 @@
                 },
                 "examples": {
                   "functions_list": {
-                    "summary": "Running machines",
+                    "summary": "Function list",
                     "value": {
                       "body": {
                         "results": [
                           {
-                            "description": "A serverless function",
-                            "name": "my-function",
-                            "runtime": "nodejs",
-                            "subject": "ms.compute.987654321.function.123456789",
-                            "type": "created",
-                            "modified": 1714378974
+                            "compute_asset": {
+                              "network": {},
+                              "scaling": {
+                                "lower_cpu_percent": 0,
+                                "lower_memory_percent": 0,
+                                "lower_outstanding": 0,
+                                "lower_rps_limit": 0,
+                                "max_instances": 0,
+                                "min_instances": 0,
+                                "sample_period": 0,
+                                "timeout_period": 0,
+                                "upper_cpu_percent": 0,
+                                "upper_memory_percent": 0,
+                                "upper_outstanding": 0,
+                                "upper_rps_limit": 0
+                              }
+                            },
+                            "description": "Retrieve an object from a bucket stored in your account",
+                            "modified": 1763672023,
+                            "monitor_config": {
+                              "store_payload": false,
+                              "ttl": 0
+                            },
+                            "name": "get-object-from-bucket",
+                            "runtime": "runtime.nodejs.hydra",
+                            "schema": {
+                              "input": {
+                                "$id": "https://datahub.com/nodes/obs-key-get/input.schema.json",
+                                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                                "description": "Object store key get node input schema",
+                                "properties": {
+                                  "bucket": {
+                                    "description": "bucket",
+                                    "type": "string"
+                                  },
+                                  "json": {
+                                    "description": "parse value as json",
+                                    "type": "boolean"
+                                  },
+                                  "name": {
+                                    "description": "key name",
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "bucket",
+                                  "name"
+                                ],
+                                "title": "Object store key get input",
+                                "type": "object"
+                              },
+                              "output": {
+                                "$id": "https://datahub.com/nodes/obs-key-get/output.schema.json",
+                                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                                "description": "Object store key get node output schema",
+                                "properties": {
+                                  "body": {
+                                    "properties": {
+                                      "body": {
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "value": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "object"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "type": "object"
+                                      },
+                                      "metadata": {
+                                        "properties": {
+                                          "Bucket": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "type": "object"
+                                      }
+                                    },
+                                    "type": "object"
+                                  },
+                                  "status_code": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "title": "Object store key get output",
+                                "type": "object"
+                              }
+                            },
+                            "sequence": 4158,
+                            "subject": "ms.compute.1753641292.function.2594327813",
+                            "type": "patched"
+                          },
+                          {
+                            "compute_asset": {
+                              "network": {},
+                              "scaling": {
+                                "lower_cpu_percent": 0,
+                                "lower_memory_percent": 0,
+                                "lower_outstanding": 0,
+                                "lower_rps_limit": 0,
+                                "max_instances": 0,
+                                "min_instances": 0,
+                                "sample_period": 0,
+                                "timeout_period": 0,
+                                "upper_cpu_percent": 0,
+                                "upper_memory_percent": 0,
+                                "upper_outstanding": 0,
+                                "upper_rps_limit": 0
+                              }
+                            },
+                            "description": "Retrieve a key/value bucket item by the item key",
+                            "modified": 1763645687,
+                            "monitor_config": {
+                              "store_payload": false,
+                              "ttl": 0
+                            },
+                            "name": "get-kv-bucket-item",
+                            "runtime": "runtime.nodejs.hydra",
+                            "schema": {
+                              "input": {
+                                "$id": "https://datahub.com/nodes/kv-key-get/input.schema.json",
+                                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                                "description": "KV get node input schema",
+                                "properties": {
+                                  "bucket": {
+                                    "description": "kv bucket",
+                                    "type": "string"
+                                  },
+                                  "json": {
+                                    "description": "parse value as json",
+                                    "type": "boolean"
+                                  },
+                                  "key": {
+                                    "description": "kv key",
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "bucket",
+                                  "key"
+                                ],
+                                "title": "KV get input",
+                                "type": "object"
+                              },
+                              "output": {
+                                "$id": "https://datahub.com/nodes/kv-key-get/output.schema.json",
+                                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                                "description": "KV get node output schema",
+                                "properties": {
+                                  "body": {
+                                    "properties": {
+                                      "body": {
+                                        "properties": {
+                                          "key": {
+                                            "type": "string"
+                                          },
+                                          "value": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "object"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "type": "object"
+                                      },
+                                      "metadata": {
+                                        "properties": {
+                                          "Bucket": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "type": "object"
+                                      }
+                                    },
+                                    "type": "object"
+                                  },
+                                  "status_code": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "title": "KV get output",
+                                "type": "object"
+                              }
+                            },
+                            "sequence": 4131,
+                            "subject": "ms.compute.1753641292.function.2631565996",
+                            "type": "patched"
                           }
                         ],
-                        "results_total": 1
+                        "results_total": 2
                       }
                     }
                   },
@@ -634,12 +816,12 @@
                 "name": "my-function",
                 "description": "A serverless function",
                 "compute_asset": {
-                  "collection_topic": "my-namespace",
+                  "namespace": "1753641292",
                   "handler": "index.handler",
                   "assets": [
                     {
                       "asset_name": "index.js",
-                      "asset_type": "js",
+                      "asset_type": "javascript",
                       "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                       "link": false
                     },
@@ -701,7 +883,7 @@
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
-                      "collection_topic": "my-namespace",
+                      "namespace": "1753641292",
                       "service": "123456789",
                       "runtime": "nodejs",
                       "handler": "index.handler",
@@ -791,14 +973,14 @@
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
-                      "collection_topic": "my-namespace",
+                      "namespace": "1120867488",
                       "service": "123456789",
                       "runtime": "nodejs",
                       "handler": "index.handler",
                       "assets": [
                         {
                           "asset_name": "index.js",
-                          "asset_type": "js",
+                          "asset_type": "javascript",
                           "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                           "link": false
                         }
@@ -848,17 +1030,7 @@
         },
         "responses": {
           "200": {
-            "description": "Function patched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "message": "success"
-                }
-              }
-            }
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
@@ -987,17 +1159,20 @@
                     "assets": [
                       {
                         "asset_name": "index.js",
-                        "asset_type": "js",
+                        "asset_type": "javascript",
                         "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                         "link": false
                       }
                     ],
-                    "collection_topic": "my-namespace",
+                    "namespace": "1753641292",
                     "service": "123456789",
                     "runtime": "nodejs",
                     "handler": "index.handler",
                     "timeout": 30000,
-                    "read_only_fs": true
+                    "read_only_fs": true,
+                    "limits": {
+                      "memory": "512MB"
+                    }
                   }
                 }
               }
@@ -1033,7 +1208,7 @@
                 "assets": [
                   {
                     "asset_name": "index.js",
-                    "asset_type": "js",
+                    "asset_type": "javascript",
                     "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBVcGRhdGVkIFdvcmxkISIpOwo=",
                     "link": false
                   }
@@ -1049,17 +1224,7 @@
         },
         "responses": {
           "200": {
-            "description": "Compute assets patched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "message": "success"
-                }
-              }
-            }
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
@@ -1128,38 +1293,44 @@
                   "body": {
                     "results": [
                       {
-                        "collection_topic": "my-namespace",
+                        "namespace": "1753641292",
                         "service": "123456789",
                         "runtime": "nodejs",
                         "handler": "index.handler",
                         "assets": [
                           {
                             "asset_name": "index.js",
-                            "asset_type": "js",
+                            "asset_type": "javascript",
                             "asset_value": "ZXhwb3J0cy5oYW5kbGVyID0gYXN5bmMgKCkgPT4gKHt9KTs=",
                             "link": false
                           }
                         ],
+                        "limits": {
+                          "memory": "1GB"
+                        },
                         "timeout": 30000,
                         "read_only_fs": true,
                         "modified": 1714378974
                       },
                       {
-                        "collection_topic": "my-namespace",
+                        "namespace": "1753641292",
                         "service": "123456789",
                         "runtime": "nodejs",
                         "handler": "index.newHandler",
                         "assets": [
                           {
                             "asset_name": "index.js",
-                            "asset_type": "js",
+                            "asset_type": "javascript",
                             "asset_value": "Y29uc29sZS5sb2coIkhlbGxvLCBVcGRhdGVkIFdvcmxkISIpOwo=",
                             "link": false
                           }
                         ],
                         "timeout": 60000,
                         "read_only_fs": true,
-                        "modified": 1714380000
+                        "modified": 1714380000,
+                        "limits": {
+                          "memory": "512MB"
+                        }
                       }
                     ],
                     "results_total": 2
@@ -1257,7 +1428,7 @@
                 "name": "my-container",
                 "description": "A container for my application",
                 "compute_asset": {
-                  "collection_topic": "my-namespace",
+                  "namespace": "my-namespace",
                   "runtime": "docker",
                   "assets": [
                     {
@@ -1299,7 +1470,7 @@
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
-                      "collection_topic": "my-namespace",
+                      "namespace": "my-namespace",
                       "service": "123456789",
                       "runtime": "docker",
                       "read_only_fs": false
@@ -1369,7 +1540,7 @@
                     "type": "created",
                     "modified": 1714378974,
                     "compute_asset": {
-                      "collection_topic": "my-namespace",
+                      "namespace": "2492545943",
                       "service": "123456789",
                       "runtime": "docker",
                       "assets": [
@@ -1380,7 +1551,10 @@
                           "link": false
                         }
                       ],
-                      "read_only_fs": false
+                      "read_only_fs": false,
+                      "limits": {
+                        "memory": "1GB"
+                      }
                     }
                   }
                 }
@@ -1424,17 +1598,7 @@
         },
         "responses": {
           "200": {
-            "description": "Container patched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "message": "success"
-                }
-              }
-            }
+            "$ref": "#/components/responses/success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
@@ -1991,22 +2155,39 @@
                   "body": {
                     "results": [
                       {
+                        "asset": "runtime.nodejs.hydra",
+                        "asset_sha": "SHA-256=5zzW-c28ZaU0MX_dxmscVO_Gh9r67gbANeM8dcoNTFQ=",
+                        "description": "",
+                        "limits": {
+                          "amd.com/gpu": "0",
+                          "cpu": "2",
+                          "intel.com/gpu": "0",
+                          "memory": "512mb",
+                          "nvidia.com/gpu": "1"
+                        },
+                        "modified": 1761214283,
                         "name": "nodejs",
-                        "version": "18.x",
-                        "description": "Node.js Runtime"
-                      },
-                      {
-                        "name": "python",
-                        "version": "3.10",
-                        "description": "Python Runtime"
-                      },
-                      {
-                        "name": "docker",
-                        "version": "latest",
-                        "description": "Docker Runtime"
+                        "runtime_command": "node index.js",
+                        "scaling": {
+                          "lower_cpu_percent": 0,
+                          "lower_memory_percent": 0,
+                          "lower_outstanding": 5,
+                          "lower_rps_limit": 10,
+                          "max_instances": 1,
+                          "min_instances": 1,
+                          "sample_period": 0,
+                          "timeout_period": 28800000000000,
+                          "upper_cpu_percent": 0,
+                          "upper_memory_percent": 0,
+                          "upper_outstanding": 10,
+                          "upper_rps_limit": 30
+                        },
+                        "sequence": 1,
+                        "subject": "$KV.microstrate-compute-asset.runtime.nodejs.hydra",
+                        "version": "4165"
                       }
                     ],
-                    "results_total": 3
+                    "results_total": 1
                   }
                 }
               }
@@ -2060,6 +2241,59 @@
                         }
                       }
                     }
+                  }
+                },
+                "example": {
+                  "body": {
+                    "results": [
+                      {
+                        "description": "The Zeus database action service API.",
+                        "endpoints": [
+                          {
+                            "metadata": {
+                              "description": "Create a new database.",
+                              "format": "application/json"
+                            },
+                            "name": "database",
+                            "queue_group": "q",
+                            "subject": "zeus.create.database"
+                          },
+                          {
+                            "metadata": {
+                              "description": "Delete an database document.",
+                              "format": "application/json"
+                            },
+                            "name": "document",
+                            "queue_group": "q",
+                            "subject": "zeus.delete.document"
+                          },
+                          {
+                            "metadata": {
+                              "description": "Delete/purge an entire database.",
+                              "format": "application/json"
+                            },
+                            "name": "database",
+                            "queue_group": "q",
+                            "subject": "zeus.delete.database"
+                          },
+                          {
+                            "metadata": {
+                              "description": "Update a database configuration.",
+                              "format": "application/json"
+                            },
+                            "name": "database",
+                            "queue_group": "q",
+                            "subject": "zeus.update.database"
+                          }
+                        ],
+                        "id": "t4H1WBq0XBAEKMt0vSPikj",
+                        "metadata": {},
+                        "name": "zeus-action-service",
+                        "type": "evari.bellerophon.kraken.v1.info_response",
+                        "version": "0.1.0"
+                      }
+                    ],
+                    "results_total": 1
                   }
                 }
               }
@@ -2206,6 +2440,88 @@
           }
         }
       },
+      "HydraMachineScaling": {
+        "type": "object",
+        "description": "Auto-scaling configuration. For ephemeral functions, scaling is based on request load (RPS and outstanding requests). For persistent machines, scaling uses CPU/memory metrics. Override runtime defaults if needed.",
+        "properties": {
+          "min_instances": {
+            "type": "integer",
+            "description": "Minimum number of instances to maintain. Set to 0 for scale-to-zero.",
+            "minimum": 0,
+            "default": 0,
+            "example": 1
+          },
+          "max_instances": {
+            "type": "integer",
+            "description": "Maximum number of instances allowed. Prevents runaway scaling costs.",
+            "minimum": 1,
+            "default": 10,
+            "example": 10
+          },
+          "upper_rps_limit": {
+            "type": "integer",
+            "description": "Upper requests-per-second threshold. Scale up when exceeded (for functions/services with request tracking).",
+            "minimum": 1,
+            "example": 100
+          },
+          "lower_rps_limit": {
+            "type": "integer",
+            "description": "Lower requests-per-second threshold. Scale down when below this limit.",
+            "minimum": 0,
+            "example": 10
+          },
+          "upper_outstanding": {
+            "type": "integer",
+            "description": "Upper outstanding requests limit. Scale up when this many requests are queued/processing.",
+            "minimum": 1,
+            "example": 50
+          },
+          "lower_outstanding": {
+            "type": "integer",
+            "description": "Lower outstanding requests limit. Scale down when queue is below this size.",
+            "minimum": 0,
+            "example": 5
+          },
+          "timeout_period": {
+            "type": "integer",
+            "description": "Timeout period for idle instances in nanoseconds (Go duration format). Idle instances are terminated after this period.",
+            "example": 300000000000
+          },
+          "upper_cpu_percent": {
+            "type": "integer",
+            "description": "Upper CPU usage percentage threshold (average over sample period). Scale up when exceeded.",
+            "minimum": 1,
+            "maximum": 100,
+            "example": 80
+          },
+          "lower_cpu_percent": {
+            "type": "integer",
+            "description": "Lower CPU usage percentage threshold. Scale down when below this level.",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 20
+          },
+          "upper_memory_percent": {
+            "type": "integer",
+            "description": "Upper memory usage percentage threshold (average over sample period). Scale up when exceeded.",
+            "minimum": 1,
+            "maximum": 100,
+            "example": 85
+          },
+          "lower_memory_percent": {
+            "type": "integer",
+            "description": "Lower memory usage percentage threshold. Scale down when below this level.",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 30
+          },
+          "sample_period": {
+            "type": "integer",
+            "description": "Sample period for CPU and memory metrics in nanoseconds (Go duration format). Metrics are averaged over this window.",
+            "example": 60000000000
+          }
+        }
+      },
       "Collection": {
         "type": "object",
         "properties": {
@@ -2298,22 +2614,30 @@
       },
       "ComputeAssetItem": {
         "type": "object",
+        "required": [
+          "asset_name",
+          "asset_value"
+        ],
         "properties": {
           "asset_name": {
             "type": "string",
-            "description": "Asset name"
+            "description": "Name/path of the asset within the function environment (e.g., 'index.js', 'lib/helper.js')",
+            "example": "index.js"
           },
           "asset_type": {
             "type": "string",
-            "description": "Asset type"
+            "description": "Type of asset: 'file' for individual files, 'archive' for compressed directories, 'binary' for executables.",
+            "example": "file"
           },
           "asset_value": {
             "type": "string",
-            "description": "Base64 encoded content"
+            "description": "Content (if link=false) or object store key (if link=true). Has to be encoded to base-64 in both cases",
+            "example": "Y29uc29sZS5sb2coIkhlbGxvLCBXb3JsZCEiKTsK"
           },
           "link": {
             "type": "boolean",
-            "description": "Whether asset is a link"
+            "description": "If true, asset_value is an object store key. If false, asset_value contains the function definition. Links are created automatically during deployment.",
+            "default": false
           }
         }
       },
@@ -2456,48 +2780,89 @@
       },
       "ComputeAsset": {
         "type": "object",
+        "required": [
+          "namespace",
+          "assets"
+        ],
         "properties": {
-          "collection_topic": {
+          "namespace": {
             "type": "string",
-            "description": "Collection topic identifier"
-          },
-          "service": {
-            "type": "string",
-            "description": "Service identifier"
-          },
-          "runtime": {
-            "type": "string",
-            "description": "Runtime environment"
+            "description": "A namespace identifier - organizes functions into logical groups",
+            "example": "1753641292"
           },
           "handler": {
             "type": "string",
-            "description": "Function handler (only applicable for functions)"
+            "description": "Entry point for the function. Format depends on runtime (e.g., '{file_name_without_extension}.{function_name}' for Node.js, path to binary for native code). Required for functions",
+            "example": "index.handler"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime environment name (must match available provider runtimes)",
+            "default": "nodejs",
+            "example": "nodejs"
           },
           "assets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ComputeAssetItem"
             },
-            "description": "Asset items"
+            "description": "Code and configuration files for the function. Assets can be inline (base64) or links to object store"
           },
           "timeout": {
             "type": "integer",
-            "description": "Timeout in milliseconds (only applicable for functions)"
+            "description": "Function execution timeout in milliseconds (starts when user code executes)",
+            "default": 30000,
+            "minimum": 1000,
+            "maximum": 900000,
+            "example": 30000
+          },
+          "occ": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Optimistic Concurrency Control version for the function definition. If greater than 0, performs an OCC update (conditional update based on current version). If 0 or omitted, performs a standard put operation creating a new version. Used to prevent concurrent modification conflicts.",
+            "minimum": 0,
+            "example": 5
+          },
+          "read_only_fs": {
+            "type": "boolean",
+            "description": "If true, removes write access from the root filesystem mount point for security",
+            "default": true
           },
           "env_vars": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Environment variables"
+            "description": "Environment variables to set in the function runtime (format: 'KEY=value')",
+            "example": [
+              "NODE_ENV=production",
+              "LOG_LEVEL=info"
+            ]
           },
-          "read_only_fs": {
-            "type": "boolean",
-            "description": "Read-only filesystem flag"
+          "constraints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags that target Hydra nodes must have to run this function (e.g., 'region=us-east', 'gpu=true')",
+            "example": [
+              "region=us-east",
+              "tier=premium"
+            ]
           },
-          "modified": {
-            "type": "integer",
-            "description": "Last modification timestamp"
+          "secrets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of secret keys to make available to the function (secrets must exist before deployment)",
+            "example": [
+              "database_password",
+              "api_key"
+            ]
+          },
+          "limits": {
+            "$ref": "#/components/schemas/HydraComputeLimits"
           }
         }
       },
@@ -2602,54 +2967,14 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Function name"
+            "description": "Unique name for the function within its namespace"
           },
           "description": {
             "type": "string",
-            "description": "Function description"
+            "description": "Human-readable description of the function"
           },
           "compute_asset": {
-            "type": "object",
-            "required": [
-              "collection_topic"
-            ],
-            "properties": {
-              "collection_topic": {
-                "type": "string",
-                "description": "Collection topic identifier used as namespace"
-              },
-              "handler": {
-                "type": "string",
-                "description": "Function handler"
-              },
-              "runtime": {
-                "type": "string",
-                "description": "Runtime environment",
-                "default": "nodejs"
-              },
-              "assets": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ComputeAssetItem"
-                },
-                "description": "Function assets"
-              },
-              "timeout": {
-                "type": "integer",
-                "description": "Function timeout in milliseconds"
-              },
-              "read_only_fs": {
-                "type": "boolean",
-                "description": "Read-only filesystem flag"
-              },
-              "env_vars": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Environment variables"
-              }
-            }
+            "$ref": "#/components/schemas/ComputeAsset"
           },
           "monitor_config": {
             "$ref": "#/components/schemas/MonitorConfig"
@@ -2659,7 +2984,51 @@
           },
           "size": {
             "type": "string",
-            "description": "Size configuration for function resources"
+            "description": "Predefined size configuration for function resources",
+            "enum": [
+              "small",
+              "medium",
+              "large",
+              "xlarge"
+            ]
+          },
+          "scaling": {
+            "$ref": "#/components/schemas/HydraMachineScaling"
+          }
+        }
+      },
+      "HydraComputeLimits": {
+        "type": "object",
+        "description": "Compute limits",
+        "required": [
+          "memory"
+        ],
+        "properties": {
+          "memory": {
+            "type": "string",
+            "description": "Memory limit for the function (e.g., '128MB', '256MB', '512MB', '1GB', '2GB'). This is a hard limit enforced by the runtime.",
+            "example": "256MB"
+          },
+          "cpu": {
+            "type": "string",
+            "description": "CPU limit override. If not specified, CPU is allocated proportionally based on memory. Format: number of CPU cores (e.g., '0.5', '1', '2')",
+            "example": "1",
+            "pattern": "^[0-9]+(\\.[0-9]+)?$"
+          },
+          "nvidia.com/gpu": {
+            "type": "string",
+            "description": "NVIDIA GPU resources (experimental). Specify number of GPUs to allocate.",
+            "example": "1"
+          },
+          "amd.com/gpu": {
+            "type": "string",
+            "description": "AMD GPU resources (experimental). Specify number of GPUs to allocate.",
+            "example": "1"
+          },
+          "intel.com/gpu": {
+            "type": "string",
+            "description": "Intel GPU resources (experimental). Specify number of GPUs to allocate.",
+            "example": "1"
           }
         }
       },
@@ -2724,39 +3093,7 @@
             "description": "Container description"
           },
           "compute_asset": {
-            "type": "object",
-            "required": [
-              "collection_topic",
-              "runtime"
-            ],
-            "properties": {
-              "collection_topic": {
-                "type": "string",
-                "description": "Collection topic identifier used as namespace"
-              },
-              "runtime": {
-                "type": "string",
-                "description": "Runtime environment"
-              },
-              "assets": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ComputeAssetItem"
-                },
-                "description": "Container assets"
-              },
-              "read_only_fs": {
-                "type": "boolean",
-                "description": "Read-only filesystem flag"
-              },
-              "env_vars": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Environment variables"
-              }
-            }
+            "$ref": "#/components/schemas/ComputeAsset"
           },
           "monitor_config": {
             "$ref": "#/components/schemas/MonitorConfig"
@@ -2790,11 +3127,21 @@
     },
     "responses": {
       "success": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "Success message"
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Success message"
+                }
+              }
+            },
+            "example": {
+              "message": "success"
+            }
           }
         }
       },
