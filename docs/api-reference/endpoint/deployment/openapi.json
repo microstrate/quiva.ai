@@ -341,6 +341,7 @@
                 ],
                 "x-resource-type": "service",
                 "x-resource": "microstrate.deployment.post.deploy-stack",
+                "x-timeout": 60000,
                 "requestBody": {
                     "description": "Stack configuration details",
                     "required": true,
