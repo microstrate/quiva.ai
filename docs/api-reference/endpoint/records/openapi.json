@@ -27,6 +27,7 @@
         "/records/config": {
             "get": {
                 "summary": "List record configurations",
+                "description": "Returns all record configurations in the account. Each configuration defines the schema (field names, types, validation rules) and UI hints for a category of records. Call this first to discover available record types before listing or querying records.",
                 "operationId": "listRecordConfigs",
                 "tags": [
                     "Record Configs"
@@ -59,6 +60,7 @@
             },
             "post": {
                 "summary": "Create a record configuration",
+                "description": "Defines a new category of records by specifying a schema (field names, types, validation constraints) and UI rendering hints. The `id` you choose becomes the `config_id` used in all subsequent record operations for this type. Returns 409 if a configuration with the same ID already exists.",
                 "operationId": "createRecordConfig",
                 "tags": [
                     "Record Configs"
@@ -134,6 +136,7 @@
             ],
             "get": {
                 "summary": "Get a record configuration",
+                "description": "Retrieves the full schema and UI layout for a specific record configuration. Use this to inspect field definitions and validation rules before creating or updating records of that type.",
                 "operationId": "getRecordConfig",
                 "tags": [
                     "Record Configs"
@@ -390,6 +393,7 @@
             ],
             "get": {
                 "summary": "List records",
+                "description": "Returns all records that belong to the given configuration. Use this to retrieve every data entry for a specific record type. For filtered or cross-type queries, use GET /records instead.",
                 "operationId": "listRecords",
                 "tags": [
                     "Records"
@@ -517,6 +521,7 @@
             ],
             "get": {
                 "summary": "Get a record",
+                "description": "Retrieves a single record by its ID within a given configuration. Returns the full data object and metadata (id, created_at, updated_at). Obtain the record ID from a list or query operation first.",
                 "operationId": "getRecord",
                 "tags": [
                     "Records"
@@ -632,6 +637,7 @@
             },
             "delete": {
                 "summary": "Delete a record",
+                "description": "Permanently deletes a single record by its ID. This action is irreversible — the record's data and metadata are removed. The configuration and all other records are unaffected.",
                 "operationId": "deleteRecord",
                 "tags": [
                     "Records"
@@ -1104,6 +1110,11 @@
             },
             "RecordConfig": {
                 "type": "object",
+                "required": [
+                    "name",
+                    "schema",
+                    "views"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",
@@ -1408,7 +1419,8 @@
                 "required": [
                     "id",
                     "name",
-                    "schema"
+                    "schema",
+                    "views"
                 ],
                 "properties": {
                     "id": {
