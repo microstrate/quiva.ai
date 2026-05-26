@@ -1,0 +1,1828 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "quiva.ai Gateway",
+        "description": "API for managing document templates, documents, and e-signature workflows in the quiva.ai platform",
+        "version": "1.0.0",
+        "contact": {
+            "name": "quiva.ai Support",
+            "url": "https://app.quiva.ai"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.quiva.ai",
+            "description": "Production API server"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        },
+        {
+            "apiKeyAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Templates",
+            "description": "Template lifecycle — create, read, publish, validate, trigger, and delete document templates."
+        },
+        {
+            "name": "Documents",
+            "description": "Document lifecycle — read, update, and delete generated documents."
+        },
+        {
+            "name": "Signatures",
+            "description": "E-signature workflows powered by HelloSign (Dropbox Sign)."
+        }
+    ],
+    "paths": {
+        "/templates/{key}": {
+            "get": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Get template",
+                "description": "Retrieve a single document template by key. Pass `?draft=true` to fetch the draft version; omit or set `false` to fetch the published version.",
+                "operationId": "getTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.get.template",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TemplateKey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/QueryDraft"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Template retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TemplateResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "key": "invoice-template",
+                                        "label": "Standard Invoice",
+                                        "source": {
+                                            "key": "templates/invoice.docx",
+                                            "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        },
+                                        "output": {
+                                            "content_type": "application/pdf",
+                                            "bucket": "microstrate-documents",
+                                            "folder": "invoices",
+                                            "name": "invoice-{{invoice_number}}"
+                                        },
+                                        "signatories": [
+                                            {
+                                                "name": "{{client_name}}",
+                                                "email": "{{client_email}}",
+                                                "validity": {
+                                                    "day": 7
+                                                },
+                                                "order": 0
+                                            }
+                                        ],
+                                        "sub_templates": []
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Update template",
+                "description": "Update an existing draft template. Unlike `POST /templates`, this does not check for pre-existence — it will create or overwrite.",
+                "operationId": "updateTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.patch.template",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TemplateKey"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TemplateUpsertRequest"
+                            },
+                            "example": {
+                                "key": "invoice-template",
+                                "output": {
+                                    "content_type": "application/pdf",
+                                    "bucket": "microstrate-documents",
+                                    "folder": "invoices/updated"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Template updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubjectResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "subject": "ms.template.published.invoice-template"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Delete template",
+                "description": "Delete a draft or published template. Set `?draft=true` to target the draft version. Deletion is implemented as a poison-pill tombstone message.",
+                "operationId": "deleteTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.delete.template",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TemplateKey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/QueryDraft"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Template deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessageResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "message": "success"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/templates": {
+            "get": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "List templates",
+                "description": "List all templates. Pass `?draft=true` to list draft templates instead of published ones.",
+                "operationId": "listTemplates",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.get.templates",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/QueryDraft"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Templates listed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TemplateListResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "results": [
+                                            {
+                                                "key": "invoice-template",
+                                                "label": "Standard Invoice",
+                                                "source": {
+                                                    "key": "templates/invoice.docx",
+                                                    "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                },
+                                                "output": {
+                                                    "content_type": "application/pdf",
+                                                    "bucket": "microstrate-documents",
+                                                    "folder": "invoices"
+                                                },
+                                                "signatories": [],
+                                                "sub_templates": []
+                                            }
+                                        ],
+                                        "results_total": 1,
+                                        "next_sequence": 42,
+                                        "total_messages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Create template",
+                "description": "Create a new draft template. Returns `402` if a template with the same key already exists.",
+                "operationId": "createTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.post.template",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TemplateUpsertRequest"
+                            },
+                            "example": {
+                                "key": "invoice-template",
+                                "label": "Standard Invoice",
+                                "source": {
+                                    "key": "templates/invoice.docx",
+                                    "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                },
+                                "output": {
+                                    "content_type": "application/pdf",
+                                    "bucket": "microstrate-documents",
+                                    "folder": "invoices"
+                                },
+                                "signatories": [
+                                    {
+                                        "name": "{{client_name}}",
+                                        "email": "{{client_email}}",
+                                        "validity": {
+                                            "day": 7
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Template created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubjectResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "subject": "ms.template.draft.invoice-template"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "402": {
+                        "description": "Template with this key already exists.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "status_code": 402,
+                                    "body": {
+                                        "error": "template with key: \"invoice-template\" already exists"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/templates/{key}/publish": {
+            "post": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Publish template",
+                "description": "Promote a draft template to published state. The published version is what `template-trigger` uses to generate documents.",
+                "operationId": "publishTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.post.template-publish",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TemplateKey"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Template published successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubjectResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "subject": "ms.template.published.invoice-template"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/templates/validate": {
+            "post": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Validate template",
+                "description": "Validate a base64-encoded template file before storing it. Returns a list of any template tag errors found.",
+                "operationId": "validateTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.post.template-validate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ValidateTemplateRequest"
+                            },
+                            "example": {
+                                "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "content": "UEsDBBQABgAIAAAAIQDfpNJ..."
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Validation result returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidateTemplateResponse"
+                                },
+                                "examples": {
+                                    "valid": {
+                                        "summary": "Template is valid",
+                                        "value": {
+                                            "status_code": 200,
+                                            "body": {
+                                                "is_valid": true,
+                                                "errors": []
+                                            }
+                                        }
+                                    },
+                                    "invalid": {
+                                        "summary": "Template has errors",
+                                        "value": {
+                                            "status_code": 200,
+                                            "body": {
+                                                "is_valid": false,
+                                                "errors": [
+                                                    "Unknown tag '{{unknown_tag}}' on page 2"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/templates/{key}/unset": {
+            "patch": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Unset template paths",
+                "description": "Remove specific fields from a draft template by dot-notation path. Useful for clearing individual properties without overwriting the entire record.",
+                "operationId": "unsetTemplatePaths",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.patch.template-unset",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TemplateKey"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UnsetPathsRequest"
+                            },
+                            "example": {
+                                "key": "invoice-template",
+                                "paths": [
+                                    "output.folder",
+                                    "signatories"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Paths unset successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessageResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "message": "success"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/templates/trigger": {
+            "post": {
+                "tags": [
+                    "Templates"
+                ],
+                "summary": "Trigger template",
+                "description": "Generate one or more documents from published templates. Each entry in `list` specifies a template key and optional output overrides. The `payload` object is used for template variable substitution. This is an asynchronous operation — the response confirms jobs were queued.",
+                "operationId": "triggerTemplate",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.post.template-trigger",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TriggerTemplateRequest"
+                            },
+                            "example": {
+                                "payload": {
+                                    "client_name": "Acme Corp",
+                                    "client_email": "billing@acme.com",
+                                    "invoice_number": "INV-2024-001",
+                                    "amount": "5000.00"
+                                },
+                                "list": [
+                                    {
+                                        "template": "invoice-template",
+                                        "output": {
+                                            "folder": "invoices/2024"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trigger jobs queued. Check `errors` on each result for per-template failures.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TriggerTemplateResponse"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "All templates triggered successfully",
+                                        "value": {
+                                            "status_code": 200,
+                                            "body": [
+                                                {
+                                                    "template": "invoice-template",
+                                                    "subject": "ms.document.invoices.2024.invoice-INV-2024-001.pdf"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "partial_failure": {
+                                        "summary": "One template failed",
+                                        "value": {
+                                            "status_code": 200,
+                                            "body": [
+                                                {
+                                                    "template": "invoice-template",
+                                                    "errors": [
+                                                        "Document template with key: invoice-template does not have a template source"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/documents/{key}": {
+            "get": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Get document",
+                "description": "Retrieve a single document by key.",
+                "operationId": "getDocument",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.get.document",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/DocumentKey"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "created_at": "2024-03-15T10:30:00Z",
+                                        "name": "acme-nda-2024.docx",
+                                        "output": {
+                                            "key": "obj://microstrate-documents/contracts/acme-nda-2024.pdf"
+                                        },
+                                        "template": {
+                                            "key": "nda-template"
+                                        },
+                                        "signatures": [
+                                            {
+                                                "name": "Jane Smith",
+                                                "email": "jane@acme.com",
+                                                "expiry": "2024-03-22T10:30:00Z",
+                                                "status": "SIGNED",
+                                                "order": 0,
+                                                "signed_at": "2024-03-16T14:22:10Z",
+                                                "request": {
+                                                    "id": "sr_abc123",
+                                                    "signature_id": "hs_sig_xyz789",
+                                                    "is_embedded": true
+                                                },
+                                                "error": null
+                                            }
+                                        ],
+                                        "errors": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Update document",
+                "description": "Create or update a document record directly. Used to manually set document metadata outside of a template trigger workflow.",
+                "operationId": "upsertDocument",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.patch.document",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/DocumentKey"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertDocumentRequest"
+                            },
+                            "example": {
+                                "key": "contracts/acme-nda-2024.docx",
+                                "name": "Acme NDA 2024",
+                                "template": {
+                                    "key": "nda-template"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Document updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubjectResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "subject": "ms.document.contracts.acme-nda-2024.docx"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Delete document",
+                "description": "Delete a document record. Implemented as a poison-pill tombstone message.",
+                "operationId": "deleteDocument",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.delete.document",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/DocumentKey"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessageResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "message": "success"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/documents": {
+            "get": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "List documents",
+                "description": "List documents matching a subject query. The query supports stream wildcard patterns such as `contracts.*` (single level) or `contracts.>` (any depth).",
+                "operationId": "listDocuments",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.get.documents",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": true,
+                        "description": "Stream subject query filter, e.g. `contracts.*` or `contracts.>`.",
+                        "schema": {
+                            "type": "string",
+                            "example": "contracts.*"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Documents listed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentListResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "results": [
+                                            {
+                                                "created_at": "2024-03-15T10:30:00Z",
+                                                "name": "acme-nda-2024.docx",
+                                                "output": {
+                                                    "key": "obj://microstrate-documents/contracts/acme-nda-2024.pdf"
+                                                },
+                                                "template": {
+                                                    "key": "nda-template"
+                                                },
+                                                "signatures": null,
+                                                "errors": null
+                                            }
+                                        ],
+                                        "results_total": 1,
+                                        "next_sequence": 99,
+                                        "total_messages": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/documents/{key}/unset": {
+            "patch": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Unset document paths",
+                "description": "Remove specific fields from a document record by dot-notation path.",
+                "operationId": "unsetDocumentPaths",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.patch.document-unset",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/DocumentKey"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UnsetPathsRequest"
+                            },
+                            "example": {
+                                "key": "contracts/acme-nda-2024.docx",
+                                "paths": [
+                                    "errors",
+                                    "output"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Paths unset successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessageResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "message": "success"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/documents/{key}/signature-url": {
+            "get": {
+                "tags": [
+                    "Signatures"
+                ],
+                "summary": "Get document signature URL",
+                "description": "Generate an embedded signing URL for a specific signature on a document. Only available for signatures created in embedded signing mode.",
+                "operationId": "getDocumentSignatureUrl",
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.get.document-signature-url",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/DocumentKey"
+                    },
+                    {
+                        "name": "signature_id",
+                        "in": "query",
+                        "required": true,
+                        "description": "HelloSign signature ID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "hs_sig_xyz789"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Embedded signing URL generated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignatureUrlResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "signature_url": "https://app.hellosign.com/sign/abc123?client_id=cid_xyz&skip_domain_verification=true"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/webhooks/hellosign": {
+            "post": {
+                "tags": [
+                    "Signatures"
+                ],
+                "summary": "HelloSign callback",
+                "description": "Webhook endpoint for HelloSign signature events. Handles `signature_request_signed`, `signature_request_all_signed`, and `signature_request_invalid` events. Unrecognised event types are silently ignored. Called by the HelloSign platform, not by internal services.",
+                "operationId": "hellosignCallback",
+                "x-is-public": true,
+                "x-resource-type": "service",
+                "x-resource": "microstrate.file-generator.post.hellosign-callback",
+                "security": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "json": {
+                                        "type": "string",
+                                        "description": "JSON-encoded HelloSign event payload."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Event received and processed.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessageResponse"
+                                },
+                                "example": {
+                                    "status_code": 200,
+                                    "body": {
+                                        "message": "Hello API Event Received"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "apiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-Api-Key"
+            }
+        },
+        "parameters": {
+            "TemplateKey": {
+                "name": "key",
+                "in": "path",
+                "required": true,
+                "description": "Unique template key.",
+                "schema": {
+                    "type": "string",
+                    "example": "invoice-template"
+                }
+            },
+            "DocumentKey": {
+                "name": "key",
+                "in": "path",
+                "required": true,
+                "description": "Unique document key, typically a file path.",
+                "schema": {
+                    "type": "string",
+                    "example": "contracts/acme-nda-2024.docx"
+                }
+            },
+            "QueryDraft": {
+                "name": "draft",
+                "in": "query",
+                "required": false,
+                "description": "When `true`, targets the draft version of a template. Defaults to published.",
+                "schema": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "schemas": {
+            "TemplateSignatoryValidity": {
+                "type": "object",
+                "description": "How long a signatory has to complete signing before the request expires.",
+                "properties": {
+                    "day": {
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "week": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "month": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "year": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                }
+            },
+            "TemplateSignatory": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "validity"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Signatory name. Supports template variable syntax e.g. `{{client_name}}`.",
+                        "example": "{{client_name}}"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Signatory email. Supports template variable syntax e.g. `{{client_email}}`.",
+                        "example": "{{client_email}}"
+                    },
+                    "validity": {
+                        "$ref": "#/components/schemas/TemplateSignatoryValidity"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "description": "Signing order index (0-based).",
+                        "example": 0
+                    }
+                }
+            },
+            "TemplateSubTemplate": {
+                "type": "object",
+                "required": [
+                    "key"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Key of the sub-template to merge.",
+                        "example": "terms-and-conditions"
+                    },
+                    "conditions": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Rule-engine condition object. Sub-template is only included if conditions evaluate to true.",
+                        "example": {}
+                    }
+                }
+            },
+            "TemplateOutput": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Output filename template. Supports variable substitution.",
+                        "example": "invoice-{{invoice_number}}"
+                    },
+                    "content_type": {
+                        "type": "string",
+                        "description": "Output MIME type.",
+                        "enum": [
+                            "application/pdf",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        ],
+                        "example": "application/pdf"
+                    },
+                    "bucket": {
+                        "type": "string",
+                        "description": "Object store bucket name.",
+                        "example": "microstrate-documents"
+                    },
+                    "folder": {
+                        "type": "string",
+                        "description": "Output folder path within the bucket.",
+                        "example": "invoices/2024"
+                    }
+                }
+            },
+            "Template": {
+                "type": "object",
+                "required": [
+                    "key"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Unique identifier for the template.",
+                        "example": "invoice-template"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "Human-readable display name.",
+                        "example": "Standard Invoice"
+                    },
+                    "source": {
+                        "type": "object",
+                        "required": [
+                            "key",
+                            "content_type"
+                        ],
+                        "description": "Reference to the source template file in object storage.",
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "description": "Object store path of the template file.",
+                                "example": "templates/invoice.docx"
+                            },
+                            "content_type": {
+                                "type": "string",
+                                "description": "MIME type of the source file.",
+                                "example": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            }
+                        }
+                    },
+                    "output": {
+                        "$ref": "#/components/schemas/TemplateOutput"
+                    },
+                    "signatories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TemplateSignatory"
+                        }
+                    },
+                    "sub_templates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TemplateSubTemplate"
+                        }
+                    }
+                }
+            },
+            "TemplateUpsertRequest": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Template"
+                    }
+                ],
+                "description": "Request body for creating or updating a template."
+            },
+            "DocumentSignatoryRequest": {
+                "type": "object",
+                "description": "Signature request object attached to the signatory after a HelloSign request is sent.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "HelloSign signature request ID.",
+                        "example": "sr_abc123"
+                    },
+                    "signature_id": {
+                        "type": "string",
+                        "description": "HelloSign per-signatory signature ID.",
+                        "example": "hs_sig_xyz789"
+                    },
+                    "is_embedded": {
+                        "type": "boolean",
+                        "description": "Whether the signing is done via an embedded iframe.",
+                        "example": true
+                    }
+                }
+            },
+            "DocumentSignatory": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "expiry",
+                    "status"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Jane Smith"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "jane@acme.com"
+                    },
+                    "expiry": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "ISO 8601 datetime after which the signing request expires.",
+                        "example": "2024-03-22T10:30:00Z"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "DRAFT",
+                            "SENT",
+                            "SIGNED",
+                            "EXPIRED",
+                            "FAILED"
+                        ],
+                        "description": "Current signing status.",
+                        "example": "SIGNED"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "description": "Signing order index (0-based).",
+                        "example": 0
+                    },
+                    "signed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "ISO 8601 datetime when the signatory signed. Null if not yet signed.",
+                        "example": "2024-03-16T14:22:10Z"
+                    },
+                    "request": {
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/DocumentSignatoryRequest"
+                            }
+                        ]
+                    },
+                    "error": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Error message if the signature request failed.",
+                        "example": null
+                    }
+                }
+            },
+            "Document": {
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "ISO 8601 datetime when the document was created.",
+                        "example": "2024-03-15T10:30:00Z"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable filename.",
+                        "example": "acme-nda-2024.pdf"
+                    },
+                    "output": {
+                        "nullable": true,
+                        "type": "object",
+                        "description": "Reference to the generated output file in object storage.",
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "description": "Object store URI for the generated file.",
+                                "example": "obj://microstrate-documents/contracts/acme-nda-2024.pdf"
+                            }
+                        }
+                    },
+                    "template": {
+                        "type": "object",
+                        "description": "Reference to the template used to generate this document.",
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "example": "nda-template"
+                            }
+                        }
+                    },
+                    "signatures": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentSignatory"
+                        }
+                    },
+                    "errors": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Generation errors, if the document failed to produce output.",
+                        "example": null
+                    }
+                }
+            },
+            "UpsertDocumentRequest": {
+                "type": "object",
+                "required": [
+                    "key"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Document key — used to derive the storage subject.",
+                        "example": "contracts/acme-nda-2024.docx"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Acme NDA 2024"
+                    },
+                    "output": {
+                        "nullable": true,
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "example": "obj://microstrate-documents/contracts/acme-nda-2024.pdf"
+                            }
+                        }
+                    },
+                    "template": {
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "example": "nda-template"
+                            }
+                        }
+                    },
+                    "signatures": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentSignatory"
+                        }
+                    },
+                    "errors": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "UnsetPathsRequest": {
+                "type": "object",
+                "required": [
+                    "key",
+                    "paths"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Key of the record to modify.",
+                        "example": "invoice-template"
+                    },
+                    "paths": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Dot-notation field paths to remove.",
+                        "example": [
+                            "output.folder",
+                            "signatories"
+                        ]
+                    }
+                }
+            },
+            "ValidateTemplateRequest": {
+                "type": "object",
+                "required": [
+                    "content_type",
+                    "content"
+                ],
+                "properties": {
+                    "content_type": {
+                        "type": "string",
+                        "enum": [
+                            "application/msword",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/xml"
+                        ],
+                        "example": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    },
+                    "content": {
+                        "type": "string",
+                        "format": "byte",
+                        "description": "Base64-encoded template file content.",
+                        "example": "UEsDBBQABgAIAAAAIQDfpNJ..."
+                    }
+                }
+            },
+            "TriggerOutputOverride": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "invoice-{{invoice_number}}"
+                    },
+                    "content_type": {
+                        "type": "string",
+                        "example": "application/pdf"
+                    },
+                    "bucket": {
+                        "type": "string",
+                        "example": "microstrate-documents"
+                    },
+                    "folder": {
+                        "type": "string",
+                        "example": "invoices/2024"
+                    }
+                }
+            },
+            "TemplateTriggerItem": {
+                "type": "object",
+                "required": [
+                    "template"
+                ],
+                "properties": {
+                    "template": {
+                        "type": "string",
+                        "description": "Key of the published template to trigger.",
+                        "example": "invoice-template"
+                    },
+                    "output": {
+                        "$ref": "#/components/schemas/TriggerOutputOverride"
+                    }
+                }
+            },
+            "TriggerTemplateRequest": {
+                "type": "object",
+                "required": [
+                    "payload",
+                    "list"
+                ],
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Key-value map used for template variable substitution.",
+                        "example": {
+                            "client_name": "Acme Corp",
+                            "client_email": "billing@acme.com",
+                            "invoice_number": "INV-2024-001",
+                            "amount": "5000.00"
+                        }
+                    },
+                    "list": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TemplateTriggerItem"
+                        },
+                        "description": "One or more template trigger entries."
+                    }
+                }
+            },
+            "TriggerResult": {
+                "type": "object",
+                "required": [
+                    "template"
+                ],
+                "properties": {
+                    "template": {
+                        "type": "string",
+                        "description": "Template key that was triggered.",
+                        "example": "invoice-template"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "Messaging subject of the queued document. Present on success.",
+                        "example": "ms.document.invoices.2024.invoice-INV-2024-001.pdf"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Validation or processing errors. Present on failure.",
+                        "example": [
+                            "Document template with key: invoice-template does not have a template source"
+                        ]
+                    }
+                }
+            },
+            "TemplateResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "$ref": "#/components/schemas/Template"
+                    }
+                }
+            },
+            "TemplateListResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "results": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Template"
+                                }
+                            },
+                            "results_total": {
+                                "type": "integer",
+                                "description": "Number of results in this response.",
+                                "example": 3
+                            },
+                            "next_sequence": {
+                                "type": "integer",
+                                "description": "Sequence number to use for the next page.",
+                                "example": 42
+                            },
+                            "total_messages": {
+                                "type": "integer",
+                                "description": "Total number of messages in the stream for this subject.",
+                                "example": 3
+                            }
+                        }
+                    }
+                }
+            },
+            "DocumentResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "$ref": "#/components/schemas/Document"
+                    }
+                }
+            },
+            "DocumentListResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "results": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            },
+                            "results_total": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "next_sequence": {
+                                "type": "integer",
+                                "example": 99
+                            },
+                            "total_messages": {
+                                "type": "integer",
+                                "example": 5
+                            }
+                        }
+                    }
+                }
+            },
+            "SubjectResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "description": "Messaging subject of the created or updated resource.",
+                                "example": "ms.template.draft.invoice-template"
+                            }
+                        }
+                    }
+                }
+            },
+            "SuccessMessageResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "message": {
+                                "type": "string",
+                                "example": "success"
+                            }
+                        }
+                    }
+                }
+            },
+            "ValidateTemplateResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "is_valid": {
+                                "type": "boolean",
+                                "example": true
+                            },
+                            "errors": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "example": []
+                            }
+                        }
+                    }
+                }
+            },
+            "TriggerTemplateResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TriggerResult"
+                        }
+                    }
+                }
+            },
+            "SignatureUrlResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "signature_url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "Embedded HelloSign signing URL.",
+                                "example": "https://app.hellosign.com/sign/abc123?client_id=cid_xyz&skip_domain_verification=true"
+                            }
+                        }
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "enum": [
+                            400,
+                            402,
+                            500
+                        ],
+                        "example": 400
+                    },
+                    "body": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "type": "string",
+                                "example": "\"key\" is required"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "BadRequest": {
+                "description": "Invalid or missing request parameters.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        },
+                        "example": {
+                            "status_code": 400,
+                            "body": {
+                                "error": "\"key\" is required"
+                            }
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Missing or invalid Authorization header.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        },
+                        "example": {
+                            "status_code": 401,
+                            "body": {
+                                "error": "Authorization header with a bearer token is required"
+                            }
+                        }
+                    }
+                }
+            },
+            "ServerError": {
+                "description": "Internal server error.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        },
+                        "example": {
+                            "status_code": 500,
+                            "body": {
+                                "error": "server error"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
