@@ -188,14 +188,139 @@
         "x-resource-type": "service",
         "x-resource": "microstrate.workspaces.get.tasks",
         "parameters": [
-          {
-            "name": "space_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
+                {
+                    "name": "space_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "archived",
+                    "in": "query",
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "scheduled",
+                    "in": "query",
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "How many maximum results should be returned",
+                    "schema": {
+                        "type": "integer",
+                        "default": 300
+                    }
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "If there are more results than the limit, offset can be used to get to the next batch of results",
+                    "schema": {
+                        "type": "integer",
+                        "default": 0
+                    }
+                },
+                {
+                    "name": "sort_by",
+                    "in": "query",
+                    "description": "Name of the field used for sorting the list of results",
+                    "schema": {
+                        "type": "string",
+                        "default": "created_at"
+                    }
+                },
+                {
+                    "name": "sort_order",
+                    "in": "query",
+                    "description":"Should the results be sorted in ascending or descending order relative to sort_by field",
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "default": "asc"
+                    }
+                },
+                {
+                    "name": "created_by",
+                    "in": "query",
+                    "description": "Exact match on the user ID of the task creator",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "priority",
+                    "in": "query",
+                    "description": "Exact match on priority; comma-separated values to filter by priority",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "description": "Exact match on status; comma-separated values to filter by multiple statuses",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "title",
+                    "in": "query",
+                    "description": "Term search on task title",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "asignees",
+                    "in": "query",
+                    "description": "Comma-separated assignee IDs; at least one must match",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "reporter",
+                    "in": "query",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "in": "query",
+                    "description": "Filter by creation date. Use a single date or a range as `{start_date},{end_date}`",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "in": "query",
+                    "description": "Filter by last-updated date. Use a single date or a range as `{start_date},{end_date}`",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "scheduled_at",
+                    "in": "query",
+                    "description": "Filter by scheduled date. Use a single date or a range as `{start_date},{end_date}`",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
         ],
         "responses": {
           "200": {
