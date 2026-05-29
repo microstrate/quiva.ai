@@ -788,6 +788,11 @@
           "is_visible": {
             "type": "boolean",
             "nullable": true
+          },
+          "complete": {
+            "type": "boolean",
+            "description": "If true, when a task reaches this state, it will not be considered overdue past the due date.",
+            "example": true
           }
         }
       },
@@ -1060,6 +1065,9 @@
             "properties": {
               "id": {
                 "type": "string"
+              },
+              "archived": {
+                "type": "boolean"
               }
             }
           }
