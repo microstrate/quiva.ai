@@ -27,6 +27,7 @@
         "/records/config": {
             "get": {
                 "summary": "List record configurations",
+                "description": "Returns all record configurations in the account. Each configuration defines the schema (field names, types, validation rules) and UI hints for a category of records. Call this first to discover available record types before listing or querying records.",
                 "operationId": "listRecordConfigs",
                 "tags": [
                     "Record Configs"
@@ -59,6 +60,7 @@
             },
             "post": {
                 "summary": "Create a record configuration",
+                "description": "Defines a new category of records by specifying a schema (field names, types, validation constraints) and UI rendering hints. The `id` you choose becomes the `config_id` used in all subsequent record operations for this type. Returns 409 if a configuration with the same ID already exists.",
                 "operationId": "createRecordConfig",
                 "tags": [
                     "Record Configs"
@@ -134,6 +136,7 @@
             ],
             "get": {
                 "summary": "Get a record configuration",
+                "description": "Retrieves the full schema and UI layout for a specific record configuration. Use this to inspect field definitions and validation rules before creating or updating records of that type.",
                 "operationId": "getRecordConfig",
                 "tags": [
                     "Record Configs"
@@ -304,7 +307,7 @@
         "/records": {
             "get": {
                 "summary": "Query records",
-                "description": "Search for records across a folder or space. At least one of `x-param-query-folder` or `x-param-query-space_id` must be provided. Multiple conditions are combined with AND.",
+                "description": "Search for records across a folder or space. At least one of `folder` or `space_id` must be provided. Multiple conditions are combined with AND.",
                 "operationId": "queryRecords",
                 "tags": [
                     "Records"
@@ -313,8 +316,8 @@
                 "x-resource": "microstrate.records.get.query-records",
                 "parameters": [
                     {
-                        "name": "x-param-query-folder",
-                        "in": "header",
+                        "name": "folder",
+                        "in": "query",
                         "required": false,
                         "description": "Folder ID to filter records by. At least one of `folder` or `space_id` must be provided.",
                         "schema": {
@@ -322,8 +325,8 @@
                         }
                     },
                     {
-                        "name": "x-param-query-space_id",
-                        "in": "header",
+                        "name": "space_id",
+                        "in": "query",
                         "required": false,
                         "description": "Space ID to filter records by. At least one of `folder` or `space_id` must be provided.",
                         "schema": {
@@ -390,6 +393,7 @@
             ],
             "get": {
                 "summary": "List records",
+                "description": "Returns all records that belong to the given configuration. Use this to retrieve every data entry for a specific record type. For filtered or cross-type queries, use GET /records instead.",
                 "operationId": "listRecords",
                 "tags": [
                     "Records"
@@ -517,6 +521,7 @@
             ],
             "get": {
                 "summary": "Get a record",
+                "description": "Retrieves a single record by its ID within a given configuration. Returns the full data object and metadata (id, created_at, updated_at). Obtain the record ID from a list or query operation first.",
                 "operationId": "getRecord",
                 "tags": [
                     "Records"
@@ -632,6 +637,7 @@
             },
             "delete": {
                 "summary": "Delete a record",
+                "description": "Permanently deletes a single record by its ID. This action is irreversible — the record's data and metadata are removed. The configuration and all other records are unaffected.",
                 "operationId": "deleteRecord",
                 "tags": [
                     "Records"
@@ -686,82 +692,184 @@
     },
     "components": {
         "schemas": {
-            "JSONSchema": {
+            "RecordPropType": {
+                "type": "string",
+                "description": "Allowed JSON primitive/composite types for a schema field.",
+                "enum": [
+                    "string",
+                    "number",
+                    "integer",
+                    "boolean",
+                    "object",
+                    "array",
+                    "null"
+                ]
+            },
+            "FormatterType": {
+                "type": "string",
+                "description": "Display formatter applied when rendering a field value.",
+                "enum": [
+                    "text",
+                    "number",
+                    "currency",
+                    "percent",
+                    "date",
+                    "datetime",
+                    "time",
+                    "boolean"
+                ]
+            },
+            "FieldUi": {
                 "type": "object",
-                "description": "A JSON Schema definition",
+                "description": "Renderer hints that control how a field is presented in form views.",
                 "properties": {
-                    "$ref": {
-                        "type": "string"
+                    "inputType": {
+                        "$ref": "#/components/schemas/InputType"
                     },
-                    "title": {
-                        "type": "string"
+                    "props": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Props forwarded to the input widget. `label` is required. Available props depend on `inputType`.",
+                        "required": [
+                            "label"
+                        ],
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "description": "Display label shown above the input. Required."
+                            },
+                            "placeholder": {
+                                "type": "string",
+                                "description": "Placeholder text shown inside the input when empty."
+                            },
+                            "helpText": {
+                                "type": "object",
+                                "description": "Optional help text rendered below the input.",
+                                "properties": {
+                                    "markdown": {
+                                        "type": "string",
+                                        "description": "Help text content in Markdown format."
+                                    }
+                                },
+                                "additionalProperties": false
+                            },
+                            "options": {
+                                "type": "array",
+                                "description": "Choices for select / radio inputs.",
+                                "items": {
+                                    "type": "object",
+                                    "required": [
+                                        "text",
+                                        "value"
+                                    ],
+                                    "properties": {
+                                        "text": {
+                                            "type": "string",
+                                            "description": "Human-readable label for the option."
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "description": "Machine value submitted when this option is selected."
+                                        },
+                                        "note": {
+                                            "type": "string",
+                                            "description": "Optional extra description shown alongside the option."
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            },
+                            "sort": {
+                                "type": "boolean",
+                                "description": "When `true`, options are sorted alphabetically before rendering."
+                            },
+                            "minDate": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Earliest selectable date (ISO 8601). Applies to `date` / `datetime` inputs."
+                            },
+                            "maxDate": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Latest selectable date (ISO 8601). Applies to `date` / `datetime` inputs."
+                            },
+                            "min": {
+                                "type": "number",
+                                "description": "Minimum allowed numeric value. Applies to `number` / `currency` inputs."
+                            },
+                            "max": {
+                                "type": "number",
+                                "description": "Maximum allowed numeric value. Applies to `number` / `currency` inputs."
+                            },
+                            "decimalPlace": {
+                                "type": "integer",
+                                "description": "Number of decimal places displayed. Applies to `currency` inputs."
+                            }
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FieldFormatter": {
+                "type": "object",
+                "description": "Formatter applied when displaying a field value.",
+                "required": [
+                    "type"
+                ],
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/FormatterType"
                     },
-                    "description": {
-                        "type": "string"
-                    },
-                    "default": {},
-                    "examples": {
-                        "type": "array",
-                        "items": {}
-                    },
-                    "deprecated": {
-                        "type": "boolean"
-                    },
-                    "readOnly": {
-                        "type": "boolean"
-                    },
-                    "writeOnly": {
-                        "type": "boolean"
-                    },
+                    "props": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Extra props forwarded to the formatter."
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FieldDisplay": {
+                "type": "object",
+                "description": "Display configuration embedded in a schema field.",
+                "properties": {
+                    "formatter": {
+                        "$ref": "#/components/schemas/FieldFormatter"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RecordSchemaField": {
+                "type": "object",
+                "description": "Definition of a single field at any depth of the schema tree. Recurses via `properties` (objects) and `items` (arrays). Renderer hints (`ui`, `display`) are embedded at every level.",
+                "required": [
+                    "type",
+                    "ui"
+                ],
+                "properties": {
                     "type": {
                         "oneOf": [
                             {
-                                "type": "string",
-                                "enum": [
-                                    "string",
-                                    "number",
-                                    "integer",
-                                    "boolean",
-                                    "array",
-                                    "object",
-                                    "null"
-                                ]
+                                "$ref": "#/components/schemas/RecordPropType"
                             },
                             {
                                 "type": "array",
                                 "items": {
-                                    "type": "string",
-                                    "enum": [
-                                        "string",
-                                        "number",
-                                        "integer",
-                                        "boolean",
-                                        "array",
-                                        "object",
-                                        "null"
-                                    ]
+                                    "$ref": "#/components/schemas/RecordPropType"
                                 },
                                 "uniqueItems": true
                             }
-                        ]
+                        ],
+                        "description": "JSON type(s) for this field. Use an array to allow multiple types (e.g. [\"string\", \"null\"])."
                     },
-                    "format": {
-                        "type": "string"
+                    "label": {
+                        "type": "string",
+                        "description": "Human-readable label shown in UI."
                     },
-                    "enum": {
-                        "type": "array",
-                        "items": {}
+                    "title": {
+                        "type": "string",
+                        "description": "JSON Schema title."
                     },
-                    "const": {},
-                    "minLength": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "maxLength": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "pattern": {
+                    "description": {
                         "type": "string"
                     },
                     "minimum": {
@@ -776,87 +884,237 @@
                     "exclusiveMaximum": {
                         "type": "number"
                     },
-                    "multipleOf": {
-                        "type": "number"
+                    "minLength": {
+                        "type": "integer",
+                        "minimum": 0
                     },
-                    "items": {
-                        "$ref": "#/components/schemas/JSONSchema"
+                    "maxLength": {
+                        "type": "integer",
+                        "minimum": 0
                     },
-                    "prefixItems": {
+                    "pattern": {
+                        "type": "string"
+                    },
+                    "format": {
+                        "type": "string"
+                    },
+                    "enum": {
                         "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/JSONSchema"
-                        }
+                        "items": {}
                     },
-                    "minItems": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "maxItems": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "uniqueItems": {
-                        "type": "boolean"
-                    },
+                    "default": {},
                     "properties": {
                         "type": "object",
                         "additionalProperties": {
-                            "$ref": "#/components/schemas/JSONSchema"
-                        }
-                    },
-                    "additionalProperties": {
-                        "oneOf": [
-                            {
-                                "type": "boolean"
-                            },
-                            {
-                                "$ref": "#/components/schemas/JSONSchema"
-                            }
-                        ]
+                            "$ref": "#/components/schemas/RecordSchemaField"
+                        },
+                        "description": "Nested field definitions for object-typed fields."
                     },
                     "required": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         },
-                        "uniqueItems": true
+                        "uniqueItems": true,
+                        "description": "Names of required nested fields. Only meaningful when `type` is \"object\"."
                     },
-                    "allOf": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/JSONSchema"
-                        }
+                    "items": {
+                        "$ref": "#/components/schemas/RecordSchemaField",
+                        "description": "Item schema for array-typed fields."
                     },
-                    "anyOf": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/JSONSchema"
-                        }
+                    "ui": {
+                        "$ref": "#/components/schemas/FieldUi",
+                        "description": "Custom UI settings for form rendering. Not part of standard JSON Schema."
                     },
-                    "oneOf": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/JSONSchema"
-                        }
-                    },
-                    "not": {
-                        "$ref": "#/components/schemas/JSONSchema"
-                    },
-                    "if": {
-                        "$ref": "#/components/schemas/JSONSchema"
-                    },
-                    "then": {
-                        "$ref": "#/components/schemas/JSONSchema"
-                    },
-                    "else": {
-                        "$ref": "#/components/schemas/JSONSchema"
+                    "display": {
+                        "$ref": "#/components/schemas/FieldDisplay"
                     }
                 },
-                "additionalProperties": true
+                "additionalProperties": false
+            },
+            "RecordSchema": {
+                "type": "object",
+                "description": "A JSON Schema document describing the record structure. Always a top-level object. UI and display hints (`ui`, `display`) are embedded directly in each field definition.",
+                "required": [
+                    "type",
+                    "properties"
+                ],
+                "properties": {
+                    "$schema": {
+                        "type": "string",
+                        "description": "Optional JSON Schema dialect URI (e.g. \"https://json-schema.org/draft/2020-12/schema\")."
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "object"
+                        ],
+                        "description": "Must be \"object\" — a record schema always describes a top-level object."
+                    },
+                    "properties": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/RecordSchemaField"
+                        },
+                        "description": "Top-level field definitions keyed by field name."
+                    },
+                    "required": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true,
+                        "description": "Names of required top-level fields."
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ViewGridProps": {
+                "type": "object",
+                "description": "CSS Grid container properties.",
+                "required": [
+                    "gridTemplateColumns"
+                ],
+                "properties": {
+                    "gridTemplateColumns": {
+                        "type": "string",
+                        "description": "CSS grid-template-columns value (e.g. \"1fr 1fr\", \"repeat(3, 1fr)\")."
+                    },
+                    "gap": {
+                        "type": "number",
+                        "description": "Gap between grid cells in pixels."
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ViewGridNode": {
+                "type": "object",
+                "description": "A grid layout container that arranges child nodes in CSS grid columns.",
+                "required": [
+                    "type",
+                    "props",
+                    "children"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "grid"
+                        ]
+                    },
+                    "props": {
+                        "$ref": "#/components/schemas/ViewGridProps"
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ViewNode"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ViewFieldNode": {
+                "type": "object",
+                "description": "A leaf node that binds to a schema field via a dotted path.",
+                "required": [
+                    "type",
+                    "field"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "field"
+                        ]
+                    },
+                    "field": {
+                        "type": "string",
+                        "description": "Dotted path to the schema field (e.g. \"name\", \"address.city\"). This MUST be `ref` — not `field`. Example: { \"type\": \"field\", \"field\": \"policyNumber\" }."
+                    }
+                },
+                "additionalProperties": false,
+                "example": {
+                    "type": "field",
+                    "field": "policyNumber"
+                }
+            },
+            "ViewTableColumn": {
+                "type": "object",
+                "description": "A column descriptor in a table view.",
+                "required": [
+                    "field",
+                    "order"
+                ],
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "description": "Schema field key this column displays."
+                    },
+                    "order": {
+                        "type": "integer",
+                        "description": "Display order of this column (ascending)."
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ViewTableNode": {
+                "type": "object",
+                "description": "A table view that lists columns to display and their order.",
+                "required": [
+                    "type",
+                    "columns"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "table"
+                        ]
+                    },
+                    "columns": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ViewTableColumn"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ViewNode": {
+                "description": "A node in the view tree — either a grid container, a field leaf, or a table.",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ViewGridNode"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ViewFieldNode"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ViewTableNode"
+                    }
+                ]
+            },
+            "RecordViews": {
+                "type": "object",
+                "description": "UI layout definitions for different rendering contexts.",
+                "properties": {
+                    "form": {
+                        "$ref": "#/components/schemas/ViewGridNode"
+                    },
+                    "table": {
+                        "$ref": "#/components/schemas/ViewTableNode"
+                    }
+                },
+                "additionalProperties": false
             },
             "RecordConfig": {
                 "type": "object",
+                "required": [
+                    "name",
+                    "schema",
+                    "views"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",
@@ -876,14 +1134,10 @@
                         "description": "Optional short label, e.g. for UI badges or tabs."
                     },
                     "schema": {
-                        "$ref": "#/components/schemas/JSONSchema"
+                        "$ref": "#/components/schemas/RecordSchema"
                     },
-                    "ui": {
-                        "type": "object",
-                        "description": "A map of field IDs to UI configuration for table and form rendering.",
-                        "additionalProperties": {
-                            "$ref": "#/components/schemas/FieldConfig"
-                        }
+                    "views": {
+                        "$ref": "#/components/schemas/RecordViews"
                     },
                     "created_at": {
                         "type": "string",
@@ -897,95 +1151,276 @@
                         "readOnly": true,
                         "description": "ISO 8601 timestamp updated automatically on every modification."
                     }
-                }
-            },
-            "FieldConfigTable": {
-                "type": "object",
-                "properties": {
-                    "visible": {
-                        "type": "boolean",
-                        "description": "Whether the field is visible in table/list views."
-                    },
-                    "label": {
-                        "type": "string",
-                        "description": "Label to display for the field in table headers."
-                    },
-                    "width": {
-                        "oneOf": [
-                            {
-                                "type": "number"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "description": "Preferred width of the table column, as a number or CSS width string."
-                    },
-                    "sortable": {
-                        "type": "boolean",
-                        "description": "Whether the field is sortable in table views."
-                    },
-                    "formatter": {
-                        "$ref": "#/components/schemas/Formatter"
-                    }
                 },
-                "additionalProperties": false
-            },
-            "FieldConfigForm": {
-                "type": "object",
-                "properties": {
-                    "visible": {
-                        "type": "boolean",
-                        "description": "Whether the field is visible in form views."
-                    },
-                    "label": {
-                        "type": "string",
-                        "description": "Label to display for the field in forms."
-                    },
-                    "input": {
-                        "$ref": "#/components/schemas/InputType"
-                    },
-                    "placeholder": {
-                        "type": "string",
-                        "description": "Placeholder text for the field input."
-                    },
-                    "defaultValue": {},
-                    "inputProps": {
+                "example": {
+                    "id": "xI6ylDQ50C63v7pAsXMbJ",
+                    "name": "TEST",
+                    "schema": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
                         "type": "object",
-                        "additionalProperties": true,
-                        "description": "Additional input-specific properties for the form renderer."
-                    }
-                },
-                "additionalProperties": false
-            },
-            "FieldConfig": {
-                "type": "object",
-                "properties": {
-                    "table": {
-                        "$ref": "#/components/schemas/FieldConfigTable"
+                        "properties": {
+                            "FirstName": {
+                                "type": "string",
+                                "title": "First name",
+                                "minLength": 1,
+                                "maxLength": 80,
+                                "ui": {
+                                    "inputType": "text",
+                                    "props": {
+                                        "label": "First name"
+                                    }
+                                }
+                            },
+                            "LastName": {
+                                "type": "string",
+                                "title": "Last name",
+                                "minLength": 1,
+                                "maxLength": 80,
+                                "ui": {
+                                    "inputType": "text",
+                                    "props": {
+                                        "label": "Last Name"
+                                    }
+                                }
+                            },
+                            "Email": {
+                                "type": "string",
+                                "title": "Email",
+                                "ui": {
+                                    "inputType": "text",
+                                    "props": {
+                                        "label": "Email"
+                                    }
+                                }
+                            },
+                            "Role": {
+                                "type": "string",
+                                "title": "Role",
+                                "ui": {
+                                    "inputType": "dropdown",
+                                    "props": {
+                                        "label": "Role",
+                                        "options": [
+                                            {
+                                                "text": "Developer",
+                                                "value": "dev"
+                                            },
+                                            {
+                                                "text": "Admin",
+                                                "value": "admin"
+                                            },
+                                            {
+                                                "text": "Designer",
+                                                "value": "designer"
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            "Price": {
+                                "type": "number",
+                                "display": {
+                                    "formatter": {
+                                        "type": "currency",
+                                        "props": {
+                                            "currency": "USD"
+                                        }
+                                    }
+                                },
+                                "ui": {
+                                    "inputType": "currency",
+                                    "props": {
+                                        "label": "Price",
+                                        "min": 10,
+                                        "max": 100
+                                    }
+                                }
+                            },
+                            "CreatedAt": {
+                                "type": "string",
+                                "title": "Created at",
+                                "display": {
+                                    "formatter": {
+                                        "type": "date",
+                                        "props": {
+                                            "dateFormat": "yyyy-MM-dd"
+                                        }
+                                    }
+                                },
+                                "ui": {
+                                    "inputType": "date",
+                                    "props": {
+                                        "label": "Created At"
+                                    }
+                                }
+                            },
+                            "Address": {
+                                "type": "object",
+                                "title": "Address",
+                                "properties": {
+                                    "City": {
+                                        "type": "string",
+                                        "title": "City",
+                                        "ui": {
+                                            "inputType": "text",
+                                            "props": {
+                                                "label": "City"
+                                            }
+                                        }
+                                    },
+                                    "Country": {
+                                        "type": "string",
+                                        "title": "Country",
+                                        "ui": {
+                                            "inputType": "country",
+                                            "props": {
+                                                "label": "Country"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "Email",
+                            "FirstName",
+                            "LastName"
+                        ]
                     },
-                    "form": {
-                        "$ref": "#/components/schemas/FieldConfigForm"
-                    }
-                },
-                "additionalProperties": true,
-                "description": "UI configuration for a single record field."
-            },
-            "Formatter": {
-                "type": "object",
-                "description": "Formatter metadata used by table renderers.",
-                "additionalProperties": true
+                    "views": {
+                        "form": {
+                            "type": "grid",
+                            "props": {
+                                "gridTemplateColumns": "1fr"
+                            },
+                            "children": [
+                                {
+                                    "type": "grid",
+                                    "props": {
+                                        "gridTemplateColumns": "1fr 1fr"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "field",
+                                            "field": "FirstName"
+                                        },
+                                        {
+                                            "type": "field",
+                                            "field": "LastName"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "grid",
+                                    "props": {
+                                        "gridTemplateColumns": "1fr 1fr"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "field",
+                                            "field": "Address.Country"
+                                        },
+                                        {
+                                            "type": "field",
+                                            "field": "Address.City"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "grid",
+                                    "props": {
+                                        "gridTemplateColumns": "1fr 1fr"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "field",
+                                            "field": "Email"
+                                        },
+                                        {
+                                            "type": "field",
+                                            "field": "Role"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "grid",
+                                    "props": {
+                                        "gridTemplateColumns": "1fr 1fr"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "field",
+                                            "field": "CreatedAt"
+                                        },
+                                        {
+                                            "type": "field",
+                                            "field": "Price"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "table": {
+                            "type": "table",
+                            "columns": [
+                                {
+                                    "field": "Email",
+                                    "order": 0
+                                },
+                                {
+                                    "field": "FirstName",
+                                    "order": 1
+                                },
+                                {
+                                    "field": "LastName",
+                                    "order": 2
+                                },
+                                {
+                                    "field": "CreatedAt",
+                                    "order": 3
+                                },
+                                {
+                                    "field": "Price",
+                                    "order": 4
+                                }
+                            ]
+                        }
+                    },
+                    "created_at": "2026-05-18T09:10:19Z",
+                    "updated_at": "2026-05-18T10:58:20Z"
+                }
             },
             "InputType": {
                 "type": "string",
-                "description": "Input type for form rendering (for example, text, select, checkbox, date, etc.)."
+                "description": "Input widget type for form rendering.",
+                "enum": [
+                    "array",
+                    "checkbox",
+                    "country",
+                    "currency",
+                    "date",
+                    "date-range",
+                    "dropdown",
+                    "key-value",
+                    "multi-country",
+                    "multi-select",
+                    "multi-toggle",
+                    "number",
+                    "phone",
+                    "slider",
+                    "tags",
+                    "text",
+                    "textarea",
+                    "toggle"
+                ]
             },
             "RecordConfigCreate": {
                 "type": "object",
                 "required": [
                     "id",
                     "name",
-                    "schema"
+                    "schema",
+                    "views"
                 ],
                 "properties": {
                     "id": {
@@ -1006,7 +1441,10 @@
                         "description": "Optional short label."
                     },
                     "schema": {
-                        "$ref": "#/components/schemas/JSONSchema"
+                        "$ref": "#/components/schemas/RecordSchema"
+                    },
+                    "views": {
+                        "$ref": "#/components/schemas/RecordViews"
                     }
                 },
                 "example": {
@@ -1014,29 +1452,89 @@
                     "name": "Customer Feedback",
                     "description": "Feedback submissions from customers",
                     "schema": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
                         "type": "object",
-                        "required": [
-                            "rating",
-                            "category"
-                        ],
                         "properties": {
                             "rating": {
                                 "type": "number",
-                                "description": "Rating (1–5)"
+                                "title": "Rating",
+                                "description": "Rating (1–5)",
+                                "display": {
+                                    "formatter": {
+                                        "type": "number"
+                                    }
+                                }
                             },
                             "category": {
                                 "type": "string",
+                                "title": "Category",
                                 "enum": [
                                     "bug",
                                     "feature",
                                     "general"
                                 ],
-                                "description": "Feedback category"
+                                "ui": {
+                                    "inputType": "dropdown",
+                                    "props": {
+                                        "label": "Category"
+                                    }
+                                }
                             },
                             "comment": {
                                 "type": "string",
-                                "description": "Optional free-text comment"
+                                "title": "Comment"
                             }
+                        },
+                        "required": [
+                            "rating",
+                            "category"
+                        ]
+                    },
+                    "views": {
+                        "form": {
+                            "type": "grid",
+                            "props": {
+                                "gridTemplateColumns": "1fr"
+                            },
+                            "children": [
+                                {
+                                    "type": "grid",
+                                    "props": {
+                                        "gridTemplateColumns": "1fr 1fr"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "field",
+                                            "field": "rating"
+                                        },
+                                        {
+                                            "type": "field",
+                                            "field": "category"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "field",
+                                    "field": "comment"
+                                }
+                            ]
+                        },
+                        "table": {
+                            "type": "table",
+                            "columns": [
+                                {
+                                    "field": "rating",
+                                    "order": 0
+                                },
+                                {
+                                    "field": "category",
+                                    "order": 1
+                                },
+                                {
+                                    "field": "comment",
+                                    "order": 2
+                                }
+                            ]
                         }
                     }
                 }
@@ -1058,37 +1556,53 @@
                         "description": "Updated label."
                     },
                     "schema": {
-                        "$ref": "#/components/schemas/JSONSchema"
+                        "$ref": "#/components/schemas/RecordSchema"
+                    },
+                    "views": {
+                        "$ref": "#/components/schemas/RecordViews"
                     }
                 },
                 "example": {
                     "name": "Customer Feedback v2",
                     "schema": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
                         "type": "object",
-                        "required": [
-                            "rating",
-                            "category"
-                        ],
                         "properties": {
                             "rating": {
                                 "type": "number",
-                                "description": "Rating (1–5)"
+                                "title": "Rating",
+                                "description": "Rating (1–5)",
+                                "display": {
+                                    "formatter": {
+                                        "type": "number"
+                                    }
+                                }
                             },
                             "category": {
                                 "type": "string",
+                                "title": "Category",
                                 "enum": [
                                     "bug",
                                     "feature",
                                     "general",
                                     "other"
                                 ],
-                                "description": "Feedback category"
+                                "ui": {
+                                    "inputType": "dropdown",
+                                    "props": {
+                                        "label": "Category"
+                                    }
+                                }
                             },
                             "comment": {
                                 "type": "string",
-                                "description": "Optional free-text comment"
+                                "title": "Comment"
                             }
-                        }
+                        },
+                        "required": [
+                            "rating",
+                            "category"
+                        ]
                     }
                 }
             },
@@ -1152,6 +1666,14 @@
                         "type": "object",
                         "additionalProperties": true,
                         "description": "Field values validated against the configuration schema. Required schema fields must be present. Values are type-checked: text/rich_text/date → string, number → float, checkbox → boolean, dropdown → one of the configured options. Null values are accepted for optional fields. Extra keys not in the schema are allowed."
+                    },
+                    "space_id": {
+                        "type": "string",
+                        "description": "Optional space ID to associate the record with a specific space."
+                    },
+                    "folder": {
+                        "type": "string",
+                        "description": "Optional folder to organize the record into."
                     }
                 },
                 "example": {
@@ -1172,6 +1694,14 @@
                         "type": "object",
                         "additionalProperties": true,
                         "description": "Fields to update. Merged into the existing record data (partial update). The merged result is validated against the current schema."
+                    },
+                    "space_id": {
+                        "type": "string",
+                        "description": "Optional space ID to associate the record with a specific space."
+                    },
+                    "folder": {
+                        "type": "string",
+                        "description": "Optional folder to organize the record into."
                     }
                 },
                 "example": {
