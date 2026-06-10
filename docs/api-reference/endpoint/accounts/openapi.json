@@ -499,6 +499,14 @@
           "passkey_enabled": {
             "type": "boolean",
             "description": "Enable passkey authentication"
+          },
+          "notification_preferences": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotificationPrefs"
+              }
+            ],
+            "description": "User's notification preferences across all notification types and delivery channels."
           }
         }
       },
@@ -1141,6 +1149,143 @@
           "file_name",
           "file",
           "content_type"
+        ]
+      },
+      "NotificationChannels": {
+        "type": "object",
+        "description": "Per-channel delivery toggles for a single notification type.",
+        "properties": {
+          "in_app": {
+            "type": "boolean",
+            "description": "Whether in-app notifications are delivered for this type.",
+            "example": true
+          },
+          "email": {
+            "type": "boolean",
+            "description": "Whether email notifications are delivered for this type.",
+            "example": false
+          },
+          "push": {
+            "type": "boolean",
+            "description": "Whether push notifications are delivered for this type.",
+            "example": true
+          }
+        },
+        "required": [
+          "in_app",
+          "email",
+          "push"
+        ]
+      },
+      "NotificationTypePrefs": {
+        "type": "object",
+        "description": "Opt-in state and channel configuration for one notification type.",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the user receives notifications of this type at all. When false, channel toggles are ignored.",
+            "example": true
+          },
+          "channels": {
+            "$ref": "#/components/schemas/NotificationChannels"
+          }
+        },
+        "required": [
+          "enabled",
+          "channels"
+        ]
+      },
+      "NotificationQuietHours": {
+        "type": "object",
+        "description": "Time window during which notifications are suppressed. Times are interpreted in the configured timezone.",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether quiet hours are active. When false, the time fields are ignored.",
+            "example": true
+          },
+          "start": {
+            "type": "string",
+            "description": "Start of the quiet window in 24-hour HH:MM format.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "example": "22:00"
+          },
+          "end": {
+            "type": "string",
+            "description": "End of the quiet window in 24-hour HH:MM format.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "example": "07:00"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone name used to interpret the start and end times.",
+            "example": "Europe/London"
+          }
+        },
+        "required": [
+          "enabled",
+          "start",
+          "end",
+          "timezone"
+        ]
+      },
+      "NotificationPrefs": {
+        "type": "object",
+        "description": "A user's global notification preferences across all notification types and delivery channels.",
+        "properties": {
+          "task_status_changes": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotificationTypePrefs"
+              }
+            ],
+            "description": "Preferences for notifications when a task's status changes."
+          },
+          "task_assignments": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotificationTypePrefs"
+              }
+            ],
+            "description": "Preferences for notifications when a task is assigned to the user."
+          },
+          "task_mentions": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotificationTypePrefs"
+              }
+            ],
+            "description": "Preferences for notifications when the user is mentioned on a task."
+          },
+          "task_watcher_updates": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotificationTypePrefs"
+              }
+            ],
+            "description": "Preferences for notifications about tasks the user is watching."
+          },
+          "batch_mode": {
+            "type": "string",
+            "description": "How email notifications are grouped before delivery. 'realtime' sends immediately; 'hourly' and 'daily' send digests.",
+            "enum": [
+              "realtime",
+              "hourly",
+              "daily"
+            ],
+            "example": "daily"
+          },
+          "quiet_hours": {
+            "$ref": "#/components/schemas/NotificationQuietHours"
+          }
+        },
+        "required": [
+          "task_status_changes",
+          "task_assignments",
+          "task_mentions",
+          "task_watcher_updates",
+          "batch_mode",
+          "quiet_hours"
         ]
       }
     }
@@ -4227,6 +4372,9 @@
                         },
                         "profile_image": {
                           "$ref": "#/components/schemas/UserProfileImage"
+                        },
+                        "notification_preferences": {
+                          "$ref": "#/components/schemas/NotificationPrefs"
                         }
                       },
                       "required": [
