@@ -52,7 +52,7 @@ graph TB
     end
 ```
 
-This matters because it combines the efficiency gains of MoE with properties that intra-model MoE cannot provide: each specialist can be independently trained, fine-tuned, replaced, or upgraded without touching the rest of the system. A new domain (say, healthcare compliance) is added by training a new specialist and registering it in the catalogue -- not by retraining a trillion-parameter model. The cost of adding a 7B specialist is $50K-$500K. The cost of retraining a frontier model is $500M or more.
+This matters because it combines the efficiency gains of MoE with properties that intra-model MoE cannot provide: each specialist can be independently trained, fine-tuned, replaced, or upgraded without touching the rest of the system. A new domain (say, healthcare compliance) is added by training a new specialist and registering it in the catalogue -- not by retraining a trillion-parameter model. The cost of adding a 7B specialist is \$50K-\$500K. The cost of retraining a frontier model is \$500M or more.
 
 The research literature has begun to formalise this concept. Quirke et al.'s "Beyond Monoliths: Expert Orchestration for More Capable, Democratic, and Safe Language Models" (submitted to NeurIPS 2025) argues that expert orchestration delivers superior performance to monolithic models, with clearer evaluation metrics, narrower input spaces for testing, and more effective application of specialised human expertise. Chai et al.'s "An Expert is Worth One Token" (ACL 2024) demonstrated that representing expert LLMs as tokens in a meta-LLM's vocabulary -- literally lifting MoE routing from layers to entire models -- outperforms existing multi-LLM collaboration paradigms across six expert domains.
 
@@ -126,7 +126,7 @@ The classifier is the smallest model in the system (~250M parameters) and the mo
 
 This is not a novel pattern. It is the same complexity-based routing that every well-designed customer service operation uses (tier 1 handles simple queries, escalates complex ones) and that every MoE model uses internally (route easy tokens cheaply, hard tokens to more experts). Annie applies it at the system level with the classifier as the gating function.
 
-The classifier's small size is a feature: it loads instantly, runs on minimal hardware, and can be retrained cheaply as the domain catalogue evolves. At 250M parameters, it adds negligible latency to every request while determining whether the response requires $0.001 or $0.10 of compute.
+The classifier's small size is a feature: it loads instantly, runs on minimal hardware, and can be retrained cheaply as the domain catalogue evolves. At 250M parameters, it adds negligible latency to every request while determining whether the response requires \$0.001 or \$0.10 of compute.
 
 ### Expert Orchestration
 
@@ -184,7 +184,7 @@ The Rapport Model makes Annie feel like a coworker who knows you, not a stateles
 
 Prompts and responses are never discarded. Every interaction -- the original prompt, the classification decision, each expert's response, the judgment scores, the verification outcome -- persists in the Cognition Stream. During off-peak periods (sleep cycles), this data is used to train and refine the specialist models.
 
-This creates a flywheel: more interactions produce more training data, which produces better specialists, which produce better responses, which build more rapport and trust, which drives more interactions. The flywheel spins faster with small models because fine-tuning a 7B model on domain-specific interaction data costs under $5 per run and takes hours rather than weeks. A frontier model cannot be continuously refined from customer interactions at any reasonable cost.
+This creates a flywheel: more interactions produce more training data, which produces better specialists, which produce better responses, which build more rapport and trust, which drives more interactions. The flywheel spins faster with small models because fine-tuning a 7B model on domain-specific interaction data costs under \$5 per run and takes hours rather than weeks. A frontier model cannot be continuously refined from customer interactions at any reasonable cost.
 
 The sleep cycle pattern also means that Annie's specialists improve specifically on the domains and query types that her actual users care about, rather than improving on abstract benchmarks. A deployment serving insurance professionals will develop increasingly sharp insurance expertise. A deployment serving software engineers will sharpen on coding tasks. The same architecture adapts to radically different use cases through the data it processes.
 
@@ -193,8 +193,8 @@ The sleep cycle pattern also means that Annie's specialists improve specifically
 | Decision | Alternative Considered | Why Annie Chose This | Honest Tradeoff |
 |---|---|---|---|
 | **Multi-model ensemble** | Single large model (e.g., 70B+ generalist) | Ensembles of small models outperform single large models on domain tasks at lower cost (Kondratyuk et al. 2020, SLM-MUX 2024, Chai Research 2024). Independent training, replacement, and upgrade of individual specialists. | Higher system complexity. Coordination overhead. No single model's coherence across an extended multi-turn conversation -- context must be managed externally through Synapse. |
-| **Asynchronous pipeline** | Synchronous request-response | Quality verification requires multiple stages that take time. The "coworker" model aligns with how knowledge workers actually operate. The market is moving toward async agents ($26B Devin valuation, GitHub Copilot agent mode). | Users accustomed to ChatGPT-speed responses may find latency jarring for complex queries. Requires UX that sets expectations and communicates progress. Simple queries must still be fast (solved by fast path). |
-| **Small specialists (250M-27B)** | One large generalist (70B+) | Specialists match or exceed generalist performance on defined domain tasks at 5-50x lower inference cost. Each fits on a consumer GPU. Training cost per specialist: $2K-$500K vs $500M+ for frontier. | Weaker on novel, cross-domain reasoning that requires broad world knowledge. A 7B insurance specialist will not match Opus 4.8 on open-ended creative writing. Annie must know her boundaries. |
+| **Asynchronous pipeline** | Synchronous request-response | Quality verification requires multiple stages that take time. The "coworker" model aligns with how knowledge workers actually operate. The market is moving toward async agents (\$26B Devin valuation, GitHub Copilot agent mode). | Users accustomed to ChatGPT-speed responses may find latency jarring for complex queries. Requires UX that sets expectations and communicates progress. Simple queries must still be fast (solved by fast path). |
+| **Small specialists (250M-27B)** | One large generalist (70B+) | Specialists match or exceed generalist performance on defined domain tasks at 5-50x lower inference cost. Each fits on a consumer GPU. Training cost per specialist: \$2K-\$500K vs \$500M+ for frontier. | Weaker on novel, cross-domain reasoning that requires broad world knowledge. A 7B insurance specialist will not match Opus 4.8 on open-ended creative writing. Annie must know her boundaries. |
 | **Score-based consensus pipeline** | Single-pass inference | Multi-model consensus improves accuracy by 4-18% depending on task (Wang et al. 2023). Panels of diverse small models outperform single large judges (Verga et al. 2024). Domain-specific rubrics increase agreement by 22-27% (2026). | 2-5x compute cost per complex query compared to single-pass. Latency increases linearly with pipeline stages. Consensus quality depends on genuine model diversity -- homogeneous panels provide minimal benefit. |
 | **Bellerophon BStream backbone** | Custom orchestration / direct API calls | Durability, replay, backpressure, and observability out of the box. Every message auditable. Decoupled components enable independent scaling and deployment. | Dependency on Bellerophon platform. Additional infrastructure to operate. Message serialisation overhead (negligible compared to model inference, but non-zero). |
 | **Score-based judgment with rubrics** | Simple majority voting / single judge | Rubric-based evaluation is more reliable and domain-appropriate than unstructured voting. Dynamically generated rubrics outperform static ones. Scoring is auditable and explainable. | Rubric design requires domain expertise. Poor rubrics produce poor judgments. Rubric maintenance is an ongoing cost as domains evolve. |
@@ -206,9 +206,9 @@ The sleep cycle pattern also means that Annie's specialists improve specifically
 
 Annie runs entirely on customer-controlled infrastructure. Every component -- the classifier, all specialist models, the judgment and verification panels, the Cognition Stream, the Synapse context engine -- deploys on hardware the customer owns and operates. No data leaves the customer's jurisdiction. No external API call is required for any inference.
 
-This is not an abstract compliance checkbox. When Fable 5's service was suspended, organisations dependent on its API lost AI capability overnight with no recourse. Annie at L3-L4 sovereignty (see [01 - SOTA Landscape](01-sota-landscape.md)) means the customer can disconnect from the internet entirely and the system continues to function. For government, defence, healthcare, and financial services organisations operating under data residency requirements, this is a hard requirement, not a preference.
+This is not an abstract compliance checkbox. When Fable 5's service was suspended, organisations dependent on its API lost AI capability overnight with no recourse. Annie at L3-L4 sovereignty (see [SOTA Landscape](annie/sota-landscape.mdx)) means the customer can disconnect from the internet entirely and the system continues to function. For government, defence, healthcare, and financial services organisations operating under data residency requirements, this is a hard requirement, not a preference.
 
-The $301.6 billion projected sovereign AI infrastructure market by 2040 consists primarily of hardware and cloud plays. Annie provides the model-layer product that makes sovereign infrastructure useful -- the part that turns GPUs into an AI coworker.
+The \$301.6 billion projected sovereign AI infrastructure market by 2040 consists primarily of hardware and cloud plays. Annie provides the model-layer product that makes sovereign infrastructure useful -- the part that turns GPUs into an AI coworker.
 
 ### Cost Efficiency
 
@@ -216,16 +216,16 @@ The cost differential between Annie and frontier API access is not marginal; it 
 
 | | Frontier API (Opus 4.8) | Frontier API (Gemini 3.1 Pro) | Annie Self-Hosted |
 |---|---|---|---|
-| **Input cost per MTok** | $5.00 | $2.00-4.00 | Electricity + amortised hardware |
-| **Output cost per MTok** | $25.00 | $12.00-18.00 | Electricity + amortised hardware |
-| **At 100M tokens/day** | $1,500-5,000/day | $700-2,200/day | $50-200/day |
-| **Annual cost at scale** | $550K-1.8M | $255K-800K | $18K-73K |
-| **Training a new domain** | Not possible | Not possible | $2K-500K per specialist |
-| **Hardware investment** | None (API) | None (API) | $5K-200K (one-time) |
+| **Input cost per MTok** | \$5.00 | \$2.00-4.00 | Electricity + amortised hardware |
+| **Output cost per MTok** | \$25.00 | \$12.00-18.00 | Electricity + amortised hardware |
+| **At 100M tokens/day** | \$1,500-5,000/day | \$700-2,200/day | \$50-200/day |
+| **Annual cost at scale** | \$550K-1.8M | \$255K-800K | \$18K-73K |
+| **Training a new domain** | Not possible | Not possible | \$2K-500K per specialist |
+| **Hardware investment** | None (API) | None (API) | \$5K-200K (one-time) |
 
 At 100M tokens per day, Annie's self-hosted cost is 10-100x lower than frontier API access. The break-even on hardware investment occurs within weeks to months depending on usage volume. And unlike API access, the marginal cost of additional inference approaches zero once hardware is provisioned -- there is no per-token charge.
 
-*Cost assumptions: 50/50 input/output token ratio, no prompt caching, standard context lengths (\<32K), no batch discounts for API pricing. Annie self-hosted estimates assume Australian electricity at A$0.30/kWh and amortised hardware over 3 years. Actual costs will vary by workload profile. A detailed cost model with customer-specific assumptions should be built for each partner conversation.*
+*Cost assumptions: 50/50 input/output token ratio, no prompt caching, standard context lengths (\<32K), no batch discounts for API pricing. Annie self-hosted estimates assume Australian electricity at A\$0.30/kWh and amortised hardware over 3 years. Actual costs will vary by workload profile. A detailed cost model with customer-specific assumptions should be built for each partner conversation.*
 
 Annie's consensus pipeline does multiply compute per complex query by 2-5x compared to single-pass inference. But 5x the cost of self-hosted inference on consumer GPUs is still dramatically cheaper than 1x the cost of frontier API access.
 
@@ -251,11 +251,11 @@ For high-stakes domains where errors have financial, legal, or safety consequenc
 
 Annie's specialist models run on consumer-grade GPUs. A quantised 7B model requires approximately 5-8GB of VRAM -- well within the capability of an NVIDIA RTX 4070 or equivalent. Even the largest specialists in the current catalogue (27B parameters) fit on a single RTX 4090 or equivalent with Q4 quantisation (~20GB VRAM).
 
-A full Annie deployment serving a mid-sized organisation can run on hardware costing $5K-$50K. Compare this to the datacentre-scale infrastructure required for frontier models: DeepSeek V4-Pro's 1.6 trillion parameters require multi-node GPU clusters even with its efficient sparse activation. Fable 5's training infrastructure costs billions. Annie's operational infrastructure costs what a small business spends on office furniture.
+A full Annie deployment serving a mid-sized organisation can run on hardware costing \$5K-\$50K. Compare this to the datacentre-scale infrastructure required for frontier models: DeepSeek V4-Pro's 1.6 trillion parameters require multi-node GPU clusters even with its efficient sparse activation. Fable 5's training infrastructure costs billions. Annie's operational infrastructure costs what a small business spends on office furniture.
 
 ### Continuous Improvement
 
-Every interaction makes Annie better at the specific work her users need. Sleep cycle training on accumulated interaction data is cheap (under $5 per fine-tuning run for a 7B model), fast (hours, not weeks), and targeted (improving on actual user queries, not abstract benchmarks).
+Every interaction makes Annie better at the specific work her users need. Sleep cycle training on accumulated interaction data is cheap (under \$5 per fine-tuning run for a 7B model), fast (hours, not weeks), and targeted (improving on actual user queries, not abstract benchmarks).
 
 This flywheel does not exist with frontier API access. OpenAI and Anthropic train their models on their schedule, optimising for their benchmarks, with no mechanism for a customer's domain-specific interactions to improve the model they are using. Annie's specialists get better at insurance work because they process insurance work. They get better at code review because they perform code reviews. The improvement is automatic, continuous, and domain-specific.
 
@@ -273,7 +273,7 @@ This matters for the coworker paradigm. Real coworkers develop rapport. They com
 
 Annie's current specialists are five fine-tunes of the sovereign Workforce base model (sparse MoE, trained from scratch on 1.5T curated Evari tokens + 15T open-source tokens) plus Qwen 3.6:27B. These six physical models fill twelve logical pipeline roles, with some models serving multiple roles. Annie is currently domain-specialised for Evari's insurance technology and platform development work -- expanding to new domains requires training new specialists or customers injecting their own models.
 
-The table below shows the open-source landscape available for customer deployments and future specialist expansion. Because Annie is a platform with model-agnostic slots, any of these models can fill a role in the pipeline (see [01 - SOTA Landscape](01-sota-landscape.md) for detailed analysis).
+The table below shows the open-source landscape available for customer deployments and future specialist expansion. Because Annie is a platform with model-agnostic slots, any of these models can fill a role in the pipeline (see [SOTA Landscape](annie/sota-landscape.mdx) for detailed analysis).
 
 ```mermaid
 graph TB
@@ -354,9 +354,9 @@ quadrantChart
 | **Hallucination rate** | Multi-stage verification reduces hallucination by 4-67% depending on method (CoVe, VeriFY, multi-modal verification). Cross-model consensus catches self-consistent errors that single-model approaches miss. | GPT-5.5 reported at 86% hallucination rate on factual recall tasks. Single-pass inference with no structural verification. | **Annie wins on verified output.** The pipeline exists specifically to catch and reject hallucinated responses. |
 | **Latency (simple queries)** | Sub-second via fast path (single specialist, no consensus). | Sub-second to seconds depending on provider and model. | **Comparable.** Fast path matches frontier speed. |
 | **Latency (complex queries)** | Seconds to minutes (expert processing + judgment + verification). | Seconds (single pass, even with chain-of-thought). | **Frontier wins on speed.** Annie trades latency for verified quality. This is the core tradeoff. |
-| **Cost at scale** | $50-200/day at 100M tokens. Hardware investment $5K-200K one-time. | $700-5,000/day at 100M tokens. No hardware investment but perpetual per-token cost. | **Annie wins by 10-100x.** The cost advantage is structural and widens with volume. |
+| **Cost at scale** | \$50-200/day at 100M tokens. Hardware investment \$5K-200K one-time. | \$700-5,000/day at 100M tokens. No hardware investment but perpetual per-token cost. | **Annie wins by 10-100x.** The cost advantage is structural and widens with volume. |
 | **Sovereignty** | Full L3-L4 sovereignty. Runs on customer infrastructure. No external dependencies. Annie's base model is trained from scratch with no dependency on external model weights; the fine-tuned domain specialists inherit this sovereign foundation -- the strongest sovereignty position possible. | L1-L2 at best. API dependency. Service can be suspended (demonstrated with Fable 5). Data leaves customer jurisdiction. | **Annie wins absolutely.** This is binary: either you control your AI infrastructure or you do not. Annie's from-scratch base model means no exposure to export controls on external model weights. |
-| **Domain extensibility** | Add a specialist ($2K-500K), update classifier, deploy. No other changes. | Request a feature from the provider. Fine-tuning available for some models at provider-controlled cost. | **Annie wins.** Customer controls their own capability roadmap. |
+| **Domain extensibility** | Add a specialist (\$2K-500K), update classifier, deploy. No other changes. | Request a feature from the provider. Fine-tuning available for some models at provider-controlled cost. | **Annie wins.** Customer controls their own capability roadmap. |
 | **Continuous improvement** | Sleep cycle training on actual user interactions. Specialists improve on the work they do. | Provider trains on their schedule, their data, their priorities. | **Annie wins for domain specialisation.** Frontier wins for general capability advancement. |
 | **Explainability** | Every stage logged in the Cognition Stream. Classification, expert responses, judgment scores, verification decisions -- all auditable. | Black box. Some providers offer limited reasoning traces. | **Annie wins.** Full pipeline observability is architecturally guaranteed. |
 
@@ -366,7 +366,7 @@ quadrantChart
 
 Annie is currently 100% specialised for Evari's domain: insurance technology, platform development, and associated regulatory compliance work. All of Annie's current specialist models were trained on interaction data, domain knowledge, and use cases within this scope. Performance and capability outside this domain are untested and unverified. Annie does not include specialists for government intelligence, defence applications, healthcare, or other vertical markets. Deploying Annie into a new domain requires either:
 
-1. **Training new specialists from scratch** for that domain, using domain-specific data, at a cost of $2,000-$500,000 per specialist and a timeline of weeks to months depending on data availability and model size.
+1. **Training new specialists from scratch** for that domain, using domain-specific data, at a cost of \$2,000-\$500,000 per specialist and a timeline of weeks to months depending on data availability and model size.
 2. **Customers providing their own specialist models** that are already trained for their use cases, which Annie can orchestrate through its existing pipeline.
 
 The architecture itself is proven and robust. The breadth of domain coverage is not yet proven. This is a pilot activity for a new market and geography (Australia). Partners and customers should expect domain-specific training, model development, and calibration of rubrics as part of any deployment. Initial deployments will improve Annie's capability in their specific domain over time through the sleep cycle training mechanism, but the first deployment into a new sector will require investment in specialist training or customer model contribution.
@@ -377,50 +377,50 @@ For organisations evaluating Annie: if your use case falls outside insurance, fi
 
 ### Ensemble and Multi-Model Evidence
 
-1. Kondratyuk, D., Tan, M., Brown, M., Gong, B. "When Ensembling Smaller Models is More Efficient than Single Large Models." Google AI, 2020. arXiv:2005.00570. https://arxiv.org/abs/2005.00570
-2. Chai Research. "Blending Is All You Need: Cheaper, Better Alternative to Trillion-Parameters LLM." 2024. arXiv:2401.02994. https://arxiv.org/abs/2401.02994
-3. Jiang, D., Ren, X., Lin, B.Y. "LLM-Blender: Ensembling Large Language Models with Pairwise Ranking and Generative Fusion." ACL 2023. arXiv:2306.02561. https://arxiv.org/abs/2306.02561
-4. Wang, C. et al. "SLM-MUX: Orchestrating Small Language Models for Reasoning." 2024. arXiv:2510.05077. https://arxiv.org/abs/2510.05077
-5. Li et al. "More Agents Is All You Need." 2024. arXiv:2402.05120. https://arxiv.org/abs/2402.05120
+1. Kondratyuk, D., Tan, M., Brown, M., Gong, B. "When Ensembling Smaller Models is More Efficient than Single Large Models." Google AI, 2020. [arXiv:2005.00570](https://arxiv.org/abs/2005.00570). https://arxiv.org/abs/2005.00570
+2. Chai Research. "Blending Is All You Need: Cheaper, Better Alternative to Trillion-Parameters LLM." 2024. [arXiv:2401.02994](https://arxiv.org/abs/2401.02994). https://arxiv.org/abs/2401.02994
+3. Jiang, D., Ren, X., Lin, B.Y. "LLM-Blender: Ensembling Large Language Models with Pairwise Ranking and Generative Fusion." ACL 2023. [arXiv:2306.02561](https://arxiv.org/abs/2306.02561). https://arxiv.org/abs/2306.02561
+4. Wang, C. et al. "SLM-MUX: Orchestrating Small Language Models for Reasoning." 2024. [arXiv:2510.05077](https://arxiv.org/abs/2510.05077). https://arxiv.org/abs/2510.05077
+5. Li et al. "More Agents Is All You Need." 2024. [arXiv:2402.05120](https://arxiv.org/abs/2402.05120). https://arxiv.org/abs/2402.05120
 
 ### Cost-Optimised Routing
 
-6. Chen, L. et al. "FrugalGPT: How to Use Large Language Models While Reducing Cost and Improving Performance." Stanford, TMLR 2024. arXiv:2305.05176. https://arxiv.org/abs/2305.05176
-7. UC Berkeley, Anyscale, Canva. "RouteLLM: Learning to Route LLMs with Preference Data." ICLR 2025. arXiv:2406.18665. https://arxiv.org/abs/2406.18665
+6. Chen, L. et al. "FrugalGPT: How to Use Large Language Models While Reducing Cost and Improving Performance." Stanford, TMLR 2024. [arXiv:2305.05176](https://arxiv.org/abs/2305.05176). https://arxiv.org/abs/2305.05176
+7. UC Berkeley, Anyscale, Canva. "RouteLLM: Learning to Route LLMs with Preference Data." ICLR 2025. [arXiv:2406.18665](https://arxiv.org/abs/2406.18665). https://arxiv.org/abs/2406.18665
 
 ### Small Model Capability
 
 8. Microsoft Research. "Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone." 2024. https://www.microsoft.com/en-us/research/publication/phi-3-technical-report-a-highly-capable-language-model-locally-on-your-phone/
-9. "Fine-Tune an SLM or Prompt an LLM? The Case of Generating Low-Code Workflows." 2025. arXiv:2505.24189. https://arxiv.org/html/2505.24189v1
+9. "Fine-Tune an SLM or Prompt an LLM? The Case of Generating Low-Code Workflows." 2025. [arXiv:2505.24189](https://arxiv.org/abs/2505.24189). https://arxiv.org/html/2505.24189v1
 10. Apple Machine Learning Research. "Introducing Apple Foundation Models." 2024-2025. https://machinelearning.apple.com/research/introducing-apple-foundation-models
 
 ### Mixture of Experts Architecture
 
-11. "A Comprehensive Survey of Mixture-of-Experts: Algorithms, Theory, and Applications." 2025. arXiv:2503.07137. https://arxiv.org/html/2503.07137v1
-12. Quirke, P., Oozeer, N., Bandi, C. et al. "Beyond Monoliths: Expert Orchestration for More Capable, Democratic, and Safe Language Models." Submitted to NeurIPS 2025. arXiv:2506.00051. https://arxiv.org/abs/2506.00051
-13. Chai, Z., Wang, G. et al. "An Expert is Worth One Token: Synergizing Multiple Expert LLMs as Generalist via Expert Token Routing." ACL 2024. arXiv:2403.16854. https://arxiv.org/abs/2403.16854
+11. "A Comprehensive Survey of Mixture-of-Experts: Algorithms, Theory, and Applications." 2025. [arXiv:2503.07137](https://arxiv.org/abs/2503.07137). https://arxiv.org/html/2503.07137v1
+12. Quirke, P., Oozeer, N., Bandi, C. et al. "Beyond Monoliths: Expert Orchestration for More Capable, Democratic, and Safe Language Models." Submitted to NeurIPS 2025. [arXiv:2506.00051](https://arxiv.org/abs/2506.00051). https://arxiv.org/abs/2506.00051
+13. Chai, Z., Wang, G. et al. "An Expert is Worth One Token: Synergizing Multiple Expert LLMs as Generalist via Expert Token Routing." ACL 2024. [arXiv:2403.16854](https://arxiv.org/abs/2403.16854). https://arxiv.org/abs/2403.16854
 
 ### Consensus and Verification
 
-14. Wang, X. et al. "Self-Consistency Improves Chain of Thought Reasoning in Language Models." ICLR 2023. arXiv:2203.11171. https://arxiv.org/abs/2203.11171
+14. Wang, X. et al. "Self-Consistency Improves Chain of Thought Reasoning in Language Models." ICLR 2023. [arXiv:2203.11171](https://arxiv.org/abs/2203.11171). https://arxiv.org/abs/2203.11171
 15. Verga et al. "Replacing Judges with Juries: Evaluating LLM Generations with a Panel of Diverse Models (PoLL)." 2024. Referenced in https://eugeneyan.com/writing/llm-evaluators/
-16. Zhao, J., Plaza-del-Arco, F.M., Cercas Curry, A. "Language Model Council: Democratically Benchmarking Foundation Models on Highly Subjective Tasks." 2024. arXiv:2406.08598. https://arxiv.org/abs/2406.08598
-17. Meta AI. "Chain-of-Verification Reduces Hallucination in Large Language Models." 2023. arXiv:2309.11495. https://arxiv.org/abs/2309.11495
-18. "Do I Really Know? Learning Factual Self-Verification for Hallucination Reduction (VeriFY)." 2026. arXiv:2602.02018. https://arxiv.org/abs/2602.02018
-19. "Multi-Modal Fact-Verification Framework for Reducing Hallucinations in Large Language Models." 2025. arXiv:2510.22751. https://arxiv.org/html/2510.22751v1
-20. "Sample, Scrutinize and Scale: Effective Inference-Time Search by Scaling Verification." 2025. arXiv:2502.01839. https://arxiv.org/pdf/2502.01839
+16. Zhao, J., Plaza-del-Arco, F.M., Cercas Curry, A. "Language Model Council: Democratically Benchmarking Foundation Models on Highly Subjective Tasks." 2024. [arXiv:2406.08598](https://arxiv.org/abs/2406.08598). https://arxiv.org/abs/2406.08598
+17. Meta AI. "Chain-of-Verification Reduces Hallucination in Large Language Models." 2023. [arXiv:2309.11495](https://arxiv.org/abs/2309.11495). https://arxiv.org/abs/2309.11495
+18. "Do I Really Know? Learning Factual Self-Verification for Hallucination Reduction (VeriFY)." 2026. [arXiv:2602.02018](https://arxiv.org/abs/2602.02018). https://arxiv.org/abs/2602.02018
+19. "Multi-Modal Fact-Verification Framework for Reducing Hallucinations in Large Language Models." 2025. [arXiv:2510.22751](https://arxiv.org/abs/2510.22751). https://arxiv.org/html/2510.22751v1
+20. "Sample, Scrutinize and Scale: Effective Inference-Time Search by Scaling Verification." 2025. [arXiv:2502.01839](https://arxiv.org/abs/2502.01839). https://arxiv.org/pdf/2502.01839
 
 ### Rubric-Based Evaluation
 
-21. "Beyond the Illusion of Consensus: From Surface Heuristics to Knowledge-Grounded Evaluation in LLM-as-a-Judge." 2026. arXiv:2603.11027. https://arxiv.org/pdf/2603.11027
-22. "Rubric Is All You Need: Improving LLM-Based Code Evaluation." ACM ICER 2025. arXiv:2503.23989. https://arxiv.org/pdf/2503.23989
+21. "Beyond the Illusion of Consensus: From Surface Heuristics to Knowledge-Grounded Evaluation in LLM-as-a-Judge." 2026. [arXiv:2603.11027](https://arxiv.org/abs/2603.11027). https://arxiv.org/pdf/2603.11027
+22. "Rubric Is All You Need: Improving LLM-Based Code Evaluation." ACM ICER 2025. [arXiv:2503.23989](https://arxiv.org/abs/2503.23989). https://arxiv.org/pdf/2503.23989
 
 ### Judge Independence and Limitations
 
-23. "Nine Judges, Two Effective Votes: Correlated Errors Undermine LLM Evaluation Panels." 2025. arXiv:2605.29800. https://arxiv.org/abs/2605.29800
-24. Tan, H. et al. "Too Consistent to Detect: A Study of Self-Consistent Errors in LLMs." EMNLP 2025. arXiv:2505.17656. https://arxiv.org/abs/2505.17656
-25. "The Six Sigma Agent: Achieving Enterprise-Grade Reliability in LLM Systems Through Consensus-Driven Decomposed Execution." 2026. arXiv:2601.22290. https://arxiv.org/abs/2601.22290
-26. Maryanskyy, A. "When Agents Disagree: The Selection Bottleneck in Multi-Agent LLM Pipelines." 2025. arXiv:2603.20324. https://arxiv.org/abs/2603.20324
+23. "Nine Judges, Two Effective Votes: Correlated Errors Undermine LLM Evaluation Panels." 2025. [arXiv:2605.29800](https://arxiv.org/abs/2605.29800). https://arxiv.org/abs/2605.29800
+24. Tan, H. et al. "Too Consistent to Detect: A Study of Self-Consistent Errors in LLMs." EMNLP 2025. [arXiv:2505.17656](https://arxiv.org/abs/2505.17656). https://arxiv.org/abs/2505.17656
+25. "The Six Sigma Agent: Achieving Enterprise-Grade Reliability in LLM Systems Through Consensus-Driven Decomposed Execution." 2026. [arXiv:2601.22290](https://arxiv.org/abs/2601.22290). https://arxiv.org/abs/2601.22290
+26. Maryanskyy, A. "When Agents Disagree: The Selection Bottleneck in Multi-Agent LLM Pipelines." 2025. [arXiv:2603.20324](https://arxiv.org/abs/2603.20324). https://arxiv.org/abs/2603.20324
 
 ### Market and Industry
 
@@ -428,7 +428,7 @@ For organisations evaluating Annie: if your use case falls outside insurance, fi
 28. Microsoft. "2026 Work Trend Index." 2026. https://www.microsoft.com/en-us/worklab/work-trend-index/agents-human-agency-and-the-opportunity-for-every-organization
 29. Gartner. "40% of Enterprise Apps Will Feature AI Agents by 2026." 2025. https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025
 30. CodeRabbit. "The Rise of Slow AI." 2026. https://www.coderabbit.ai/blog/the-rise-of-slow-ai-why-devs-should-stop-speedrunning-stupid
-31. TechTimes. "Cognition's $26B Raise." 2026. https://www.techtimes.com/articles/317354/20260529/ai-coding-agents-cognitions-26b-raise-bets-agent-first-architecture-beats-ide-tools.htm
+31. TechTimes. "Cognition's \$26B Raise." 2026. https://www.techtimes.com/articles/317354/20260529/ai-coding-agents-cognitions-26b-raise-bets-agent-first-architecture-beats-ide-tools.htm
 
 ### Personalisation and Rapport
 
@@ -442,5 +442,5 @@ For organisations evaluating Annie: if your use case falls outside insurance, fi
 
 ### Confidence and Calibration
 
-36. Kadavath, S. et al. "Language Models (Mostly) Know What They Know." Anthropic, 2022. arXiv:2207.05221. https://arxiv.org/abs/2207.05221
-37. Du, Y., Li, S., Torralba, A., Tenenbaum, J.B., Mordatch, I. "Improving Factuality and Reasoning in Language Models through Multiagent Debate." ICML 2024. arXiv:2305.14325. https://arxiv.org/abs/2305.14325
+36. Kadavath, S. et al. "Language Models (Mostly) Know What They Know." Anthropic, 2022. [arXiv:2207.05221](https://arxiv.org/abs/2207.05221). https://arxiv.org/abs/2207.05221
+37. Du, Y., Li, S., Torralba, A., Tenenbaum, J.B., Mordatch, I. "Improving Factuality and Reasoning in Language Models through Multiagent Debate." ICML 2024. [arXiv:2305.14325](https://arxiv.org/abs/2305.14325). https://arxiv.org/abs/2305.14325
