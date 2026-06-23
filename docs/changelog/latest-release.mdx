@@ -1,78 +1,137 @@
-<Update label="May 2026" description="v1.2.2" tags={["Chat UI", "Document Processing", "Bug Fixes", "Performance"]}>
+---
+title: "Latest Release"
+description: "v1.3.0 - Enterprise Workspace Management, Email Automation, and Intelligent Escalations"
+---
 
-<Note>**Release Date:** May 6, 2026
-**Version:** v1.2.2
-**Release Type:** Patch Release - Small Feature Updates & Bug Fixes</Note>
+<Update label="June 2026" description="v1.3.0" tags={["Workspaces", "Records", "Email", "Escalations"]}>
 
-# Quiva v1.2.2 – Enhanced Chat & Document Processing
+<Note>
+**Release Date:** 20th June 2026
+**Version:** v1.3.0
+**Release Type:** Major Release
+</Note>
 
-<Tip>This patch release maintains full backward compatibility with v1.2.1. No migration steps required.</Tip>
+# QuivaWorks v1.3.0 – Enterprise Workspace Management & Automation
+
+<Tip>This release maintains full backward compatibility. No migration required for existing customers.</Tip>
 
 ## 🎯 Key Highlights
 
 <CardGroup cols={2}>
 
-  <Card title="Improved Chat Experience" icon="comments" color="blue">
-    Enhanced user mention handling and session management for smoother interactions
-  </Card>
+<Card title="Intelligent Workspaces" icon="folder" color="blue">
+Organize work into hierarchical folders, manage tasks with Kanban/Calendar views, and automate scheduling with AI assistance.
+</Card>
 
-  <Card title="Better Document Viewing" icon="file" color="green">
-    Refined document preview interface with improved navigation and download capabilities
-  </Card>
+<Card title="Custom Records & Forms" icon="database" color="indigo">
+Define custom data types with flexible forms, assign to teams, and filter by status, assignee, or watchers.
+</Card>
 
-  <Card title="Advanced Document Generation" icon="wand2" color="purple">
-    Enhanced Word and PowerPoint document generation with improved formatting
-  </Card>
+<Card title="Email & Document Workflows" icon="envelope" color="orange">
+Generate documents with e-signature, monitor email activity, and control notification preferences per user.
+</Card>
 
-  <Card title="Critical Bug Fixes" icon="bug" color="red">
-    Fixed document encoding issues and admin authorization problems
-  </Card>
+<Card title="Intelligent Escalations" icon="arrow-up" color="red">
+Automatically route tasks to team members with priority levels, HTML notifications, and complete audit trails.
+</Card>
+
+<Card title="Enhanced Infrastructure" icon="server" color="gray">
+Support for custom domains, improved security with JWT refresh, and optimized performance for large-scale deployments.
+</Card>
+
+<Card title="Template Flexibility" icon="file" color="green">
+Load document templates from multiple storage sources for maximum deployment flexibility.
+</Card>
 
 </CardGroup>
 
 ## ✨ What's New
 
-### Enhanced Chat Experience
+### Workspaces: A Complete Client & Project Management Solution
 
-We've significantly improved the chat interface with better user mention handling and confirmation flows. The chat UI now includes improved session management, making it easier to track and organize conversations. Users will notice smoother interactions when mentioning colleagues and a more intuitive message handling experience.
+Workspaces provide a comprehensive system for organizing client work, managing projects, and collaborating with team members. Create hierarchical folders to mirror your business structure—whether organizing by client, project type, or custom categories. Each workspace serves as a complete hub for managing all work related to that client or project.
 
-- It is easier to see who sent which message
-- When a response is being actively received, the UI provents you from sending another message
-- Subscribes to live chats as soon as you open them
+**Key Capabilities:**
+- **Hierarchical Organization**: Nested folder structures with unlimited depth for complete flexibility
+- **Task Management**: Create tasks with rich descriptions, due dates, and attachments
+- **Multiple Views**: Switch between Kanban board (drag-and-drop workflow), List view (detailed filtering), and Calendar view (timeline visualization)
+- **Task Automation**: Schedule recurring tasks using cron expressions with full timezone support
+- **AI Assistant**: Get intelligent help within each workspace for setup, guidance, and troubleshooting
+- **File & Document Storage**: Centralized file repository with inherited folder permissions
+- **Real-time Collaboration**: Comments with emoji support and team notifications
 
-### Refined Document Preview Interface
+### Records Management: Structured Data Made Simple
 
-The document viewing experience has been enhanced with an improved preview interface, updated navigation controls, and better visual organization. Users can now more easily browse and download knowledge base files with an optimized interface that provides clearer visibility and control.
+Build custom record types that match your business data. Records gives you a flexible schema-driven system for creating forms, organizing information, and managing instances without custom development.
 
-### Advanced Document Generation Capabilities
+**Key Capabilities:**
+- **Custom Types**: Define record types with JSON schema—no coding required
+- **Auto-Generated Forms**: Automatically create forms from your data definitions
+- **Multi-Assignment**: Assign records to multiple team members simultaneously
+- **Watchers**: Subscribe to record changes and stay informed
+- **Advanced Filtering**: Filter by status, assignee, watchers, and custom fields
+- **Folder Organization**: Organize records into folders within workspaces
+- **AI Guidance**: Add instructions to guide AI assistance when working with records
 
-Word and PowerPoint document generation has been improved with enhanced formatting controls and more robust generation capabilities. These improvements ensure documents are generated with better formatting consistency and reliability across different scenarios.
+### Email Automation: Documents, Signatures & Monitoring
 
-To get the most out of document generation, ensure that you explicitly state the formatting requirements or provide a template document and give specific instructions to use the document as the template.
+Send documents for signature, track email delivery, and manage notification preferences—all from within your workflows.
+
+**Key Capabilities:**
+- **Document Generation & Signing**: Create documents on-the-fly and send for electronic signature with automatic callback handling
+- **Email Monitoring Dashboard**: View all sent emails with status, timestamps, and attachments
+- **File Previews**: Inline viewing of attachments (PDF, Excel, Word, Code)
+- **Notification Control**: Users can mute specific notifications or disable notification types entirely
+- **Audit Trail**: Complete log of all emails sent for compliance and troubleshooting
+
+### Escalations: Intelligent Task Routing
+
+Automatically escalate work to the right person with full context and tracking.
+
+**Key Capabilities:**
+- **Auto-Escalation**: Create escalation tasks automatically when conditions are met
+- **Priority Levels**: Configure escalations with high, medium, or low priority
+- **HTML Notifications**: Professional formatted emails with direct links to tasks
+- **Team Assignment**: Escalate to individuals, teams, or roles
+- **Change Tracking**: Complete audit log of all modifications to escalated tasks
+- **Resume Workflows**: Monitor and resume paused workflows from a single dashboard
+- **Export History**: Generate compliance reports with full escalation details
+
+### Infrastructure Improvements: Faster, Safer, More Flexible
+
+Behind-the-scenes enhancements that make the platform more powerful for enterprise deployments.
+
+**Key Capabilities:**
+- **Custom Domains**: Organize your own domain with full gateway management
+- **Secure Sessions**: Enhanced JWT token refresh ensures secure, time-limited sessions
+- **Load Balancer Support**: Proper client IP detection in proxy environments
+- **Performance Optimization**: Improved key-value store performance for session management
+- **Flexible Templates**: Load document templates from any storage source (object stores or key-value stores)
+- **Dynamic Configuration**: Apply middleware rules from configuration instead of hardcoded values
 
 ## 🛠️ Bug Fixes & Improvements
 
 <AccordionGroup>
 
-  <Accordion title="Fixed Word Document Encoding Issues">
-  Resolved a critical issue where Word documents containing special character encodings (specifically byte order marks) were incorrectly marked as unreadable by the assistant. This fix ensures that documents with various encoding types are properly processed and readable.
-  </Accordion>
+<Accordion title="Email System Enhancements">
+Improved email handling with standardized property naming across all APIs. Enhanced document generation service with comprehensive documentation. Better error handling for email triggers and improved bucket management for robust email delivery.
+</Accordion>
 
-  <Accordion title="Resolved Admin User Deletion Authorization">
-  Fixed an authorization error that prevented administrators from successfully deleting user accounts. The system now properly handles admin permissions when removing users from the platform.
-  </Accordion>
+<Accordion title="Escalation Workflow Refinements">
+Fixed escalation task creation with improved flow context tracking. Enhanced session membership management for assigned users. Better HTML email generation for escalation notifications. Improved paused flow resume functionality with visual indicators.
+</Accordion>
 
-  <Accordion title="Improved Email Trigger Routing">
-  Enhanced the email trigger system to more accurately identify and route messages to the correct forwarding email addresses, improving reliability of email-based automations.
-  </Accordion>
+<Accordion title="Workspace & Record Improvements">
+Refined task scheduling with better timezone handling and cron expression support. Improved multi-assignee filtering across all views. Enhanced record form builder with better schema validation. Better handling of custom record properties and instructions.
+</Accordion>
 
-  <Accordion title="Streamlined File Generation Dependencies">
-  Removed unnecessary file generation dependencies to improve system efficiency and reduce maintenance overhead.
-  </Accordion>
+<Accordion title="Infrastructure Stability">
+Fixed WebSocket protocol handling for real-time communication. Improved content-type middleware application. Better x-forwarded-for header processing in proxy environments. Enhanced JWT token generation and refresh mechanism. BStream integration for improved KV store performance.
+</Accordion>
 
-  <Accordion title="Updated Help Documentation Links">
-  Updated help documentation references across the application to ensure users always have access to the most current guidance.
-  </Accordion>
+<Accordion title="API Standardization">
+Standardized property naming across email and escalation APIs for consistency. Better error messages and validation feedback. Improved API documentation for new endpoints. Enhanced type safety across service boundaries.
+</Accordion>
 
 </AccordionGroup>
 
@@ -80,21 +139,21 @@ To get the most out of document generation, ensure that you explicitly state the
 
 <CardGroup cols={2}>
 
-  <Card title="Documentation" icon="book" href="https://docs.quiva.ai">
-    Explore comprehensive guides and API documentation
-  </Card>
+<Card title="Documentation" icon="book" href="https://docs.quiva.ai">
+Explore detailed guides, API reference, and best practices for all Quiva features.
+</Card>
 
-  <Card title="Community" icon="users" href="https://quivaworks.slack.com">
-    Join our community Slack workspace for discussions
-  </Card>
+<Card title="Community" icon="users" href="https://quivaworks.slack.com">
+Connect with other Quiva users, share ideas, and get help from the community.
+</Card>
 
-  <Card title="Contact Support" icon="envelope" href="mailto:support@quiva.ai">
-    Reach out to our support team for assistance
-  </Card>
+<Card title="Contact Support" icon="envelope" href="mailto:support@quiva.ai">
+Reach out to our support team for any questions or issues with your deployment.
+</Card>
 
-  <Card title="Feature Requests" icon="lightbulb" href="mailto:hello@quiva.ai">
-    Share your ideas and feature requests with our team
-  </Card>
+<Card title="Feature Requests" icon="lightbulb" href="mailto:hello@quiva.ai">
+Share your ideas for new features and help shape the future of Quiva.
+</Card>
 
 </CardGroup>
 

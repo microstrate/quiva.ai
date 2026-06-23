@@ -24,6 +24,7 @@
               "get-started/plans-and-pricing"
             ]
           },
+
           {
             "group": "Assistants",
             "pages": [
@@ -99,7 +100,7 @@
               "flows/best-practices"
             ]
           },
-          
+
           {
             "group": "Account Management",
             "pages": [
@@ -167,6 +168,16 @@
                   "advanced/rules/examples",
                   "advanced/rules/advanced-techniques",
                   "advanced/rules/technical-reference"
+                ]
+              },
+              {
+                "group": "Annie",
+                "pages": [
+                  "annie/sota-landscape",
+                  "annie/annie-architecture",
+                  "annie/competitive-anaylsis",
+                  "annie/hypothesis",
+                  "annie/partner-propositions"
                 ]
               }
             ]
