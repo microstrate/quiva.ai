@@ -188,139 +188,139 @@
         "x-resource-type": "service",
         "x-resource": "microstrate.workspaces.get.tasks",
         "parameters": [
-                {
-                    "name": "space_id",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "archived",
-                    "in": "query",
-                    "schema": {
-                        "type": "boolean"
-                    }
-                },
-                {
-                    "name": "scheduled",
-                    "in": "query",
-                    "schema": {
-                        "type": "boolean"
-                    }
-                },
-                {
-                    "name": "limit",
-                    "in": "query",
-                    "description": "How many maximum results should be returned",
-                    "schema": {
-                        "type": "integer",
-                        "default": 300
-                    }
-                },
-                {
-                    "name": "offset",
-                    "in": "query",
-                    "description": "If there are more results than the limit, offset can be used to get to the next batch of results",
-                    "schema": {
-                        "type": "integer",
-                        "default": 0
-                    }
-                },
-                {
-                    "name": "sort_by",
-                    "in": "query",
-                    "description": "Name of the field used for sorting the list of results",
-                    "schema": {
-                        "type": "string",
-                        "default": "created_at"
-                    }
-                },
-                {
-                    "name": "sort_order",
-                    "in": "query",
-                    "description":"Should the results be sorted in ascending or descending order relative to sort_by field",
-                    "schema": {
-                        "type": "string",
-                        "enum": [
-                            "asc",
-                            "desc"
-                        ],
-                        "default": "asc"
-                    }
-                },
-                {
-                    "name": "created_by",
-                    "in": "query",
-                    "description": "Exact match on the user ID of the task creator",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "priority",
-                    "in": "query",
-                    "description": "Exact match on priority; comma-separated values to filter by priority",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "status",
-                    "in": "query",
-                    "description": "Exact match on status; comma-separated values to filter by multiple statuses",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "title",
-                    "in": "query",
-                    "description": "Term search on task title",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "asignees",
-                    "in": "query",
-                    "description": "Comma-separated assignee IDs; at least one must match",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "reporter",
-                    "in": "query",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "created_at",
-                    "in": "query",
-                    "description": "Filter by creation date. Use a single date or a range as `{start_date},{end_date}`",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "updated_at",
-                    "in": "query",
-                    "description": "Filter by last-updated date. Use a single date or a range as `{start_date},{end_date}`",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "scheduled_at",
-                    "in": "query",
-                    "description": "Filter by scheduled date. Use a single date or a range as `{start_date},{end_date}`",
-                    "schema": {
-                        "type": "string"
-                    }
-                }
+          {
+            "name": "space_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "scheduled",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many maximum results should be returned",
+            "schema": {
+              "type": "integer",
+              "default": 300
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "If there are more results than the limit, offset can be used to get to the next batch of results",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Name of the field used for sorting the list of results",
+            "schema": {
+              "type": "string",
+              "default": "created_at"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "Should the results be sorted in ascending or descending order relative to sort_by field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "created_by",
+            "in": "query",
+            "description": "Exact match on the user ID of the task creator",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "description": "Exact match on priority; comma-separated values to filter by priority",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Exact match on status; comma-separated values to filter by multiple statuses",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Term search on task title",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "asignees",
+            "in": "query",
+            "description": "Comma-separated assignee IDs; at least one must match",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reporter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "description": "Filter by creation date. Use a single date or a range as `{start_date},{end_date}`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updated_at",
+            "in": "query",
+            "description": "Filter by last-updated date. Use a single date or a range as `{start_date},{end_date}`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scheduled_at",
+            "in": "query",
+            "description": "Filter by scheduled date. Use a single date or a range as `{start_date},{end_date}`",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -764,13 +764,290 @@
           }
         }
       }
+    },
+    "/workspaces/approvals": {
+      "get": {
+        "summary": "List approvals for a file",
+        "operationId": "listFileApprovals",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.get.approvals",
+        "responses": {
+          "200": {
+            "description": "List of approvals for a file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a file approval request.",
+        "operationId": "createApproval",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.post.approval",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created file approval.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Approval"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/workspaces/approvals/{id}": {
+      "get": {
+        "summary": "Get an approval by ID",
+        "operationId": "getApproval",
+        "x-is-public": true,
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.get.approval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Approval id or signatory external token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Approval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Approval"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an approval",
+        "operationId": "deleteApproval",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.delete.approval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Approval deleted"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/workspaces/approvals/{id}/approve": {
+      "patch": {
+        "summary": "Approve a file approval",
+        "operationId": "approveApproval",
+        "x-is-public": true,
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.patch.approval-approve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Approval id or signatory external token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/workspaces/approvals/{id}/reject": {
+      "patch": {
+        "summary": "Reject a file approval",
+        "operationId": "rejectApproval",
+        "x-is-public": true,
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.patch.approval-reject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Approval id or signatory external token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/workspaces/approvals/{id}/events": {
+      "get": {
+        "summary": "List approvals events",
+        "operationId": "listApprovalEvents",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.get.approval-events",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of approvals events.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalEventList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an approval event",
+        "operationId": "createApprovalEvent",
+        "x-is-public": true,
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.post.approval-event",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Approval id or signatory external token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "SpaceStatus": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -798,7 +1075,10 @@
       },
       "CreateSpaceRequest": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -835,7 +1115,9 @@
       },
       "UpdateSpaceRequest": {
         "type": "object",
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -1011,7 +1293,9 @@
       },
       "CreateTaskRequest": {
         "type": "object",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "properties": {
           "title": {
             "type": "string"
@@ -1061,7 +1345,9 @@
           },
           {
             "type": "object",
-            "required": ["id"],
+            "required": [
+              "id"
+            ],
             "properties": {
               "id": {
                 "type": "string"
@@ -1075,7 +1361,9 @@
       },
       "UpdateMultiTaskRequest": {
         "type": "object",
-        "required": ["tasks"],
+        "required": [
+          "tasks"
+        ],
         "properties": {
           "tasks": {
             "type": "array",
@@ -1150,7 +1438,9 @@
       },
       "CreateCommentRequest": {
         "type": "object",
-        "required": ["body"],
+        "required": [
+          "body"
+        ],
         "properties": {
           "body": {
             "type": "string",
@@ -1198,7 +1488,9 @@
       },
       "CommentReactionRequest": {
         "type": "object",
-        "required": ["reaction"],
+        "required": [
+          "reaction"
+        ],
         "properties": {
           "reaction": {
             "type": "object",
@@ -1225,9 +1517,268 @@
             "type": "integer"
           }
         }
+      },
+      "SignatoryInternal": {
+        "type": "object",
+        "description": "Internal signatory as returned in a response, including the generated access URL.",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "Unique identifier of the internal user.",
+            "example": "3923e55e-285c-414b-adbd-ddf9e68a01ac"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL the signatory uses to access the approval.",
+            "example": "todo"
+          }
+        }
+      },
+      "SignatoryExternal": {
+        "type": "object",
+        "description": "External signatory as returned in a response, including the generated signing URL.",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "Full name of the external signatory.",
+            "example": "Jane Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the external signatory.",
+            "example": "jane.doe@example.com"
+          },
+          "url": {
+            "type": "string",
+            "description": "Signing URL sent to the external signatory.",
+            "example": "todo"
+          }
+        }
+      },
+      "SignatoryMetadata": {
+        "type": "object",
+        "description": "Contextual metadata captured when a signatory acts on an approval.",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the metadata record was captured.",
+            "example": "2026-07-07T14:32:10Z"
+          },
+          "ip": {
+            "type": "string",
+            "description": "IP address the action originated from.",
+            "example": "203.0.113.42"
+          },
+          "user_agent": {
+            "type": "string",
+            "description": "User agent string of the signatory's client.",
+            "example": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "Device or browser fingerprint hash.",
+            "example": "d41d8cd98f00b204e9800998ecf8427e"
+          }
+        }
+      },
+      "ApprovalStatus": {
+        "type": "string",
+        "description": "Current status of a file approval.",
+        "enum": [
+          "in_progress",
+          "approved",
+          "rejected"
+        ],
+        "example": "approved"
+      },
+      "CreateApprovalRequest": {
+        "type": "object",
+        "description": "Payload to create a file approval.",
+        "properties": {
+          "file_subject": {
+            "type": "string",
+            "description": "Subject of the file under approval.",
+            "example": "ms.workspace-files.c3BhY2Vz.VEVTVF9TUEFDRQ.Zm9sZGVyIDE.b3BlbmFwaQ.anNvbg"
+          },
+          "signatory_internal": {
+            "type": "object",
+            "description": "Signatory details for clients having registered user.",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "Unique identifier of the internal user.",
+                "example": "3923e55e-285c-414b-adbd-ddf9e68a01ac"
+              }
+            }
+          },
+          "signatory_external": {
+            "type": "object",
+            "description": "External signatory details for clients not having registered user.",
+            "properties": {
+              "full_name": {
+                "type": "string",
+                "description": "Full name of the external signatory.",
+                "example": "Jane Doe"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Email address of the external signatory.",
+                "example": "jane.doe@example.com"
+              }
+            }
+          }
+        }
+      },
+      "Approval": {
+        "type": "object",
+        "description": "An approval for a file, tracking the signatory, status, and audit metadata.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the file approval.",
+            "example": "1a2b3c4d"
+          },
+          "file_subject": {
+            "type": "string",
+            "description": "Subject or title of the file under approval.",
+            "example": "ms.workspace-files.c3BhY2Vz.VEVTVF9TUEFDRQ.Zm9sZGVyIDE.b3BlbmFwaQ.anNvbg"
+          },
+          "task_id": {
+            "type": "string",
+            "description": "Identifier of the task this approval is associated with.",
+            "example": "TEST_SPACE-7"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the approval was created.",
+            "example": "2026-07-01T09:15:00Z"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "User ID of the person who created the approval.",
+            "example": "3923e55e-285c-414b-adbd-ddf9e68a01ac"
+          },
+          "signatory_internal": {
+            "$ref": "#/components/schemas/SignatoryInternal",
+            "description": "Internal signatory assigned to the approval."
+          },
+          "signatory_external": {
+            "$ref": "#/components/schemas/SignatoryExternal",
+            "description": "External signatory assigned to the approval."
+          },
+          "signatory_feedback": {
+            "type": "string",
+            "description": "Free-text feedback left by the signatory, typically on rejection.",
+            "example": "Please correct the payment terms in section 3."
+          },
+          "status": {
+            "$ref": "#/components/schemas/ApprovalStatus",
+            "description": "Current status of the approval."
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/SignatoryMetadata",
+            "description": "Audit metadata captured for the approval action."
+          }
+        }
+      },
+      "ApprovalList": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Approval"
+            }
+          },
+          "results_total": {
+            "type": "integer"
+          }
+        }
+      },
+      "ApproveApprovalRequest": {
+        "type": "object",
+        "description": "Payload to approve a file approval.",
+        "properties": {
+          "signatory_feedback": {
+            "type": "string",
+            "description": "Free-text feedback left by the signatory, typically on rejection.",
+            "example": "Please correct the payment terms in section 3."
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/SignatoryMetadata",
+            "description": "Audit metadata captured for the approval action."
+          }
+        }
+      },
+      "RejectApprovalRequest": {
+        "type": "object",
+        "description": "Payload to reject a file approval.",
+        "properties": {
+          "signatory_feedback": {
+            "type": "string",
+            "description": "Free-text feedback left by the signatory, typically on rejection.",
+            "example": "Please correct the payment terms in section 3."
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/SignatoryMetadata",
+            "description": "Audit metadata captured for the approval action."
+          }
+        }
+      },
+      "ApprovalEvent": {
+        "type": "object",
+        "description": "An event emitted when a file approval changes state.",
+        "required": [
+          "metadata",
+          "event_type"
+        ],
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/SignatoryMetadata",
+            "description": "Audit metadata associated with the event."
+          },
+          "event_type": {
+            "type": "string",
+            "description": "Type of the approval event.",
+            "example": "approval.approved"
+          }
+        }
+      },
+      "ApprovalEventList": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalEvent"
+            }
+          },
+          "results_total": {
+            "type": "integer"
+          }
+        }
       }
     },
     "responses": {
+      "SuccessResponse": {
+        "description": "OK",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "BadRequest": {
         "description": "Bad Request",
         "content": {
