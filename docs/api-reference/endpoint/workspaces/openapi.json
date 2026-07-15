@@ -1556,16 +1556,10 @@
           }
         }
       },
-      "SignatoryMetadata": {
+      "FileApprovalEventMetadata": {
         "type": "object",
         "description": "Contextual metadata captured when a signatory acts on an approval.",
         "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Timestamp when the metadata record was captured.",
-            "example": "2026-07-07T14:32:10Z"
-          },
           "ip": {
             "type": "string",
             "description": "IP address the action originated from.",
@@ -1629,6 +1623,10 @@
                 "example": "jane.doe@example.com"
               }
             }
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/FileApprovalEventMetadata",
+            "description": "Audit metadata associated with the approval."
           }
         }
       },
@@ -1670,18 +1668,9 @@
             "$ref": "#/components/schemas/SignatoryExternal",
             "description": "External signatory assigned to the approval."
           },
-          "signatory_feedback": {
-            "type": "string",
-            "description": "Free-text feedback left by the signatory, typically on rejection.",
-            "example": "Please correct the payment terms in section 3."
-          },
           "status": {
             "$ref": "#/components/schemas/ApprovalStatus",
             "description": "Current status of the approval."
-          },
-          "metadata": {
-            "$ref": "#/components/schemas/SignatoryMetadata",
-            "description": "Audit metadata captured for the approval action."
           }
         }
       },
@@ -1703,13 +1692,13 @@
         "type": "object",
         "description": "Payload to approve a file approval.",
         "properties": {
-          "signatory_feedback": {
+          "feedback": {
             "type": "string",
             "description": "Free-text feedback left by the signatory, typically on rejection.",
             "example": "Please correct the payment terms in section 3."
           },
           "metadata": {
-            "$ref": "#/components/schemas/SignatoryMetadata",
+            "$ref": "#/components/schemas/FileApprovalEventMetadata",
             "description": "Audit metadata captured for the approval action."
           }
         }
@@ -1718,13 +1707,13 @@
         "type": "object",
         "description": "Payload to reject a file approval.",
         "properties": {
-          "signatory_feedback": {
+          "feedback": {
             "type": "string",
             "description": "Free-text feedback left by the signatory, typically on rejection.",
             "example": "Please correct the payment terms in section 3."
           },
           "metadata": {
-            "$ref": "#/components/schemas/SignatoryMetadata",
+            "$ref": "#/components/schemas/FileApprovalEventMetadata",
             "description": "Audit metadata captured for the approval action."
           }
         }
@@ -1738,13 +1727,24 @@
         ],
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/SignatoryMetadata",
+            "$ref": "#/components/schemas/FileApprovalEventMetadata",
             "description": "Audit metadata associated with the event."
           },
           "event_type": {
             "type": "string",
             "description": "Type of the approval event.",
             "example": "approval.approved"
+          },
+          "feedback": {
+            "type": "string",
+            "description": "Free-text feedback left by the signatory, typically on rejection.",
+            "example": "Please correct the payment terms in section 3."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the event record was captured.",
+            "example": "2026-07-07T14:32:10Z"
           }
         }
       },
