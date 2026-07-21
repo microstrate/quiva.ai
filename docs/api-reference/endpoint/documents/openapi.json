@@ -1163,7 +1163,7 @@
                 }
             }
         },
-        "/file-generator/webhooks/hellosign": {
+        "/file-generator/webhooks/hellosign/{account}": {
             "post": {
                 "tags": [
                     "Signatures"
@@ -1174,6 +1174,18 @@
                 "x-is-public": true,
                 "x-resource-type": "service",
                 "x-resource": "microstrate.file-generator.post.hellosign-callback",
+                "parameters": [
+                    {
+                        "name": "account",
+                        "in": "path",
+                        "required": true,
+                        "description": "account id",
+                        "schema": {
+                            "type": "string",
+                            "example": "123456"
+                        }
+                    }
+                ],
                 "security": [],
                 "requestBody": {
                     "required": true,
