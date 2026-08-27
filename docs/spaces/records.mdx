@@ -1,0 +1,219 @@
+---
+title: "Records"
+description: "Structured data inside a Space — record sets, the schema they validate against, and how records tie tasks to the people they are about"
+icon: "database"
+---
+
+Tasks capture work. Records capture the **things the work is about** — a supplier, a piece of equipment, an onboarding questionnaire, a site visit report. A Space holds both, and the two are joined: a task can point at a record, and a Space can be told that every task in it belongs to one contact.
+
+---
+
+## What a record is
+
+A record is one entry of structured data. Every record carries:
+
+| Part | Notes |
+|---|---|
+| An id | Assigned when the record is created. You never choose it. |
+| Its fields | The data itself, validated against the record set it belongs to. |
+| The Space it belongs to | |
+| The contact it is filed against | Present when the Space tracks contacts. See [The base record](#the-base-record). |
+| A parent record | Optional — an organisation the record hangs off. See [Parent records](#parent-records). |
+| A completion flag | Marking a record complete can start a flow. |
+| Created and updated timestamps | |
+
+<Note>
+Records are found by the Space, the contact and the record set they belong to. The values **inside** a record are not indexed, so there is no account-wide "find every record where the renewal month is March". The search box above the record table filters the rows already loaded, not the whole set.
+</Note>
+
+---
+
+## Record sets
+
+A **Record Set** is the definition every record of one kind conforms to: what fields exist, which are required, how they are laid out on a form, and how they appear as a table column.
+
+<Note>
+**One thing, two names.** The product calls this a **Record Set** — that is the wording on the sidebar, the picker and the empty state, and it is what this documentation uses. The API and the assistant tools call the same object a **record config** (`record_config_*`, and `record_configs` on a Space). They are the same object.
+</Note>
+
+A record set carries:
+
+<CardGroup cols={2}>
+  <Card title="An id" icon="fingerprint">
+    Letters, numbers, underscores and hyphens. Chosen once when the set is created and **permanent** — only the name, label and description can be changed afterwards.
+  </Card>
+  <Card title="A schema" icon="list-check">
+    The fields, their types, and which of them are required. Every record is checked against it.
+  </Card>
+  <Card title="Form layouts" icon="grid-2-plus">
+    One or more named forms. A set with several forms lets each Space pin the one it uses.
+  </Card>
+  <Card title="A table layout" icon="table">
+    Which columns show in the record table, and how each value is formatted.
+  </Card>
+</CardGroup>
+
+### The schema is enforced
+
+A record is validated against its record set's schema when it is created and every time it is updated. A record that fails validation is **rejected outright** — nothing is coerced, and nothing is partially saved.
+
+<Warning>
+**Field formats are not checked.** Marking a field as an email or a date changes how it is labelled and rendered, not what is accepted — `not-an-email` will save into a field marked as an email. If a value genuinely has to follow a shape, give the field a **pattern**. Patterns are enforced, both in the browser and on save.
+</Warning>
+
+### Changing a schema
+
+<Warning>
+**Widen, don't tighten.** Changing a schema never rewrites, re-validates or flags the records that already exist. But the **next** save of an old record is validated against the **new** schema — so a field you just made required breaks every future edit of every record that predates it, and the breakage lands on whoever opens one next.
+</Warning>
+
+<AccordionGroup>
+  <Accordion title="Adding an optional field" icon="circle-check">
+    Always safe. Existing records simply have nothing in it.
+  </Accordion>
+  <Accordion title="Making a field required" icon="triangle-exclamation">
+    Nothing breaks today. It breaks the next time anyone edits a record created before the change, because that record has no value for it. Count the existing records first and decide whether that is acceptable.
+  </Accordion>
+  <Accordion title="Removing a field" icon="triangle-exclamation">
+    The data is not deleted. It stops being shown and stops being validated, but it is still stored and still comes back on a read.
+  </Accordion>
+  <Accordion title="Narrowing a type, or restricting a field to a list of choices" icon="triangle-exclamation">
+    Breaking in the same way as making a field required — every stored value outside the new rule blocks the next edit of the record holding it.
+  </Accordion>
+  <Accordion title="Deleting a record set" icon="trash">
+    Deleting a record set **purges every record under it**, and there is no undo. If a set is no longer wanted, rename it or detach it from the Spaces that use it instead.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Giving a Space its record sets
+
+A record set exists at the account level. A Space uses the ones attached to it, and only those.
+
+<Steps>
+  <Step title="Open the Space's Records tab">
+    A Space has four tabs — Files, Tasks, Records and Chats. Records lists the attached record sets down the left and their records on the right.
+  </Step>
+  <Step title="Open the Record Sets menu">
+    **Select Record Sets** opens a picker of everything that exists in the account; tick the ones this Space should use. **Manage Record Sets** opens the account-wide record set area, where sets are created and their forms edited.
+  </Step>
+  <Step title="Or create one from the empty state">
+    A Space with no record sets attached shows **Select Record Set** and **Create Record Set** side by side. Creating one there attaches it to the Space in the same step.
+  </Step>
+</Steps>
+
+<Note>
+Attaching and detaching record sets, and the per-set actions on the table, are limited to Space admins.
+</Note>
+
+**Pinning a form.** When at least one attached record set offers more than one form, **Edit Space → Records → Form views** appears, listing every attached set with a dropdown of its forms. Pick which form records of that set use *in this Space*. A set with a single form has nothing to choose.
+
+**Folder-scoped records.** Opening a folder inside a Space gives that folder its own Records tab, showing only the records filed there. It is the same record table, scoped down.
+
+<Warning>
+For API users: a Space's attached set list is **whole-value replace**, not a merge. Sending one set makes it the only one — read the Space, add to the list it already has, and send the complete list back.
+</Warning>
+
+---
+
+## The base record
+
+A Space can be told that its tasks are about **someone**. That is the base record: the record set a Space anchors its contacts on, so everything about one person sits in one place.
+
+It is configured at **Edit Space → Records → Base record**.
+
+| Control | What it does |
+|---|---|
+| **Base record** | Which record set this Space's tasks are tracked against. Set it to *None* and the Space keeps no contacts at all. |
+| **What this space calls one** | The singular label — "Client", "Candidate", "Customer", "Supplier". Defaults to **Contact**. Every button that adds or invites one reads it. |
+| **Identifying fields** | Which of the record's fields identify a person. Tried in order. Only text fields can be chosen. |
+| **Grouped under** | Another record set contacts belong to — an organisation, a household. A record set cannot be its own parent, so the base record is not offered here. |
+| **What this space calls that** | The singular label for the parent. Defaults to **Organisation**. |
+| **Create a sign-in for new contacts** | **Off by default.** Entering someone's details does not enrol them — inviting stays a separate action. Turned on, their email address is confirmed twice, because it becomes their sign-in. |
+
+### How a contact is matched
+
+The identifying fields are tried **in order**. The first one holding a usable value identifies the contact — which is what stops the same person being added twice.
+
+Before a value is used it is normalised, so two spellings of one person land on one contact:
+
+- A field named `email`, or ending in `_email`, is trimmed and lower-cased, and must look like an address.
+- A field named `phone`, or ending in `_phone`, is reduced to its digits, and must have at least six of them.
+- Anything else is lower-cased and its spacing collapsed.
+
+A value that fails those checks is **skipped rather than used**, and the next identifying field gets its turn. If a Space names no identifying fields at all, email and then phone are used.
+
+<Warning>
+Phone numbers are matched on their digits alone, so an international and a national spelling of the same number **do not** converge — they identify two different contacts. Where both forms circulate, put email first.
+</Warning>
+
+### The contact key is derived, never chosen
+
+<Warning>
+**This is the single most important thing on this page.** When a task is filed against a contact, the key it is filed under is **computed from the identity you supplied**. It is not a name you pick, and it is not a place in a directory tree. Supply the contact and the key follows. If you send a value for it yourself alongside an identity, the derived one **replaces** what you sent.
+</Warning>
+
+In the task form, the control that carries this is labelled **Folder**, and it lists the Space's contacts by name and email, with **New contact** at the bottom of the list. Choosing someone there is choosing a contact.
+
+<Note>
+"Folder" means two different things in a Space, and it is worth keeping them apart. On a **task**, it is this derived contact key. In **Files**, folders are ordinary storage folders you name and nest yourself. Only the first is derived.
+</Note>
+
+If the contact cannot be resolved or written — no usable identity value, or the Space declares no base record — **the task is still created**, and the answer says why it was not linked. Losing an inbound enquiry because a record write failed is worse than losing the link, so an unlinked task is a deliberate outcome rather than a failure.
+
+### Which record set holds contacts
+
+The canonical base record set is **`contact`**. There is an older id, `Client`, that is still *read* so contacts stored under it before the rename are still found — nothing writes to it any more, and it should not be chosen for a new Space.
+
+You do not have to manage that by hand. When a Space is pointed at a different record set, the one it is leaving is folded into its legacy list automatically, so contacts already stored under the old set keep being found.
+
+### A worked example: the Leads Space
+
+The built-in Leads Space is a base record set up end to end:
+
+- **Base record** — the `contact` record set
+- **Identifying fields** — `email`, then `phone`
+- **What this space calls one** — Contact
+- **Grouped under** — the `organisation` record set, called Organisation
+- **Create a sign-in** — off
+
+So an enquiry arriving with an email address is filed against the contact that address identifies, creating that contact if it is new; a second enquiry from the same address lands on the same contact.
+
+---
+
+## Parent records
+
+**Grouped under** names a record that contacts belong to — an organisation, a household, a portfolio. Leave it as *None* and contacts stand alone.
+
+- A record stores a link to its parent record's key, and **that link is indexed**. It is what makes "everything under this organisation" answerable, in a system where the fields inside a record are not searchable.
+- Sending an empty parent detaches a record from its parent. Omitting the parent leaves whatever is there alone — silence never detaches.
+- When someone is added through the contact form, the only record sets that can be written are the Space's base record and the parent it declares. It is not a back door into an arbitrary record set.
+
+---
+
+## How records relate to tasks
+
+<CardGroup cols={2}>
+  <Card title="Tasks are filed against a contact" icon="user">
+    In a Space with a base record, every task belongs to the contact its identity resolves to — which is what puts one person's whole history on one screen.
+  </Card>
+  <Card title="Task actions can point at a record" icon="link">
+    A checklist item on a task can reference a specific record of a specific record set. A **form** action carries an ordered list of forms the person fills in, one step at a time.
+  </Card>
+  <Card title="Task templates seed record work" icon="copy">
+    A template action of kind *form* names a record set. It has to be one attached to the Space you apply the template in.
+  </Card>
+  <Card title="Completing a record can start a flow" icon="play">
+    Marking a record complete fires a flow trigger — but only on the transition **into** complete. Marking an already-complete record complete again does nothing, so automation is not re-run.
+  </Card>
+</CardGroup>
+
+**Deleting a contact's tasks.** Every task filed against one contact can be removed in a single operation, naming either the contact key or the identity that derives it. Resolving an identity for a delete writes nothing — erasing someone must never create them.
+
+<Warning>
+**Task actions rewrite the task's status.** Adding or updating any task action recomputes the parent task's status from its checklist: none done becomes `to_do`, some done becomes `in_progress`, all done becomes `completed`. Chat actions are open-ended and are excluded from the count.
+
+Those three ids are written as they are, and they are not checked against the Space's own status list. In a Space whose statuses use different ids, a task can end up in a status the Space does not define — stored, but matching no filter and rendering as raw text. If you use form or document checklists, give the Space statuses with those three ids.
+</Warning>
+</content>

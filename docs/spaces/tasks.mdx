@@ -1,0 +1,354 @@
+---
+title: "Tasks"
+description: "Track work inside a Space with configurable statuses, priorities, tags, subtasks, time tracking and comments"
+icon: "list-check"
+---
+
+# Tasks
+
+A task is a unit of work that lives inside a Space. It carries a title, a status, the people
+responsible for it, and whatever dates, tags, attachments and notes the work needs.
+
+Every task is named after its Space. A Space has a short prefix — 2 to 12 uppercase letters,
+numbers or underscores — and each new task takes the next number in that Space's series, giving
+references like `OPS-7`. The reference is minted when the task is created and does not change.
+
+<Note>
+Tasks in different Spaces are entirely separate series. Two Spaces can each have a task numbered 7;
+the prefix is what tells them apart.
+</Note>
+
+## Fields on a task
+
+| Field | Notes |
+|---|---|
+| **Title** | Required. A task cannot be created without one. |
+| **Description** | Rich text. |
+| **Status** | One of the Space's configured statuses. |
+| **Priority** | One of the Space's configured priorities. |
+| **Tags** | Any number of the Space's configured tags. |
+| **Assignees** | Any number of users. Assignees are the people who can complete the task's actions. |
+| **Reporter** | A single user — the person to report to. |
+| **Due date** | When the work is due. |
+| **Scheduled at** | When the work is scheduled to start. |
+| **Folder** | The contact the task is filed under. See [Folders and contacts](#folders-and-contacts). |
+| **Attachments** | Files attached to the task. |
+| **Parent** | Set when the task is a subtask of another. |
+| **Time tracking** | An estimate, plus individual logged entries. |
+| **Archived** | Archived tasks are kept but hidden from the active list. |
+
+The author, created date and updated date are stamped by QuivaWorks and shown in the task's
+details popover.
+
+## Statuses, priorities and tags
+
+Statuses, priorities and tags are **configured per Space**, not globally. Open a Space, click the
+cog in its header to open **Edit Space**, then go to the **Tasks** menu — it has tabs for
+**Statuses**, **Priorities**, **Tags** and **Board**.
+
+### Statuses
+
+A status has a name, a colour, an order, a visibility toggle that controls whether it appears as a
+board column, and a **Complete** flag.
+
+A new Space starts with six statuses:
+
+| Status | Complete |
+|---|---|
+| Backlog | |
+| In Progress | |
+| Blocked | |
+| Testing | |
+| Review | |
+| Completed | Yes |
+
+Rename them, recolour them, reorder them, add your own, or remove the ones you do not use.
+
+<Warning>
+**Complete** marks a status as a closing status. Completed statuses (Done, Blocked, Cancelled, and
+the like) are treated as closed and will no longer trigger any further actions such as recurring
+events or overdue checks. This is what the flag is for — it is not just a colour.
+</Warning>
+
+### Priorities
+
+A priority has a name, an icon, an icon colour, and an optional **default** flag. Exactly one
+priority is the default; if none is marked, the first in the list is used.
+
+A Space that has not configured its own priorities uses these:
+
+| Priority | Default |
+|---|---|
+| Lowest | |
+| Low | |
+| Medium | Yes |
+| High | |
+| Highest | |
+
+### Tags
+
+A tag has a name, a background colour and a text colour. A Space starts with no tags — you add the
+ones your work actually needs.
+
+### Ids stay stable
+
+Each status, priority and tag has an id derived from its name when it is first created. Renaming
+the item does **not** change its id, so tasks already carrying it keep working. This is why
+renaming "Testing" to "QA" is safe.
+
+<Note>
+The Tasks menu is not offered on the built-in Spaces that QuivaWorks provides itself — their
+statuses, priorities and tags are fixed.
+</Note>
+
+<Warning>
+**For API callers:** a task's `status`, `priority` and `tags` are plain strings on the server.
+Nothing validates them against the Space's configured lists. A value that matches no configured id
+is accepted and stored — and then matches no filter, renders as nothing on the board, and is
+invisible in every status or tag selector. Always send ids that exist in the Space's configuration.
+</Warning>
+
+## Assignees, reporter, watchers and mute
+
+**Assignees** are who is doing the work. Assignment matters beyond display: only a task's assignees
+get the completion control on its [task actions](/spaces/task-actions).
+
+**Reporter** is a single person — who the work is reported to.
+
+**Watchers** are separate and self-serve. Anyone viewing a task can **Start watching** or **Stop
+watching** it; you subscribe yourself rather than being assigned as a watcher by someone else. The
+watcher count is shown on the task.
+
+**Mute** is per-user too. Muting a task stops it interrupting *you* — it does not silence the task
+for everyone else.
+
+## Due dates and scheduled dates
+
+A task can carry a **due date**, a **scheduled at** date, or both. They are independent:
+
+- **Due date** — the deadline. Shown in the list view's *Due* column and on the Schedule view.
+- **Scheduled at** — when the work is planned to start. The task list's **Scheduled** filter shows
+  tasks that have one.
+
+## Subtasks
+
+A task can be broken into subtasks.
+
+<Warning>
+Subtasks are **one level deep only**. A subtask cannot itself have subtasks.
+</Warning>
+
+Subtasks are returned nested on their parent, so opening a task shows its subtasks without a
+separate lookup. The **Sub Tasks** section on the task form is where you add them and change their
+status.
+
+Subtask progress can be shown on the board card as a count, a percentage, or both — configured in
+**Edit Space → Tasks → Board**.
+
+<AccordionGroup>
+  <Accordion title="Moving a subtask's parent">
+    When a task is reparented or moved to a different Space or contact, you can ask for its
+    subtasks to move with it. Otherwise they stay where they are.
+  </Accordion>
+  <Accordion title="Deleting a task that has subtasks">
+    Deleting a task offers to delete its subtasks as well. If you decline, the subtasks remain.
+  </Accordion>
+</AccordionGroup>
+
+## Time tracking
+
+Time tracking lives in the **Time Tracking** section of the task form. It has two parts:
+
+1. An **estimate** — how long the work should take.
+2. Individual **time logs** — each one a duration, a start date, and an optional description.
+
+Durations use a compact format:
+
+```
+2w 4d 6h 45m
+```
+
+`w` = weeks, `d` = days, `h` = hours, `m` = minutes. One week is 5 days; one day is 8 hours.
+
+Spent, remaining and the progress percentage are **calculated by QuivaWorks** from the logged
+entries — you never enter them. Only the estimate is stored on the task itself.
+
+<Note>
+Logging time needs a saved task, so the log controls stay disabled while a task is still being
+created. Set the estimate then, and log time afterwards.
+</Note>
+
+Each log records who added it and when. The full list is available from the time-tracking history.
+
+## Comments
+
+Comments sit at the bottom of the task. Each comment can carry attachments, be replied to, and
+collect emoji reactions.
+
+### Internal and public comments
+
+The composer has two modes:
+
+<CardGroup cols={2}>
+  <Card title="Internal" icon="lock">
+    Staff-only. Hidden from client and collaborator users.
+  </Card>
+  <Card title="Public" icon="globe">
+    Visible to everyone who can see the task, clients included.
+  </Card>
+</CardGroup>
+
+For staff, the composer defaults to **Internal**. Internal comments are labelled with an
+**Internal** pill wherever they appear.
+
+<Warning>
+The internal boundary is enforced by the server, not just hidden in the interface. Internal
+comments are filtered out of the comment list for client and collaborator users, and those users
+can never set the internal flag on a comment they write — the flag is stripped if they try.
+</Warning>
+
+Replies inherit the type of the comment they answer.
+
+### Mentions
+
+Typing `@` offers the people you can mention. On an **internal** comment, client and collaborator
+users are left out of that list — an internal note cannot mention someone who is not allowed to
+read it.
+
+## Views
+
+The task panel has three views, switched from the toolbar. Your choice is remembered per Space and
+is also carried in the URL, so a filtered view can be linked and shared.
+
+<CardGroup cols={3}>
+  <Card title="List" icon="list">
+    A table of tasks.
+  </Card>
+  <Card title="Board" icon="table-columns">
+    One column per status.
+  </Card>
+  <Card title="Schedule" icon="calendar">
+    A calendar of dates and events.
+  </Card>
+</CardGroup>
+
+### List
+
+Columns are **Title**, **Priority**, **Created**, **Status**, **Due** and **Assignees**. Rows can be
+selected for bulk actions.
+
+### Board
+
+The board renders one column for each status that is marked visible, in the Space's configured
+order. Dragging a card to another column changes that task's status; dragging within a column
+reorders it.
+
+**Customise board** (available to administrators) turns on editing of the columns themselves — add
+a column, hide one, reorder them, or remove one. A minimap gives quick horizontal navigation on
+boards too wide to fit the screen.
+
+What appears on a card is configured in **Edit Space → Tasks → Board**. Each of these can be shown
+or hidden independently:
+
+- Title
+- Task id
+- Priority — as an icon, or an icon with its name
+- Assignees
+- Tags
+- Subtask progress — as a count, a percentage, or both
+- Action progress — as a count, a percentage, or both
+
+### Schedule
+
+The Schedule view is a calendar with **day**, **week**, **month**, **year** and **list** modes. It
+shows three kinds of entry, each of which can be toggled on or off:
+
+| Entry type | What it plots |
+|---|---|
+| **Due Tasks** | Tasks by their due date |
+| **Scheduled Tasks** | Tasks by their scheduled-at date |
+| **Recurring Events** | Automation events configured on tasks in the Space |
+
+<Note>
+This view is called **Schedule**, and it is more than a deadline calendar — recurring automation
+events appear alongside task dates. There is no separate "Calendar View".
+</Note>
+
+Calendar entries can be dragged to reschedule the task behind them.
+
+## Finding tasks
+
+### Filters
+
+The toolbar carries:
+
+- **Search** — matches a task's title and description
+- **Assignees**
+- **Priority**
+- **Status**
+- **Tags**
+- **Active / Scheduled / Archived** — which set of tasks the list is drawn from
+
+Applied filters appear as chips you can dismiss one at a time. Every filter is written into the
+URL, so the filtered view survives a refresh and can be sent to a colleague.
+
+### My tasks
+
+There is also a cross-Space view of your own work. It returns every task, in any Space, that is
+assigned to you and not archived — restricted to tasks that have a **due date or a scheduled
+date**, since it is a schedule rather than a backlog. A task assigned to you with neither date set
+will not appear there.
+
+### Filtering through the API
+
+The task list endpoint accepts `status` (comma-separated for several at once), `priority`,
+`assignees` (comma-separated, any match), `reporter`, `created_by`, `title` (a term search),
+`folder`, `source`, `parent`, `archived`, `scheduled`, `exclude_subtasks`, `created_at`,
+`updated_at` and `scheduled_at`, plus `limit`, `offset`, `sort_by` and `sort_order`. The date
+parameters take a single start date or a `{start},{end}` range.
+
+Subtasks are always fetched alongside their parents and nested under them; `exclude_subtasks` only
+drops them from the top level of the list.
+
+## Folders and contacts
+
+<Warning>
+A task's **folder is not a filing tree you arrange**. It is the contact the task belongs to.
+</Warning>
+
+A Space anchors its tasks on a contact. When a task is created with a contact's identity — an email
+address, for example — QuivaWorks finds or creates that contact and files the task under the key
+derived from it. The **Folder** field on the task form is therefore a picker of the Space's
+contacts, not a folder hierarchy, and it offers a **New contact** option at the bottom.
+
+Filtering by folder means "every task for this one contact".
+
+<Note>
+If a task is created with an identity but the contact link cannot be made, the task is still
+created — losing the work would be worse than losing the link. The API response then carries a
+`base_record_skipped` field explaining why the link was not made.
+</Note>
+
+The word "folder" also means an ordinary file folder in a Space's Files panel. The two are
+unrelated.
+
+## Archiving, deleting and history
+
+**Archive** takes a task out of the active list without destroying it. Archived tasks are reachable
+through the **Archived** filter and can be unarchived from the task menu.
+
+**Delete** removes the task. If it has subtasks, you are asked whether to delete those too.
+
+**Change log** shows the task's history — field changes, comments and time logs assembled into one
+timeline, filterable, and exportable as JSON or CSV.
+
+## Exporting tasks
+
+**Export Tasks** in the toolbar's actions menu produces a **CSV** or **JSON** export. You can limit
+it to a date range on last-updated, or leave the range empty to export everything. The export is
+delivered to an email address you supply rather than downloaded in the browser.
+
+## Editing several tasks at once
+
+Selecting rows in the list view brings up a bulk actions bar, which applies one change across every
+selected task in a single call.

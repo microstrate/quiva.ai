@@ -1,95 +1,316 @@
 ---
-title: 'Spaces Overview'
-description: 'Get started with Spaces and learn the core concepts'
+title: "Spaces Overview"
+description: "What a Space is, how its panels fit together, and how to create and configure one"
+icon: "folder-tree"
 ---
 
-# Getting Started with Spaces
+## What a Space is
 
-Welcome to Spaces! Whether you're managing a team project, organizing a creative workflow, or coordinating across departments, Spaces provides all the tools you need to keep everyone aligned and productive.
+A **Space** is a self-contained area of work in QuivaWorks. It holds files and folders,
+tasks, records, chat sessions and meetings — all under one identifier, with its own
+statuses, priorities and tags.
 
-## What are Spaces?
+You might run one Space for supplier contracts, one for client onboarding, and one for
+the internal requests your operations team handles. Each keeps its own task board and its
+own configuration; nothing leaks between them.
 
-Spaces is a comprehensive workspace management platform that brings together tasks, records, files, and team collaboration in one intuitive interface. Think of a Space as your digital headquarters—where your team plans, executes, and tracks everything that matters.
+<Note>
+There is no container object between your account and a Space. Your **account** holds
+your people and your billing; a **Space** holds work. Anything you may have read about a
+separate "workspace" object with its own users and data does not exist in QuivaWorks.
+</Note>
 
-## Core Concepts
+### Spaces do not have their own members
 
-Before you dive in, let's cover the fundamental building blocks:
+Permissions in QuivaWorks are **account-wide**, not per-Space. A person has one role for
+the whole account — `root`, `admin`, `developer`, `monitoring`, `billing`, `collaborator`
+or `client` — and that role applies in every Space they can reach.
 
-### Workspaces
-Your workspace is the top-level container for all your work. Each workspace has its own set of users, permissions, and data. You can belong to multiple workspaces, each with different teams and projects.
+That has two practical consequences:
 
-### Folders
-Folders help you organize your content hierarchically. You can create nested folder structures to match your organizational needs, whether that's by project, department, or client.
+- There is no member list, no invite button and no per-Space Admin/Editor/Viewer setting
+  on a Space. People are invited at the account level.
+- **Creating a Space, and opening a Space's settings, is limited to the `root` and
+  `admin` roles.** Everyone else sees the Space but not the New Space button or the
+  settings cog.
 
-### Tasks
-Tasks are your action items. They have titles, descriptions, due dates, assignees, and status. Use tasks to track work that needs to be done, monitor progress, and keep your team accountable.
+<Card title="Roles and permissions" icon="users" href="/essentials/users/roles-permissions">
+  How account roles are assigned and what each one can do.
+</Card>
 
-### Records
-Records are custom data types that you define. Unlike tasks, records are flexible—they can represent anything from client contacts to product inventory to meeting notes. You decide the fields and structure.
+## The panel model
 
-## Quick Start
+A Space is **one page**, not a set of sub-pages. Everything inside it — the folder you are
+looking at and the panel you are looking at it through — lives in the URL.
 
-### Create Your First Space
+The panel row sits under the space header:
 
-1. Click the **"Create Space"** button on your dashboard
-2. Enter a name for your space (e.g., "Q4 Product Launch")
-3. Optional: Add a description and choose a color
-4. Click **Create**
+| Panel | What it shows |
+|---|---|
+| **Overview** | A dashboard of the current folder — file count and size, task counts by status, chats |
+| **Files & Folders** | The folder browser: upload, create folders, navigate |
+| **Tasks** | The task list, with List, Board and Schedule views |
+| **Records** | The record sets attached to this Space, and the records in them |
+| **Chats** | Chat sessions belonging to this Space or folder |
+| **Meetings** | Meetings indexed into this Space |
 
-Your new space is now ready to use!
+<Frame caption="The Escalations space on the Overview panel. Escalations has no Records panel.">
+  <img src="/images/spaces/space-escalate.png" alt="A Space open on the Overview panel, showing Files & Folders, Tasks and Chats cards" />
+</Frame>
 
-### Invite Your Team
+Switching panels changes the `panel` query parameter rather than navigating somewhere
+else, so a panel is directly linkable:
 
-1. In your space, click **Settings** → **Members**
-2. Click **Invite Members**
-3. Enter email addresses (comma-separated for multiple people)
-4. Choose their permission level:
-   - **Admin**: Full access to settings and all content
-   - **Editor**: Can create and modify tasks and records
-   - **Viewer**: Read-only access
-5. Click **Send Invitations**
+```
+/spaces/CONTRACTS?panel=tasks
+/spaces/CONTRACTS/acme-supplies?panel=records
+```
 
-Your team members will receive an email and can start collaborating immediately.
+The second form is the important one. **Panels follow you into a folder.** When you open a
+folder inside a Space, the same six panels stay on screen and now describe that folder —
+its files, its tasks, its records, its chats. The Space root is simply the outermost
+folder.
 
-## Navigation Overview
+<Warning>
+**Board is a view, not a panel.** The Tasks panel offers three views — List, Board and
+Schedule — chosen with the switcher at the top right of the panel. There is no separate
+board panel, and `?panel=board` matches nothing.
+</Warning>
 
-### Main Sidebar
-The left sidebar is your command center. Here you'll find:
-- **Dashboard**: Overview of your space
-- **Tasks**: Your task management hub
-- **Records**: All your custom data types
-- **Files**: Shared documents and attachments
-- **Settings**: Space configuration and permissions
+## Creating a Space
 
-### Top Navigation Bar
-Quick access to search, your profile, and notifications.
+From the Spaces list, choose **New Space**. The create dialog walks through five steps.
 
-## Common Workflows
+<Steps>
+  <Step title="Basic Information">
+    A **name** (required) and an optional **description**. The description is rich text.
+  </Step>
+  <Step title="Prefix">
+    The Space's identifier — 2 to 12 characters, uppercase letters, numbers and
+    underscores only. Suggestions are offered from the name you typed.
+  </Step>
+  <Step title="Priorities">
+    The priority levels tasks in this Space may use. Pre-filled with the five defaults;
+    exactly one is marked as the default.
+  </Step>
+  <Step title="Tags">
+    Optional task tags. A new Space starts with none.
+  </Step>
+  <Step title="Image">
+    An optional image for the Space, shown on its card in the Spaces list and in its
+    header.
+  </Step>
+</Steps>
 
-### Planning a Project
-1. Create a **Task** for the main project
-2. Break it into sub-tasks for individual team members
-3. Set due dates and assign owners
-4. Use the **Calendar View** to visualize deadlines
-5. Create a **Record** type to track deliverables or milestones
+<Warning>
+**The prefix cannot be changed after the Space is created.** It becomes the visible
+reference on every task in the Space — a Space with the prefix `LEADS` produces
+`LEADS-1`, `LEADS-2` and so on. Choose it carefully.
+</Warning>
 
-### Managing Client Information
-1. Create a **Record** type called "Clients" with fields like name, email, company
-2. Add records for each client
-3. Create **Tasks** linked to specific clients
-4. Attach files and documents to record details
-5. Assign team members as watchers
+A new Space also arrives with a default status list. You can edit it immediately, and at
+any time afterwards.
 
-### Organizing Team Knowledge
-1. Create a folder structure in **Files** that matches your team structure
-2. Upload documents, templates, and guidelines
-3. Use **Records** to create an internal directory or knowledge base
-4. Link tasks and records to relevant files
-5. Share specific files with relevant team members
+### What a new Space starts with
 
-## Next Steps
+<AccordionGroup>
+  <Accordion title="Statuses" icon="list-check">
+    Six statuses, in this order. The first, **Backlog**, is preselected as the Space's
+    default status for new tasks.
 
-Ready to dig deeper? Check out these guides:
-- **[Task Management](/task-management)** - Learn how to create and manage tasks
-- **[Records Management](/records-management)** - Define and work with custom data types
-- **[Team Collaboration](/collaboration)** - Set up your team for success
+    | Status | Notes |
+    |---|---|
+    | Backlog | Default status for new tasks |
+    | In Progress | |
+    | Blocked | |
+    | Testing | |
+    | Review | |
+    | Completed | Marked as a **complete** status |
+
+    A status marked *complete* is treated as closed: it no longer triggers further
+    actions such as recurring events or overdue checks.
+  </Accordion>
+  <Accordion title="Priorities" icon="flag">
+    Five priorities: **Lowest**, **Low**, **Medium**, **High**, **Highest**. **Medium** is
+    the default.
+  </Accordion>
+  <Accordion title="Tags" icon="tag">
+    None. Tags are added in the Space's settings, or during creation.
+  </Accordion>
+</AccordionGroup>
+
+## Configuring a Space
+
+The cog in the Space header opens **Edit Space**. It has five menus.
+
+<AccordionGroup>
+  <Accordion title="Information" icon="circle-info">
+    The Space image, its **name**, its **owner** (shown, not editable) and its
+    **description**. Name and description are edited in place, one at a time.
+  </Accordion>
+  <Accordion title="Basic" icon="sliders">
+    **Default view** — the panel that opens first when someone enters this Space. Choose
+    from Overview, Files, Tasks, Records or Chats.
+  </Accordion>
+  <Accordion title="Tasks" icon="list-check">
+    Five tabs:
+
+    - **Statuses** — add, rename, recolour and reorder the Space's statuses. Each status
+      carries four settings: *Order* (its position, and its column position in Board
+      view — drag to reorder), *Default* (the status preselected on a new task), *Board*
+      (whether the column appears in Board view at all) and *Complete* (whether the
+      status counts as closed).
+    - **Priorities** — the priority levels available to tasks here, each with an icon and
+      colour. One is the default.
+    - **Tags** — the tags available to tasks here, each with a colour.
+    - **Board** — which fields appear on a task card in Board view. A live sample card
+      renders your Space's real statuses, priorities and tags as you edit.
+    - **Assistants** — the assistants offered from the Tasks panel, and which one the
+      Assistant button opens.
+  </Accordion>
+  <Accordion title="Records" icon="database">
+    **Base record** — the record kind this Space's tasks are tracked against, and what
+    this Space calls one. **Assistants** — the assistants offered from the Records panel.
+    A **Form views** tab also appears when an attached record set exposes more than one
+    form.
+  </Accordion>
+  <Accordion title="Files" icon="folder-tree">
+    **Assistants** — the assistants offered from the Files panel.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+Statuses, priorities and tags belong to **one Space**. Changing them in one Space does not
+touch any other. Each Space's Tasks, Records and Files panels also get their own,
+independent assistant selection.
+</Note>
+
+### Deleting a Space
+
+Delete is available from the Edit Space dialog on any Space you created — the two
+built-in system Spaces have no delete. It asks you to type the Space's name to confirm,
+because it removes **every task and every file in the Space** along with it. There is no
+undo.
+
+If the Space's files cannot all be listed at the moment you try, the delete refuses and
+changes nothing rather than half-deleting the Space — retry it later.
+
+## The Spaces list
+
+`/spaces` lists every Space you can reach, grouped into cards.
+
+<Frame caption="The Spaces list: system groups first, then Your Spaces.">
+  <img src="/images/spaces/spaces.png" alt="The Spaces list showing Industry Hubs, Operations and Your Spaces groups" />
+</Frame>
+
+- **Operations** and **Industry Hubs** hold the built-in system Spaces. A group is only
+  drawn when the account actually has Spaces in it, so what you see here depends on how
+  your account is set up.
+- **Your Spaces** holds every Space created in your account, sorted by name.
+- The search box on Your Spaces filters that group only — system Spaces stay put.
+
+Opening a Space takes you to its root folder on whichever panel its **Default view** names.
+
+## Built-in system Spaces
+
+Two Spaces exist in every account. They are not created by anyone and they cannot be
+created or deleted — they are always there, ready to receive work.
+
+<CardGroup cols={2}>
+  <Card title="Escalations" icon="angles-up">
+    `ESCALATE` — a dedicated space for managing escalation tasks routed from automated
+    flow executions or assistant conversations. When Abbie or a flow hands work back to a
+    person, the task lands here.
+  </Card>
+  <Card title="Leads" icon="inbox">
+    `LEADS` — the inbox for inbound enquiries routed in from external sources, each with
+    an owner, a stage and a follow-up clock. Opens on Overview by default.
+  </Card>
+</CardGroup>
+
+### Their statuses
+
+Both Spaces ship with a fixed status list that cannot be edited.
+
+<AccordionGroup>
+  <Accordion title="Escalations statuses" icon="angles-up">
+    | Status | Complete |
+    |---|---|
+    | Open | |
+    | In Progress | |
+    | Waiting For User | |
+    | Waiting For Internal Team | |
+    | Resolved | Yes |
+    | Cancelled | Yes |
+
+    **Open** is the default status for a new escalation. The Escalations space has **no
+    Records panel** — the panel row there is Overview, Files & Folders, Tasks, Chats and
+    Meetings.
+  </Accordion>
+  <Accordion title="Leads statuses" icon="inbox">
+    | Status | Complete |
+    |---|---|
+    | New | |
+    | Acknowledged | |
+    | In Progress | |
+    | Converted | Yes |
+    | Declined | Yes |
+    | Expired | Yes |
+
+    **New** is the default status for a new lead. Leads anchors its tasks on a contact
+    record, and calls one a **Contact**, grouped under an **Organisation**.
+  </Accordion>
+</AccordionGroup>
+
+<Frame caption="The Leads space on the Tasks panel, Board view — the columns are its fixed statuses.">
+  <img src="/images/spaces/space-leads.png" alt="The Leads space showing a task board with New, Acknowledged, In Progress, Converted and Declined columns" />
+</Frame>
+
+### What you can change on a system Space
+
+A system Space accepts a small, fixed set of edits:
+
+| Setting | Editable |
+|---|---|
+| Name | Yes |
+| Description | Yes |
+| Default view | Yes |
+| Record sets attached to the Space | Yes |
+| Base record | Yes |
+| Statuses and default status | **No** |
+| Priorities | **No** |
+| Tags | **No** |
+| Space image | **No** |
+| Owner | **No** |
+| Per-panel assistants | **No** |
+
+The Edit Space dialog reflects this: on a system Space the Tasks and Files menus are not
+shown at all, and Records offers only Base record (plus Form views where they apply).
+Escalations has no Records menu either, matching its missing Records panel.
+
+<Warning>
+Statuses on the system Spaces are deliberately immutable. Automation addresses a Leads
+stage by what it means — intake, acknowledged, working, won, lost, expired — so the stage
+set has to stay stable across every account.
+</Warning>
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Tasks" icon="list-check" href="/spaces/tasks">
+    The Tasks panel: List, Board and Schedule views, filters, and how a task is put
+    together.
+  </Card>
+  <Card title="Records" icon="database" href="/spaces/records">
+    Attaching record sets to a Space and working with the records inside them.
+  </Card>
+  <Card title="File management" icon="folder-tree" href="/spaces/file-management">
+    Folders, uploads, and everything the Files & Folders panel does.
+  </Card>
+  <Card title="Scheduling" icon="calendar" href="/spaces/scheduling">
+    The Schedule view, recurring work, and scheduled events on a task.
+  </Card>
+  <Card title="Escalations" icon="angles-up" href="/spaces/escalations">
+    How work reaches the Escalations space and what to do with it once it arrives.
+  </Card>
+</CardGroup>

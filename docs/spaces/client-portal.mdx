@@ -1,0 +1,147 @@
+---
+title: "Client Portal"
+description: "The scoped-down view external clients get: their own tasks, documents and conversations, and nothing else in the account"
+icon: "user-lock"
+---
+
+# Client Portal
+
+The client portal is a separate, cut-down view of QuivaWorks for people outside your team — a
+customer approving a deliverable, a supplier working through an onboarding checklist, a contractor
+signing an agreement. They sign in like anyone else, but what they land on is nothing like the
+staff experience: no Spaces list, no other people's tasks, no settings. Just the handful of things
+your team has put in front of them.
+
+<Note>
+Everything on this page is about the **client** role specifically. It is the most restricted role
+in QuivaWorks — narrower than every staff role, including the read-only ones.
+</Note>
+
+## Who is a client
+
+A client is a person invited into **one account's** portal, not a member of your team. They hold no
+general access to anything — only what has been explicitly assigned to them. Two things follow from
+that:
+
+- A client never sees your Spaces, your other clients, or anyone else's tasks.
+- A client's sign-in is tied to a single contact record — the person or organisation they are.
+
+Clients don't set a password. They sign in with a one-time link or a 6-digit code sent to their
+email, and their address is confirmed automatically the moment that first invite goes out — there is
+no separate "confirm your email" step for a client.
+
+## Getting a client into the portal
+
+There are two ways a client ends up with a sign-in:
+
+<CardGroup cols={2}>
+  <Card title="Automatically, from a contact" icon="address-card">
+    A Space's contact setup can have **"Create a sign-in for new contacts"** turned on. When it is,
+    every new contact added to that Space is offered a portal sign-in as part of being created — no
+    separate invite step.
+  </Card>
+  <Card title="By inviting an existing contact" icon="paper-plane">
+    An admin or root user can invite someone directly with the **Client** role from account user
+    management, the same place every other role is invited from.
+  </Card>
+</CardGroup>
+
+<Note>
+"Create a sign-in for new contacts" is off by default. Adding someone's details does not, on its
+own, invite them — inviting is a deliberate, separate action either way.
+</Note>
+
+Either path lands the client in **Invitation Pending** status until they complete their first
+sign-in.
+
+## Signing in
+
+<Steps>
+  <Step title="Client sign-in page">
+    A client uses a separate sign-in page from staff, and enters the account name and their email
+    rather than a password.
+  </Step>
+  <Step title="Link or code">
+    A sign-in link and a 6-digit code are emailed together. Either one works, and both are single-use
+    — requesting a new one invalidates the last.
+  </Step>
+  <Step title="MFA, if enabled">
+    If the client has turned on two-factor sign-in for themselves, they clear that challenge after
+    the link or code, the same as any other user would.
+  </Step>
+</Steps>
+
+## What a client sees
+
+A signed-in client lands on **Home** — their own task list, and nothing else. This is deliberately
+the only destination the portal offers today.
+
+### Tasks
+
+Home shows every [task](/spaces/tasks) assigned to the client, split into **Needs attention**, **All
+tasks** and **Completed**, with a running count of how much of their checklist is done.
+
+A task appears here only because the client is one of its assignees. Nothing else about the Space
+that task lives in — its other tasks, its files, its other contacts — is visible from the portal.
+
+### Actions
+
+Each task's work is its [task actions](/spaces/task-actions) — read the linked page for the full
+mechanics. In the portal, a client works through them one at a time:
+
+| Kind | What the client does |
+|---|---|
+| Document | Read it, and sign or approve it if the action asks for that |
+| Form | Fill in one form, or step through several in order |
+| Chat | Open a conversation with an assistant your team configured for that action |
+| Todo list | Tick items, then submit to close the action out |
+
+<Note>
+A client's **only** route into a conversation with an assistant is opening a Chat action on one of
+their own tasks. The portal has no general-purpose chat — there is nothing to open on its own, and
+no way to start a fresh conversation outside a task.
+</Note>
+
+Documents assigned to a client — to read, sign, or approve — also collect into a single Documents
+view, so nothing gets lost in a long task list.
+
+### Comments
+
+A task's comments are visible too, with one boundary: your team can mark a comment **internal**,
+and an internal comment never reaches a client. This is enforced on the server, not just hidden in
+the interface — a client cannot see an internal comment by any route, and cannot mark their own
+comments internal even if they try. Everything else in the thread — comments neither side marked
+internal, replies, reactions — is visible to the client the same as it is to staff.
+
+## How staff share something with a client
+
+There is one mechanism: **assign the task**. Adding a client as an assignee on a task is what gives
+them everything that task needs them to see — its actions, the documents and forms those actions
+point at, and the conversation behind a chat action. There is no separate "share this file" or
+"share this conversation" step; assignment is the share.
+
+<Warning>
+This means access follows the **task**, not the person in the abstract. A client sees a document
+because it is attached to an action on a task assigned to them — not because they are "a client on
+this account" in general. Removing them from a task's assignees is how you take that access back.
+</Warning>
+
+## What a client cannot see
+
+A client's access is an allow-list, not a role with some things carved out of it — by default they
+hold nothing, and every extra piece of the portal above (a specific task, a specific document, a
+specific conversation) exists because something explicitly assigned it to them.
+
+Concretely, a client cannot:
+
+- See any task, Space, record, document or conversation that was not assigned to them
+- See another client, or know that other clients exist
+- See internal comments on a task they do have access to
+- Reach account settings, user management, billing, flows, or anything else built for your team to
+  run the account with — the portal's navigation offers none of it
+
+<Note>
+If something a client should be able to see isn't showing up in the portal, the fix is almost always
+to check who the task (or the action on it) is assigned to — not to look for a separate sharing or
+visibility setting, because there isn't one.
+</Note>

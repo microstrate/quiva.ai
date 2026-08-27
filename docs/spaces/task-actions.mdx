@@ -1,0 +1,162 @@
+---
+title: "Task Actions"
+description: "The checklist of things a task asks someone to do — forms to fill in, documents to read or sign, a conversation to have, or a list to work through"
+icon: "circle-check"
+---
+
+# Task Actions
+
+A **task action** is one item on a task's checklist — a concrete thing someone has to do before the
+task is finished. A task can have any number of them, and they are worked through in order.
+
+Each action carries:
+
+- a **description** — what the person is being asked to do, in your words
+- a **done** state
+- the **resource** it points at — the form, document, conversation or checklist behind it
+
+Actions are the mechanism a client-facing workflow runs on. An onboarding task might carry three:
+sign the engagement letter, complete the intake form, upload identification.
+
+## The four kinds
+
+<CardGroup cols={2}>
+  <Card title="Form" icon="file-signature">
+    The assignee fills out one or more forms.
+  </Card>
+  <Card title="Document" icon="file-lines">
+    A document that needs to be read, or signed, or approved.
+  </Card>
+  <Card title="Chat" icon="comment">
+    The assignee has a conversation with an assistant.
+  </Card>
+  <Card title="Todo list" icon="list-check">
+    The assignee works through a checklist of items.
+  </Card>
+</CardGroup>
+
+## Adding an action to a task
+
+<Steps>
+  <Step title="Open the task">
+    Actions live in their own section on the task form, showing the progress across all of them.
+  </Step>
+  <Step title="Choose a kind">
+    **Add** opens the kind picker — Chat, Form, Document or Todo list.
+  </Step>
+  <Step title="Fill in that kind's panel">
+    Each kind asks for different things. See below.
+  </Step>
+  <Step title="Write the description">
+    Required for every kind. This is the line the recipient reads, so write it as an instruction:
+    "Confirm the supplier contract details", not "Form".
+  </Step>
+  <Step title="Add">
+    The action is saved onto the task immediately.
+  </Step>
+</Steps>
+
+<Note>
+If you are still creating the task, actions you add are held until the task itself is saved, then
+created against it. Until the task exists they can be inspected and removed, but not completed.
+</Note>
+
+### Form
+
+Pick one or more of the Space's record sets. A blank record is created against each one as soon as
+the action is added, so the action has something concrete to point at — the recipient fills those
+records in later rather than a record appearing at fill-in time.
+
+Where a record set offers more than one form, you also choose which form to use.
+
+Several forms on one action become **several steps**, completed one at a time in the order you
+listed them. Each step is stamped complete as it is submitted, so someone who leaves halfway
+through comes back to the step they stopped at rather than the beginning. The action itself only
+flips to done once every step is stamped.
+
+### Document
+
+Browse the Space's existing files and pick one, or generate a new document there and then. Two
+optional requirements can be attached:
+
+| Requirement | What the recipient has to do |
+|---|---|
+| *(none)* | Read the document and mark it read |
+| **Requires signature** | Read and sign it |
+| **Requires approval** | Review and approve it |
+
+Without a requirement, the action is completed by the recipient marking the document as read.
+With one, the action completes only when the signature or approval comes back.
+
+### Chat
+
+Pick the assistant the recipient will talk to. You can optionally attach a record flow, which walks
+them through a form section by section inside the conversation rather than as a plain form.
+
+The conversation is created lazily — the session is reserved when you add the action and comes into
+existence on the recipient's first message.
+
+### Todo list
+
+Type the items, one per row. Blank rows are ignored. The whole checklist lives on the action
+itself, so no separate entity is created and a half-finished checklist survives the recipient
+closing the page.
+
+## What a recipient sees
+
+Each action appears as a row: an icon, your description, a progress note, and one control.
+
+| Kind | Control | Progress note | Reads when done |
+|---|---|---|---|
+| Document | **Read** | — | Read |
+| Document, signature required | **Read & sign** | — | Signed |
+| Document, approval required | **Review & approve** | — | Approved |
+| Form, one form | **Fill in form** | — | Completed |
+| Form, several forms | **Fill in forms**, then **Continue** | *2 / 5 steps completed* | Completed |
+| Chat | **Open chat** | Continue this conversation. | Submitted |
+| Todo list | **Open checklist** | *2 / 5 items completed* | Completed |
+
+A completed action stays on the task and can still be reopened — a finished form reopens as a
+read-through rather than an editable form, and a completed checklist can be reviewed but not
+un-ticked.
+
+### Completing a checklist
+
+Ticking items in a todo list saves progress but does **not** finish the action. Completion is an
+explicit **Submit**, so ticking the last box never silently closes the item out from under someone.
+
+## Who can complete an action
+
+Only the task's **assignees** get the completion control. Everyone else who can see the task still
+gets a **View** control to inspect the form, document or checklist, and can remove the action —
+they simply cannot mark it done on someone else's behalf.
+
+## Progress
+
+The actions section shows a running count of complete against total, and that same figure can be
+put on the board card as **action progress** — a count, a percentage, or both. Configure it in
+**Edit Space → Tasks → Board**.
+
+<Note>
+**Chat actions are not counted.** A conversation has no natural moment at which it is finished, so
+counting one would leave every task permanently short of complete. Chat actions are excluded from
+the progress figure everywhere it appears.
+</Note>
+
+<Warning>
+When a task has countable actions, changing one of them recalculates the task's status: none done
+sets it to `to_do`, some done sets `in_progress`, and all done sets `completed`. These three status
+ids are fixed — they are **not** looked up against the Space's own configured statuses. If your
+Space uses different status ids, a task driven by its actions will land on a status the board does
+not have a column for. Include statuses with these ids in any Space where actions drive the work.
+</Warning>
+
+## Removing an action
+
+Removing an action asks for confirmation and names the action being removed. If the removal fails,
+the row stays — an action the recipient is still being asked to complete is never quietly hidden.
+
+<Note>
+A task template can seed a set of actions onto a task as it is created, so a repeated piece of work
+does not have to be assembled by hand each time.
+</Note>
