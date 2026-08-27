@@ -1,265 +1,224 @@
 ---
 title: 'HTTP Request Trigger'
-description: 'Create custom API endpoints to trigger flows with HTTP POST requests'
+description: 'Publish a flow at a URL path you choose on your own gateway'
 icon: 'globe'
 ---
 
 # HTTP Request Trigger
 
-The HTTP Request trigger automatically creates a custom endpoint that accepts HTTP POST requests to trigger your flow. This is perfect for integrating QuivaWorks flows with your application, external services, or any system that can make HTTP requests.
+The HTTP Request trigger puts a flow behind a URL you define: you pick a gateway, type a path, and POSTs to that address run the flow. The request body becomes `$.trigger`, and the flow's result comes back to the caller.
 
-When you add an HTTP Request trigger, QuivaWorks automatically generates a unique endpoint URL. You can then send JSON data to this endpoint from anywhere.
-
----
-
-## How It Works
-
-Add the trigger to your flow, and QuivaWorks generates a unique endpoint. Make an HTTP POST request from your application. Your flow receives the request data and executes all steps. The endpoint returns a response based on your configuration.
+It is the same machinery as the [Webhook trigger](/flows/triggers/webhook), with the settings exposed and the endpoint authenticated from the start.
 
 ---
 
-## Configuration
+## Creating one
 
-### Endpoint URL
+Add an **HTTP Request** trigger from the **Add Node** panel. A dialogue opens:
 
-When you add the trigger, QuivaWorks automatically generates a unique endpoint URL. Click "Copy Endpoint URL" in the trigger configuration. Use this URL in your application code. The URL is stable and doesn't change unless you regenerate it.
+| Field | Default | Notes |
+|---|---|---|
+| **Public URL** | Off | On means no authentication at all |
+| **Gateway** | Your only gateway | Shown when the account has more than one |
+| **URL Path** | Empty, placeholder `/example/path` | Yours to choose, leading slash included |
+| **Invocation Type** | Request/Response | `Asynchronous` returns as soon as the run starts |
+| **Timeout** | 30 | Seconds |
+| **Requests / Second** | 100 | Under **Request Limits** |
 
-### Request Method
+Press **Create**. Everything except the path and the gateway can be changed later from the trigger node.
 
-HTTP Request triggers only accept POST requests with JSON body. POST can send complex data structures and is the standard for triggering actions. GET, PUT, PATCH, and DELETE methods are not supported.
+<Note>
+There is no method setting. The endpoint accepts **POST**.
+</Note>
 
-### Request Body
+---
 
-The request body must be valid JSON. All fields are available under `$.trigger` in your flow.
+## The URL
 
-Example request:
-
-```json
-{
-  "customer_id": "CUST-123",
-  "order_id": "ORD-456",
-  "action": "process_refund",
-  "amount": 49.99
-}
+```
+https://<your-gateway-host><your-path>
 ```
 
-Access in flow:
+`<your-gateway-host>` is your own gateway's hostname — a subdomain of the platform's API host, unique to that gateway. It is **not** `api.quiva.ai`, and there is no `/flows/<id>/trigger` route.
 
-```javascript
-$.trigger.customer_id  // "CUST-123"
-$.trigger.order_id     // "ORD-456"
-$.trigger.amount       // 49.99
+The trigger node shows the finished address on a **Full URL** row with a **Copy** button. Use that; do not assemble the URL from parts.
+
+---
+
+## Calling it
+
+```bash
+curl -X POST "https://<your-gateway-host>/orders/intake" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <your-api-key>" \
+  -d '{"order_id":"ord_88","customer":{"email":"dana@example.com"},"total":35}'
 ```
 
-Request body must be valid JSON. Malformed JSON will return a 400 Bad Request error.
+The authentication header is `x-api-key`. There is no query-string form. Keys issued from a trigger panel are *restricted* keys — they carry an `msr-` prefix and are valid for that one endpoint and method only.
 
-### Response Mode
+<Warning>
+**The body must be valid JSON.** A body that fails to parse currently returns **200 OK** with a plain-text parse error as the body rather than a 4xx. A client that only inspects the status code will treat a rejected call as a success. An internal failure reaching the flow behaves the same way — 200 with a bare error string.
+</Warning>
 
-Choose between synchronous and asynchronous execution.
-
-**Wait for Completion (Synchronous):**
-
-The endpoint waits for the entire flow to complete before responding. Best for API integrations needing immediate results, workflows under 30 seconds, and when caller needs response data.
-
-Response includes status, execution ID, results, and execution time.
-
-Requests timeout after 30 seconds. Use background mode for longer flows.
-
-**Run in Background (Asynchronous):**
-
-The endpoint responds immediately and the flow runs in the background. Best for long-running processes over 10 seconds, webhook handlers, and fire-and-forget operations.
-
-Response includes execution ID for tracking and immediate acknowledgment.
+<Warning>
+**Query parameters and path parameters are not delivered to the flow.** `?status=paid` is dropped, and it is not recoverable from `$.env.headers` either. Everything the flow needs must be in the JSON body.
+</Warning>
 
 ---
 
 ## Security
 
-### Public Access
+The endpoint is authenticated by default — the help text on the toggle reads *"If set will expose the URL to the public without any need for authentication."*, and it starts off.
 
-By default, HTTP Request triggers are public and don't require authentication. Use for internal services within secure network, testing and development, or low-risk operations.
+To issue a key, open the trigger node, expand **Security**, set **Expiry (days)** (365 by default), and press **Generate API Key**. The key is shown once and is scoped to this endpoint alone.
 
-Public endpoints should be used carefully. Consider rate limiting and monitoring for production use.
+There is no regenerate button. Rotating means deleting the key and generating a new one, which invalidates the old one immediately.
 
-### API Key Authentication
+### Allowed Hosts
 
-Enable API key authentication to secure your endpoint. Toggle "Secure with API Key" in trigger configuration. Click "Generate API Key" to create a unique key for this endpoint.
+The **Allowed Hosts** section on the trigger node edits your account's gateway CORS allowlist. It is what lets a browser on your own site call the endpoint.
 
-Include the API key in the Authorization header:
-
-```bash
-curl -X POST https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger \
-  -H "Authorization: Bearer ms_sk_abc123..." \
-  -H "Content-Type: application/json" \
-  -d '{"data": "value"}'
-```
-
-Rotate keys periodically by clicking "Regenerate API Key". Old key is immediately invalidated. Update your applications with new key.
-
-Store API keys securely in environment variables or secrets managers, never in code repositories.
+<Warning>
+This list belongs to the gateway, not to the trigger. Every endpoint on that gateway shares it — two triggers cannot have different allowlists.
+</Warning>
 
 ---
 
-## Use Cases
+## Reading the request
 
-### Backend Integration
+`$.trigger` is the raw request body. Nothing is wrapped around it and nothing is added.
 
-Trigger flows from your application backend:
+For the body above:
 
-```javascript
-const axios = require('axios');
+| Expression | Resolves to |
+|---|---|
+| `$.trigger.order_id` | `"ord_88"` |
+| `$.trigger.customer.email` | `"dana@example.com"` |
+| `$.trigger.total` | `35` |
+| `$.trigger` | the whole body |
 
-async function triggerFlow(data) {
-  const response = await axios.post(
-    'https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger',
-    data,
-    {
-      headers: {
-        'Authorization': `Bearer ${process.env.API_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-  return response.data;
-}
+Request headers are on `$.env.headers`, flattened to strings:
+
+```
+$.env.headers["content-type"]
+$.env.headers.user-agent
 ```
 
-### Frontend Integration
+`$.env.auth_token` holds the bearer token the call carried, and `$.env.run_id` the run's tracking ID.
 
-Call flows from your frontend application. For frontend calls, either use public endpoints for non-sensitive operations, or proxy through your backend to keep API keys secure.
+<Warning>
+A path that matches nothing resolves to an empty array, not `null`. `$.trigger.missing` becomes `[]`.
+</Warning>
 
 ---
 
-## Request Examples
+## The response
 
-**Basic Request:**
+### Request/Response
 
-```bash
-curl -X POST https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger \
-  -H "Content-Type: application/json" \
-  -d '{"customer_id": "CUST-123"}'
-```
-
-**With API Key:**
-
-```bash
-curl -X POST https://api.quiva.ai/flows/YOUR_FLOW_ID/trigger \
-  -H "Authorization: Bearer ms_sk_abc123..." \
-  -H "Content-Type: application/json" \
-  -d '{"customer_id": "CUST-123"}'
-```
-
----
-
-## Response Format
-
-**Synchronous Success:**
+The caller waits for the flow to finish and receives:
 
 ```json
 {
-  "status": "success",
-  "executionId": "exec_abc123",
-  "result": {
-    "agent_response": "Order processed successfully"
-  },
-  "executionTime": 2847
+  "tracking_id": "…",
+  "status": "…",
+  "result": { }
 }
 ```
 
-**Asynchronous Success:**
+By default `result` carries every step's output. To return a specific shape, open the flow's **Final Response Mapping** and give it a JSONPath object — `result` then becomes exactly that:
 
 ```json
 {
-  "status": "queued",
-  "executionId": "exec_abc123",
-  "message": "Flow execution started"
+  "order_id": "$.trigger.order_id",
+  "decision": "$.CHECK_STOCK.status",
+  "message": "Order |$.trigger.order_id| accepted"
 }
 ```
 
-**Error Response:**
+### Asynchronous
+
+The caller gets a reply the moment the run is accepted:
 
 ```json
-{
-  "status": "error",
-  "executionId": "exec_abc123",
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Missing required field: customer_id"
-  }
-}
+{ "tracking_id": "…" }
 ```
 
-**HTTP Status Codes:**
+The flow continues in the background. Nothing is sent back when it finishes — track it in **Monitoring**, or have a step call the caller back.
 
-- 200 OK: Success (sync mode)
-- 202 Accepted: Queued (async mode)
-- 400 Bad Request: Invalid request data
-- 401 Unauthorized: Invalid API key
-- 404 Not Found: Flow not found
-- 429 Too Many Requests: Rate limit exceeded
-- 500 Internal Server Error: Server error
-- 504 Gateway Timeout: Request timed out
+<Note>
+There is no `executionId`, no `executionTime`, no `202 Accepted` and no `error.code` envelope. A run that errors returns the same shape, with the failure in `status`.
+</Note>
+
+A **Timeout** shorter than the flow's runtime cuts the caller off with a **504**. If the flow is slow, either raise the timeout or switch **Invocation Type** to `Asynchronous`.
 
 ---
 
-## Testing
+## Draft and published flows
 
-Enable Test Mode in the trigger configuration. Copy the test endpoint URL. Send test request using curl, Postman, or your preferred tool. View execution in flow logs.
+**An HTTP Request trigger always runs the published flow.** The mapping is created against the published subject even when you build it on a draft.
 
----
+- Before the flow's first publish, there is nothing at the other end of the URL.
+- **Save** does not change what the endpoint executes. **Publish** does.
 
-## Best Practices
+To exercise a draft, use the flow editor's **Test** control, which runs the draft against a JSON payload you type.
 
-**Security:**
-
-- Enable API key authentication for all production endpoints
-- Store keys in secure environment variables
-- Use different keys for dev, staging, and production
-- Rotate keys regularly
-- Monitor for unauthorized access
-
-**Error Handling:**
-
-Implement retry logic with exponential backoff. Handle network errors and server errors. Don't retry client errors (4xx status codes).
-
-**Validation:**
-
-Always validate data received in the trigger. Check for required fields. Validate data types and formats.
-
-**Rate Limiting:**
-
-Monitor request volume. Implement client-side rate limiting. Stay within plan limits.
+<Note>
+**What runs after the trigger is decided by each step's outcome, not by the arrows in the editor.** A Condition step's outcome names the step IDs to run next — one, several (they start at the same time), or the reserved `RESOLVE_SUCCESS` / `RESOLVE_ERROR` to end the run. A line drawn between two steps that no outcome names is decoration.
+</Note>
 
 ---
 
 ## Troubleshooting
 
-**401 Unauthorized:** Check API key is included in Authorization header. Verify key is correct. Regenerate key if needed.
+<AccordionGroup>
+  <Accordion title="200 OK but the flow never ran">
+    The body was not valid JSON. Read the response body — it will contain the parse error.
+  </Accordion>
 
-**400 Bad Request:** Ensure valid JSON format. Include Content-Type: application/json header. Validate request structure.
+  <Accordion title="401 or 403">
+    The endpoint is not public and the call is missing `x-api-key`, or the key has expired.
+  </Accordion>
 
-**504 Gateway Timeout:** Switch to Background mode for long-running flows. Optimize flow steps. Reduce external API calls.
+  <Accordion title="504 Gateway Timeout">
+    The mapping's **Timeout** is in seconds and defaults to 30. Raise it, or switch to `Asynchronous` and stop waiting.
+  </Accordion>
 
-**429 Too Many Requests:** Implement exponential backoff. Reduce request frequency. Upgrade plan if needed.
+  <Accordion title="A query parameter is not arriving">
+    It never will. Move it into the JSON body.
+  </Accordion>
+
+  <Accordion title="A browser call is blocked by CORS">
+    Add the origin under **Allowed Hosts**. Remember that it is shared across the whole gateway.
+  </Accordion>
+
+  <Accordion title="The response contains far more than expected">
+    With no **Final Response Mapping** set, `result` is every step's output. Set one.
+  </Accordion>
+
+  <Accordion title="Changes to the flow are not reflected">
+    The endpoint runs the published flow. Press **Publish**.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Webhook Trigger" icon="link" href="/flows/triggers/webhook">
-    Receive webhooks from external services
+  <Card title="Webhook Trigger" icon="webhook" href="/flows/triggers/webhook">
+    The same endpoint with a generated path
   </Card>
-  
-  <Card title="Schedule Trigger" icon="clock" href="/flows/triggers/schedule">
-    Run flows on a schedule
+
+  <Card title="Embed Triggers" icon="window-maximize" href="/flows/triggers/embed-triggers">
+    Buttons and forms that post to this endpoint
   </Card>
-  
-  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
-    Make HTTP requests within your flow
+
+  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
+    Reading the request body in later steps
   </Card>
-  
-  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
-    Route flow based on HTTP request data
+
+  <Card title="Triggers Overview" icon="bolt" href="/flows/triggers/overview">
+    Every way a flow can start
   </Card>
 </CardGroup>
