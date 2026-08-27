@@ -22,6 +22,10 @@ Assistants can analyse images shared in a conversation. Simply attach an image a
 
 **Supported formats:** PNG, JPG, JPEG, GIF, WEBP
 
+<Warning>
+The chat input also accepts BMP, TIFF, HEIC, and HEIF files, but image analysis can't read those formats — stick to PNG, JPG, GIF, or WEBP for anything you want the assistant to actually see. There's also a 10 MB limit per file.
+</Warning>
+
 **Example uses:**
 - Upload a screenshot of an error and ask the assistant to diagnose it
 - Share a product photo and ask for a description suitable for an e-commerce listing
@@ -41,7 +45,7 @@ Assistants can generate and export files in common business formats. Generated f
     Reports, proposals, contracts, documentation, and any other formatted text content
   </Card>
   <Card title="PowerPoint Presentations (.pptx)" icon="file-powerpoint">
-    Slide decks, pitch presentations, summaries, and training materials with customisable themes
+    Slide decks, pitch presentations, summaries, and training materials
   </Card>
   <Card title="Excel Spreadsheets (.xlsx)" icon="file-excel">
     Data tables, financial models, tracking sheets, and structured data
@@ -62,16 +66,15 @@ Assistants can generate and export files in common business formats. Generated f
 - Edit and refine generated files — ask the assistant to revise content, styling, or layout
 - Preview files directly in the conversation before downloading
 - Create interactive HTML/CSS/JavaScript applications (see App Deployment below)
-- Support for Mermaid diagrams within documents for flowcharts, entity relationships, and timelines
+- Generate Mermaid diagrams — flowcharts, entity relationships, timelines — as a standalone output, rather than embedded inside a Word, PDF, PowerPoint, or Excel file
 
 **Example uses:**
 - "Create a project proposal document based on the brief I've shared"
-- "Generate a slide deck summarising our Q3 results with a professional theme"
+- "Generate a slide deck summarising our Q3 results"
 - "Export this table of data as a CSV"
-- "Build a slide deck summarising our Q3 results"
 - "Generate an Excel tracker for this list of tasks"
 - "Create an SVG diagram showing this system architecture"
-- "Add a Mermaid flowchart to the document showing the process steps"
+- "Create a Mermaid flowchart showing the process steps"
 
 <Tip>
 You can ask the assistant to edit any generated file. Simply review the preview and describe what you'd like changed — the assistant will revise and regenerate it.
@@ -137,7 +140,6 @@ Every assistant comes with a set of built-in tools enabled by default. These are
   <Accordion title="Research & Web">
     - **Web Search** — Search the web for recent news, facts, and general information
     - **Content Fetching** — Retrieve and parse any URL as markdown content
-    - **Document Analysis** — Search and analyse knowledge base documents
   </Accordion>
   
   <Accordion title="Data & Computation">
@@ -150,21 +152,24 @@ Every assistant comes with a set of built-in tools enabled by default. These are
   </Accordion>
   
   <Accordion title="Task & Workflow">
-    - **Task Management** — Create and manage structured task lists during a conversation
     - **Escalation** — Route requests to a human supervisor when the assistant can't or shouldn't proceed
   </Accordion>
 </AccordionGroup>
 
+<Info>
+This is the always-on baseline. Beyond it, an assistant with Knowledge configured also gets document search, and the platform gives every assistant a much larger set of tools — spanning knowledge, workflow, and integration categories — that it discovers and calls as needed at run time rather than carrying all of them in context.
+</Info>
+
 ---
 
-## Multi-Agent Capabilities
+## Multi-Assistant Capabilities
 
-For complex tasks or large documents, assistants automatically use sub-agents to stay within context limits.
+For tool-heavy tasks or large documents, assistants automatically use sub-assistants behind the scenes to do the work.
 
-- **Sub-agents** handle individual tool calls or document sections in parallel, with results consolidated back to the main assistant
-- **Assistant-to-assistant communication** allows any assistants in your account to be linked together, letting a primary assistant delegate to specialist assistants
+- **Sub-assistants** handle individual tool calls or document retrieval, with results consolidated back to the main assistant
+- **Assistant-to-assistant communication** lets you explicitly link specific assistants together, so a primary assistant can delegate to a specialist. Linking is deny-by-default — you add each target assistant yourself, and a specialist can't delegate any further (a one-level depth cap)
 
-<Card title="Learn more about Multi-Agent" icon="diagram-project" href="/assistants/multi-agent">
+<Card title="Learn more about Multi-Assistant Systems" icon="diagram-project" href="/assistants/multi-agent">
   How to build systems where assistants work together →
 </Card>
 
@@ -177,7 +182,7 @@ For complex tasks or large documents, assistants automatically use sub-agents to
     Connect to external systems via MCP integrations
   </Card>
   
-  <Card title="Multi-Agent Systems" icon="diagram-project" href="/assistants/multi-agent">
+  <Card title="Multi-Assistant Systems" icon="diagram-project" href="/assistants/multi-agent">
     Link assistants together for complex workflows
   </Card>
   

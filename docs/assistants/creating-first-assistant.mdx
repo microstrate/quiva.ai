@@ -29,17 +29,21 @@ QuivaWorks offers three paths to create an assistant:
 
 <CardGroup cols={3}>
   <Card title="Create with AI" icon="sparkles">
-    Describe what you need and QuivaWorks builds the initial configuration for you. Best for starting from scratch.
+    Start from a blank assistant with just a name. Best for building a configuration from scratch.
   </Card>
-  <Card title="Clone" icon="copy">
+  <Card title="Clone Assistant" icon="copy">
     Duplicate one of your existing assistants as a starting point. Best when you have something similar already.
   </Card>
-  <Card title="From Marketplace" icon="store">
+  <Card title="Add from Marketplace" icon="store">
     Install a pre-built assistant from the community. Best for common use cases with a head start.
   </Card>
 </CardGroup>
 
 In this guide, we'll use **Create with AI** — the fastest path for most people.
+
+<Info>
+Despite the name, this path doesn't generate any configuration for you — it's the quickest way to land on a new, empty assistant that you then fill in yourself. If you'd rather start from a working configuration, **Clone Assistant** or **Add from Marketplace** may suit you better.
+</Info>
 
 ---
 
@@ -49,53 +53,41 @@ In this guide, we'll use **Create with AI** — the fastest path for most people
 2. Click the **Create Assistant** button
 3. Select **Create with AI**
 
-A setup dialog will appear. Describe what you want your assistant to do:
+A dialog appears with two things to fill in:
 
-```
-A customer service assistant for a SaaS product. It should answer questions
-about the product, help users troubleshoot issues, and know when to escalate
-to a human agent.
-```
+- **Type** — Private (visible only to you) or Team (visible to everyone in your account)
+- **Assistant Name** — a name for the assistant
 
-Click **Generate** and QuivaWorks will create an initial configuration with a suggested name, description, and instructions.
+Click **Create**.
 
 <Tip>
-Be specific in your description. Mentioning the domain, the task, and any constraints (like "escalate when needed") produces much better initial configurations.
+There's no description or instructions field here — the assistant is created empty, with everything else configured in the steps below.
 </Tip>
 
 ---
 
-## Step 2: Review Information Settings
+## Step 2: Fill In the General Tab
 
-After generation, you'll land in the **Information** tab. Review and refine what was generated.
+You'll land on the **General** tab of the assistant editor. This is where the assistant starts empty — name and description are the only things carried over from creation, and description is still blank.
 
 ### Name & Description
 
-Give your assistant a clear name that team members will recognise:
+Give your assistant a clear name and description that team members will recognise:
 
 ```
 Name: Customer Support
 Description: Handles product questions, troubleshooting, and support escalations
 ```
 
-### Team vs. Personal
+<Tip>
+Whether the assistant is Private or Team was set when you created it. To change that later, open the assistant's settings and switch it there — team members won't be able to use it until you do.
+</Tip>
 
-Choose who can access this assistant:
+---
 
-<Tabs>
-  <Tab title="Team Assistant">
-    Visible to all members of your account. Use for shared workflows, standardised processes, and company-wide tools.
-    
-    **Choose this for most production assistants.**
-  </Tab>
-  <Tab title="Personal Assistant">
-    Private to you only. Use for experiments, individual workflows, or personal use cases.
-  </Tab>
-</Tabs>
+## Step 3: Write Instructions
 
-### Instructions
-
-Instructions define your assistant's role, personality, and behaviour. They're the most impactful part of your configuration:
+Click the **Instructions** tab. This is where you write your assistant's role, personality, and behaviour — the most impactful part of your configuration, and where the real setup work happens:
 
 ```
 You are a customer support specialist for [Your Product].
@@ -103,7 +95,7 @@ You are a customer support specialist for [Your Product].
 Your responsibilities:
 - Answer questions about product features and pricing
 - Help users troubleshoot common issues step-by-step
-- Escalate to a human agent when needed: billing disputes, account
+- Escalate to a person when needed: billing disputes, account
   security issues, or when a user explicitly asks for a person
 
 Your personality:
@@ -123,23 +115,23 @@ Good instructions include: role, responsibilities, personality, tone, and specif
 
 ---
 
-## Step 3: Configure Provider Settings
+## Step 4: Configure Provider Settings
 
 Click the **Provider** tab to set the AI model.
 
-All assistants use **Claude Haiku 4.5** by default — fast, cost-effective, and included in all QuivaWorks plans. No API key required. Your plan's credits are used automatically.
+All assistants use a fast Claude model by default — cost-effective and included in all QuivaWorks plans. No API key required. Your plan's credits are used automatically.
 
-Claude Haiku 4.5 handles customer service, research, content, data extraction, and the vast majority of business workflows extremely well. It's the right starting point for almost every assistant.
+The default model handles customer service, research, content, data extraction, and the vast majority of business workflows extremely well. It's the right starting point for almost every assistant.
 
 <Info>
-On **Team and Enterprise plans**, you can connect your own Anthropic API key to use specific Claude models. When using your own key, you're billed directly by Anthropic instead of consuming QuivaWorks credits. [Learn more →](/assistants/configuration/provider-settings)
+On accounts with bring-your-own-key enabled, you can connect your own Anthropic API key to use a different Claude model. This doesn't take you off QuivaWorks credits entirely — BYOK calls still draw a smaller platform-side credit charge, on top of what your own key is billed by Anthropic. [Learn more →](/assistants/configuration/provider-settings)
 </Info>
 
 For this guide, leave the default selected and move on.
 
 ---
 
-## Step 4: Add Knowledge (Optional)
+## Step 5: Add Knowledge (Optional)
 
 Click the **Knowledge** tab to give your assistant access to your specific content.
 
@@ -158,7 +150,7 @@ For your first assistant, you can skip this and add knowledge later. The assista
 
 ---
 
-## Step 5: Connect Integrations (Optional)
+## Step 6: Connect Integrations (Optional)
 
 Click the **Integrations** tab to connect your assistant to external systems via MCP.
 
@@ -170,9 +162,9 @@ Integrations give assistants the ability to take actions — look up orders, sea
 
 ---
 
-## Step 6: Save and Open in Chat
+## Step 7: Save and Start Chatting
 
-Click **Save** to save your configuration, then click **Open in Chat** to test it.
+Click **Save**, then open the assistant and click **New Chat** to test it.
 
 Try a few questions that match your use case:
 
@@ -190,9 +182,9 @@ Use the thumbs up/down buttons on responses to flag what works and what doesn't.
 
 ---
 
-## Step 7: Share with Your Team (Optional)
+## Step 8: Share with Your Team (Optional)
 
-If you created a **Team Assistant**, your team can already find and use it in their own sessions.
+If you created a Team assistant, your team can already find and use it in their own sessions.
 
 To collaborate on a specific conversation in real-time:
 

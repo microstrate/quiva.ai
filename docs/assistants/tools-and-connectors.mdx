@@ -6,746 +6,222 @@ icon: "plug"
 
 # Tools & Connectors
 
-Tools give your assistants the ability to access data, call APIs, and interact with your business systems. Without tools, agents can only reason based on what you tell them. With tools, they become powerful automation engines that can look up information, update systems, and take actions.
+Tools let an assistant do things beyond answering from what it already knows: look up a record, call an API, file a ticket, update a system. Without tools an assistant can only reason over its instructions and its knowledge.
 
-## What are Tools?
+## How assistants get tools
 
-Tools are integrations that allow agents to:
+Every assistant starts with a set of built-in tools — file generation, web search, and the platform tools for Spaces, records, tasks and workflows. You do not attach those; they are always there.
 
-- **Access data** - Search knowledge bases, query databases, retrieve records
-- **Call APIs** - Invoke external services and platforms
-- **Perform actions** - Create records, send emails, update systems
-- **Make decisions** - Use data from multiple sources to inform responses
-
-<img 
-  src="/images/agents/tools-diagram.png" 
-  alt="Agent Tools Architecture"
-  className="rounded-lg"
-/>
-
-## Tool Types
-
-QuivaWorks supports two main types of tools:
-
-### MCP Servers (Model Context Protocol)
+Everything else arrives through an **integration**. An integration is an MCP server: a service that describes its own tools, so the assistant learns what each one does and what arguments it takes without you writing any of that down.
 
 <Card title="What is MCP?" icon="server">
-MCP (Model Context Protocol) is an open standard for connecting AI models to data sources and tools. It provides a standardized way for agents to discover, understand, and use integrations.
+MCP (Model Context Protocol) is an open standard for connecting AI models to data and tools. A server exposes a set of operations and describes them in a machine-readable way, so any MCP-aware assistant can discover and use them.
 
-**Benefits:**
-- ✅ Standardized interface
-- ✅ Self-describing (agents understand how to use them)
-- ✅ Composable and reusable
-- ✅ Growing ecosystem of integrations
+- Standardised interface across every connector
+- Self-describing — the assistant reads the tool definitions
+- Reusable across assistants in the same account
 </Card>
 
-### API Integrations
-
-Pre-configured HTTP integrations for popular services with authentication and parameter mapping already set up.
-
----
-
-## Adding Tools to Agents
-
-### From the Agent Configuration
-
-1. Open your agent configuration
-2. Click the **Tools** tab
-3. Click **Add Tool**
-4. Select from available options:
-   - **MCP Servers** - From marketplace or custom
-   - **API Integrations** - Pre-built connectors
-5. Configure authentication and parameters
-6. Save
-
-<img 
-  src="/images/agents/add-tool.png" 
-  alt="Adding Tools"
-  className="rounded-lg"
-/>
-
-### Tool Selection Best Practices
-
-<AccordionGroup>
-  <Accordion title="Only add relevant tools" icon="check">
-    Don't connect everything "just in case":
-    
-    ❌ **Bad:** Add 15 tools to every agent
-    ✅ **Good:** Add only tools this specific agent needs
-    
-    **Why:**
-    - Each tool adds tokens (descriptions, parameters)
-    - More tools = higher costs
-    - More tools = more confusion for agent
-    - More tools = slower responses
-    
-    **Example:**
-    Customer service agent needs:
-    - Knowledge base search
-    - Order lookup
-    - Refund processor
-    
-    Customer service agent does NOT need:
-    - Lead enrichment
-    - Social media posting
-    - Inventory management
-  </Accordion>
-
-  <Accordion title="Provide clear tool descriptions" icon="file-lines">
-    When configuring custom tools, write clear descriptions:
-    
-    ❌ **Bad:** "Gets data"
-    ✅ **Good:** "Searches the knowledge base for help articles by keyword. Returns title, summary, and full article content."
-    
-    **Why:**
-    - Agents read descriptions to understand when to use tools
-    - Clear descriptions = correct tool usage
-    - Vague descriptions = wrong tool or no tool usage
-  </Accordion>
-
-  <Accordion title="Name tools descriptively" icon="tag">
-    Tool names should explain what they do:
-    
-    ❌ **Bad:** "API 1", "Tool", "Function"
-    ✅ **Good:** "Get Order Status", "Search Knowledge Base", "Process Refund"
-    
-    **Why:**
-    - Agents select tools by name and description
-    - Descriptive names improve tool selection accuracy
-  </Accordion>
-
-  <Accordion title="Group related functionality" icon="layer-group">
-    Instead of many micro-tools, create tools that handle related operations:
-    
-    ❌ **Bad:**
-    - Get Order by ID
-    - Get Order by Email
-    - Get Order by Date
-    - Get Order by Customer
-    
-    ✅ **Good:**
-    - Search Orders (accepts ID, email, date, or customer)
-    
-    **Why:**
-    - Fewer tools = less confusion
-    - More flexible search
-    - Easier maintenance
-  </Accordion>
-</AccordionGroup>
+<Note>
+Assistants do not carry every tool definition in the conversation. They look tools up on demand and call the one they need, so attaching an integration does not add its whole catalogue to every message.
+</Note>
 
 ---
 
-## Common Tool Types
-
-### Knowledge Base / Search Tools
-
-Allow agents to search documentation, help articles, or knowledge repositories.
-
-**Use when:**
-- Answering product questions
-- Providing support information
-- Citing policies and procedures
-- Referencing documentation
-
-**Example configuration:**
-
-```
-Tool: Knowledge Base Search
-
-Description: Search our help center for articles about products, 
-policies, and troubleshooting. Returns article title, summary, and 
-full content.
-
-Parameters:
-- query (string): Search keywords
-- category (optional): Filter by category (billing, technical, shipping)
-- limit (optional): Number of results (default 5)
-
-Authentication: API Key
-```
-
-**Agent usage example:**
-
-```
-User: "What's your return policy?"
-
-Agent thinks: Need to search knowledge base for return policy
-
-Agent action: Call Knowledge Base Search
-- query: "return policy"
-- category: "policies"
-
-Tool returns: [Article: "Return & Refund Policy", content: "We accept..."]
-
-Agent response: "According to our return policy, we accept..."
-```
-
----
-
-### CRM / Customer Data Tools
-
-Access customer information, order history, and account details.
-
-**Use when:**
-- Looking up customer accounts
-- Checking order status
-- Verifying customer history
-- Personalizing responses
-
-**Example configuration:**
-
-```
-Tool: Get Customer Info
-
-Description: Retrieve customer account details including contact info, 
-order history, account status, and lifetime value. Use when customer 
-provides email or customer ID.
-
-Parameters:
-- email (optional): Customer email
-- customer_id (optional): Customer ID
-- include_orders (boolean): Include order history (default true)
-
-Authentication: OAuth 2.0 (Salesforce)
-```
-
-**Agent usage example:**
-
-```
-User: "I want to check my order status. My email is john@example.com"
-
-Agent thinks: Need customer info and orders
-
-Agent action: Call Get Customer Info
-- email: "john@example.com"
-- include_orders: true
-
-Tool returns: {
-  customer_id: "C12345",
-  name: "John Smith",
-  orders: [
-    {order_id: "O789", status: "shipped", tracking: "TRK123"}
-  ]
-}
-
-Agent response: "Hi John! I found your order O789. It shipped yesterday 
-and is on its way. Tracking number: TRK123"
-```
-
----
-
-### Action / Transaction Tools
-
-Perform actions like processing refunds, creating tickets, or updating records.
-
-**Use when:**
-- Processing refunds
-- Creating support tickets
-- Updating account information
-- Taking automated actions
-
-**Example configuration:**
-
-```
-Tool: Process Refund
-
-Description: Process a refund for an order. Can only refund orders within 
-30 days. Requires order number and refund amount. Returns confirmation 
-number.
-
-Parameters:
-- order_number (string): Order number
-- amount (number): Refund amount in dollars
-- reason (string): Reason for refund
-- notify_customer (boolean): Send email notification (default true)
-
-Authentication: API Key
-
-Rules:
-- Only orders < 30 days old
-- Refund amount <= original order amount
-- Requires manager approval if amount > $500
-```
-
-**Agent usage example:**
-
-```
-User: "I want to return order #12345 and get my money back."
-
-Agent thinks: Need to process a refund
-
-Agent action: Call Process Refund
-- order_number: "12345"
-- amount: 49.99
-- reason: "customer return request"
-- notify_customer: true
-
-Tool returns: {
-  success: true,
-  refund_id: "REF789",
-  confirmation: "Refund processed, customer will receive $49.99 in 5-7 days"
-}
-
-Agent response: "I've processed your refund for order #12345. You'll 
-receive $49.99 back to your original payment method within 5-7 business 
-days. Your refund confirmation number is REF789."
-```
-
----
-
-### Data Enrichment Tools
-
-Enrich leads or customers with external data.
-
-**Use when:**
-- Qualifying leads
-- Researching companies
-- Enriching contact information
-- Gathering intelligence
-
-**Example configuration:**
-
-```
-Tool: Company Lookup
-
-Description: Get detailed company information including size, industry, 
-funding, technology stack, and contact details. Use for lead qualification 
-and research.
-
-Parameters:
-- domain (string): Company website domain
-- fields (array): Which fields to return (default: all)
-
-Authentication: API Key (Clearbit/ZoomInfo)
-
-Returns:
-- Company name
-- Employee count
-- Industry
-- Annual revenue
-- Tech stack
-- Key contacts
-```
-
-**Agent usage example:**
-
-```
-User: "I work at acme-corp.com and I'm interested in your product."
-
-Agent thinks: Should qualify this lead and enrich company data
-
-Agent action: Call Company Lookup
-- domain: "acme-corp.com"
-
-Tool returns: {
-  name: "Acme Corp",
-  employees: 250,
-  industry: "SaaS",
-  revenue: "$25M",
-  tech: ["Salesforce", "HubSpot"]
-}
-
-Agent response: "Great to meet you! I see Acme Corp is a SaaS company 
-with about 250 employees. Based on your company profile, you'd be a 
-great fit for our Enterprise plan. Let me ask a few questions to 
-understand your specific needs..."
-```
-
----
-
-## Tool Authentication
-
-Different tools require different authentication methods:
-
-### API Key
-
-<Tabs>
-  <Tab title="Configuration">
-    ```
-    Tool: Knowledge Base API
-    Auth Type: API Key
-    
-    API Key: sk_1234567890abcdef
-    Header: X-API-Key (or Authorization: Bearer)
-    ```
-  </Tab>
-  
-  <Tab title="How to Get">
-    1. Log into service provider
-    2. Navigate to API/Developer section
-    3. Generate new API key
-    4. Copy and paste into quiva.ai
-    5. Keys are encrypted and stored securely
-  </Tab>
-  
-  <Tab title="Best Practices">
-    - Use separate keys for dev and production
-    - Rotate keys every 90 days
-    - Set rate limits on provider side
-    - Monitor usage for unexpected activity
-    - Store keys securely in Secrets Manager
-  </Tab>
-</Tabs>
-
-### OAuth 2.0
-
-<Tabs>
-  <Tab title="Configuration">
-    ```
-    Tool: Salesforce CRM
-    Auth Type: OAuth 2.0
-    
-    Click "Connect to Salesforce"
-    → Authenticate with your account
-    → Grant permissions
-    → Token automatically managed
-    ```
-  </Tab>
-  
-  <Tab title="How It Works">
-    1. Click "Connect" button
-    2. Redirected to service login
-    3. Authenticate with your account
-    4. Grant requested permissions
-    5. Redirected back to quiva.ai
-    6. Tokens stored and refreshed automatically
-  </Tab>
-  
-  <Tab title="Best Practices">
-    - Use service accounts for production
-    - Grant minimum required permissions
-    - Regularly review connected apps
-    - Revoke unused integrations
-    - Monitor OAuth audit logs
-  </Tab>
-</Tabs>
-
-### Basic Auth
-
-<Tabs>
-  <Tab title="Configuration">
-    ```
-    Tool: Legacy API
-    Auth Type: Basic Auth
-    
-    Username: api_user
-    Password: ************
-    ```
-  </Tab>
-  
-  <Tab title="Security">
-    - Less secure than OAuth or API keys
-    - Use only when required
-    - Always use HTTPS
-    - Rotate credentials regularly
-    - Consider migrating to API keys
-  </Tab>
-</Tabs>
-
-### No Auth (Public APIs)
-
-<Tabs>
-  <Tab title="Configuration">
-    ```
-    Tool: Public Data API
-    Auth Type: None
-    
-    No credentials required
-    ```
-  </Tab>
-  
-  <Tab title="Considerations">
-    - Rate limits still apply
-    - May have restricted functionality
-    - Data freshness varies
-    - Consider caching results
-  </Tab>
-</Tabs>
-
----
-
-## Using Secrets Manager
-
-For sensitive credentials, use the Secrets Manager:
+## Attaching an integration
 
 <Steps>
-  <Step title="Create a Secret">
-    Navigate to **Account → Secrets Manager**
-    
-    Click **Create Secret**
-    
-    ```
-    Key: SALESFORCE_API_KEY
-    Value: sk_abc123xyz789
-    ```
+  <Step title="Open the assistant's Integrations tab">
+    In the assistant editor, the left menu is **General**, **Provider**, **Instructions**, **Knowledge**, **Integrations**, **Context**. Choose **Integrations**.
   </Step>
-  
-  <Step title="Reference in Tool">
-    In tool configuration:
-    
-    ```
-    API Key: SECRET::SALESFORCE_API_KEY::
-    ```
-    
-    The secret is automatically resolved at runtime.
+
+  <Step title="Click Add Integration">
+    The picker opens with four tabs:
+
+    - **Account Integrations** — servers already connected in your account
+    - **Assistants** — other assistants in the account, so this one can hand work to a specialist. See [Multi-Assistant Systems](/assistants/multi-agent)
+    - **Marketplace** — connectors published for your account to install
+    - **Custom Integration** — build a server from an API description of your own
   </Step>
-  
-  <Step title="Benefits">
-    - ✅ Centralized credential management
-    - ✅ Encrypted storage
-    - ✅ Audit logging
-    - ✅ Easy rotation (update once, applies everywhere)
-    - ✅ Role-based access control
+
+  <Step title="Select what you need and save">
+    The assistant can now reach that server's tools. It cannot reach anything you have not attached.
   </Step>
 </Steps>
 
-<Info>
-Learn more in the [Secrets Manager Guide](/advanced/integrations/api-connections#secrets-manager)
-</Info>
+### Building a custom integration
+
+The **Custom Integration** tab turns an API description into an MCP server. Upload either:
+
+- an **OpenAPI specification**, or
+- a **Postman collection** (you can add the API server URLs it should target)
+
+Give the server a name and create it. It then appears in Account Integrations and can be attached to any assistant.
+
+### Adding a remote MCP server
+
+If a vendor already runs an MCP server for you, add it by URL from **Account Integrations → Add an MCP server** rather than from an assistant. You supply the endpoint, choose the transport (streamable HTTP or SSE), and say how it signs in — **No sign-in needed**, **OAuth**, or a **bearer token / JWT**. Once registered, attach it to assistants like any other integration.
 
 ---
 
-## Tool Usage in Agent Instructions
+## Authentication
 
-Tell agents how and when to use tools in your instructions:
+### Auth is derived, not chosen
 
-### Explicit Tool Usage
+There is no "auth type" dropdown where you declare a server open or protected. Whether credentials are required comes from the server's own description:
 
-```markdown
-## Tool Usage Guidelines
+- If the server declares that it requires authentication, authentication is required — nothing can talk it down to open.
+- If it does not, individual operations can still declare their own security, and those still require credentials.
 
-### Knowledge Base Search
-Use this tool BEFORE answering any product or policy questions.
-Always search with 2-3 relevant keywords.
+The practical consequence: a server can look unauthenticated overall and still refuse specific calls. If tool calls come back unauthorised on a server you believed was public, that is why.
 
-Example: If customer asks "What's your shipping policy?", search for 
-"shipping policy" in the knowledge base first.
+### Whose credential the call runs as
 
-### Customer Lookup
-Use this tool whenever a customer provides their email or order number.
-Look up their account before answering account-specific questions.
+This is the fact most easily missed, and it changes what an assistant can see.
 
-### Refund Processor
-Only use this tool if:
-1. Customer explicitly requests a refund
-2. Order is within 30 days
-3. Refund amount is under $500 (escalate higher amounts)
-4. You've verified the customer's identity
+<Tabs>
+  <Tab title="Configured assistants">
+    An assistant running in a flow, on a schedule, or behind a trigger resolves the **account's** credential for the server — the one an admin connected for the team. It does not act as whoever started the run.
+  </Tab>
 
-### Support Ticket Creator
-Use this tool when:
-1. You cannot resolve the issue
-2. Issue requires specialized knowledge (billing, technical)
-3. Customer specifically requests to speak with someone
-4. Issue is time-sensitive or complex
-```
+  <Tab title="Abbie">
+    Abbie can act as **you**, using your own connection to the service, or as **herself** on a single account-level connection an admin configures. Which one applies is set per server. Where each member acts as themselves, each member connects their own account before Abbie can act for them.
+  </Tab>
+</Tabs>
 
-### Tool Selection Examples
+<Warning>
+Creating a **shared** connection — one the whole account resolves — requires the Admin or Root role. Members below that can connect only on their own behalf.
+</Warning>
 
-```markdown
-## Example Scenarios
+### Storing credentials in Secrets
 
-**Customer asks: "Where is my order?"**
-1. Ask for order number or email
-2. Use Customer Lookup tool with provided information
-3. Get order details and tracking
-4. Provide status and tracking number
+Sensitive values belong in **Secrets**, reached from **More → Secrets** in the sidebar. The page is available to the **Admin**, **Root** and **Developer** roles.
 
-**Customer asks: "What's your return policy?"**
-1. Use Knowledge Base Search for "return policy"
-2. Read the article
-3. Summarize policy for customer
-4. Offer to help with a specific return if needed
+<Steps>
+  <Step title="Create a secret">
+    Give it a key and a value. Keys are alphanumeric with hyphens and underscores.
+  </Step>
 
-**Customer says: "I want a refund for order #12345"**
-1. Use Customer Lookup to get order details
-2. Check order date (must be < 30 days)
-3. Use Refund Processor if eligible
-4. If not eligible, explain why and offer alternatives
-```
+  <Step title="Reference it from a configuration">
+    Write the reference instead of the value:
+
+    ```
+    SECRET::MY_API_KEY::
+    ```
+
+    It is resolved when the call is made. A malformed reference is refused rather than sent literally.
+  </Step>
+
+  <Step title="Use a personal secret where each member has their own">
+    A personal secret is namespaced to its author:
+
+    ```
+    SECRET::user.MY_API_KEY::
+    ```
+  </Step>
+</Steps>
+
+Secrets give you one place to rotate a credential, and role-based access to the page itself. Update the secret once and every reference to it picks up the new value.
 
 ---
 
-## Best Practices
+## What gates a tool call — and what does not
+
+Read this section before you connect anything that changes data or moves money.
+
+### What genuinely stops a call
 
 <AccordionGroup>
-  <Accordion title="Start with essential tools only" icon="filter">
-    Begin with the minimum tools needed:
-    
-    **Phase 1:** Core functionality
-    - Knowledge base search
-    - Basic customer lookup
-    
-    **Phase 2:** Add as needed
-    - Order management
-    - Refund processing
-    
-    **Phase 3:** Advanced features
-    - Data enrichment
-    - Complex integrations
-    
-    Don't add tools "just in case" - each one adds complexity and cost.
+  <Accordion title="What you attached" icon="link">
+    An assistant can only call tools from the integrations on its Integrations tab, plus its built-ins. Nothing attached means nothing external is reachable. **This is the real control surface** — decide what an assistant may touch by deciding what you attach to it.
   </Accordion>
 
-  <Accordion title="Test tools independently first" icon="flask">
-    Before giving tools to agents:
-    
-    1. Test tool calls manually
-    2. Verify authentication works
-    3. Check response formats
-    4. Understand error cases
-    5. Know rate limits
-    
-    Then add to agent and test integration.
+  <Accordion title="Whether a credential resolves" icon="key">
+    If the server requires authentication and no credential resolves for the identity making the call, the call fails. That is a hard stop, but it is an availability boundary rather than a policy one: it either works for everything the credential permits, or it works for nothing.
   </Accordion>
 
-  <Accordion title="Provide clear tool instructions" icon="book">
-    In your agent instructions:
-    
-    ```markdown
-    ✅ Good:
-    "Use the Order Lookup tool whenever a customer mentions an order 
-    number or asks about order status. Call it with the order_number 
-    parameter."
-    
-    ❌ Bad:
-    "Use tools as needed"
-    ```
-    
-    Specific instructions = correct tool usage.
+  <Accordion title="What the target system itself enforces" icon="shield-halved">
+    Scopes on an OAuth connection, permissions on an API key, rules inside the service you are calling. **This is the only place a limit like "read-only", "this project only" or "no refunds above X" can actually be enforced.** Grant the narrowest credential that does the job.
   </Accordion>
 
-  <Accordion title="Handle tool errors gracefully" icon="triangle-exclamation">
-    Tools can fail. Prepare agents:
-    
-    ```markdown
-    If a tool call fails:
-    1. Acknowledge the issue to the customer
-    2. Explain what you tried
-    3. Offer alternative solutions
-    4. Escalate if necessary
-    
-    Example: "I tried to look up your order but encountered a system 
-    error. Let me create a support ticket for our team to investigate. 
-    They'll contact you within 2 hours."
-    ```
-  </Accordion>
-
-  <Accordion title="Monitor tool usage" icon="chart-line">
-    Track which tools are being used:
-    
-    - Which tools are called most?
-    - Which tools are never used? (consider removing)
-    - Are tools being used correctly?
-    - Are error rates acceptable?
-    
-    Optimize based on actual usage patterns.
-  </Accordion>
-
-  <Accordion title="Secure sensitive tools" icon="lock">
-    For tools that perform actions (refunds, deletions, updates):
-    
-    - Add approval steps (Human-in-the-Loop)
-    - Set monetary limits in tool configuration
-    - Require additional verification
-    - Log all actions
-    - Monitor for suspicious activity
-    
-    Example: Refunds over $200 require human approval.
-  </Accordion>
-
-  <Accordion title="Version and document tools" icon="book-open">
-    Maintain documentation:
-    
-    - What the tool does
-    - When to use it
-    - Parameters and their meanings
-    - Expected responses
-    - Error conditions
-    - Usage examples
-    
-    Good documentation = easier troubleshooting and onboarding.
+  <Accordion title="Who can widen an assistant's reach" icon="user-lock">
+    Only Admin and Root can create an account-wide connection; only Admin, Root and Developer can open Secrets. That governs who can grant reach, not what an assistant does once it has it.
   </Accordion>
 </AccordionGroup>
+
+### What does not stop a call
+
+<Warning>
+**Nothing you write in a tool description, a parameter note, or an assistant's instructions is enforced.** It is guidance to a language model, and a model may ignore it.
+
+There is no field anywhere on an integration or a tool for rules, thresholds, monetary limits, or an approval requirement. Writing "requires approval above $500" into a description creates no gate of any kind — it reads like a control and behaves like a suggestion.
+</Warning>
+
+If an action must not happen without a person agreeing to it, the assistant must not hold a credential that can perform it unsupervised. Give it a read-only credential and route the action through a workflow with a human step, or through a Space task somebody has to complete. Do not rely on wording.
+
+### About authorisation prompts
+
+Abbie's chat can ask before she uses an integration for the first time, and can ask again before a small, explicit set of irreversible actions. That prompt is part of the chat surface.
+
+<Note>
+A configured assistant — one running in a flow, on a schedule, or behind a trigger — has no chat surface to show such a prompt on, so consent is not enforced for it. If it were, the assistant would sit permanently waiting on a question nobody is there to answer. Plan on the assistant proceeding.
+</Note>
+
+---
+
+## Writing instructions about tools
+
+Instructions steer tool choice, which is a real and useful thing to do — just not a safety mechanism. Be specific about *when* to reach for a tool:
+
+```markdown
+## Tool usage
+
+### Knowledge search
+Search before answering any question about internal process. Use two or
+three keywords, not a whole sentence.
+
+### Record lookup
+Whenever someone gives a reference number, look the record up before
+answering anything specific to it.
+
+### Ticket creation
+Create a ticket when you cannot resolve the request yourself, when it
+needs a specialist, or when the person asks for one.
+```
+
+Vague instructions produce vague tool use. "Use tools as needed" tells the assistant nothing.
+
+Keep the attached set small. A tighter set of well-named tools is chosen from more reliably than a large one with overlapping purposes.
 
 ---
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Agent not using tools" icon="question">
-    **Possible causes:**
-    - Tools not properly connected
-    - Instructions don't mention tools
-    - Tool descriptions unclear
-    - Agent hitting reasoning step limit
-    
-    **Solutions:**
-    1. Check tool is connected and enabled
-    2. Add explicit tool usage instructions
-    3. Improve tool descriptions
-    4. Increase reasoning step limit
-    5. Test tool manually first
+  <Accordion title="The assistant never uses a tool" icon="question">
+    - Confirm the integration is attached on the **Integrations** tab
+    - Say in the instructions when the tool should be used
+    - Check the tool's own description is specific — a vague description is hard to select against
+    - Test the underlying API outside QuivaWorks to confirm it responds
   </Accordion>
 
-  <Accordion title="Agent using wrong tool" icon="shuffle">
-    **Possible causes:**
-    - Similar tool names/descriptions
-    - Vague tool descriptions
-    - Missing usage guidelines
-    
-    **Solutions:**
-    1. Make tool names more distinct
-    2. Improve tool descriptions (be specific)
-    3. Add explicit usage guidelines in instructions
-    4. Remove similar/redundant tools
-    5. Provide examples in instructions
+  <Accordion title="The assistant picks the wrong tool" icon="shuffle">
+    - Look for tools with near-identical names or descriptions and remove the redundant one
+    - Add explicit selection guidance to the instructions
+    - Give worked examples of which request maps to which tool
   </Accordion>
 
-  <Accordion title="Tool authentication failing" icon="key">
-    **Check:**
-    - Is API key correct?
-    - Is OAuth token expired?
-    - Are credentials stored in Secrets Manager?
-    - Do credentials have required permissions?
-    - Is the service API working?
-    
-    **Solutions:**
-    1. Verify credentials are correct
-    2. Reconnect OAuth if expired
-    3. Check service status page
-    4. Verify permissions on service side
-    5. Test credentials outside of agent
+  <Accordion title="Calls come back unauthorised" icon="key">
+    - Check the credential is connected for the identity actually making the call — a configured assistant uses the **account's** connection, not yours
+    - A server that looks open can still have operations that demand credentials
+    - Confirm an OAuth connection has not been revoked at the provider
+    - Confirm the credential's scopes cover the operation, not just the service
   </Accordion>
 
-  <Accordion title="Tool calls timing out" icon="clock">
-    **Possible causes:**
-    - External API is slow
-    - Complex query
-    - Rate limiting
-    - Network issues
-    
-    **Solutions:**
-    1. Increase timeout setting if available
-    2. Simplify query parameters
-    3. Check API rate limits
-    4. Add caching for common queries
-    5. Consider async processing for slow tools
-  </Accordion>
-
-  <Accordion title="Rate limit errors" icon="ban">
-    **When agent hits provider rate limits:**
-    
-    **Short term:**
-    1. Reduce tool usage frequency
-    2. Add caching
-    3. Batch requests when possible
-    
-    **Long term:**
-    1. Upgrade provider plan
-    2. Use multiple API keys (rotation)
-    3. Implement request queuing
-    4. Consider alternative providers
+  <Accordion title="Calls time out" icon="clock">
+    - Check the external service's own status and rate limits
+    - Narrow the query so the service returns less
+    - The assistant's **Timeout** setting is on the **General** tab
   </Accordion>
 </AccordionGroup>
 
@@ -754,19 +230,19 @@ Use this tool when:
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Custom MCP Servers" icon="server" href="/assistants/tools-and-connectors">
-    Build your own tool integrations
+  <Card title="Multi-Assistant Systems" icon="users" href="/assistants/multi-agent">
+    Let one assistant hand work to a specialist
   </Card>
-  
-  <Card title="API Connections" icon="plug" href="/assistants/tools-and-connectors">
-    Connect to external APIs
+
+  <Card title="Knowledge" icon="book" href="/assistants/configuration/knowledge">
+    Give an assistant documents to work from
   </Card>
-  
+
   <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/assistants/prompt-engineering">
-    Write better tool usage instructions
+    Write instructions that steer tool choice
   </Card>
-  
+
   <Card title="Best Practices" icon="star" href="/assistants/best-practices">
-    Optimize agent performance
+    Get more out of your assistants
   </Card>
 </CardGroup>

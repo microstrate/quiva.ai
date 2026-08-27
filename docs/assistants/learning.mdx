@@ -1,112 +1,95 @@
 ---
 title: "Assistant Learning"
-description: "Help your assistants improve through user feedback—rate conversations to build a learning library that enhances assistant performance over time."
+description: "Rate assistant responses and let QuivaWorks consolidate that feedback into an editable learning document for each assistant."
 icon: "sparkles"
 ---
 
-Help your assistants learn and improve by rating messages or entire conversations. Assistant Learning captures your feedback on assistant responses, consolidates insights using AI, and uses those learnings to build a knowledge source to enhance future assistant performance.
+Assistant Learning lets you rate assistant responses and conversations. QuivaWorks stores those ratings and, using AI, consolidates them into a per-assistant learning document that you can review and edit from the assistant's Learning tab.
 
-<Tip>
-Assistant Learning works best when users consistently rate conversations. The more feedback you provide, the better your assistants become at handling similar interactions in future conversations.
-</Tip>
+<Note>
+The learning document is a reference for you and your team. It is not currently read by the assistant during conversations — rating a response does not automatically change how the assistant behaves. If you want an insight to affect the assistant, copy it into the assistant's own instructions yourself.
+</Note>
 
 ## Key Features at a Glance
 
-- **Rate Conversations** — Quickly thumbs-up or thumbs-down assistant responses and conversations to provide feedback
-- **View Learning Insights** — See consolidated feedback and insights in your assistant's Learning tab
-- **Automatic Consolidation** — AI-powered system analyses feedback patterns and generates actionable insights
-- **Contextual Learning** — Assistants automatically use consolidated learnings in future conversations when enabled
+- **Rate Responses** — Thumbs-up or thumbs-down individual assistant responses. This is on by default in the QuivaWorks app; if you're using an embedded chat widget, it's off by default and needs to be enabled for the widget.
+- **Rate a Conversation** — A "Rate this conversation" option is also available. It keeps only one rating per user per assistant, so rating a new conversation overwrites your previous conversation rating.
+- **Review & Edit the Learning Document** — See the consolidated document on the assistant's Learning tab and edit it directly.
+- **Automatic & Manual Consolidation** — Consolidation runs automatically once 10 ratings are pending for an assistant (with a short cooldown between attempts), or you can trigger it manually with the Consolidate button.
 
 <Note>
-Learning is per assistant, and any ratings you give will improve only your assistant responses in your account and do not inform training data.
+**Feedback visibility is account-wide, not per-assistant.** Any member of your account can view, consolidate, or overwrite the learning document for any assistant in the account — access is not restricted to people who work with that specific assistant.
 </Note>
 
 ## Getting Started with Assistant Learning
 
 ### Rate Your First Conversation
 
-Rating conversations is the simplest way to help your assistants learn. You'll see rating options right in the chat interface after each assistant response.
+Rating conversations is the simplest way to build up feedback. You'll see rating options right in the chat interface after each assistant response.
 
 1. During or after a conversation with an assistant, look for the rating buttons below the assistant's message
 2. Click the **thumbs up** (👍) to indicate a good response, or **thumbs down** (👎) for a response that could improve
-3. To rate the entire conversation, use the **'Rate this conversation'** option at the bottom of the chat
-4. Select your rating—the system captures your feedback immediately
-5. View your learning by navigating to the "Learning" tab by clicking on the assistant settings. You can review and edit the learnings manually, as well as "consolidate" any pending feedback
+3. To rate the whole conversation instead, use the **"Rate this conversation"** option at the bottom of the chat — note this replaces any previous conversation-level rating you gave that assistant
+4. Select your rating — the system captures your feedback immediately
+5. View the results by opening the assistant's settings and selecting the **Learning** tab. You can review and edit the document manually, and consolidate any pending feedback
 
-<Frame>
-  <img 
-    src="/images/assistant-learning/rate-conversation.png" 
-    alt="Assistant message with thumbs up and thumbs down rating buttons visible below the response"
-  />
-</Frame>
+Feedback you submit is stored under your account.
 
-The feedback you provide is stored securely as knowledge in your own account and used to help your assistants improve over time.
+## Understanding the Learning Document
 
-## Understanding Assistant Learning Insights
+### Viewing the Learning Document
 
-### Viewing Consolidated Learning
-
-Each assistant has a **Learning** tab where you can see patterns and insights generated from all user feedback.
+Each assistant has a **Learning** tab where you can see the consolidated document generated from feedback, plus a count of feedback still pending consolidation.
 
 1. Navigate to your assistant's settings or details page
-2. Select the **Learning** tab to view feedback summary and trigger consolidation of new feedback into learnings
-3. Review consolidated insights—AI-generated summaries of what's working well and areas for improvement
-4. These insights are used automatically as a knowledge source to refine assistant instructions, behaviour, or scope
+2. Select the **Learning** tab
+3. Review the consolidated document — an AI-generated summary of themes in the feedback, and what's working well or not
 
 <Frame>
   <img 
     src="/images/assistants/learning-file.png" 
-    alt="Assistant Learning tab showing consolidated feedback insights and user ratings summary"
+    alt="Assistant Learning tab showing the consolidated learning document and a count of feedback pending consolidation"
   />
 </Frame>
 
+<Note>
+The Learning tab shows the document itself and a pending-feedback count — it does not list individual ratings, and there's no way to view or delete a single vote. Editing the document text directly is the way to change what it contains.
+</Note>
+
 ### How Consolidation Works
 
-When feedback is collected, the system uses an AI model to analyse patterns and generate high-level insights. This consolidation process:
+When feedback is consolidated, an AI model analyses the pending ratings and rewrites the learning document. This process:
 
-- Identifies common themes in user feedback
-- Summarises what users consistently rate positively or negatively
-- Generates actionable observations about assistant performance
-- Provides context for assistant behaviour refinement
+- Identifies common themes across the feedback
+- Summarises what's being rated positively or negatively
+- Generates actionable observations
 
-You can review consolidated feedback anytime and use these insights to improve your assistant's prompts, instructions, or capabilities.
+Consolidation happens automatically once 10 ratings are pending for an assistant, or you can trigger it manually from the Learning tab at any time.
 
-## How Assistants Use Learning
+## Using Learning Insights
 
-### Automatic Learning Context
-
-When Assistant Learning is triggered for an assistant, the consolidation insights are automatically included as additional context for the assistant during new conversations. This means:
-
-- Assistants can reference previous learnings to improve responses
-- Insights about common user preferences inform assistant behaviour
-- Assistants become more aligned with user expectations over time
-- The learning loop continuously strengthens assistant performance
-
-To trigger the learning file generation, the "Consolidate" button needs to be clicked on the learning tab which will trigger an updated using all the votes that have been cast.
+The learning document is not applied automatically — nothing in QuivaWorks feeds it back into the assistant's behaviour on its own. If you want the insights to have an effect, copy the relevant parts into the assistant's own instructions or system prompt, the same way you'd edit any other instruction text.
 
 ## Common Questions About Assistant Learning
 
 <AccordionGroup>
-  <Accordion title="How quickly do assistants start learning from feedback?">
-    Assistant Learning works by rating conversations and triggering the consolidation process. Consolidated insights become available shortly after and are immediately updated for you to review and edit.
+  <Accordion title="Does rating responses automatically change how the assistant behaves?">
+    No. Ratings are consolidated into a document you can read and edit, but the assistant does not read that document during conversations. To change behaviour, copy what you want from the document into the assistant's instructions.
   </Accordion>
   <Accordion title="Can I edit or delete learning feedback?">
-    Yes. In the Learning tab, you can view all collected feedback and edit the consolidation notes. This is useful if you want to refine the insights or remove feedback that's no longer relevant.
+    You can edit the consolidated document directly in the Learning tab. There's no view of individual ratings and no way to delete a specific one — editing the document text is the available control.
   </Accordion>
-  <Accordion title="What if I want to disable Assistant Learning for an assistant?">
-    Assistant learning needs to be triggered by voting, and then running the consolidation of votes. Not using this or removing the contents of the file will stop the assistant using the context.
-  </Accordion>
-  <Accordion title="How do I know if Assistant Learning is actually helping?">
-    Monitor your assistant's performance in real conversations and compare responses before and after feedback consolidation. Look for assistants responding more accurately to common scenarios, handling edge cases better, and aligning more closely with your preferences.
+  <Accordion title="How do I stop consolidation for an assistant?">
+    There's no separate on/off switch. Consolidation only has something to work with once ratings are submitted, so simply not rating conversations for an assistant keeps its document empty.
   </Accordion>
   <Accordion title="Is my feedback private?">
-    All feedback is stored securely within your workspace. Only users with access to the assistant can view learning insights. The consolidation process is performed server-side and follows your organisation's security and privacy policies.
+    Feedback is stored under your account, but visibility is account-wide rather than per-assistant: any member of your account can view, consolidate, or edit the learning document for any assistant, not only people who use that assistant.
   </Accordion>
   <Accordion title="Can multiple users rate the same conversation?">
-    Yes. Different users can rate the same conversation independently. All ratings are captured and contribute to the consolidated learning insights.
+    Yes for individual message ratings — each person's thumbs up/down on a response is captured independently. The "Rate this conversation" option is different: it holds one slot per user per assistant, so a user's rating of a later conversation overwrites their rating of an earlier one.
   </Accordion>
   <Accordion title="What happens to learning feedback when I delete an assistant?">
-    The learning forms part of the assistant configuration. If it is deleted, the learning file will also be deleted.
+    Deleting an assistant does not delete its learning document or the votes behind it — that data is not removed as part of deleting the assistant.
   </Accordion>
 </AccordionGroup>
 
@@ -114,46 +97,35 @@ To trigger the learning file generation, the "Consolidate" button needs to be cl
 
 ### Provide Consistent Feedback
 
-Rate conversations regularly to build a comprehensive feedback library. The more data you provide:
-- The better the AI consolidation becomes
-- The more accurate the learning insights
-- The faster your assistants improve
+Rate responses regularly so the consolidated document stays accurate and useful as a reference, and so consolidation has enough signal to identify real patterns rather than one-off comments.
 
 ### Be Specific About Why You're Rating
 
-When possible, provide context for your rating. If you're rating a response negatively, consider what could improve. This helps the consolidation process understand root causes. The best way to provide this feedback is to correct the assistant in the chat, and then vote positively for the corrected response.
+When possible, correct the assistant directly in the chat and then rate the corrected response positively — that gives consolidation a concrete example to work from, not just a thumbs-down.
 
-### Use Learning Insights to Refine Assistants
+### Copy Insights Into Assistant Instructions
 
-Don't just collect feedback—act on it. Use the consolidated insights to adjust:
-- Assistant instructions and system prompts
-- Assistant capabilities and scope
-- Response guidelines and tone
-You can always copy feedback from the learning file and incorporate it into your assistant instructions directly.
+The learning document itself doesn't change assistant behaviour. Review it periodically and copy anything useful — recurring corrections, preferences, tone notes — into the assistant's instructions directly.
 
 ### Review Learning After Consolidation
 
-Check your assistant's Learning output to ensure it is accruate once it is consolidated. This helps your assistants perform to your expectations.
+Check the document after each consolidation to make sure it's accurate. Since you can edit it directly, correct anything that doesn't reflect what you meant before relying on it.
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card 
-    title="Consolidate Something" 
-    icon="sliders"
+    title="Prompt Engineering" 
+    icon="scroll"
+    href="/assistants/prompt-engineering"
   >
-    Use past conversations to add votes and create your first learning file
+    Learn how to write and update assistant instructions — the place to apply anything you copy from a learning document
   </Card>
   <Card 
-    title="Monitor Learning Performance" 
-    icon="wand-magic-sparkles"
+    title="Assistant Capabilities" 
+    icon="stars"
+    href="/assistants/capabilities"
   >
-    Keep an eye on the performance of your learnings and how they are impacting the assistant behaviour
+    See what else you can configure on an assistant beyond learning
   </Card>
 </CardGroup>
-
----
-
-<Callout type="info">
-Assistant Learning transforms user feedback into continuous assistant improvement. Start rating conversations today to help your assistants learn from real interactions and deliver better results tomorrow.
-</Callout>
