@@ -191,7 +191,7 @@ $.data[?(@string())]
 → Unexpected "@" at character 1
 ```
 
-Use `typeof @ === 'string'`, or `Array.isArray` in an Eval step.
+`typeof @.v === 'number'` and `typeof @ === 'string'` are the working substitutes. For array and object tests, use an [Eval step](/flows/steps/eval) — `Array.isArray` is not in scope inside a filter.
 
 ### Aggregation functions
 
@@ -224,12 +224,14 @@ $.data[?(@==='text')]   → Unexpected "@" at character 0
 
 ### Host globals
 
-`String`, `Number`, `Object` and friends are not in scope inside a filter body.
+`String`, `Number`, `Array`, `Object` and friends are not in scope inside a filter body.
 
 ```
-$.users[?(String(@property).indexOf('0')>-1)]
-→ String is not defined
+$.users[?(String(@property).indexOf('0')>-1)]   → String is not defined
+$.data[?(Array.isArray(@.v))]                   → Array is not defined
 ```
+
+Methods **on the candidate's own values** are fine — it is only the global constructors that are missing.
 
 <Warning>
 **A filter that reads a property missing from *any* candidate fails the whole step**, rather than skipping that candidate. If one row in a list has no `address`, then `[?(@.address.city==='Boston')]` errors with `Cannot read properties of undefined (reading 'city')` and the run ends. Guard it: `[?(@.address && @.address.city==='Boston')]`.
