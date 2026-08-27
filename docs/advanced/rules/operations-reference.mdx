@@ -909,10 +909,13 @@ Result: `30` — `(10 + 5) * 2`, not `20`.
 
 Result: `30`, this time explicitly.
 
-The operator names are looked up in a slightly narrower table than the main
-registry: `expression`, `exp`, `not`, `!`, `generateArray`, `sort`, `sortString`,
-`split`, `empty`, `notEmpty`, `concat-array` and `numberFormat` cannot appear as
-infix operators. An unrecognised name drops the fact.
+The infix position accepts a slightly narrower list than the registry. Everything
+in [Arithmetic](#arithmetic), [Comparison](#comparison), [Membership](#membership),
+[Strings](#strings), [JSON and JSONPath](#json-and-jsonpath), [Dates](#dates),
+`and`, `or`, `map` and `lookup` may appear there. `expression` itself, `not`,
+`generateArray`, `sort`, `sortString`, `split`, `empty`, `notEmpty`,
+`concat-array`, `numberFormat` and their aliases may not — an unrecognised name
+drops the fact.
 
 A string is not an expression. `["10 + 5"]` returns the string `"10 + 5"`
 unchanged, and an array of one or two elements always returns its first element.
