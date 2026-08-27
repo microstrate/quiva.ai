@@ -1,33 +1,39 @@
 ---
-title: "Multi-Agent Systems"
-description: "Link assistants together and use sub-agents to handle complex, large-scale tasks"
+title: "Multi-Assistant Systems"
+description: "Link assistants together and use sub-assistants to handle complex, large-scale tasks"
 icon: "diagram-project"
 ---
 
-QuivaWorks supports two types of multi-agent behaviour: **assistant-to-assistant communication**, where you explicitly link specialists together, and **automatic sub-agents**, where QuivaWorks handles tool-heavy or large-document tasks behind the scenes.
+QuivaWorks supports two main patterns for assistants working together: **assistant-to-assistant communication**, where you explicitly link specialists together, and **automatic sub-assistants**, where QuivaWorks handles tool-heavy or large-document tasks behind the scenes.
 
 ---
 
 ## Assistant-to-Assistant Communication
 
-Any assistants in your account can be linked together. This lets one assistant delegate work to another — enabling you to build systems where a coordinator routes tasks to the right specialist.
+Linking is deny-by-default: an assistant can't call any other assistant until you explicitly add it to its allow-list. This lets one assistant delegate work to another — enabling you to build systems where a coordinator routes tasks to the right specialist.
 
 ### How It Works
 
-When assistants are linked, the primary assistant can call another assistant as a tool. The called assistant receives the request, performs its task using its own instructions, knowledge, and integrations, and returns the result.
+Once you've added a specialist to a coordinator's allow-list, the coordinator can call it as a tool. The called specialist receives the request, performs its task using its own instructions, knowledge, and integrations, and returns the result — as a single prompt string. It does not see the coordinator's conversation, only what the coordinator explicitly sends it.
 
-Each assistant in a multi-agent system can have:
+The specialist runs under the same identity as whoever is talking to the coordinator — it's not a different permission scope, just a different set of instructions, knowledge, and integrations.
+
+Each assistant in a multi-assistant system can have:
 - Different instructions and expertise
 - Different knowledge sources
 - Different integrations and tool access
-- Different permission scopes
+
+<Warning>
+A specialist can't delegate any further — only a coordinator (an assistant nothing else has called) can invoke another assistant. This means chains only ever run one level deep, and an assistant can't be made to call itself. Each call also has a 2-minute timeout.
+</Warning>
 
 ### Setting Up Assistant-to-Assistant Links
 
 1. Open the assistant you want to use as the **coordinator** (the primary assistant that delegates work)
-2. Navigate to the **Integrations** tab
-3. Under **Assistants**, enable the specialists you want this assistant to be able to call
-4. In the coordinator's instructions, describe when and how to delegate to each specialist
+2. Navigate to the **Integrations** tab and click **Add Integration**
+3. In the modal, switch to the **Assistants** tab
+4. Click **Add Assistant** next to each specialist you want this assistant to be able to call
+5. In the coordinator's instructions, describe when and how to delegate to each specialist
 
 **Example instruction for a coordinator:**
 
@@ -41,7 +47,9 @@ You are a research coordinator. When a user asks a question:
 Always synthesise the responses from specialists into a clear, unified answer.
 ```
 
-### When to Use This Pattern
+### Patterns to Compose
+
+These aren't named settings or modes — they're just shapes this delegation tends to take once you start using it. Both fit within the one-level depth limit above: the coordinator calls one or more specialists directly, and none of those specialists call anything further.
 
 <AccordionGroup>
   <Accordion title="Specialist Routing">
@@ -50,54 +58,38 @@ Always synthesise the responses from specialists into a clear, unified answer.
     **Example:** A customer-facing assistant delegates product questions to a product expert, billing questions to a finance assistant, and technical questions to a support engineer assistant.
   </Accordion>
   
-  <Accordion title="Sequential Processing">
-    One assistant processes output from another in a pipeline. The first extracts or transforms data; the second makes decisions or generates the final output.
-    
-    **Example:** A data extraction assistant parses incoming documents, then passes structured data to an analysis assistant that generates the final report.
-  </Accordion>
-  
   <Accordion title="Parallel Research">
-    A coordinator dispatches multiple research tasks to different specialists simultaneously, then combines the results.
+    A coordinator dispatches multiple research tasks to different specialists, then combines the results. Each call is subject to the 2-minute timeout, so keep individual specialist tasks scoped to fit within it.
     
     **Example:** A due diligence assistant delegates financial analysis, legal review, and market analysis to three different specialists, then synthesises a summary.
-  </Accordion>
-  
-  <Accordion title="Escalation Chains">
-    When a front-line assistant encounters something outside its scope, it escalates to a more capable specialist rather than to a human.
-    
-    **Example:** A tier-1 support assistant handles common questions directly but escalates complex technical issues to a senior technical assistant before involving a human engineer.
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## Automatic Sub-Agents
+## Automatic Sub-Assistants
 
-For tool-heavy workflows or large document processing, QuivaWorks automatically uses sub-agents to prevent context window overload. This happens transparently — no configuration required.
+For tool-heavy workflows or large document processing, QuivaWorks automatically uses sub-assistants to do some of the work. Most of this happens transparently, with no configuration required.
 
-### Context Window Management
-
-Every AI model has a limit on how much context it can hold in a single interaction. When an assistant needs to use many tools or process a large document, the accumulated context can exceed this limit.
-
-QuivaWorks handles this automatically:
+### How It Works
 
 <Steps>
-  <Step title="Task Detection">
-    QuivaWorks identifies that a task would exceed the context window — either because many tools will be called, or because a large document needs to be processed.
+  <Step title="Automatic Triggers">
+    QuivaWorks dispatches sub-assistants based on fixed thresholds — a document crossing a size threshold, or a task calling for a large number of tool invocations — not by measuring how much context window is left.
   </Step>
-  <Step title="Sub-Agent Dispatch">
-    Individual tool calls or document sections are handled by dedicated sub-agents. Each sub-agent works within its own context window.
+  <Step title="Sub-Assistant Dispatch">
+    Individual tool calls or document sections are handled by dedicated sub-assistants, each working within its own context.
   </Step>
   <Step title="Result Consolidation">
-    Sub-agent results are returned to the main assistant, which synthesises them into a coherent response.
+    Sub-assistant results are returned to the main assistant, which synthesises them into a coherent response.
   </Step>
 </Steps>
 
 ### Large Document Processing
 
-When a large document is added to an assistant's knowledge base, sub-agents index it in sections. At query time, a sub-agent retrieves the relevant sections and passes them to the main assistant.
+When a large document is added to an assistant's knowledge base, it's broken into sections and indexed by a deterministic chunking and embedding pipeline — not by a sub-assistant or an LLM. At query time, a sub-assistant retrieves the relevant sections and passes them to the main assistant.
 
-This enables accurate processing of:
+This is used for things like:
 - Long technical documents and specifications
 - Extensive legal contracts
 - Large codebases
@@ -107,7 +99,7 @@ The assistant can answer specific questions about the document without loading t
 
 ---
 
-## Design Principles for Multi-Agent Systems
+## Design Principles for Multi-Assistant Systems
 
 <AccordionGroup>
   <Accordion title="Give each assistant a clear, single responsibility">
@@ -123,7 +115,7 @@ The assistant can answer specific questions about the document without loading t
   </Accordion>
 
   <Accordion title="Test each specialist independently">
-    Before testing the full multi-agent system, test each specialist assistant on its own. It's much easier to identify and fix issues in isolation than in a complex pipeline.
+    Before testing the full multi-assistant system, test each specialist assistant on its own. It's much easier to identify and fix issues in isolation than in a complex pipeline.
   </Accordion>
 
   <Accordion title="Use flows for structured pipelines">
@@ -133,18 +125,18 @@ The assistant can answer specific questions about the document without loading t
 
 ---
 
-## Multi-Agent vs. Flows
+## Multi-Assistant vs. Flows
 
-Both multi-agent systems and flows can orchestrate work across multiple assistants. Choose based on your needs:
+Both multi-assistant delegation and flows can orchestrate work across multiple assistants. Choose based on your needs:
 
-| | Multi-Agent | Flows |
+| | Multi-Assistant | Flows |
 |---|---|---|
 | **Routing logic** | Assistant decides | Explicit conditions |
-| **Data passing** | Via conversation | Via variable mapping |
+| **Data passing** | Single prompt string, no shared conversation | Via variable mapping |
 | **Error handling** | Assistant handles | Explicit error steps |
 | **Best for** | Dynamic, reasoning-based routing | Predictable, structured pipelines |
 
-Use **multi-agent** when the routing logic requires judgment — the task is complex enough that an AI should decide who handles it.
+Use **multi-assistant delegation** when the routing logic requires judgment — the task is complex enough that an AI should decide who handles it.
 
 Use **flows** when the pipeline is predictable — you know in advance which assistants run in which order.
 

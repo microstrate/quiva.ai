@@ -1,155 +1,111 @@
 ---
-title: "@Mention Guide"
-description: "How to use @mentions to add team members and notify the AI"
+title: "@Mentions"
+description: "Pull a colleague into a conversation from the composer, and what happens to the message when you send it"
+icon: "at"
 ---
 
-# @Mention Guide – Adding Team Members to Sessions
+# @Mentions
 
-The @mention feature is the primary way to invite team members to collaborative sessions. You can also use @mentions to control whether you're notifying your team members or the AI assistant itself.
+An @mention is the short way to bring a colleague into a conversation. It does the same job as
+the share panel, from the message you were writing anyway.
 
-## How @Mentions Work
+## Writing a mention
 
-### Basic @Mention Syntax
+<Steps>
+  <Step title="Open the picker">
+    Type `@` in the composer, or use the mention button beside it. A list of people opens;
+    typing narrows it.
+  </Step>
+  <Step title="Pick a name">
+    The name becomes a chip in your message. Mention as many people as the message actually
+    needs.
+  </Step>
+  <Step title="Send">
+    What happens next depends on the conversation — see below.
+  </Step>
+</Steps>
 
-Type `@` in the chat prompt to open the mention picker:
-```
-@[team member name]
-```
+<Note>
+Plain `@name` is the only mention syntax. There is no keyword or prefix that addresses the
+assistant separately.
+</Note>
 
-**Example:**
-- `@Sarah, can you review this?`
-- `@Jake and @Maria, what do you think?`
-- `@team, let's get input on this`
+## What sending does
 
-### The @Mention Picker
+### In your conversation with Abbie
 
-When you type `@`, a dropdown appears showing:
+The message goes to Abbie as normal and the people you named are looped in at the same time.
+There is nothing to choose: the whole surface is a conversation with Abbie, so suppressing her
+reply is never what a mention there meant.
 
-- **Team members** – Available people to add to the session
-- **Search** – Type a name to filter the list
-- **Click to select** – Click a name to add them
+### In an assistant conversation
 
-![@Mention Picker](image-placeholder-mention-picker.png)
+Sending a message that contains a mention holds the turn and asks first:
 
-Once selected, the teammate's name appears as a highlighted mention in your message.
+> It looks like you've mentioned someone. What would you like to do?
 
-## AI vs. Team Notifications
+with two buttons:
 
-When you use @mentions, you have two choices:
+| Button | Effect |
+|---|---|
+| **Send only to mentioned users** | The message posts to the thread for the people you named. The assistant does not take a turn on it. |
+| **Send to mentioned users and assistant** | The message posts *and* the assistant answers it. |
 
-### **@Mention Team Members Only**
+This appears every time a message contains a mention — it is a deliberate fork, not a guess at
+ambiguity.
 
-Invite teammates to the conversation without instructing the AI.
-```
-@Sarah, @Jake – I need your thoughts on this approach before we proceed
-```
+## What a mention grants
 
-**What happens:**
-- Sarah and Jake are added to the session
-- They receive notifications
-- The AI doesn't see the mention as a special instruction
-- Use this when you want team input, not AI action
+Mentioning someone adds them to the conversation's people list, which is the same list the
+share panel shows.
 
-### **@Mention the AI Assistant**
+<AccordionGroup>
+  <Accordion title="Someone new, mentioned by the owner" icon="user-plus">
+    They are added as an **Editor** and notified. Being named in a message is an invitation to
+    take part, so it matches the share panel's own default.
+  </Accordion>
+  <Accordion title="Someone who is already in the conversation" icon="user-check">
+    Their level is left exactly as it is — including a deliberately read-only invite. A mention
+    never quietly promotes someone the owner chose to keep as a reader. They are still notified;
+    being told is the point.
+  </Accordion>
+  <Accordion title="Mentioned by someone who is not the owner" icon="user-lock">
+    A non-owner cannot widen a conversation. Their mentions reach people who can already read
+    it; anyone else is skipped, with a note saying only the owner can share it with someone new.
+  </Accordion>
+  <Accordion title="Mentioning yourself" icon="user">
+    Nothing happens. There is nobody to add and nothing to tell you.
+  </Accordion>
+</AccordionGroup>
 
-Instruct the AI while adding team members.
-```
-@Assistant: @Sarah – please review this code and provide feedback
-```
+<Warning>
+Account-wide visibility is not enough on its own. Someone mentioned in a conversation the whole
+account can read still needs their own access level before they can reply in it.
+</Warning>
 
-**What happens:**
-- Sarah is added to the session
-- The AI receives an instruction to review the code
-- Sarah sees the AI's response in real-time
-- Use this when you want the AI to perform a task AND team visibility
+## Who you can mention
 
-### **How to Choose**
+Active members of your account. Two cases come back as skipped, each with a reason on screen:
 
-| Scenario | Use |
-|----------|-----|
-| Want team input on a topic | @mention team members only |
-| Want AI to perform a task | @mention the AI |
-| Want AI to review for a team member | @mention both |
-| Just having a conversation | Don't use @mentions |
+- **No longer a member of this account** — the person has been removed.
+- **Account is suspended** — the person is named, so you know who to chase.
 
-**Tip:** The system will prompt you to clarify if ambiguous. You'll see: "Did you want to notify [teammates] or the AI?"
+Naming the same person twice in one message is one addition and one notification, not two.
 
-## @Mention Best Practices
+## Being mentioned
 
-### Do's ✅
+A mention reaches the other person as a **Conversation mentions** notification, in-app. It names
+who mentioned you, the conversation, a short excerpt of the message, and links straight to the
+thread. See [Notifications](/collaboration/unread-badges-notifications) for turning that kind on
+or off.
 
-- **Be specific** – `@Sarah – can you check the metrics?` is better than just `@Sarah`
-- **Use for important items** – Reserve @mentions for things that need immediate attention
-- **Include context** – Explain why you're looping in teammates
-- **One per action** – Don't spam mentions in a single message
+## Related
 
-### Don'ts ❌
-
-- **Don't mention everyone** – Only include relevant team members
-- **Don't over-use** – Frequent mentions reduce their impact
-- **Don't use for casual chat** – Not every message needs a mention
-- **Don't mention inactive users** – They may not see the notification
-
-## Examples
-
-### Example 1: Requesting Team Review
-```
-@Sarah, @Mike – can you both review the data analysis below?
-I want to make sure we're not missing anything before the client call.
-
-[analysis here]
-```
-
-**What happens:**
-- Sarah and Mike are added to the session
-- They both receive notifications
-- They can ask follow-up questions
-- You all see the conversation in one place
-
-### Example 2: Delegating to AI with Team Visibility
-```
-@Assistant: create a summary of the Q3 financial report.
-
-@Sarah – need this for the investor presentation tomorrow
-
-```
-
-**What happens:**
-- Sarah is added to the session
-- The AI creates the summary
-- Sarah sees it immediately and can request changes
-- No need to forward files or recreate context
-
-### Example 3: Collaborative Problem Solving
-```
-We're stuck on the authentication bug.
-
-@Assistant: help us debug this error
-@Jake, @Elena – you've both worked on auth before, thoughts?
-```
-
-**What happens:**
-- Jake and Elena are added to the session
-- The AI helps debug
-- Teammates can contribute their experience
-- Full collaboration happens in one thread
-
-## Troubleshooting
-
-### Can't find a team member in @mentions?
-
-- **They're not in your workspace** – Check your Account Management → User Management
-- **They're deactivated** – Only active team members appear in @mentions
-- **Spelling matters** – Make sure you have the correct username
-
-### @Mention not working?
-
-- **Check permissions** – Ensure you have permission to add team members to sessions
-- **Browser cache** – Refresh the page and try again
-- **Session type** – You can only @mention in team-visible sessions (check the lock icon)
-
-### Team member says they didn't get notified
-
-- **Check notification settings** – They may have disabled notifications for shared sessions
-- **They already had access** – If they already had session access, there's no new notification
-- **Check "Shared With Me"** – The session should appear there even without a notification
+<CardGroup cols={2}>
+  <Card title="Sharing a Conversation" icon="share-nodes" href="/collaboration/collaborative-sessions">
+    The share panel, access levels, and taking access back.
+  </Card>
+  <Card title="Finding Shared Conversations" icon="list-ul" href="/collaboration/shared-with-me-section">
+    Where the conversation shows up for the person you mentioned.
+  </Card>
+</CardGroup>

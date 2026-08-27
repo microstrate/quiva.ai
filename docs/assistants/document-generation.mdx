@@ -1,26 +1,26 @@
 ---
 title: "Document Generation"
 description: "Create professional documents, presentations, and interactive web applications by describing what you need to the AI assistant."
-icon: "wand2"
+icon: "wand-magic-sparkles"
 ---
 
 Generate any document you can imagine—from polished reports and presentations to interactive web applications—simply by describing what you need. Your AI assistant handles the creation, letting you focus on refining the output to perfection.
 
 <Tip>
-You can configure global instructions including brand guidelines in your account settings so generated documents can conform to your branding. [Explore global instructions in detail →](/essentials/account/global-instructions).
+Global instructions, including brand guidelines, can be set on your account and applied to an assistant's generated documents — but this is opt-in per assistant and off by default. [Explore global instructions in detail →](/essentials/account/global-admin-branding-settings).
 </Tip>
 
 ## Key Features at a Glance
 
-**Multiple Format Support** — Create PDFs, Word documents, PowerPoint presentations, spreadsheets, SVG diagrams, and interactive HTML/web applications.
+**Multiple Format Support** — Create PDFs, Word documents, PowerPoint presentations, spreadsheets, CSV files, SVG diagrams, and interactive HTML/web applications.
 
 **AI-Powered Creation** — Simply describe what you need, and the assistant generates the complete document from scratch.
 
-**Real-Time Editing** — Preview your document in the UI and make instant modifications or request specific changes.
+**Preview & Refine** — Preview your document in the UI and request changes. Word and Excel files can be amended directly; PDF and PowerPoint changes produce a freshly regenerated file.
 
-**Interactive Diagrams** — Embed Mermaid diagrams directly into your documents for flowcharts, timelines, and visualisations.
+**Diagrams** — Generate Mermaid diagrams as a standalone, shareable HTML file for flowcharts, timelines, and visualisations.
 
-**Professional Customisation** — Apply themes to presentations, adjust styling, and fine-tune layouts before finalising.
+**Presentation Styling** — Describe a theme or colour scheme in your prompt and the assistant applies it while building the presentation.
 
 **Deploy to the Web** — Take interactive HTML applications live with a single request—no deployment expertise required.
 
@@ -32,13 +32,13 @@ You can configure global instructions including brand guidelines in your account
 
 Creating a document is straightforward. Simply tell your assistant what you need, and it will generate a complete, ready-to-use file.
 
-1. **Open chats** and start a conversation with your AI assistant
+1. **Open Chat** and start a conversation with your AI assistant
 2. **Describe your document** — Be specific about format, content, and style
    - Example: "Create a professional 3-page report on Q1 sales performance with charts and company branding"
    - Example: "Generate a 10-slide presentation on climate change with a modern blue theme"
    - Example: "Build an interactive dashboard that shows real-time metrics with charts"
 3. **Review the preview** in the UI to see the generated document before downloading or making changes
-4. **Request modifications** if needed—tell the assistant what to adjust and it will update the document instantly
+4. **Request modifications** if needed—tell the assistant what to adjust. Word and Excel files can be amended directly; PDF and PowerPoint changes come back as a freshly regenerated file
 5. **Download or deploy** your finished document
 
 <Tip>
@@ -60,15 +60,19 @@ Create editable Word documents that teams can collaborate on after generation. G
 ### Presentations & Data
 
 **PowerPoint Presentations**
-Generate complete slide decks with multiple layouts, custom themes, and professional designs. The assistant can add themes automatically to enhance visual appeal.
+Generate complete slide decks with multiple layouts and professional designs. Describe a theme or colour scheme in your prompt (for example, "use a modern blue theme") and the assistant applies it while building the deck.
+
+<Note>
+`.pptx` files don't preview directly in the UI. A companion PDF version is generated alongside it so you can preview the content before downloading the `.pptx`.
+</Note>
 
 **Spreadsheets**
-Create Excel spreadsheets with data, formulas, formatting, and multiple sheets. Perfect for data summaries, financial reports, and analysis documents.
+Create Excel spreadsheets with data, formulas, formatting, and multiple sheets. Perfect for data summaries, financial reports, and analysis documents. CSV files are also supported for simpler tabular data.
 
 ### Visualisations
 
 **Diagrams & Flowcharts (Mermaid)**
-Embed interactive diagrams directly into your documents—flowcharts, timelines, entity relationships, user journeys, and more. Mermaid diagrams render beautifully in all formats.
+Generate flowcharts, timelines, entity relationships, and user journeys as Mermaid diagrams. These come back as a standalone HTML file you can open or share — they are not embedded into a Word, PDF, PowerPoint, or Excel document.
 
 **SVG Graphics**
 Generate scalable vector graphics that look perfect at any size. Use for logos, icons, technical diagrams, and custom illustrations.
@@ -96,23 +100,18 @@ The generation process is iterative. You can refine your document as many times 
 <img src="/images/assistants/document-generation-workflow.png" alt="Diagram showing the document generation workflow: user describes document, AI generates it, user previews in UI, user requests modifications, AI updates document, user downloads or deploys" />
 </Frame>
 
-### Embedding Images & Graphics
+### Generating Images
 
-When you ask the assistant to generate documents with images, it can:
+Your assistant can generate images from a text description using AI image generation — useful for illustrations, banners, or custom graphics referenced in a conversation. Image generation is billed in credits based on the resolution you request, rather than a flat price.
 
-- **Generate images from text descriptions** using AI image generation
-- **Embed existing images** you reference in your document
-- **Create diagrams and flowcharts** using Mermaid syntax
-- **Design custom graphics** like logos, banners, and illustrations
-
-Simply mention the images or graphics you want, and the assistant handles the creation and embedding.
-
-Image generation costs 7 credits and uses Nano Banana Pro
+<Note>
+Generated images aren't automatically embedded into a Word, PDF, PowerPoint, or Excel document — the document generators work from your text description alone and don't have access to images generated elsewhere in the conversation. This also means an existing image or logo you reference can't be embedded into a generated document.
+</Note>
 
 <Frame>
   <img 
     src="/images/assistants/document-generation.png" 
-    alt="Generate images using Nano Banana Pro"
+    alt="An assistant generating an image from a text description"
   />
 </Frame>
 
@@ -122,8 +121,7 @@ For PowerPoint presentations, you can request:
 
 - **Themes & Colour Schemes** — "Apply a modern blue theme" or "Use our company branding colours"
 - **Layout Variations** — "Title slide, then 5 content slides with left-aligned text and right-side images"
-- **Design Elements** — "Add company logo to footer" or "Include page numbers"
-- **Animation & Transitions** — "Add subtle transitions between slides"
+- **Design Elements** — "Include page numbers" or "Add a title slide with a subtitle"
 
 ---
 
@@ -138,7 +136,7 @@ The assistant can create fully functional web applications with:
 - **JavaScript Functionality** — Dynamic interactions, calculations, data processing
 - **Visualisations** — Charts, graphs, and real-time data displays
 
-Simply describe the web app you need: "Create an interactive calculator for mortgage payments with a clean, modern interface" or "Build a simple to-do app with add, edit, and delete functionality."
+Simply describe the web app you need: "Create a unit conversion calculator with a clean, modern interface" or "Build a simple to-do app with add, edit, and delete functionality."
 
 ### Previewing Interactive Content
 
@@ -165,7 +163,7 @@ When you have an interactive HTML application ready, you can deploy it to make i
 5. **Live & Accessible** — Your app is now accessible from anywhere, with full JavaScript functionality enabled
 
 <Frame>
-<img src="/images/assistants/app-dashboard.png" alt="Diagram showing deployment process: interactive HTML in UI, request deployment to assistant, QuivaWorks creates website gateway, files uploaded to storage, public URL generated, live web app accessible" />
+<img src="/images/assistants/app-dashboard.png" alt="The Apps dashboard showing deployed applications, with options to open, copy the URL, manage files, or delete each app" />
 </Frame>
 
 ### Share Your App
@@ -178,7 +176,7 @@ Once deployed, you can:
 - **Enjoy full functionality** — JavaScript and all interactive features work perfectly
 
 <Tip>
-Deployment is ideal for customer-facing tools, interactive dashboards, calculators, portfolios, and any web app that needs to be accessed outside your workspace.
+Deployment is ideal for customer-facing tools, interactive dashboards, calculators, portfolios, and any web app that needs to be accessed outside your Space.
 </Tip>
 
 ---
@@ -195,7 +193,7 @@ That's completely normal. Simply tell the assistant what needs to change. You ca
 </Accordion>
 
 <Accordion title="Can I add my company branding to documents?">
-Yes, you can request company logos, colour schemes, fonts, and branding elements. Describe your brand guidelines, and the assistant will incorporate them into your documents.
+You can describe colour schemes, fonts, and styling in your prompt, and the assistant applies them while generating the document. Logos and other existing images can't be embedded into a generated document — the generator only works from your text description, not from files or images.
 </Accordion>
 
 <Accordion title="How do I know if my HTML app needs to be deployed?">
@@ -215,7 +213,7 @@ Yes, documents you generate are yours to use however you need—including commer
 </Accordion>
 
 <Accordion title="What file formats can I export?">
-You can generate PDFs, Word documents (.docx), PowerPoint presentations (.pptx), Excel spreadsheets (.xlsx), SVG graphics, and interactive HTML applications.
+You can generate PDFs, Word documents (.docx), PowerPoint presentations (.pptx), Excel spreadsheets (.xlsx), CSV files, SVG graphics, and interactive HTML applications.
 </Accordion>
 </AccordionGroup>
 
@@ -225,31 +223,35 @@ You can generate PDFs, Word documents (.docx), PowerPoint presentations (.pptx),
 
 <CardGroup cols={2}>
 <Card
-  title="Create Your First Document"
+  title="Creating Your First Assistant"
   icon="sparkles"
+  href="/assistants/creating-first-assistant"
 >
 Start a conversation with your AI assistant and describe the document you need. Be specific about format, content, and style.
 </Card>
 
 <Card
-  title="Deploy an Interactive App"
+  title="Deploying Interactive Web Apps"
   icon="rocket"
+  href="/assistants/interactive-apps"
 >
 Once you've created an interactive HTML application, ask your assistant to deploy it and make it live on the web.
 </Card>
 
 <Card
-  title="Explore Advanced Workflows"
+  title="Assistant Capabilities"
   icon="sliders"
+  href="/assistants/capabilities"
 >
-Learn about embedding images, custom diagrams, professional themes, and iterative refinement techniques.
+See the full range of what an assistant can do beyond document generation.
 </Card>
 
 <Card
-  title="Share with Your Team"
+  title="Collaboration"
   icon="users"
+  href="/get-started/collaboration"
 >
-Download documents, share deployed apps, and collaborate with colleagues on generated content.
+Share deployed apps and collaborate with colleagues on generated content.
 </Card>
 </CardGroup>
 

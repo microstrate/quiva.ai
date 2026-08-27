@@ -1,300 +1,158 @@
 ---
 title: 'Functions Overview'
-description: 'Complete reference of all available QuivaWorks functions'
+description: 'The built-in functions a Function step can call, and how their input and output are shaped'
 icon: 'book'
 ---
 
-# Functions Overview
+# Functions
 
-This page lists all available functions in QuivaWorks. Functions provide access to QuivaWorks platform services (streams, storage) and common data transformation utilities.
+A **Function step** calls one built-in function. You pick the function from a list, write a JSON **Payload** for it, and the value it returns becomes the step's result.
 
-<Info>
-**Platform Integration**: Functions let you interact with QuivaWorks' real-time streaming, storage, and data transformation capabilities directly from your flows.
-</Info>
-
----
-
-## Function Categories
-
-<CardGroup cols={3}>
-  <Card title="Stream Functions" icon="stream" href="/flows/functions/streams">
-    Real-time data streaming operations
-  </Card>
-  
-  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
-    Fast key-based data storage
-  </Card>
-  
-  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
-    Large object storage operations
-  </Card>
-  
-  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utility">
-    Format, merge, and transform data
-  </Card>
-</CardGroup>
-
----
-
-## Stream Functions
-
-<Card title="View Stream Functions Documentation" icon="arrow-right" href="/flows/functions/streams">
-  Detailed documentation for real-time streaming operations
-</Card>
-
-Stream functions enable real-time, sequential data processing with low latency. Use streams for event sourcing, message queuing, and real-time data pipelines.
-
-- `create-stream` - Create a new stream in your account
-- `publish-message-to-stream` - Add a message to a stream
-- `get-item-from-stream` - Retrieve an item from a stream
-- `search-stream-items` - Search items by key and timestamp/offset
-- `aggregate-stream-items` - Aggregate items by key and timestamp/offset
-- `list-streams` - List all streams in your account
-- `poison-pill-message-to-stream` - Add poison pill message to stream
-
----
-
-## Key-Value Storage Functions
-
-<Card title="View Key-Value Storage Documentation" icon="arrow-right" href="/flows/functions/key-value">
-  Detailed documentation for KV storage operations
-</Card>
-
-Key-Value storage provides fast, simple data storage with key-based access. Perfect for configuration, caching, and state management.
-
-- `create-key-value-bucket` - Create a new Key/Value bucket
-- `put-kv-item` - Add an item to a bucket
-- `get-kv-bucket-item` - Retrieve an item by key
-- `list-key-value-buckets` - List all KV buckets
-- `list-kv-bucket-items` - List items in a bucket
-
----
-
-## Object Storage Functions
-
-<Card title="View Object Storage Documentation" icon="arrow-right" href="/flows/functions/object-storage">
-  Detailed documentation for object storage operations
-</Card>
-
-Object storage handles large items like files, documents, and binary data. Use for document management, media storage, and backups.
-
-- `create-object-store-bucket` - Create a new object storage bucket
-- `put-object-by-key` - Add an object to a bucket
-- `get-object-from-bucket` - Retrieve an object by key
-- `list-object-store-buckets` - List all object buckets
-- `list-object-keys` - List objects in a bucket
-
----
-
-## Data Transformation Utilities
-
-<Card title="View Utility Functions Documentation" icon="arrow-right" href="/flows/functions/utility">
-  Detailed documentation for data transformation functions
-</Card>
-
-Utility functions for common data operations like encoding, merging, grouping, and formatting.
-
-### Encoding & Formatting
-- `base64-encode` - Encode text or objects to base64 format
-- `base64-decode` - Decode base64 data (auto-parses JSON)
-- `json-xml` - Transform JSON to XML format
-- `xml-json` - Transform XML to JSON format
-
-### Data Operations
-- `deep-merge-objects` - Deeply merge objects recursively
-- `merge-arrays` - Merge multiple arrays into one
-- `group-by` - Group objects by a property
-- `set-operations` - Perform set operations (diff, union, intersection)
-
-### Templates & Mapping
-- `handlebars` - Use Handlebars for dynamic templates
-- `mapping` - JSON path mappings to restructure data
-
-### Platform & Integration
-- `secret-key-get-node` - Retrieve secret keys securely
-- `function-invoke` - Invoke other QuivaWorks functions programmatically
-- `sftp` - Upload files to SFTP servers
-
-### Specialized
-- `multiply-large-numbers` - Multiply very large numbers with precision
-
----
-
-## Quick Reference
-
-### By Use Case
-
-<AccordionGroup>
-  <Accordion title="Real-time Data Processing">
-    Use **Stream Functions** when you need:
-    - Event sourcing and processing
-    - Message queuing systems
-    - Real-time data pipelines
-    - Sequential data processing
-    
-    **Example**: Process customer events in real-time, aggregate analytics data, build notification systems.
-  </Accordion>
-  
-  <Accordion title="Fast Data Storage">
-    Use **Key-Value Storage** when you need:
-    - Quick data lookups by key
-    - Configuration storage
-    - Caching layer
-    - Session management
-    
-    **Example**: Store user preferences, cache API responses, maintain feature flags.
-  </Accordion>
-  
-  <Accordion title="Large File Handling">
-    Use **Object Storage** when you need:
-    - Store files, documents, media
-    - Binary data storage
-    - Document management
-    - Backup and archival
-    
-    **Example**: Store uploaded PDFs, images, reports, customer documents.
-  </Accordion>
-  
-  <Accordion title="Data Transformation">
-    Use **Utility Functions** when you need:
-    - Format or encode data
-    - Merge or restructure objects
-    - Group or organize data
-    - Template generation
-    
-    **Example**: Base64 encode files, merge user profiles, group orders by customer.
-  </Accordion>
-  
-  <Accordion title="System Integration">
-    Use **Integration Functions** when you need:
-    - Convert between JSON and XML
-    - Upload files via SFTP
-    - Parse SOAP API responses
-    - Integrate with legacy systems
-    
-    **Example**: Convert JSON to XML for SOAP APIs, upload reports to partner SFTP servers, parse XML responses.
-  </Accordion>
-  
-  <Accordion title="Function Orchestration">
-    Use **function-invoke** when you need:
-    - Break complex logic into reusable functions
-    - Chain multiple functions together
-    - Create modular architectures
-    - Trigger background tasks
-    
-    **Example**: Validate data in one function, process in another, create reusable components.
-  </Accordion>
-  
-  <Accordion title="Security & Secrets">
-    Use **secret-key-get-node** when you need:
-    - Access API keys securely
-    - Retrieve database credentials
-    - Get OAuth tokens
-    - Never hardcode sensitive data
-    
-    **Example**: Get Stripe API key, retrieve SFTP password, access third-party tokens.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## All Functions Alphabetical
-
-<AccordionGroup>
-  <Accordion title="A-G">
-    - `aggregate-stream-items` - Aggregate stream items by key and time
-    - `base64-decode` - Decode from base64 (auto-parses JSON)
-    - `base64-encode` - Encode text or objects to base64
-    - `create-key-value-bucket` - Create KV bucket
-    - `create-object-store-bucket` - Create object bucket
-    - `create-stream` - Create new stream
-    - `deep-merge-objects` - Deeply merge objects
-    - `function-invoke` - Invoke other QuivaWorks functions
-    - `get-item-from-stream` - Get stream item
-    - `get-kv-bucket-item` - Get KV item
-    - `get-object-from-bucket` - Get object
-    - `group-by` - Group objects by property
-  </Accordion>
-  
-  <Accordion title="H-M">
-    - `handlebars` - Dynamic templates with Handlebars
-    - `json-xml` - Transform JSON to XML
-    - `list-key-value-buckets` - List KV buckets
-    - `list-kv-bucket-items` - List items in KV bucket
-    - `list-object-keys` - List objects by keys
-    - `list-object-store-buckets` - List object buckets
-    - `list-streams` - List all streams
-    - `mapping` - JSON path data mapping
-    - `merge-arrays` - Merge arrays
-    - `multiply-large-numbers` - Multiply large numbers with precision
-  </Accordion>
-  
-  <Accordion title="P-Z">
-    - `poison-pill-message-to-stream` - Add poison pill to stream
-    - `publish-message-to-stream` - Publish to stream
-    - `put-kv-item` - Add KV item
-    - `put-object-by-key` - Add object
-    - `search-stream-items` - Search stream by key/time
-    - `secret-key-get-node` - Retrieve secret key
-    - `set-operations` - Set diff, union, intersection
-    - `sftp` - Upload files to SFTP servers
-    - `xml-json` - Transform XML to JSON
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Function Count by Category
+There are 31 built-in functions. They fall into four groups:
 
 <CardGroup cols={2}>
-  <Card title="Stream Functions" icon="stream">
-    **7 functions** for real-time data streaming
+  <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
+    Five functions for buckets of small values addressed by key
   </Card>
-  
-  <Card title="Key-Value Storage" icon="database">
-    **5 functions** for fast KV operations
+
+  <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
+    Five functions for buckets of larger objects — files, documents, exports
   </Card>
-  
-  <Card title="Object Storage" icon="box">
-    **5 functions** for large file storage
+
+  <Card title="Streams" icon="stream" href="/flows/functions/streams">
+    Nine functions for append-only message streams and their aggregation
   </Card>
-  
-  <Card title="Data Utilities" icon="shuffle">
-    **14 functions** for transformation and integration
+
+  <Card title="Utilities" icon="shuffle" href="/flows/functions/utility">
+    Nine functions for encoding, templating, format conversion and file transfer
   </Card>
 </CardGroup>
 
+The remaining three — `Delay`, `HTTP` and `Rules` — are in the same catalogue but have their own step types. Use the [Delay](/flows/steps/delay), [HTTP Request](/flows/steps/http-request) and [Rules](/flows/steps/rules) steps rather than a Function step, because those steps give you a proper editor for the same operation.
+
 ---
 
-## Recently Added Functions
+## Every function
+
+Names are exactly as they appear in the picker, including capitalisation.
+
+| Function | Group | Does |
+|---|---|---|
+| `create-key-value-bucket` | Key-value | Create a bucket |
+| `put-kv-item` | Key-value | Write one key |
+| `get-kv-bucket-item` | Key-value | Read one key |
+| `list-key-value-buckets` | Key-value | List the account's buckets |
+| `list-kv-bucket-items` | Key-value | List keys and values in a bucket |
+| `create-object-store-bucket` | Object | Create a bucket |
+| `put-object-by-key` | Object | Write one object |
+| `get-object-from-bucket` | Object | Read one object |
+| `list-object-store-buckets` | Object | List the account's buckets |
+| `list-object-keys` | Object | List object metadata in a bucket |
+| `create-stream` | Stream | Create a stream over a set of subjects |
+| `publish-message-to-stream` | Stream | Publish one message to a subject |
+| `get-item-from-stream` | Stream | Read messages on a subject |
+| `search-stream-items` | Stream | Read messages matching a subject pattern |
+| `aggregate-stream-items` | Stream | Fold a subject's messages into one object |
+| `list-streams` | Stream | List the account's streams |
+| `unset-message-to-stream` | Stream | Publish a control message removing a path |
+| `tombstone-message-to-stream` | Stream | Publish a control message ending a fold |
+| `poison-pill-message-to-stream` | Stream | Publish a control message resetting a fold |
+| `base64-encode` | Utility | Encode text or an object to base64 |
+| `base64-decode` | Utility | Decode base64, parsing JSON if it is JSON |
+| `JSON-XML` | Utility | Convert JSON to XML text |
+| `XML-JSON` | Utility | Convert XML to JSON |
+| `Handlebars Template` | Utility | Render a Handlebars template |
+| `Mapping` | Utility | Reshape data with JSONPath |
+| `secret-key-get-node` | Utility | Read one account secret by name |
+| `function-invoke-node` | Utility | Invoke another function by subject |
+| `SFTP` | Utility | Upload a file over SFTP |
+| `Delay` | Step-backed | See the [Delay step](/flows/steps/delay) |
+| `HTTP` | Step-backed | See the [HTTP Request step](/flows/steps/http-request) |
+| `Rules` | Step-backed | See the [Rules step](/flows/steps/rules) |
+
+---
+
+## Configuring a Function step
+
+The node editor has two tabs, and two more in advanced mode:
+
+| Tab | Contents |
+|---|---|
+| **General** | Step name and step ID |
+| **Function** | The **Function** dropdown, and a form generated from that function's input schema. Required. |
+| **Response Map** | A JSONPath mapping applied to the result before it is stored. Advanced mode only. |
+| **Advanced Settings** | Timeout, attempts, backoff, ignored response codes, flat map. Advanced mode only. |
+
+The form on the **Function** tab is built from the function's declared input schema, so the fields you see are the parameters that function accepts. **JSON Editor** opens the same payload as raw JSON, validated against that schema.
+
+The payload is sent to the function exactly as written, after JSONPath resolution. Any string beginning with `$.` is resolved against the run's data first — see [Variable Mapping](/advanced/variable-mapping/overview).
 
 <Note>
-**New Functions Available**:
-- `xml-json` - Parse XML responses from SOAP APIs and legacy systems
-- `function-invoke` - Build modular architectures with function orchestration
-- `sftp` - Upload files to partner SFTP servers with secure authentication
-
-See the [Data Transformation Utilities](/flows/functions/utility) documentation for details.
+There is no request envelope. The payload *is* the function's input. A payload of `{"bucket": "orders", "key": "ord_88"}` reaches `get-kv-bucket-item` as exactly that object.
 </Note>
 
 ---
 
-## Next Steps
+## Reading the result
+
+The result is stored flat under the step's ID. If the step ID is `GET_ORDER`:
+
+```
+$.GET_ORDER.status_code
+$.GET_ORDER.body.body.value
+```
+
+There is no `.output` or `.result` wrapper.
+
+Most functions return the same envelope:
+
+```json
+{
+  "status_code": 200,
+  "body": { "body": { }, "metadata": { } }
+}
+```
+
+Write functions return `{"status_code": …, "body": {"message": …}}` or `{"status_code": …, "body": {"error": …}}` instead, and the pure utilities (`base64-encode`, `Handlebars Template`, `JSON-XML`, `SFTP`) return a bare string.
+
+---
+
+## How a function fails
+
+<Warning>
+**A function that returns an error object still counts as a successful step.** Several functions handle their own errors by returning `{"error": "…"}` rather than throwing. The invocation succeeded, so the run carries on and the next step reads `{"error": …}` where it expected data.
+
+Test for it explicitly with a [Condition step](/flows/steps/condition) on `$.STEP_ID.error`, or on `$.STEP_ID.status_code` where the function returns one.
+</Warning>
+
+Three things do end the run:
+
+- The function throws and the runtime cannot catch it.
+- The invocation itself fails — the function could not be reached, or did not run.
+- The call exceeds its timeout — 20 seconds unless you set one in **Advanced Settings**.
+
+An inner `status_code` of 409 or 404 in the body is *not* one of these. The invocation succeeded; the step succeeded; only the operation did not.
+
+There is no per-step error branch. The first step that errors cancels the whole run — see [Building Reliable Flows](/flows/best-practices).
+
+---
+
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Stream Functions" icon="stream" href="/flows/functions/streams">
-    Learn about real-time streaming
+  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
+    Adding and wiring a Function step
   </Card>
-  
-  <Card title="Storage Functions" icon="database" href="/flows/functions/key-value">
-    Explore storage options
+
+  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
+    Writing the `$.` expressions in a payload
   </Card>
-  
-  <Card title="Data Utilities" icon="shuffle" href="/flows/functions/utility">
-    Transform and format data
+
+  <Card title="Building Reliable Flows" icon="shield-check" href="/flows/best-practices">
+    Retries, timeouts and what a part-completed run leaves behind
   </Card>
-  
-  <Card title="Using Functions in Flows" icon="diagram-project" href="/flows/steps/functions">
-    See Functions step documentation
+
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    JavaScript, for anything no function covers
   </Card>
 </CardGroup>

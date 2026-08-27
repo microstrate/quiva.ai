@@ -1,315 +1,199 @@
 ---
 title: "Creating Your Account"
-description: "Step-by-step guide to creating and setting up your QuivaWorks account"
+description: "Sign up for QuivaWorks, verify your email, and choose how your data is hosted"
 icon: "user-plus"
 ---
 
-# Creating Your Account
+Creating a QuivaWorks account takes a few minutes: fill in the signup form, verify your email, and choose where your data is hosted.
 
-Get started with QuivaWorks in just a few minutes. This guide walks you through account creation, email verification, and initial setup.
+## Before you begin
 
-## Before You Begin
+Have ready:
 
-Have these details ready:
-- A valid email address
-- A unique account name (you'll use this to log in)
-- Your location/country
-- Payment information (only if choosing a paid plan)
+- An email address to own the account
+- A unique account name — this is the identifier people sign in with
+- The country or region your business is registered in
 
-## Step 1: Registration
+## Step 1: Sign up
 
 <Steps>
-  <Step title="Visit the Signup Page">
-    Navigate to [https://app.quiva.ai/en/signup](https://app.quiva.ai/en/signup)
+  <Step title="Open the signup page">
+    Go to [https://app.quiva.ai/en/signup](https://app.quiva.ai/en/signup).
   </Step>
-  
-  <Step title="Complete the Form">
-    Enter the following information:
-    
-    - **Account Name** - Your unique login identifier (case-sensitive)
-    - **Email Address** - Your primary contact email
-    - **Password** - Must contain:
-      - Minimum 8 characters
-      - Uppercase and lowercase letters
-      - At least one number
-      - At least one special character (!@#$%^&*)
-    - **Country**
-    - **First and Last Name**
+
+  <Step title="Fill in the form">
+    - **Account Name (Unique Identifier)** — a unique identifier for the account, for example `acme-ops`. Minimum two characters.
+    - **Owner Email** — your master login. It must be globally unique.
+    - **Password**
+    - **Country** — where the business is registered, or where you work from if you operate as an individual.
+    - **Name** — first and last name.
   </Step>
-  
-  <Step title="Accept Terms">
-    Review and accept our [Terms of Service](https://quiva.ai/legal.html#terms) and [Privacy Policy](https://quiva.ai/legal.html#privacy)
+
+  <Step title="Accept the terms">
+    Tick the box to accept the [Terms of Service](https://quiva.ai/legal.html#terms) and [Privacy Policy](https://quiva.ai/legal.html#privacy).
   </Step>
-  
-  <Step title="Complete Verification">
-    Complete the Cloudflare verification to confirm you're human
+
+  <Step title="Pass the human check">
+    A Cloudflare Turnstile check runs on the form.
   </Step>
-  
-  <Step title="Submit">
-    Click the submit button to create your account
+
+  <Step title="Sign Up">
+    Click **Sign Up**.
   </Step>
 </Steps>
 
-<img 
-  src="/images/essentials/registration-screen.png" 
-  alt="Registration Screen"
+<img
+  src="/images/essentials/registration-screen.png"
+  alt="Registration screen"
   style={{ maxHeight: '300px', width: 'auto' }}
   className="rounded-lg"
 />
 
+### About account names
+
+The account name works like an account ID. It is what lets the same email address be used across several QuivaWorks accounts — each one needs its own unique name, and members use it when signing in to your account specifically.
+
 <Note>
-**About Account Names:** The account name allows the same email address to be used across multiple QuivaWorks accounts. Choose something memorable as you'll use it every time you log in.
+Account names are **case-insensitive**. They are lowercased and trimmed when stored, so `AcmeOps` and `acmeops` are the same name and cannot both be taken.
 </Note>
 
-## Step 2: Email Verification
+As the owner, you sign in with your email and password alone; you do not need to type the account name.
 
-After registration, verify your email address to activate your account.
+### Password requirements
+
+Your password must be:
+
+- At least **8** characters and at most **72**
+- Both upper and lower case letters
+- At least one number
+- At least one special character
+
+Common words are rejected. A password manager is the easiest way to satisfy all of this at once.
+
+## Step 2: Verify your email
+
+QuivaWorks emails you a confirmation. You can use either half of it.
 
 <Tabs>
-  <Tab title="Login Code">
-    1. Check your email for "Confirm Your Email Address"
-    2. Find the 6-digit verification code
-    3. Enter the code on the verification screen
-    4. Click "Verify"
+  <Tab title="Verification code">
+    1. Open the "Confirm Your Email Address" email.
+    2. Find the 6-digit code.
+    3. Enter it on the verification screen.
   </Tab>
-  
-  <Tab title="Magic Link">
-    1. Check your email for "Confirm Your Email Address"
-    2. Click the "Confirm your email" button
-    3. You'll be automatically logged into your new account
+
+  <Tab title="Magic link">
+    1. Open the "Confirm Your Email Address" email.
+    2. Click the confirmation button.
+    3. You are signed in to your new account.
   </Tab>
 </Tabs>
 
-<img 
-  src="/images/essentials/account-registration-email.png" 
-  alt="Registration Email"
+<img
+  src="/images/essentials/account-registration-email.png"
+  alt="Registration email"
   style={{ maxHeight: '300px', width: 'auto' }}
   className="rounded-lg"
 />
 
-<Warning>
-**Time Limit:** Accounts must be verified within 48 hours or they'll be automatically deleted. Check your spam folder if you don't receive the email within 5 minutes.
-</Warning>
-
-## Step 3: Select Your Plan
-
-Choose the plan that matches your needs:
-
-<CardGroup cols={2}>
-  <Card title="Free - $0/month" icon="gift">
-    - 3 agents, 200 flow runs/month
-    - 500MB storage
-    - Perfect for exploration
-    
-    [View details →](/get-started/plans-and-pricing#free)
-  </Card>
-  
-  <Card title="Starter - $20/month" icon="seedling">
-    - 5 agents, 2,500 flow runs/month
-    - 2GB storage
-    - Premium marketplace access
-    
-    [View details →](/get-started/plans-and-pricing#starter)
-  </Card>
-  
-  <Card title="Pro - $100/month" icon="chart-line">
-    - 50 agents, 10,000 flow runs/month
-    - 5GB storage
-    - Priority support
-    
-    [View details →](/get-started/plans-and-pricing#pro)
-  </Card>
-  
-  <Card title="Team - $500/month" icon="users">
-    - Unlimited agents, 40,000 flow runs/month
-    - 50GB storage
-    - Dedicated support
-    
-    [View details →](/get-started/plans-and-pricing#team)
-  </Card>
-</CardGroup>
-
-<img 
-  src="/images/essentials/plan-selection.png" 
-  alt="Plan Selection"
-  style={{ maxHeight: '400px', width: 'auto' }}
-  className="rounded-lg"
-/>
-
-<Tip>
-Start with the Free plan to explore QuivaWorks. You can upgrade at any time as your needs grow.
-</Tip>
-
-## Step 4: Configure Account Regions
-
-Select where your data will be processed and stored:
-
-<CardGroup cols={3}>
-  <Card title="EU" icon="location-dot">
-    European Union
-    - GDPR compliant
-    - Frankfurt/Paris
-  </Card>
-  
-  <Card title="US" icon="location-dot">
-    United States
-    - Multiple zones
-    - East/West coast
-  </Card>
-  
-  <Card title="Australia" icon="location-dot">
-    Sydney
-    - APAC region
-    - Low latency
-  </Card>
-</CardGroup>
-
 <Info>
-Your region selection determines where your data is stored and can help you meet compliance requirements like GDPR. You can modify this later in **Account Management → Mesh**.
+Verification codes and links stay valid for **2 days**. If the email has not arrived after a few minutes, check your spam folder.
 </Info>
 
-## Step 5: Secure Your Account
+## Step 3: Choose how your data is hosted
+
+The first time you sign in, an account with no hosting set is shown the screen **"Choose the way your data is hosted"**. This is not gated on your plan.
+
+You choose two things:
+
+- **Number of mesh nodes** — either **1** or **3**. More nodes mean automatic backups across multiple servers, traffic spread across them, and data kept in step across locations.
+- **Region** (or **Replica regions** if you picked 3) — the region your data is held in.
+
+Click **Save and continue**.
 
 <Warning>
-**Critical Security Step:** Enable multi-factor authentication immediately after account creation.
+Adding regions increases storage usage proportionally. One region is standard usage; **3 regions is 3× the storage usage**.
 </Warning>
 
-You'll be prompted to set up MFA on your first login:
+## Step 4: Secure your account
 
-1. Choose your authentication method:
-   - **Passkey** (Recommended) - Use biometrics or device PIN
-   - **Authenticator App** - Use Google Authenticator, Authy, etc.
+After signup you are offered multi-factor authentication. It is worth doing straight away, though you can choose **Set Up Later** and come back to it.
 
-2. Follow the setup instructions
+1. Pick a method:
+   - **Passkey** — sign in with touch, facial recognition, a device password or a PIN.
+   - **Authenticator app** — a time-based code from an app such as Google Authenticator or Authy.
+2. Follow the setup steps.
+3. **Save your recovery codes.** You get 10 of them, and they are what gets you back in if you lose your device.
 
-3. **Save your recovery codes** in a secure location:
-   - Password manager (recommended)
-   - Encrypted file
-   - Physical safe
+Store the codes in a password manager or somewhere else you control. You can view them and issue a fresh set later from **Settings → Password and authentication**.
 
-<Note>
-Recovery codes are your backup access method if you lose your MFA device. Store them securely as they can't be recovered if lost.
-</Note>
+[Authentication guide →](/essentials/security/authentication)
 
-[Complete MFA setup guide →](/essentials/security/authentication)
+## Step 5: Plans and credits
 
-## Account Setup Checklist
+You are not asked to choose a plan while signing up. Plans, credits and top-ups are all managed afterwards from **Billing & Plans** in the sidebar.
 
-<Steps>
-  <Step title="Create Account">
-    - [ ] Register with email and unique account name
-    - [ ] Verify email within 48 hours
-  </Step>
-  
-  <Step title="Select Plan">
-    - [ ] Choose appropriate plan for your needs
-    - [ ] Complete billing information (if paid plan)
-  </Step>
-  
-  <Step title="Configure Regions">
-    - [ ] Select data processing locations
-    - [ ] Verify compliance requirements met
-  </Step>
-  
-  <Step title="Enable Security">
-    - [ ] Set up MFA (passkey or authenticator)
-    - [ ] Save recovery codes securely
-    - [ ] Test login with MFA
-  </Step>
-  
-  <Step title="Complete Profile">
-    - [ ] Update company/organization details
-    - [ ] Add additional account information
-    
-    [Update account details →](/essentials/account/account-settings)
-  </Step>
-</Steps>
+<Card title="Plans, credits and top-ups" icon="credit-card" href="/essentials/account/billing-subscriptions">
+  Compare Free, Pro and Team, and see what a credit buys →
+</Card>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Didn't receive verification email">
-    **Solutions:**
-    - Check spam/junk folder
-    - Wait 5 minutes for delivery
-    - Click "Resend email" on verification screen
-    - Verify you entered correct email address
-    - Try a different email provider if issues persist
+  <Accordion title="The verification email hasn't arrived">
+    - Check your spam or junk folder.
+    - Give it a few minutes.
+    - Confirm you typed the address correctly — the code goes to the **Owner Email** on the form.
   </Accordion>
-  
-  <Accordion title="Account name already taken">
-    **Remember:**
-    - Account names are case-sensitive
-    - They must be unique across all QuivaWorks accounts
-    - Try variations or add numbers/underscores
-    - Consider using your company name or username
+
+  <Accordion title="That account name is already taken">
+    Account names must be unique across all QuivaWorks accounts, and they are matched case-insensitively, so changing only the capitalisation will not help. Try a different identifier — your team or product name with a suffix usually works.
   </Accordion>
-  
-  <Accordion title="Password doesn't meet requirements">
-    **Your password must have:**
-    - At least 8 characters (12+ recommended)
-    - Uppercase letters (A-Z)
-    - Lowercase letters (a-z)
-    - Numbers (0-9)
-    - Special characters (!@#$%^&*)
-    
-    Use a password manager to generate strong passwords.
+
+  <Accordion title="The password is rejected">
+    It needs 8 to 72 characters, upper and lower case, a number and a special character, and it must not be a common word. Generating one in a password manager avoids all four problems.
   </Accordion>
-  
-  <Accordion title="Cloudflare verification failing">
-    **Try these solutions:**
-    - Refresh the page and try again
-    - Disable browser extensions temporarily
-    - Try a different browser
-    - Ensure JavaScript is enabled
-    - Check your internet connection
+
+  <Accordion title="The human check keeps failing">
+    Reload the page, disable browser extensions for a moment, make sure JavaScript is enabled, or try a different browser.
   </Accordion>
 </AccordionGroup>
 
-## Multiple Accounts
+## Using one email for several accounts
 
-You can use the same email address for multiple QuivaWorks accounts by choosing different account names.
+The same email address can own or belong to several QuivaWorks accounts, each under its own account name. To move between them, sign out, then sign in with the **account name** of the one you want. Each account has its own resources, billing and users.
 
-**To access different accounts:**
-1. Log out of your current account
-2. Enter the specific **account name** on the login page
-3. Enter your email and password
-4. Complete MFA verification
-
-Each account operates independently with its own resources, billing, and users.
-
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Build Your First Agent" icon="robot" href="/assistants/creating-first-assistant">
-    Create and deploy an intelligent AI agent
+  <Card title="Configure your account" icon="gear" href="/essentials/account/account-settings">
+    Details, branding, escalations and retention
   </Card>
-  
-  <Card title="Invite Team Members" icon="user-plus" href="/essentials/users/user-management">
-    Add users and assign roles
+
+  <Card title="Invite your team" icon="user-plus" href="/essentials/users/user-management">
+    Add people and assign roles
   </Card>
-  
-  <Card title="Explore Marketplace" icon="store" href="https://app.quiva.ai/en/hub/marketplace">
+
+  <Card title="Build your first assistant" icon="sparkles" href="/assistants/creating-first-assistant">
+    Put an assistant to work
+  </Card>
+
+  <Card title="Explore the marketplace" icon="store" href="https://app.quiva.ai/en/hub/marketplace">
     Browse pre-built solutions
-  </Card>
-  
-  <Card title="Configure Settings" icon="gear" href="/essentials/account/account-settings">
-    Customize your account
   </Card>
 </CardGroup>
 
-## Need Help?
+## Need help?
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Documentation" icon="book" href="/get-started/overview">
-    Browse complete guides
+    Browse the guides
   </Card>
-  
+
   <Card title="Community" icon="users" href="https://quiva.ai/community">
     Connect with other users
   </Card>
-  
-  <Card title="Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    Get help from our team
+
+  <Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+    Get in touch
   </Card>
 </CardGroup>

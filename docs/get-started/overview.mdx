@@ -1,358 +1,118 @@
 ---
 title: "Welcome to QuivaWorks"
-description: "Build intelligent AI assistants for your team—collaborate in real-time, customise at every level, and amplify your team's capabilities"
+description: "Abbie, Spaces, assistants and flows — what QuivaWorks is and where to start"
 icon: "hand-wave"
 ---
 
-QuivaWorks enables you to create intelligent AI assistants—expert collaborators that help your team tackle complex tasks. Whether you're researching, generating content, handling customer service, or analysing data, assistants work alongside you. And when your team needs to collaborate, share sessions in real-time to work together seamlessly.
+QuivaWorks is a platform for getting work done with AI. **Abbie** is the AI coworker at the centre of it: you brief her in chat, she works through the task, and you can follow every step. Around Abbie sit **Spaces** for the work itself, **assistants** you configure for specific jobs, and **flows** that run automatically.
 
-<Tip>
-**Start with what you need.** Every account includes a General Assistant for exploration, plus access to the marketplace of pre-built assistants. Create your first custom assistant in minutes—no coding required. Share sessions with your team whenever you're ready.
-</Tip>
+## The main surfaces
 
----
-
-## What is QuivaWorks?
-
-QuivaWorks is a platform for building, deploying, and collaborating with intelligent AI assistants. Rather than replacing your team, assistants work *with* you—providing research, drafting content, analysing data, and handling complex workflows whilst you maintain control and judgment.
+Everything below is reached from the sidebar. Depending on your account, an item sits at the top level or under **More**.
 
 <CardGroup cols={2}>
-  <Card title="For Teams" icon="briefcase" href="/assistants/overview">
-    Build custom assistants tailored to your team's workflows
+  <Card title="Abbie" icon="comment">
+    Your AI coworker. **Home**, **Chat**, **Backlog**, **Logs** and **Settings** — brief her, watch a run, and see what she is queued to do next.
   </Card>
-  
-  <Card title="For Individuals" icon="user" href="/assistants/creating-first-assistant">
-    Create personal assistants for research, writing, and analysis
+
+  <Card title="Spaces" icon="rocket" href="/spaces/spaces">
+    Where work lives. Each space holds **Files**, **Tasks**, **Records** and **Chats**.
   </Card>
-  
-  <Card title="Browse Marketplace" icon="store" href="https://quiva.ai/marketplace/">
-    Explore pre-built assistants from the community
+
+  <Card title="Meetings" icon="calendar">
+    Schedule meetings, record them, and get transcripts back.
   </Card>
-  
-  <Card title="API Reference" icon="code" href="/api-reference">
-    Programmatic access for developers
+
+  <Card title="Assistants" icon="sparkles" href="/assistants/overview">
+    Purpose-built AI collaborators you configure with instructions, knowledge, integrations and context variables.
+  </Card>
+
+  <Card title="Flows" icon="diagram-project" href="/flows/overview">
+    Automated sequences: a trigger starts them, steps do the work, variable mappings pass data along.
+  </Card>
+
+  <Card title="Account" icon="building" href="/essentials/account/account-settings">
+    Account details, branding, global assistant instructions and knowledge, escalation responders, and data retention.
   </Card>
 </CardGroup>
 
----
+## What assistants give you
 
-## Core Capabilities
+An assistant is configured across four areas, so it starts every conversation already knowing your context:
 
-### 🧠 Intelligent Collaboration
+- **Instructions** — role, tone and responsibilities
+- **Knowledge** — your documentation and reference material
+- **Integrations** — your systems, connected over the Model Context Protocol (MCP)
+- **Context Variables** — fixed values the assistant should always know, such as a project name or a default region. They go into the prompt verbatim, so they are not a place for credentials.
 
-Assistants aren't chatbots or automation—they're expert collaborators:
+Team assistants are available to everyone in the account; personal assistants are private to you. Account-level **Global Assistant Instructions** and **Global Assistant Knowledge** apply on top, on each assistant where you enable them.
 
-- **Contextual Understanding** — Assistants grasp nuance, context, and exceptions
-- **Judgment-Based Decisions** — Handle complex situations that require reasoning, not just rules
-- **Iterative Refinement** — Work together to improve outputs through feedback
-- **Knowledge Integration** — Access your documentation, guidelines, and systems
+<Card title="Core concepts" icon="puzzle-piece" href="/get-started/core-concepts">
+  How Abbie, Spaces, assistants and flows fit together →
+</Card>
 
-<Tip>
-**What makes QuivaWorks assistants different?** Unlike general LLMs that start from zero each conversation, your assistants learn your context, integrate with your systems, and improve through intentional refinement.
-</Tip>
+## Creating your first assistant
 
-### 🤝 Real-Time Team Collaboration
-
-Work together on assistant sessions in real-time:
-
-- **Shared Sessions** — Invite team members to collaborate on any assistant conversation
-- **@Mentions** — Quickly add teammates by typing `@` in the chat
-- **Smart Notifications** — Get instant alerts when teammates complete tasks or reply
-- **Unread Badges** — Never miss updates with automatic message tracking
-- **Shared With Me** — View all sessions shared with you, organised by participant
-- **Redesigned Chat** — New interface with voice input, emoji support, and better formatting
-
-Collaboration is opt-in—all existing sessions remain fully functional. Share whenever your team needs to work together.
-
-### 🎯 Flexible Assistant Architecture
-
-Create assistants that work for your entire team or just for you:
-
-**Team vs. Personal Assistants**
-- **Team Assistants** — Accessible to everyone in your account. Use for standardised workflows, shared tools, and company-wide resources.
-- **Personal Assistants** — Private to you. Use for individual work, experiments, or personal use cases.
-
-**Team vs. Personal Settings**
-Every assistant has two configuration layers that merge at runtime:
-- **Team Settings** — Shared instructions, knowledge, integrations, and context variables for the entire team
-- **Personal Settings** — Your individual configurations that layer on top of team settings, allowing customisation without affecting others
-
-This means you can use a shared customer service assistant but add your personal knowledge base or custom instructions for your specific needs.
-
-**Account-Level Configuration**
-- **Branding** — Customise the look and feel of the interface for your team
-- **Global Instructions** — Set default instructions passed into all assistant invocations across your account
-- **Global Knowledge** — Define company-wide knowledge sources (enabled per assistant as needed)
-
-### 🔧 Smart Configuration
-
-Every assistant has four core configuration areas:
-
-- **Instructions** — Define role, personality, tone, and specific responsibilities
-- **Knowledge** — Give assistants access to your documentation and context
-- **Integrations** — Connect to your systems via MCP protocol
-- **Context Variables** — Configure environment-specific parameters
-
-### 📚 Continuous Learning
-
-Assistants improve through intentional refinement:
-
-- **Feedback System** — Vote up/down on interactions to identify what works
-- **Learning Insights** — Consolidate patterns from successful interactions
-- **Intentional Refinement** — Review insights and refine assistant behaviour based on what you've learned
-- **Smart Context** — Intelligent memory management across conversations
-
-### 🔗 Universal Connectivity
-
-Connect assistants to any system:
-
-- **Native MCP Support** — First-class Model Context Protocol integration
-- **Pre-built Integrations** — Popular business tools ready to use in flows and assistants
-- **Auto-Generate Custom Integrations** — Create MCPs and integrations from OpenAPI specs
-
----
-
-## Getting Started
-
-### Your First Login
-
-When you create your QuivaWorks account, you'll see:
-
-1. **Marketplace Modal** — Browse featured and all available assistants to explore what's possible
-2. **General Assistant** — Pre-built in your account for exploration and quick tasks
-3. **Quick Tips** — Interactive hotspots to guide you through key features
-4. **Create Assistant Button** — Three options to get started:
-   - **Create with AI** — Build from scratch with guided setup
-   - **Clone** — Duplicate an existing assistant as a starting point
-   - **From Marketplace** — Install a community-built assistant
+Open **Assistants** in the sidebar. The create control offers three routes:
 
 <Steps>
-  <Step title="Explore the General Assistant">
-    Start with your built-in General Assistant to understand how assistants work. It's ready to help with research, writing, analysis, and brainstorming.
+  <Step title="Create with AI">
+    Describe what you need and have the assistant configured for you. New assistants are created with Claude Haiku 4.5 as the model.
   </Step>
-  
-  <Step title="Browse the Marketplace">
-    Explore pre-built assistants created by the community. Install one that matches your workflow.
+
+  <Step title="Clone Assistant">
+    Duplicate an existing assistant and adjust it.
   </Step>
-  
-  <Step title="Create Your First Custom Assistant">
-    Build an assistant tailored to your specific needs using Create with AI, Clone, or From Marketplace.
-  </Step>
-  
-  <Step title="Configure & Refine">
-    Set Instructions, add Knowledge, connect Integrations, and refine behaviour through the Learning system.
-  </Step>
-  
-  <Step title="Share & Collaborate">
-    Invite team members to sessions by typing `@` in the chat. Work together in real-time.
+
+  <Step title="Add from Marketplace">
+    Install a pre-built assistant and make it yours.
   </Step>
 </Steps>
 
----
+Then set Instructions, add Knowledge, connect Integrations, and refine as you go.
 
-## Popular Assistants
+<Card title="Create your first assistant" icon="sparkles" href="/assistants/creating-first-assistant">
+  A step-by-step walkthrough →
+</Card>
+
+## Working together
+
+Any Abbie conversation can be shared — with named people as **Editor** or **Read-only**, or with everyone in the account. Access is managed by the conversation's owner and can be changed or revoked at any time.
+
+<Card title="Collaboration" icon="handshake" href="/get-started/collaboration">
+  Sharing conversations, access levels and @mentions →
+</Card>
+
+## Plans
+
+There are three plans: **Free**, **Pro** and **Team**. Pricing is per account, not per user, and paid plans have no seat limit. AI usage is metered in credits, which are included with your plan each month and reset at renewal.
+
+<Card title="Plans & pricing" icon="credit-card" href="/get-started/plans-and-pricing">
+  Prices, included credits, top-up packs and retention →
+</Card>
+
+## Where to go next
 
 <CardGroup cols={2}>
-  <Card title="Research Assistant" icon="magnifying-glass">
-    Deep research, fact-checking, and analysis on any topic
-  </Card>
-  
-  <Card title="Content Writer" icon="pen">
-    Draft emails, blog posts, social content with your brand voice
-  </Card>
-  
-  <Card title="Customer Support" icon="headset">
-    Handle customer inquiries with context and judgment
-  </Card>
-  
-  <Card title="Data Analyst" icon="chart-line">
-    Analyse data, identify patterns, generate insights
-  </Card>
-  
-  <Card title="Lead Researcher" icon="user-check">
-    Qualify leads and enrich prospect information
-  </Card>
-  
-  <Card title="Code Reviewer" icon="code">
-    Review code, suggest improvements, explain decisions
-  </Card>
-</CardGroup>
-
----
-
-## Use Cases
-
-### Expert Collaboration & Research
-Work with an assistant to research complex topics, validate findings, and explore ideas deeply. Share sessions with your team for collaborative research.
-
-### Content Creation
-Collaborate on writing—drafting, refinement, adaptation by audience, and maintaining your brand voice. Invite team members to refine together.
-
-### Customer Service
-Handle inquiries with contextual understanding, apply policies with judgment, escalate when needed. Share sessions to get team input on complex cases.
-
-### Data Analysis
-Extract insights from data, identify patterns, validate findings against business context. Analyse together with domain experts.
-
-### Sales & Outreach
-Personalise outreach, research prospects, qualify leads, and draft compelling messages. Collaborate on lead scoring and strategy.
-
-### Technical Work
-Code review, debugging, documentation, architectural decisions, and technical research. Review code together with your team.
-
----
-
-## Choose Your Path
-
-<CardGroup cols={3}>
   <Card title="Getting Started" icon="rocket" href="/get-started/getting-started">
-    Create your account and build your first assistant
+    Create your account and secure it
   </Card>
-  
-  <Card title="Understanding Assistants" icon="sparkles" href="/assistants/overview">
-    Learn what assistants can do and how to use them
+
+  <Card title="Spaces" icon="folder-tree" href="/spaces/spaces">
+    Organise files, tasks, records and chats
   </Card>
-  
-  <Card title="Team Collaboration" icon="users" href="/get-started/collaboration">
-    Share sessions and work together with your team
+
+  <Card title="Users & roles" icon="users" href="/essentials/users/roles-permissions">
+    Invite your team and choose what each person can do
   </Card>
-  
-  <Card title="Configuration Guide" icon="sliders" href="/assistants/configuration/information-settings">
-    Deep dive into Instructions, Knowledge, Integrations
-  </Card>
-  
-  <Card title="Learning System" icon="brain" href="/assistants/learning">
-    How to improve assistants through feedback and insights
-  </Card>
-  
-  <Card title="Browse Marketplace" icon="store" href="https://quiva.ai/marketplace/">
-    Explore pre-built assistants and templates
+
+  <Card title="Community" icon="comments" href="https://quiva.ai/community">
+    Connect with other builders
   </Card>
 </CardGroup>
 
----
+## Need help?
 
-## What Makes QuivaWorks Different?
-
-### vs. General LLMs (ChatGPT, Claude)
-**Context persistence, system integration, and real-time collaboration.** General LLMs start from zero each conversation. QuivaWorks assistants remember your context, access your systems, improve through intentional refinement, and enable your team to collaborate in real-time.
-
-### vs. Simple Chatbots (Intercom, Drift)
-**Expert collaboration, not customer-facing chat.** Assistants are designed for internal teams to work alongside. They handle complexity, integrate with your systems, improve through learning, and support real-time teamwork.
-
-### vs. Automation Tools (Zapier, Make)
-**Judgment-based decisions, not rule-based workflows.** Automation breaks on exceptions. Assistants handle edge cases, understand context, make decisions that require reasoning, and work collaboratively with your team.
-
-### vs. Custom Development
-**Deploy in minutes, not months.** No coding required. Visual configuration, pre-built integrations, real-time collaboration features, and a community marketplace accelerate development.
-
-<Card title="See detailed pricing" icon="scale-balanced" href="/get-started/plans-and-pricing">
-  How QuivaWorks compares to alternatives →
-</Card>
-
----
-
-## Pricing
-
-Start free and scale as you grow. Billing is credit-based—you pay per interaction, with included credits refreshing monthly.
-
-<CardGroup cols={2}>
-  <Card title="Free Plan" icon="gift">
-    **$0/month**
-    
-    - Up to 3 users
-    - 500 included credits per account
-    - 1GB storage
-    - 30 days message retention
-    - Community support
-    
-    Perfect for exploring and proof of concept
-  </Card>
-  
-  <Card title="Pro Plan" icon="chart-line">
-    **$15/user/month** (save 20% with annual billing)
-    
-    - Unlimited users
-    - 1,000 credits per user
-    - Purchase additional at $8/1,000
-    - 5GB storage per user
-    - 1 year message retention
-    - Email support
-  </Card>
-  
-  <Card title="Team Plan" icon="users">
-    **$31/user/month** (save 20% with annual billing)
-    
-    - Unlimited users
-    - 1,500 credits per user
-    - Purchase additional at $7/1,000
-    - Bring your own LLM keys
-    - 25GB storage per user
-    - Unlimited message retention
-    - Priority support
-  </Card>
-  
-  <Card title="Enterprise" icon="building">
-    **Custom pricing**
-    
-    - On-premise or BYO Cloud
-    - Custom SLAs and uptime
-    - Strategic consulting
-    - Training and onboarding
-    - Custom resource allocations
-  </Card>
-</CardGroup>
-
-**How Credits Work:**
-- Included credits refresh monthly per user
-- Each assistant interaction consumes credits based on model usage
-- Purchase additional credits anytime—they never expire and roll over to the next month
-- All assistants use Claude Haiku 4.5 by default (fast, cost-effective, optimised for business workflows)
-
-<Card title="View detailed pricing" icon="tag" href="/get-started/plans-and-pricing">
-  See plans, features, billing details, and FAQs →
-</Card>
-
----
-
-## Community & Resources
-
-<CardGroup cols={2}>
-  <Card title="Slack Community" icon="slack" href="https://quiva.ai/community">
-    Get help, share assistants, and connect with builders
-  </Card>
-  
-  <Card title="Marketplace" icon="store" href="https://quiva.ai/marketplace/">
-    Explore pre-built assistants and templates
-  </Card>
-  
-  <Card title="YouTube Tutorials" icon="youtube" href="https://www.youtube.com/@quivaworks">
-    Video guides, walkthroughs, and best practices
-  </Card>
-  
-  <Card title="Blog & Updates" icon="newspaper" href="https://quiva.ai/blog">
-    Latest features, tips, and announcements
-  </Card>
-</CardGroup>
-
----
-
-## Need Help?
-
-- **Documentation** — Comprehensive guides and references
-- **Help Center** — Common questions and troubleshooting
-- **Email Support** — support@quiva.ai (Pro and above)
-- **Priority Support** — Direct access for Team and Enterprise
-- **Slack Community** — Real-time help from the community
-
-<Card title="Contact Support" icon="life-ring" href="https://quiva.ai/help-center/">
-  Get help from our team →
-</Card>
-
----
-
-## Ready to Start?
-
-<Card title="Create Free Account" icon="rocket" href="https://app.quiva.ai/en/signup">
-  No credit card required. Explore with the General Assistant, then create your first custom assistant. Invite your team to collaborate whenever you're ready.
+<Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+  Common questions, troubleshooting and how to reach us →
 </Card>

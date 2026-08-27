@@ -4,8 +4,6 @@ description: "View and manage active sessions across all your devices"
 icon: "clock"
 ---
 
-# Session Management
-
 Monitor and control your active login sessions across all devices to maintain account security.
 
 ## Understanding Sessions
@@ -15,259 +13,177 @@ A session represents an active login to your QuivaWorks account. Each time you l
 ### Session Lifetimes
 
 <CardGroup cols={2}>
-  <Card title="Access Token" icon="clock">
-    **1 Hour**
-    
-    Used for API requests and active browsing
+  <Card title="Session Token" icon="clock">
+    **24 hours**
+
+    Authenticates your browsing and API requests
   </Card>
-  
+
   <Card title="Refresh Token" icon="arrows-rotate">
-    **24 Hours**
-    
-    Allows automatic token renewal without re-login
+    **7 days**
+
+    Allows token renewal without logging in again
   </Card>
 </CardGroup>
 
-<Info>
-After 24 hours of inactivity, you'll need to log in again. This security measure helps protect your account from unauthorized access.
-</Info>
+<Note>
+These lifetimes are fixed. There is no configurable session timeout, no limit on how many sessions you can have open at once, and no device-registration setting.
+</Note>
 
 ## Viewing Active Sessions
 
 See all devices and locations where you're currently logged in:
 
-1. Click your profile icon in the bottom left
-2. Select "Settings"
-3. Navigate to "Sessions"
+1. Open **Settings** from your user menu
+2. Go to the **Sessions** tab
 
-You'll see details for each active session:
+Each session appears as a card showing:
 
-<img 
-  src="/images/essentials/user-sessions.png" 
-  alt="Active Sessions List"
-  style={{ maxHeight: '400px', width: 'auto' }}
-  className="rounded-lg"
-/>
+- **Account** — the account name this session is signed in to, shown as the card heading
+- **Role** — the role the session holds
+- **Location** — geographic location, or "unknown" when it can't be determined
+- **IP Address** — the IP address the session is connecting from
+- **Device** — the device reported by the browser
+- **Browser** — the browser in use
+- **Expires** — when the session ends, shown as a relative time such as "in about 24 hours"
 
-### Session Information
-
-Each session shows:
-
-- **Device Type** - Operating system (e.g., Macintosh, Windows, Linux)
-- **Browser** - Which browser is being used (e.g., Chrome, Firefox, Safari)
-- **Location** - Geographic location (when available)
-- **IP Address** - The IP address accessing your account
-- **Expiration** - When the session will expire (e.g., "in 14 minutes")
-- **Current Session** - Marked as "Your session" with a green indicator
+Your current session is marked with a green **Your session** pill.
 
 <Note>
-Location information may show as "unknown" if geographic data isn't available for the IP address or if you're using a VPN or proxy.
+Location shows as "unknown" when geographic data isn't available for the IP address, or when you're behind a VPN or proxy.
 </Note>
+
+### The Copy token button
+
+Each session card has a **Copy token** button. It places that session's live bearer token on your clipboard.
+
+<Warning>
+A copied session token authenticates as you, with your role, until the session expires or is terminated. Treat it exactly like a password: never paste it into a chat message, a ticket, a log file, or source control. If you have pasted one somewhere it doesn't belong, terminate that session — see below.
+</Warning>
 
 ## Terminating Sessions
 
-### Ending a Specific Session
+### Ending a specific session
 
-To log out of a specific device:
-
-1. Navigate to **Settings → Sessions**
+1. Open **Settings → Sessions**
 2. Find the session you want to end
-3. Click "Terminate session" for that specific session
+3. Click **Terminate session** on that card
 
 <Tip>
-Use this if you left yourself logged in on a shared computer or no longer use a particular device.
+Use this if you left yourself logged in on a shared computer, or no longer use a particular device.
 </Tip>
 
-### Ending All Other Sessions
+### Ending all other sessions
 
-To log out of all devices except your current one:
-
-1. Navigate to **Settings → Sessions**
-2. Click the "Terminate sessions" button at the top
-3. Confirm the action
+Click **Terminate sessions** at the top of the Sessions tab. This terminates every session except your current one.
 
 <Warning>
-This will immediately log you out of all other devices. You'll need to log in again on those devices.
+You'll be logged out on all other devices immediately and will need to log in again on each of them.
 </Warning>
 
-### When to Terminate Sessions
+### When to terminate sessions
 
 <AccordionGroup>
-  <Accordion title="Suspicious Activity" icon="triangle-exclamation">
+  <Accordion title="Suspicious activity" icon="triangle-exclamation">
     **Terminate immediately if you see:**
     - Unfamiliar locations or IP addresses
-    - Devices you don't recognize
-    - Unusual login times
+    - Devices you don't recognise
     - Sessions you didn't create
-    
-    After terminating suspicious sessions:
-    1. Change your password immediately
-    2. Review recent account activity
-    3. Enable MFA if not already active
-    4. Consider reviewing [incident response procedures](/essentials/security/incident-response)
+
+    After terminating them, change your password and review the [incident response steps](/essentials/security/incident-response).
   </Accordion>
-  
-  <Accordion title="Forgot to Log Out" icon="door-open">
-    If you left yourself logged in:
-    - Public computer or shared device
-    - Work computer you no longer have access to
-    - Lost or stolen device
-    - Device you sold or gave away
-    
-    Terminate those sessions immediately to protect your account.
+
+  <Accordion title="Forgot to log out" icon="door-open">
+    Terminate the session if you left yourself logged in on:
+    - A public or shared computer
+    - A device you no longer have access to
+    - A lost, stolen, sold or given-away device
   </Accordion>
-  
-  <Accordion title="Routine Security" icon="shield-check">
-    Good security practice:
-    - Review sessions monthly
-    - Terminate old or unused sessions
-    - Clear sessions before traveling
-    - End sessions on devices you no longer use regularly
+
+  <Accordion title="A token was copied and shared" icon="copy">
+    If a token from **Copy token** ended up somewhere it shouldn't have, terminating that session invalidates it.
   </Accordion>
-  
-  <Accordion title="Password Changed" icon="key">
-    After changing your password, consider terminating all sessions to ensure no one with your old password can access your account.
+
+  <Accordion title="Routine review" icon="shield-check">
+    Review your sessions periodically and terminate any belonging to devices you no longer use.
   </Accordion>
 </AccordionGroup>
 
-## Admin Session Management
+## Password changes and sessions
 
-Administrators can force users to log out from all their sessions.
+Changing your password from **Settings → Password and authentication** terminates every other session and leaves your current one signed in. Resetting your password from the emailed link while signed out terminates **every** session, including any an attacker is holding. Either way, you receive a confirmation email.
 
-### Logging Out a User (Admin Only)
+See the [Authentication guide](/essentials/security/authentication) for the full flow.
 
-1. Navigate to **Account Management → Users**
-2. Click on the user's email address
-3. Click the dot menu (three dots)
-4. Select "Logout"
+## Admin session management
 
-<Info>
-This immediately terminates all of the user's active sessions across all devices. The user will need to log in again to access their account.
-</Info>
+An admin can force another user to log out of every device.
 
-**When to use this:**
-- User reports their device was stolen
-- Suspected account compromise
-- Employee leaving the organization
-- User forgot to log out on a shared device
-- Troubleshooting access issues
+1. Open **Users** in the sidebar — depending on your account it sits at the top level or under **More**
+2. Open the dot menu on that user's row
+3. Select **Logout**
+
+This immediately terminates all of that user's sessions. They will need to log in again.
+
+<Warning>
+**Suspend does not end live sessions.** Suspending a user blocks future sign-ins, but any session they already hold keeps working until it expires. When you are removing someone's access urgently, use **Logout** as well as **Suspend**.
+</Warning>
+
+**When to use Logout:**
+- A user reports a lost or stolen device
+- You suspect an account is compromised
+- Someone is leaving the organisation
+- A user forgot to log out on a shared device
 
 ## Session Security Best Practices
 
 <CardGroup cols={2}>
-  <Card title="Review Regularly" icon="calendar-check">
-    Check your active sessions at least monthly for any unfamiliar devices or locations
+  <Card title="Review regularly" icon="calendar-check">
+    Check your active sessions for unfamiliar devices or locations
   </Card>
-  
+
   <Card title="Use MFA" icon="shield-halved">
-    Multi-factor authentication adds protection even if someone gets your session token
+    Multi-factor authentication protects the login even if your password leaks
   </Card>
-  
-  <Card title="Secure Devices" icon="lock">
-    Use device passwords, biometrics, and encryption on devices with active sessions
+
+  <Card title="Secure your devices" icon="lock">
+    Use device passwords, biometrics and disk encryption on any device with an active session
   </Card>
-  
-  <Card title="Public WiFi Caution" icon="wifi">
-    Avoid logging in on untrusted networks. Use a VPN if necessary
+
+  <Card title="Log out when done" icon="right-from-bracket">
+    Especially on shared or public computers — close the session rather than just the browser
   </Card>
 </CardGroup>
-
-### Additional Security Measures
-
-<AccordionGroup>
-  <Accordion title="Enable MFA">
-    Multi-factor authentication protects your account even if someone steals your session token. See our [Authentication Guide](/essentials/security/authentication).
-  </Accordion>
-  
-  <Accordion title="Use Strong Passwords">
-    Long, unique passwords make it harder for attackers to gain initial access. Consider using a password manager.
-  </Accordion>
-  
-  <Accordion title="Keep Software Updated">
-    Updated browsers and operating systems have the latest security patches to protect your sessions.
-  </Accordion>
-  
-  <Accordion title="Log Out When Done">
-    Especially on shared or public computers, always log out when you're finished rather than just closing the browser.
-  </Accordion>
-</AccordionGroup>
 
 ## Troubleshooting
 
 <AccordionGroup>
   <Accordion title="Session expired unexpectedly">
-    **Common Causes:**
-    - 24 hours of inactivity passed
-    - Admin terminated your sessions
-    - You changed your password
+    **Common causes:**
+    - The 24-hour session lifetime elapsed
+    - An admin used **Logout** on your account
+    - You changed or reset your password
     - You cleared browser cookies
-    
-    **Solution:**
-    Simply log in again. This is normal security behavior.
+
+    **Solution:** log in again. This is normal behaviour.
   </Accordion>
-  
+
   <Accordion title="Can't see location information">
-    **Why this happens:**
-    - Using VPN or proxy
-    - Corporate network
-    - Privacy-focused browser settings
-    - Geographic data unavailable for IP
-    
-    **This is normal** - Location is helpful but not required. Focus on device and browser information instead.
+    Location relies on geographic data for the IP address, which isn't always available — VPNs, proxies and corporate networks commonly hide it. This is normal. Use the device and browser fields instead.
   </Accordion>
-  
-  <Accordion title="Session shows wrong device">
-    **Possible Reasons:**
-    - Browser user agent string is generic
-    - Using browser in compatibility mode
-    - Remote desktop or virtualization
-    - Browser extension interfering
-    
-    **Solution:**
-    If you don't recognize the session at all, terminate it and change your password.
+
+  <Accordion title="Session shows an unexpected device">
+    Device and browser are read from the browser's user agent, which can be generic or altered by remote desktop software, compatibility modes and extensions.
+
+    If you don't recognise the session at all, terminate it and change your password.
   </Accordion>
-  
-  <Accordion title="Too many active sessions">
-    **If you see many unexpected sessions:**
-    1. Click "Terminate sessions" to end all except current
-    2. Change your password immediately
-    3. Enable MFA if not already active
-    4. Review [incident response guide](/essentials/security/incident-response)
-    
-    **If they're all yours:**
-    - Each browser and device creates a separate session
-    - Mobile apps create their own sessions
-    - This is normal for users with multiple devices
+
+  <Accordion title="More sessions than expected">
+    Each browser and each device creates its own session, so several is normal.
+
+    If you genuinely don't recognise them: click **Terminate sessions**, change your password, and enable MFA if it isn't already on.
   </Accordion>
 </AccordionGroup>
-
-## Session Security Checklist
-
-<Steps>
-  <Step title="Weekly">
-    - [ ] Note any unfamiliar sessions when you log in
-    - [ ] Report suspicious activity immediately
-  </Step>
-  
-  <Step title="Monthly">
-    - [ ] Review all active sessions in Settings
-    - [ ] Terminate sessions for devices you no longer use
-    - [ ] Verify all locations and devices are yours
-  </Step>
-  
-  <Step title="After Security Events">
-    - [ ] Terminate all sessions after changing password
-    - [ ] Review sessions after suspected compromise
-    - [ ] Check sessions after device loss or theft
-  </Step>
-  
-  <Step title="Best Practices">
-    - [ ] Always log out on shared/public computers
-    - [ ] Use MFA for additional protection
-    - [ ] Keep your recovery codes accessible
-    - [ ] Report suspicious sessions to your admin
-  </Step>
-</Steps>
 
 ## Next Steps
 
@@ -275,16 +191,16 @@ This immediately terminates all of the user's active sessions across all devices
   <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
     Set up MFA and passkeys
   </Card>
-  
+
   <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
     Manage programmatic access
   </Card>
-  
+
   <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
-    Comprehensive security guide
+    Platform and account security
   </Card>
-  
+
   <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
-    What to do if compromised
+    What to do if an account is compromised
   </Card>
 </CardGroup>

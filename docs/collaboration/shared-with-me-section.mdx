@@ -1,140 +1,77 @@
 ---
-title: "Shared With Me Section"
-description: "Discover and manage all sessions shared with you by teammates"
+title: "Finding Shared Conversations"
+description: "The Conversations sidebar: Personal, Team and Shared tabs, search, and what each row tells you"
+icon: "list-ul"
 ---
 
-# Shared With Me Section
+# Finding Shared Conversations
 
-The **Shared With Me** section in your sidebar displays all collaborative sessions that have been shared with you by teammates. It's your central hub for team collaboration.
+Every conversation you can open lives in one panel, headed **Conversations**, alongside a
+refresh control and a button for starting a new one.
 
-## Finding Shared Sessions
+## The three tabs
 
-### Location
+The panel is one list at a time. Pick which:
 
-The **Shared With Me** section appears in your left sidebar:
-```
-Sidebar
-├── Favorites
-├── Personal Assistants
-├── Team Assistants
-└── Shared With Me ← You are here
-├── Sarah's Sessions (3 unread)
-├── Jake's Sessions (0 unread)
-└── Marketing Team Sessions (5 unread)
-```
+| Tab | Shows |
+|---|---|
+| **Personal** | Conversations you own. |
+| **Team** | Conversations shared with the whole account. |
+| **Shared** | Conversations a colleague invited you to. |
 
-### Organization
+New conversations start in **Personal**, and nothing is shared until its owner says so. The tab
+you choose is remembered, so the one you live in is still selected after a reload.
 
-Sessions are automatically grouped by:
+## Narrowing the list
 
-1. **Who shared them** – Grouped by teammate or team name
-2. **Assistant type** – Further organized by which assistant
-3. **Last activity** – Sorted by most recent update within each group
+- **Search** — the box above the list filters on the conversation itself, not just what is
+  already loaded, so an old thread is findable without scrolling to it.
+- **Origin chips** — where a conversation started: Web, Slack or Teams. The chips appear only
+  when the list actually holds more than one origin, and they filter within the current tab.
 
-![Shared With Me Section](image-placeholder-shared-with-me.png)
+## Reading a row
 
-## Session Information
+Rows are ordered by last activity. Each one carries:
 
-Each shared session shows:
+- The conversation's **title**.
+- Its **origin** badge.
+- On the **Shared** tab, a pill naming the **owner** — the person who shared it with you. Its
+  tooltip has their full address.
+- On your own conversations, an **Invited** pill when you have added people to it.
+- The **time** of the last activity.
 
-- **Session name/title** – What the session is about
-- **Assistant name** – Which assistant is in use
-- **Unread badge** – How many new messages (if any)
-- **Last activity** – When the session was last updated
-- **Participants** – How many people are in the session
+## Opening one
 
-## Opening a Shared Session
+Click the row. A mention notification links straight to the conversation too — see
+[Notifications](/collaboration/unread-badges-notifications).
 
-**Option 1: Click from sidebar**
-1. Navigate to **Shared With Me**
-2. Click the session you want to join
-3. The full conversation loads
+If you hold read-only access, the conversation opens complete but without a composer, and the
+top of it says who shared it with you.
 
-**Option 2: From notification**
-1. Click the notification from a teammate
-2. Taken directly to the new update
+## What you can do with someone else's conversation
 
-**Option 3: Search**
-1. Use the search bar in the sidebar
-2. Type the session name or teammate name
-3. Click the result
+A row's overflow menu — **Share…**, **Rename**, **Delete** — appears on your own conversations
+only. On a conversation a colleague shared with you there is no menu, because every one of those
+actions belongs to its owner.
 
-## Managing Shared Sessions
+<Note>
+That means you cannot remove yourself from a conversation someone shared with you, and you
+cannot silence one on its own. Ask the owner to remove you; to quieten mentions generally, use
+the notification preferences instead.
+</Note>
 
-### Mark as Read
+## If a conversation disappears
 
-Badges disappear when you:
-- Open the session and view new messages
-- Scroll to the bottom
-- Refresh the page
+Access was removed by its owner, or the conversation was deleted. Both are the owner's to
+reverse — there is no self-service way back in.
 
-### Remove Yourself from a Session
+## Related
 
-1. Click the **three-dot menu** on the session
-2. Select **Remove me from session**
-3. You'll no longer see it in Shared With Me
-
-**Note:** The session owner can add you back anytime.
-
-### Mute Notifications
-
-To stop receiving notifications for a specific session:
-
-1. Click the **three-dot menu** on the session
-2. Select **Mute notifications**
-3. You'll still see the session, but won't be notified of updates
-
-To unmute:
-1. Click the three-dot menu again
-2. Select **Unmute notifications**
-
-### Pin/Favorite a Session
-
-Frequently accessed sessions can be pinned:
-
-1. Click the **three-dot menu** on the session
-2. Select **Add to Favorites**
-3. The session moves to your **Favorites** section at the top
-
-## Shared With Me Best Practices
-
-### Staying Organized
-
-- **Pin important sessions** – Keep active projects at the top
-- **Mute inactive sessions** – Reduce notification noise
-- **Remove old sessions** – Clean up after projects complete
-- **Use search** – Find sessions by participant or assistant name
-
-### Collaboration Tips
-
-- **Review unread badges regularly** – Don't let updates pile up
-- **Respond in shared sessions** – Keep conversations moving
-- **Leave feedback** – Help teammates by contributing your thoughts
-- **Archive old sessions** – Keep Shared With Me current (if supported)
-
-### Permission Boundaries
-
-You can:
-- ✅ View all session messages
-- ✅ Ask the assistant follow-up questions
-- ✅ See teammate responses
-- ✅ Contribute your input
-
-You cannot:
-- ❌ Remove other team members (only the owner can)
-- ❌ Delete the session (only the owner can)
-- ❌ Add other people (only the owner can add)
-
-## Troubleshooting
-
-**Q: Why don't I see a session that was shared with me?**  
-A: Check your notification settings. Sessions may be filtered if notifications are disabled. You can also search for the teammate's name.
-
-**Q: Why did a session disappear from Shared With Me?**  
-A: The owner may have removed you from the session. Check with them to be added back.
-
-**Q: Can I see who the original owner is?**  
-A: Yes, look at the group name in Shared With Me. It shows who owns/shared the session.
-
-**Q: How long does a shared session stay visible?**  
-A: Indefinitely, unless the owner deletes it or removes you.
+<CardGroup cols={2}>
+  <Card title="Sharing a Conversation" icon="share-nodes" href="/collaboration/collaborative-sessions">
+    What the owner sees, and how access is given and taken back.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/collaboration/unread-badges-notifications">
+    What you get told about, and how to turn the volume down.
+  </Card>
+</CardGroup>

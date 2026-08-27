@@ -1,706 +1,265 @@
 ---
 title: 'Object Storage Functions'
-description: 'Store and manage data in distributed object storage buckets'
+description: 'Five functions for storing and retrieving whole objects — files, documents, exports'
 icon: 'box'
 ---
 
 # Object Storage Functions
 
-Object storage provides a distributed key-value store for managing data across your flows. Built on a replicated storage backend, it's designed for reliable data persistence with configurable storage options.
+An object bucket stores whole objects under a name. Use it for anything too big for a [key-value bucket](/flows/functions/key-value): a generated document, an inbound attachment, a nightly export.
 
-<Info>
-**What is Object Storage?** Object storage is a key-value store optimized for distributed data management. Each bucket acts as a namespace for storing values by unique keys, with options for compression, replication, and automatic expiration.
-</Info>
+Five functions are available to a [Function step](/flows/steps/functions):
 
----
+| Function | Does |
+|---|---|
+| `create-object-store-bucket` | Create a bucket |
+| `put-object-by-key` | Write one object |
+| `get-object-from-bucket` | Read one object |
+| `list-object-store-buckets` | List the account's buckets |
+| `list-object-keys` | List object metadata in a bucket |
 
-## Function List
+Buckets are per-account. There is no delete function — remove a bucket or an object from the platform UI.
 
-<CardGroup cols={2}>
-  <Card title="obs-bucket-create" icon="plus" href="#obs-bucket-create">
-    Create a new storage bucket
-  </Card>
-  
-  <Card title="obs-bucket-list" icon="list" href="#obs-bucket-list">
-    List all storage buckets
-  </Card>
-  
-  <Card title="obs-key-put" icon="upload" href="#obs-key-put">
-    Store a value by key
-  </Card>
-  
-  <Card title="obs-key-get" icon="download" href="#obs-key-get">
-    Retrieve a value by key
-  </Card>
-  
-  <Card title="obs-key-list" icon="table" href="#obs-key-list">
-    List keys in a bucket
-  </Card>
-</CardGroup>
+<Note>
+An object is addressed by **`name`**, not `key`. The two storage families use different parameter names for the same idea.
+</Note>
 
 ---
 
-## obs-bucket-create
+## Text in, text out
 
-Create a new object storage bucket to organize and store your data. Buckets provide isolated namespaces with configurable storage, replication, and lifecycle settings.
+These functions move text, not binary. `put-object-by-key` stringifies anything that is not already a string and writes the UTF-8 bytes; `get-object-from-bucket` decodes the bytes back as UTF-8. A JSON document, a CSV or an XML payload round-trips exactly. A PDF or an image does not — base64-encode it first with [`base64-encode`](/flows/functions/utility#base64-encode) and decode it on the way out.
 
-### Parameters
+Bucket names must match `[a-zA-Z0-9_-]+`.
+
+---
+
+## create-object-store-bucket
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to create. Must be unique and can only contain alphanumeric characters, dashes, and underscores.
-  
-  **Naming conventions:**
-  - Use lowercase with hyphens or underscores: `customer-data`, `session_cache`
-  - Be descriptive: `user-profiles` not `bucket1`
-  - Include purpose: `temp-uploads`, `config-store`
+Bucket name. Must be unique in the account and match `[a-zA-Z0-9_-]+`.
 </ParamField>
 
 <ParamField path="description" type="string">
-  Optional description of the bucket's purpose.
+Free text shown alongside the bucket.
 </ParamField>
 
-<ParamField path="storage" type="string" default="file">
-  Storage backend type. Options:
-  - `file` - Persistent file storage (default, recommended for durability)
-  - `memory` - In-memory storage (faster but not persistent across restarts)
+<ParamField path="max_bytes" type="integer">
+Maximum total size of the bucket in bytes.
 </ParamField>
 
-<ParamField path="num_replicas" type="integer" default="1">
-  Number of data replicas to maintain across the cluster. Range: 1-5.
-  
-  **Replication guidelines:**
-  - 1 replica: Development or non-critical data
-  - 3 replicas: Production data requiring high availability
-  - 5 replicas: Mission-critical data with maximum redundancy
+<ParamField path="storage" type="string">
+`"file"` or `"memory"`. Default `"file"`. Lower case — a capitalised value is rejected.
 </ParamField>
 
-<ParamField path="max_bytes" type="integer" default="-1">
-  Maximum size in bytes for the bucket. Default is -1 (unlimited).
-  
-  **Size planning:**
-  - Set limits for temporary storage to prevent unbounded growth
-  - Leave unlimited for primary data stores
-  - Consider setting based on available storage capacity
+<ParamField path="num_replicas" type="integer">
+Copies kept across the cluster. Default `1`, maximum `5`.
 </ParamField>
 
-<ParamField path="ttl" type="integer">
-  Time-to-live in nanoseconds for keys in this bucket. Keys automatically expire after this duration. By default, keys do not expire.
-  
-  **Common TTL values:**
-  - 3600000000000 (1 hour) for session data
-  - 86400000000000 (24 hours) for temporary cache
-  - 604800000000000 (7 days) for short-term storage
-</ParamField>
-
-<ParamField path="compression" type="boolean" default="false">
-  Enable stream compression to reduce storage space. Useful for text-heavy data or JSON objects.
+<ParamField path="compression" type="boolean">
+Compress the underlying storage.
 </ParamField>
 
 <ParamField path="metadata" type="object">
-  Custom metadata key-value pairs to associate with the bucket.
+Arbitrary string key-value pairs stored against the bucket.
 </ParamField>
 
-<ParamField path="placement" type="object">
-  Cluster placement configuration for advanced deployment scenarios.
-  
-  **Properties:**
-  - `cluster` (string): Target cluster name
-  - `tags` (array): Array of placement tags
-</ParamField>
-
-### Response
+**Payload**
 
 ```json
-{
-  "status_code": 200,
-  "body": {
-    "message": "Bucket created successfully",
-    "error": null
-  }
-}
+{ "bucket": "invoice-exports", "description": "Nightly CSV exports", "max_bytes": 10737418240 }
 ```
 
-### Example Usage
+**Returns**
 
-<CodeGroup>
-```json User Data Store
-{
-  "function": "obs-bucket-create",
-  "params": {
-    "bucket": "user-profiles",
-    "description": "Store user profile data",
-    "storage": "file",
-    "num_replicas": 3,
-    "compression": true
-  }
-}
+```json
+{ "status_code": 200, "body": { "message": "success" } }
 ```
 
-```json Temporary Cache
-{
-  "function": "obs-bucket-create",
-  "params": {
-    "bucket": "session-cache",
-    "description": "Temporary session storage",
-    "storage": "memory",
-    "ttl": 3600000000000,
-    "max_bytes": 1073741824
-  }
-}
-```
+A bucket that already exists comes back as `{"status_code": 409, "body": {"error": "..."}}`.
 
-```json Configuration Store
-{
-  "function": "obs-bucket-create",
-  "params": {
-    "bucket": "app-config",
-    "description": "Application configuration data",
-    "storage": "file",
-    "num_replicas": 3,
-    "metadata": {
-      "environment": "production",
-      "team": "platform"
-    }
-  }
-}
-```
-</CodeGroup>
-
-### Common Use Cases
-
-<AccordionGroup>
-  <Accordion title="User Data Storage" icon="users">
-    Store user profiles, preferences, and state
-    
-    ```
-    Bucket: user-profiles
-    Storage: file (persistent)
-    Replicas: 3 (high availability)
-    Compression: enabled (for JSON data)
-    ```
-  </Accordion>
-  
-  <Accordion title="Session Management" icon="clock">
-    Store temporary session data with auto-expiration
-    
-    ```
-    Bucket: user-sessions
-    Storage: memory (fast access)
-    TTL: 1 hour
-    Replicas: 1 (temporary data)
-    ```
-  </Accordion>
-  
-  <Accordion title="Configuration Cache" icon="gears">
-    Store application configuration and settings
-    
-    ```
-    Bucket: config-store
-    Storage: file (persistent)
-    Replicas: 3 (important data)
-    No TTL (permanent storage)
-    ```
-  </Accordion>
-  
-  <Accordion title="Workflow State" icon="diagram-project">
-    Store state data for long-running workflows
-    
-    ```
-    Bucket: workflow-state
-    Storage: file (must persist)
-    Replicas: 3 (critical data)
-    Compression: enabled
-    ```
-  </Accordion>
-</AccordionGroup>
+<Warning>
+**The `ttl` field this function's form offers does nothing.** The bucket configuration the platform actually reads names that setting `max_age`, so a `ttl` value is dropped and objects never expire. Delete objects you no longer want, or send `max_age` (in nanoseconds) through the JSON editor.
+</Warning>
 
 ---
 
-## obs-bucket-list
+## put-object-by-key
 
-List all object storage buckets in your account with their metadata and statistics.
-
-### Parameters
-
-This function takes no parameters.
-
-### Response
-
-```json
-{
-  "status_code": 200,
-  "body": {
-    "body": {
-      "results_total": 3,
-      "results": [
-        {
-          "name": "user-profiles",
-          "description": "Store user profile data",
-          "created": 1729000000000,
-          "entryTotal": 1523,
-          "metadata": {
-            "environment": "production"
-          }
-        }
-      ]
-    },
-    "metadata": {}
-  }
-}
-```
-
-**Response fields:**
-- `results_total` - Total number of buckets
-- `results` - Array of bucket objects:
-  - `name` - Bucket name
-  - `description` - Bucket description
-  - `created` - Creation timestamp (milliseconds)
-  - `entryTotal` - Number of keys in bucket
-  - `metadata` - Custom metadata
-
-### Example Usage
-
-```json
-{
-  "function": "obs-bucket-list",
-  "params": {}
-}
-```
-
----
-
-## obs-key-put
-
-Store a value in an object storage bucket by key. Values can be strings or JSON objects.
-
-### Parameters
+Writes an object. Writing an existing name replaces it.
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to store the value in. Bucket must already exist.
+Bucket to write into. The bucket must already exist.
 </ParamField>
 
 <ParamField path="name" type="string" required>
-  Unique key name for the value. This is the identifier used to retrieve the value.
-  
-  **Key naming strategies:**
-  - User data: `user:${userId}:profile`
-  - Hierarchical: `config/app/database/connection`
-  - Timestamped: `events/2025-10-16/event-123`
-  - UUID-based: Use UUIDs for guaranteed uniqueness
+Object name.
 </ParamField>
 
 <ParamField path="value" type="string | object" required>
-  The value to store. Can be:
-  - A string value (will be stored as-is)
-  - A JSON object (will be automatically serialized)
-  
-  <Info>
-  Objects are automatically converted to JSON strings during storage. When retrieving, use the `json` flag to parse back to objects.
-  </Info>
+The content. Anything that is not a string is serialised to JSON first.
 </ParamField>
 
-### Response
+**Payload**
 
 ```json
 {
-  "status_code": 200,
-  "body": {
-    "message": "Value stored successfully",
-    "error": null
-  }
+  "bucket": "invoice-exports",
+  "name": "$.env.run_id",
+  "value": "$.BUILD_CSV"
 }
 ```
 
-### Example Usage
+**Returns**
 
-<CodeGroup>
-```json Store User Profile
-{
-  "function": "obs-key-put",
-  "params": {
-    "bucket": "user-profiles",
-    "name": "user:${$.user_id}",
-    "value": {
-      "email": "${$.email}",
-      "name": "${$.name}",
-      "created": "${$.timestamp}"
-    }
-  }
-}
+```json
+{ "status_code": 200, "body": {} }
 ```
 
-```json Store Configuration
-{
-  "function": "obs-key-put",
-  "params": {
-    "bucket": "app-config",
-    "name": "database/connection",
-    "value": {
-      "host": "db.example.com",
-      "port": 5432,
-      "database": "production"
-    }
-  }
-}
-```
-
-```json Store Simple Value
-{
-  "function": "obs-key-put",
-  "params": {
-    "bucket": "counters",
-    "name": "page-views-${$.date}",
-    "value": "${$.count}"
-  }
-}
-```
-</CodeGroup>
-
-### Common Patterns
-
-<AccordionGroup>
-  <Accordion title="User State Management" icon="user">
-    Store and update user state across flows
-    
-    ```
-    Store: User profile data, preferences, progress
-    Key pattern: user:{userId}:profile
-    Value: JSON object with user data
-    Retrieve: At start of user flows
-    ```
-  </Accordion>
-  
-  <Accordion title="Workflow Checkpoints" icon="flag-checkered">
-    Save workflow state for resumption or recovery
-    
-    ```
-    Store: Current step, variables, progress
-    Key pattern: workflow:{workflowId}:state
-    Value: Object with complete state
-    Update: After each major step
-    ```
-  </Accordion>
-  
-  <Accordion title="Data Aggregation" icon="chart-line">
-    Accumulate data over time
-    
-    ```
-    Store: Counters, metrics, aggregated data
-    Key pattern: metrics:{date}:{metric-name}
-    Value: Numeric or aggregated object
-    Update: Periodically or on events
-    ```
-  </Accordion>
-</AccordionGroup>
+A write that fails returns `{"status_code": 500, "body": {"error": "..."}}` — and that is still a successful step. See [Failure](#failure).
 
 ---
 
-## obs-key-get
-
-Retrieve a value from an object storage bucket by its key.
-
-### Parameters
+## get-object-from-bucket
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket containing the key.
+Bucket to read from.
 </ParamField>
 
 <ParamField path="name" type="string" required>
-  The key name of the value to retrieve.
+Object to read.
 </ParamField>
 
-<ParamField path="json" type="boolean" default="false">
-  Parse the stored value as JSON and return as an object. Use `true` when retrieving values that were stored as objects.
-  
-  **When to use:**
-  - Set to `true` when the value is a JSON object
-  - Set to `false` (or omit) when the value is a plain string
+<ParamField path="json" type="boolean">
+Parse the decoded text as JSON. Leave it off to get the raw text.
 </ParamField>
 
-### Response
+**Payload**
+
+```json
+{ "bucket": "invoice-exports", "name": "export-2026-08-20.json", "json": true }
+```
+
+**Returns**
+
+```json
+{
+  "status_code": 200,
+  "body": {
+    "body": { "name": "export-2026-08-20.json", "value": { "rows": 412 } },
+    "metadata": { "Bucket": "invoice-exports" }
+  }
+}
+```
+
+A missing object returns `{"status_code": 404, "body": {"error": "Not found"}}` — note the shallower shape: there is no `body.body` to read. Test `$.STEP_ID.status_code` before reaching for the value.
+
+If `json` is set and the text is not valid JSON, the raw text is returned rather than an error.
+
+---
+
+## list-object-store-buckets
+
+Lists every object bucket in the account. Takes no parameters — an empty payload `{}` is correct.
+
+**Returns**
 
 ```json
 {
   "status_code": 200,
   "body": {
     "body": {
-      "name": "user:123",
-      "value": {
-        "email": "user@example.com",
-        "name": "John Doe"
-      }
-    },
-    "metadata": {
-      "Bucket": "user-profiles"
+      "results": [
+        { "name": "invoice-exports", "description": "Nightly CSV exports", "size": 48211, "created": "2026-08-20T09:14:02Z" }
+      ],
+      "results_total": 1
     }
   }
 }
 ```
 
-**Response fields:**
-- `body.body.name` - The key name
-- `body.body.value` - The stored value (string or parsed object based on `json` parameter)
-- `body.metadata.Bucket` - The bucket name
-
-### Example Usage
-
-<CodeGroup>
-```json Get User Profile (JSON)
-{
-  "function": "obs-key-get",
-  "params": {
-    "bucket": "user-profiles",
-    "name": "user:${$.user_id}",
-    "json": true
-  }
-}
-```
-
-```json Get Simple Value
-{
-  "function": "obs-key-get",
-  "params": {
-    "bucket": "counters",
-    "name": "page-views-${$.date}",
-    "json": false
-  }
-}
-```
-
-```json Get Configuration
-{
-  "function": "obs-key-get",
-  "params": {
-    "bucket": "app-config",
-    "name": "database/connection",
-    "json": true
-  }
-}
-```
-</CodeGroup>
-
-### Common Patterns
-
-<AccordionGroup>
-  <Accordion title="Load User Context" icon="user-circle">
-    Retrieve user data at the start of a flow
-    
-    ```
-    Trigger: User action
-    Function: Get user profile with json=true
-    Use: Access user data in subsequent steps
-    Store in: Flow variables for easy access
-    ```
-  </Accordion>
-  
-  <Accordion title="Resume Workflow" icon="play">
-    Load saved state to continue a workflow
-    
-    ```
-    Trigger: Resume event
-    Function: Get workflow state with json=true
-    Parse: Extract step, variables, progress
-    Continue: From saved checkpoint
-    ```
-  </Accordion>
-  
-  <Accordion title="Configuration Loading" icon="sliders">
-    Load application settings and configuration
-    
-    ```
-    Trigger: App initialization
-    Function: Get config with json=true
-    Apply: Use settings throughout flow
-    Cache: In memory for performance
-    ```
-  </Accordion>
-</AccordionGroup>
+`size` is the bucket's total bytes. The function's declared output schema names this field `entryTotal`; the field on the wire is `size`.
 
 ---
 
-## obs-key-list
+## list-object-keys
 
-List all keys in an object storage bucket with pagination support.
-
-### Parameters
+Lists object **metadata** — never the content.
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to list keys from.
-</ParamField>
-
-<ParamField path="last_sequence" type="integer">
-  Starting sequence number for pagination. Returns keys after this sequence. Omit or use 0 for the first page.
-  
-  Use the `modified` value from the last result in the previous page to continue pagination.
+Bucket to list.
 </ParamField>
 
 <ParamField path="limit" type="integer">
-  Maximum number of keys to return per page. Controls result set size for pagination.
+Maximum entries in one page. Defaults to `500`.
 </ParamField>
 
-### Response
+<ParamField path="last_sequence" type="integer">
+Sequence to start from.
+</ParamField>
+
+**Payload**
+
+```json
+{ "bucket": "invoice-exports", "limit": 50 }
+```
+
+**Returns**
 
 ```json
 {
   "status_code": 200,
   "body": {
     "body": {
-      "results_total": 1523,
       "results": [
-        {
-          "name": "user:123",
-          "buid": "abc123def456",
-          "size": 2048,
-          "chunks": 1,
-          "modified": 1729080000000
-        }
-      ]
+        { "name": "export-2026-08-20.json", "buid": "...", "size": 48211, "chunks": 1, "modified": 1755680042 }
+      ],
+      "results_total": 1
     },
-    "metadata": {}
+    "metadata": { "bucket": "invoice-exports", "limit": 50 }
   }
 }
 ```
 
-**Response fields:**
-- `results_total` - Total number of keys in bucket
-- `results` - Array of key objects:
-  - `name` - Key name
-  - `buid` - Unique identifier
-  - `size` - Size in bytes
-  - `chunks` - Number of chunks
-  - `modified` - Last modified timestamp (milliseconds) - use for `last_sequence` in next page
+`results_total` counts the rows **in this page**, not the bucket. When a page is cut short — by your `limit` or by the reply's own size budget — the body also carries `truncated: true` and a `next_cursor` string; send that string back as `cursor` to continue. Treat the cursor as opaque.
 
-### Example Usage
-
-<CodeGroup>
-```json List All Keys (First Page)
-{
-  "function": "obs-key-list",
-  "params": {
-    "bucket": "user-profiles",
-    "limit": 100
-  }
-}
-```
-
-```json List Keys (Next Page)
-{
-  "function": "obs-key-list",
-  "params": {
-    "bucket": "user-profiles",
-    "last_sequence": 1729080000000,
-    "limit": 100
-  }
-}
-```
-
-```json List All Keys (No Limit)
-{
-  "function": "obs-key-list",
-  "params": {
-    "bucket": "app-config"
-  }
-}
-```
-</CodeGroup>
-
-### Common Patterns
-
-<AccordionGroup>
-  <Accordion title="Batch Processing" icon="layer-group">
-    Process all keys in a bucket sequentially
-    
-    ```
-    1. List keys with limit (e.g., 100)
-    2. Process each key in the batch
-    3. Use last result's modified for next page
-    4. Repeat until all keys processed
-    ```
-  </Accordion>
-  
-  <Accordion title="Data Audit" icon="clipboard-check">
-    Audit or report on stored data
-    
-    ```
-    List all keys in bucket
-    Gather statistics: count, total size
-    Identify patterns in key names
-    Generate audit report
-    ```
-  </Accordion>
-  
-  <Accordion title="Cleanup Operations" icon="broom">
-    Find and remove old or unused keys
-    
-    ```
-    List keys in bucket
-    Check modified timestamp
-    Delete keys older than threshold
-    Track cleanup metrics
-    ```
-  </Accordion>
-</AccordionGroup>
+To get the content of each object you need a `get-object-from-bucket` call per name.
 
 ---
 
-## Best Practices
+## Failure
+
+Every function on this page catches its own errors and returns a body containing `error`. **That is a successful step** — the run continues and the next step reads an object with an `error` key where it expected data.
+
+Branch on it before using the result:
+
+```json
+[
+  { "outcome": ["HANDLE_MISSING"], "condition": { "operator": "!=", "input": ["$.GET_EXPORT.status_code", 200] } },
+  { "outcome": ["PARSE_EXPORT"] }
+]
+```
+
+See [Building Reliable Flows](/flows/best-practices) for what a part-completed run leaves behind.
+
+---
+
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Use Descriptive Keys" icon="tag">
-    Use clear, hierarchical key naming patterns
-  </Card>
-  
-  <Card title="Enable Replication" icon="copy">
-    Use 3+ replicas for production data
-  </Card>
-  
-  <Card title="Set TTL for Temp Data" icon="clock">
-    Auto-expire temporary data to save storage
-  </Card>
-  
-  <Card title="Use JSON Flag" icon="brackets-curly">
-    Set json=true when retrieving objects
-  </Card>
-  
-  <Card title="Compress Text Data" icon="file-zipper">
-    Enable compression for JSON/text buckets
-  </Card>
-  
-  <Card title="Paginate Large Lists" icon="list-ol">
-    Use limit and last_sequence for large datasets
-  </Card>
-</CardGroup>
-
----
-
-## Storage Types Comparison
-
-| Feature | File Storage | Memory Storage |
-|---------|--------------|----------------|
-| Persistence | Survives restarts | Lost on restart |
-| Speed | Moderate | Very fast |
-| Capacity | Large | Limited by RAM |
-| Use Case | Production data | Temporary cache |
-| Cost | Storage-based | RAM-based |
-
----
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Stream Functions" icon="water" href="/flows/functions/streams">
-    Real-time event processing
-  </Card>
-  
   <Card title="Key-Value Storage" icon="database" href="/flows/functions/key-value">
-    Fast key-based storage
+    For small values addressed by key
   </Card>
-  
-  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utility">
-    Transform and encode data
+
+  <Card title="Utilities" icon="shuffle" href="/flows/functions/utility">
+    base64, templating, format conversion, SFTP
   </Card>
-  
-  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
-    Using Functions in flows
+
+  <Card title="Upload Trigger" icon="upload" href="/flows/triggers/upload">
+    Starting a flow from a file
+  </Card>
+
+  <Card title="Functions Overview" icon="book" href="/flows/functions/overview">
+    The full catalogue
   </Card>
 </CardGroup>

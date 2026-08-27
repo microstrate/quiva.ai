@@ -1,320 +1,73 @@
 ---
 title: "Provider Settings"
-description: "Configure the AI model and output formatting for your assistant"
+description: "Choose the AI model behind your assistant, and bring your own provider key"
 icon: "cpu"
 ---
 
-The **Provider** tab controls which AI model your assistant uses and how responses are formatted. These settings directly impact assistant performance, cost, and capabilities.
-
----
-
-## Default Model: Claude Haiku 4.5
-
-All assistants use **Claude Haiku 4.5** by default. It's included in every QuivaWorks plan — no API key or additional setup required. Your plan's credits are consumed per interaction.
-
-Claude Haiku 4.5 is fast, cost-effective, and excellent for the vast majority of business workflows: customer service, research, content generation, data extraction, and analysis. It's the right choice for most assistants.
+The **Provider** tab controls which AI model your assistant uses. A default model is preselected — fast, cost-effective, and included in every plan with no key or setup required.
 
 <Tip>
-Start with the default. Only consider switching models if you have a specific reason — like requiring a very large context window or needing a particular model's behaviour.
+Start with the default. Only switch if you have a specific reason to use a different model.
 </Tip>
 
 ---
 
-## Bring Your Own Keys
+## Choosing a Model
 
-On **Team and Enterprise plans**, you can connect your own Anthropic API key to use specific Claude models directly.
+Model selection opens a full-screen picker, not a simple dropdown. It's organised as a tab deck of reasoning categories — **All, Frontier, Premium Reasoning, Economy, Specialized, Balanced Performance, Fast & Efficient** — with a card for each model under the selected category. The picker currently offers three providers.
 
-When using your own keys:
-- You're billed directly by the provider, not through QuivaWorks credits
-- You have full control over which model version to use
-- You can access models that aren't available on the default plan
+<Warning>
+**Only models from the default provider currently work when your assistant runs.** The picker lets you select any model from any of the three providers, but selecting a model from either of the other two returns an error the first time the assistant is invoked. If you need to change models, stay within the default provider's card set until this is resolved.
+</Warning>
 
-<Info>
-Bring Your Own Keys is available on **Team and Enterprise plans only**. [See plans →](/get-started/plans-and-pricing)
-</Info>
-
-### Available Models
-
-**Anthropic's Claude models** — excellent instruction-following, long context, and strong reasoning.
-
-**Best for:**
-- Long document processing (200K+ token context)
-- Complex, nuanced instructions
-- High-accuracy analysis and research
-- Safety-critical applications
-
-**Current models:**
-- `claude-haiku-4-5` — Fast and cost-effective (same as default)
-- `claude-sonnet-4-5` — Balanced performance and capability
-- `claude-opus-4-5` — Most capable, highest cost
-
-<Info>
-Get your Anthropic API key at [console.anthropic.com](https://console.anthropic.com/)
-</Info>
+We deliberately don't list model names here — the catalogue changes over time, and specific model IDs go stale within weeks. Pick from the categories in the picker itself; each card shows the model's context window, output limit, and relative cost.
 
 ---
 
-## Setting Up Your API Key
+## Bring Your Own Keys (BYOK)
 
-Once you have an API key from a provider, add it to your assistant:
+BYOK lets you connect your own provider API key so your assistant calls the provider with your account instead of the shared default. It's a flag on accounts with a **Team** plan (there is no Enterprise plan).
 
-<Steps>
-  <Step title="Open Provider Settings">
-    Open your assistant configuration and click the **Provider** tab.
-  </Step>
-  <Step title="Select Provider and Model">
-    Choose your provider from the dropdown, then select the specific model version.
-  </Step>
-  <Step title="Enter Your API Key">
-    Paste your API key into the **API Key** field. The key is encrypted and securely stored. It will be masked immediately after entry.
-  </Step>
-  <Step title="Save and Test">
-    Click **Save**, then open the assistant in chat and send a test message to verify the model responds correctly.
-  </Step>
-</Steps>
+<Info>
+If your account doesn't have BYOK enabled, the API-key section of the picker doesn't appear at all — there's no upsell shown in its place.
+</Info>
 
-### Getting an Anthropic API Key
+**What BYOK actually does:**
+- You get access to models and providers you couldn't otherwise select
+- You never paste a raw key into this field — the control is a **Select Key…** dropdown over the API keys already stored in your account's secrets, with an **Add Secret** option to add a new one
+- Only the secret's *name* is stored on the assistant; the key itself is resolved at call time
+
+<Warning>
+**BYOK calls are not free of QuivaWorks credits.** A platform charge still applies on top of whatever your own provider bills you directly — BYOK removes the *per-model* markup, not the platform component.
+</Warning>
+
+### Getting a Provider API Key
 
 <Steps>
-  <Step title="Create an Account">
-    Visit [console.anthropic.com](https://console.anthropic.com) and sign up. New accounts receive free credits to get started.
+  <Step title="Create an account with the provider">
+    Sign up on the provider's own console. Most providers give new accounts free starting credit.
   </Step>
-  
-  <Step title="Set Up Billing">
-    In the Anthropic Console, go to **Billing** and add a payment method. Set a monthly budget to avoid unexpected charges.
-    
-    <Warning>
-    Set a monthly budget limit immediately. Claude API costs can add up quickly with high-volume usage or large context windows.
-    </Warning>
+  <Step title="Set up billing">
+    Add a payment method and set a monthly budget limit on the provider's side before generating a key — usage on a BYOK key is billed by the provider directly, and QuivaWorks has no visibility into that spend.
   </Step>
-  
-  <Step title="Create Your API Key">
-    1. Navigate to **API Keys** in the left sidebar, or go to [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
-    2. Click **Create Key** and give it a descriptive name (e.g., "QuivaWorks Production")
-    3. **Copy the key immediately** — it starts with `sk-ant-` and cannot be retrieved after you close the dialog
-    4. Store it securely in a password manager
-    
-    <Warning>
-    Never share your API key or commit it to a code repository. If it's exposed, delete it in the Anthropic Console and create a new one immediately.
-    </Warning>
+  <Step title="Create and store the key">
+    Generate a new key, copy it immediately (most providers won't show it again), and store it in a password manager before adding it to QuivaWorks as a new secret.
   </Step>
 </Steps>
 
 <Warning>
-**API Key Security:**
-- Never share API keys or commit them to code repositories
-- Use separate keys for development and production
-- Set spending limits on each provider platform
-- Revoke and rotate keys if you suspect any exposure
+Never share an API key or commit it to a code repository. If a key is exposed, revoke it on the provider's console and issue a new one immediately.
 </Warning>
 
 ---
 
-## Output Schema
+## Advanced Controls
 
-Define the exact structure your assistant must return. When configured, the assistant validates its output against the schema and retries automatically if it doesn't match.
+Three additional controls exist but are hidden by default, behind **two** gates: **Advanced Mode** must be turned on globally (Settings → Advanced → Enable Advanced Mode), and this specific assistant's **Advanced Enabled** toggle must also be on.
 
-### When to Use Output Schemas
-
-<Tabs>
-  <Tab title="Use a Schema">
-    **When you need:**
-    - Structured data extraction from documents or conversations
-    - Consistent field names and types for downstream processing
-    - Integration with other systems or flow steps
-    - Automated validation of assistant responses
-    
-    **Example use cases:**
-    - Lead qualification (return structured lead data)
-    - Invoice processing (extract specific fields)
-    - Customer service triage (categorise and route issues)
-    - API responses (return JSON for webhooks)
-  </Tab>
-  
-  <Tab title="Skip a Schema">
-    **When you want:**
-    - Natural language responses
-    - Conversational, flexible outputs
-    - Human-readable text
-    - Creative content
-    
-    **Example use cases:**
-    - Customer service chat
-    - Content generation
-    - Research and summarisation
-    - General conversation
-  </Tab>
-</Tabs>
-
-### Defining an Output Schema
-
-Use natural language JSON Schema format — describe fields and their types in the description:
-
-**Simple example:**
-
-```json
-{
-  "lead_name": "The full name of the lead (string)",
-  "lead_email": "Email address of the lead (string)",
-  "company": "Company name (string)",
-  "qualified": "Whether the lead matches our ICP (boolean)",
-  "score": "Lead qualification score from 0-100 (number)"
-}
-```
-
-**Complex example with nested fields:**
-
-```json
-{
-  "customer_name": "Full name of the customer (string or null)",
-  "issue_category": "Category - one of: billing, shipping, product, technical, other (string)",
-  "issue_summary": "One-sentence summary of the issue (string)",
-  "sentiment": "Customer sentiment - one of: positive, neutral, negative, angry (string)",
-  "requires_escalation": "Whether this needs human escalation (boolean)",
-  "suggested_actions": "List of suggested actions (array of strings)",
-  "next_steps": {
-    "action": "What to do next (string)",
-    "assigned_to": "Who to assign to - one of: bot, support_team, billing_team (string)",
-    "priority": "Priority - one of: low, medium, high, urgent (string)"
-  }
-}
-```
-
-### Schema Field Guide
-
-<AccordionGroup>
-  <Accordion title="Field Types">
-    Specify the type in the description string:
-    
-    ```json
-    {
-      "name": "Full name (string)",
-      "age": "Age in years (number)",
-      "active": "Whether active (boolean)",
-      "tags": "List of tags (array of strings)",
-      "address": {
-        "city": "City name (string)",
-        "country": "Country code (string)"
-      }
-    }
-    ```
-  </Accordion>
-
-  <Accordion title="Optional Fields">
-    Use "or null" to mark fields as optional:
-    
-    ```json
-    {
-      "required_field": "Always present (string)",
-      "optional_field": "May be null if not found (string or null)",
-      "order_number": "Order number if mentioned, null otherwise (string or null)"
-    }
-    ```
-  </Accordion>
-
-  <Accordion title="Enum Values">
-    Specify allowed values using "one of":
-    
-    ```json
-    {
-      "status": "Current status - one of: pending, approved, rejected (string)",
-      "priority": "Priority level - one of: low, medium, high (string)"
-    }
-    ```
-  </Accordion>
-
-  <Accordion title="Arrays of Objects">
-    For arrays of structured objects:
-    
-    ```json
-    {
-      "line_items": [
-        {
-          "description": "Item description (string)",
-          "quantity": "Quantity (number)",
-          "price": "Price per unit (number)"
-        }
-      ]
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
-
-### Schema Examples
-
-<AccordionGroup>
-  <Accordion title="Lead Qualification">
-    ```json
-    {
-      "lead_name": "Full name of the lead (string)",
-      "company": "Company name (string)",
-      "email": "Email address (string)",
-      "company_size": "Estimated size - one of: 1-10, 11-50, 51-200, 201-500, 500+ (string)",
-      "use_case": "What they want to use our product for (string)",
-      "timeline": "Buying timeline - one of: immediate, 1-3 months, 3-6 months, exploring (string)",
-      "qualified": "Whether lead matches our ICP (boolean)",
-      "qualification_score": "Score from 0-100 (number)",
-      "next_action": "Recommended action - one of: book_demo, send_info, nurture, disqualify (string)"
-    }
-    ```
-  </Accordion>
-
-  <Accordion title="Invoice Processing">
-    ```json
-    {
-      "invoice_number": "Invoice number from document (string)",
-      "invoice_date": "Date in YYYY-MM-DD format (string)",
-      "due_date": "Payment due date in YYYY-MM-DD format (string)",
-      "vendor_name": "Name of the vendor (string)",
-      "total_amount": "Total invoice amount (number)",
-      "currency": "Currency code e.g. USD, EUR (string)",
-      "line_items": [
-        {
-          "description": "Item description (string)",
-          "quantity": "Quantity (number)",
-          "unit_price": "Price per unit (number)",
-          "total": "Line item total (number)"
-        }
-      ],
-      "tax_amount": "Tax amount if shown (number or null)",
-      "validation_status": "Validation result - one of: valid, invalid, needs_review (string)"
-    }
-    ```
-  </Accordion>
-
-  <Accordion title="Customer Service Triage">
-    ```json
-    {
-      "customer_name": "Customer name (string or null)",
-      "issue_category": "Category - one of: order, shipping, return, billing, technical, other (string)",
-      "issue_summary": "One-sentence summary (string)",
-      "sentiment": "Customer sentiment - one of: happy, neutral, frustrated, angry (string)",
-      "urgency": "Urgency - one of: low, medium, high, critical (string)",
-      "can_automate": "Whether this can be handled automatically (boolean)",
-      "requires_human": "Whether a human agent is needed (boolean)",
-      "assign_to": "Team to assign - one of: bot, tier1, tier2, billing, technical (string)"
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
-
-### Validation and Auto-Correction
-
-When an output schema is defined:
-
-1. The assistant generates a response
-2. QuivaWorks validates it against the schema
-3. If invalid: the assistant retries automatically with correction instructions
-4. If valid: the response is returned
-5. After 3 failed attempts: the step is marked as an error
-
-<Info>
-Validation and auto-correction happen automatically. No additional logic is needed in your flow.
-</Info>
-
-<Tip>
-Start simple. Add more fields as you discover what data you actually need — it's easier to expand a schema than to debug an overly complex one.
-</Tip>
+- **Temperature** (0–2) — how deterministic vs. varied responses are
+- **Max Turns** (minimum 1) — how many back-and-forth messages are allowed in a single call
+- **Max Output Tokens** — capped by the selected model's own output limit
 
 ---
 
@@ -322,65 +75,15 @@ Start simple. Add more fields as you discover what data you actually need — it
 
 <AccordionGroup>
   <Accordion title="Start with the default model">
-    Claude Haiku 4.5 handles most business workflows extremely well and uses your included plan credits. Start here and only switch if you have a specific reason — like needing a 200K token context window or a particular model's behaviour on complex tasks.
+    The preselected model handles most work well and draws on your plan's included credits. Only switch if you've hit a concrete limitation.
   </Accordion>
 
-  <Accordion title="Use output schemas for structured data">
-    Always use a schema when extracting specific fields, passing data between flow steps, or integrating with other systems. Skip schemas for natural language responses and conversational outputs.
+  <Accordion title="Stay on the default provider unless you know why you're leaving it">
+    Selecting a model outside the default provider will fail at runtime today. If you're testing a specific model from another provider, confirm it actually responds before building a flow around it.
   </Accordion>
 
-  <Accordion title="Write descriptive schema field names">
-    Don't just name fields — guide the assistant on what to extract:
-    
-    ❌ Vague:
-    ```json
-    { "date": "Date (string)", "status": "Status (string)" }
-    ```
-    
-    ✅ Descriptive:
-    ```json
-    {
-      "order_date": "The date the order was placed in YYYY-MM-DD format (string)",
-      "status": "Current order status - one of: pending, shipped, delivered, cancelled (string)"
-    }
-    ```
-  </Accordion>
-
-  <Accordion title="Secure your API keys">
-    - Never commit keys to code repositories
-    - Use separate keys for development and production environments
-    - Set spending limits on provider platforms
-    - Monitor usage regularly for unexpected spikes
-    - Revoke and rotate keys if you suspect any exposure
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Troubleshooting
-
-<AccordionGroup>
-  <Accordion title="API key not working">
-    - Verify the full key was copied (no extra spaces)
-    - Confirm the key is active on the provider's platform
-    - Ensure billing is set up on the provider account
-    - Check that you haven't exceeded rate limits or quota
-    - Try generating a new key if issues persist
-  </Accordion>
-
-  <Accordion title="Output doesn't match schema">
-    - Simplify the schema — start with fewer fields
-    - Add clearer, more specific field descriptions
-    - Make optional fields nullable (`string or null`)
-    - Ensure the input data actually contains the information you're asking for
-    - Check that assistant instructions don't conflict with the schema
-  </Accordion>
-
-  <Accordion title="Inconsistent responses">
-    - Make instructions more specific
-    - Add an output schema to enforce structure
-    - Include examples in the instructions
-    - Provide more context in the prompt
+  <Accordion title="Store keys as secrets, not inline">
+    Add provider keys through **Add Secret** in the picker rather than anywhere else. Use separate keys for development and production, and set spending limits on the provider's own platform.
   </Accordion>
 </AccordionGroup>
 
@@ -390,17 +93,17 @@ Start simple. Add more fields as you discover what data you actually need — it
 
 <CardGroup cols={2}>
   <Card title="Context Settings" icon="brain" href="/assistants/configuration/context-settings">
-    Configure memory, token limits, and reasoning depth
+    Configure memory, history limits, and output structure
   </Card>
-  
+
   <Card title="Knowledge" icon="book" href="/assistants/configuration/knowledge">
-    Add documentation and context sources
+    Add documentation and reference sources
   </Card>
-  
+
   <Card title="Tools & Connectors" icon="plug" href="/assistants/tools-and-connectors">
-    Connect your systems via MCP
+    Connect your systems via integrations
   </Card>
-  
+
   <Card title="Best Practices" icon="star" href="/assistants/best-practices">
     Optimise assistant performance and cost
   </Card>

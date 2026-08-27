@@ -4,285 +4,270 @@ description: "Generate and manage API keys for programmatic access"
 icon: "code"
 ---
 
-# API Key Management
-
-API keys allow you to access QuivaWorks programmatically for automation, integrations, and custom applications.
+API keys let you reach QuivaWorks programmatically for automation, integrations and custom applications.
 
 ## Creating an API Key
 
 <Steps>
-  <Step title="Navigate to API Keys">
-    Click your profile icon in the bottom left → "Settings" → "API Keys"
+  <Step title="Open the API keys tab">
+    Open **Settings** from your user menu, then the **API keys** tab
   </Step>
-  
-  <Step title="Add New Key">
-    Click the "Add" button
+
+  <Step title="Add a new key">
+    Click **Add**. A "Create API Key" dialog opens.
   </Step>
-  
-  <Step title="Name Your Key">
-    Enter a descriptive name (e.g., "Production Integration", "CI/CD Pipeline", "Monitoring Script")
+
+  <Step title="Name your key">
+    Enter a descriptive name — "Production integration", "CI pipeline", "Monitoring script"
   </Step>
-  
-  <Step title="Save Key Securely">
-    **Copy the API key immediately** - it will only be shown once
+
+  <Step title="Save the key">
+    The key is displayed once, with **Copy** and **Download Credentials** buttons. Take it now.
   </Step>
 </Steps>
 
 <Warning>
-**You cannot view the API key again after closing the dialog.** Store it securely in a password manager or secret management system immediately.
+**The key is only shown once.** Once you close the dialog it cannot be displayed again. Copy it into a password manager or secret store before you close it.
 </Warning>
 
-## API Key Properties
+<Note>
+The **API keys** tab is not available to users with the client role.
+</Note>
 
-<CardGroup cols={3}>
-  <Card title="User-Scoped" icon="user">
-    Keys are tied to the user who creates them and inherit that user's permissions
+## Key Types
+
+### Scope
+
+Every key carries a scope. The Settings screen creates **user-scoped** keys; the account scope is available when a key is created through the API.
+
+<CardGroup cols={2}>
+  <Card title="User scope" icon="user">
+    The default. The key is tied to the user who created it and carries that user's role and permissions.
   </Card>
-  
-  <Card title="3-Month Lifespan" icon="clock">
-    All keys expire after 3 months for security
-  </Card>
-  
-  <Card title="Revocable" icon="ban">
-    Delete keys immediately if compromised
+
+  <Card title="Account scope" icon="building">
+    Only root and admin users may create one, and the scope is re-checked whenever the key is used.
   </Card>
 </CardGroup>
 
+<Warning>
+An account-scoped key has a far larger blast radius than a user-scoped one. Create one only when a user-scoped key genuinely cannot do the job, and hold it to the same handling standard as the root account's password.
+</Warning>
+
+### Restricted keys
+
+Supplying a list of allowed endpoints when the key is created produces a **restricted** key. Each entry pins the key to a particular HTTP method and path, optionally on a specific gateway. Anything outside that list is refused.
+
+Restricted keys carry the `msr-` prefix instead of `ms-`, and are the right choice whenever a key only ever needs to make a small, known set of calls — a webhook receiver, a scheduled export, a single integration.
+
+<Info>
+Restricted keys do not come with a downloadable credentials file. Use the key value itself.
+</Info>
+
+### Key prefixes
+
+| Prefix | Meaning |
+|---|---|
+| `ms-` | A standard key |
+| `msr-` | A restricted key, limited to specific endpoints |
+
+The prefix uses a hyphen, not an underscore.
+
+## Expiry
+
+Keys expire after **90 days** by default. When a key is created through the API the lifetime is configurable, and a negative value produces a key that never expires.
+
+You get two emails around expiry:
+
+- A **warning** 7 days before the key expires, provided the key's lifetime was at least 7 days
+- A **notification when it expires** — the key is deleted at that point and stops working
+
+<Warning>
+A key that never expires never gets rotated by the platform on your behalf. If you create one, own the rotation schedule yourself.
+</Warning>
+
 ## Managing API Keys
 
-### Viewing Your Keys
+### Viewing your keys
 
-1. Navigate to **Settings → API Keys**
-2. See a list of all your active keys showing:
-   - Key name
-   - Creation date
-   - Expiration date
-   - Last used date (if applicable)
+The **API keys** tab lists your keys with these columns:
 
-### Deleting an API Key
+| Column | Shows |
+|---|---|
+| **Name** | The name you gave the key |
+| **Account** | The account the key belongs to |
+| **Last 4 Characters** | The final four characters, for identifying a key you hold |
+| **Created** | When the key was issued |
+| **Expires** | When the key stops working |
 
-1. Navigate to **Settings → API Keys**
-2. Click on the key name you want to delete
-3. Click the "Delete" button
-4. Confirm the deletion
+<Info>
+There is no "last used" column, and QuivaWorks does not currently provide audit logs for API usage. If you need to know when and how a key is being used, log that in the application that holds the key.
+</Info>
+
+### Downloading credentials
+
+**Download Credentials** in the tab's menu produces a credentials file for a key you already hold — you paste the key value in to retrieve it. It is available for standard keys, not restricted ones.
+
+<Warning>
+A downloaded credentials file authenticates as the key. Store it the same way you'd store the key itself, and delete it from your Downloads folder once it's in your secret store.
+</Warning>
+
+### Deleting a key
+
+Use **Delete Key** in the tab's menu, or open a key from the list and delete it from there.
 
 <Note>
-Deleting a key immediately revokes access. Any applications using this key will stop working. Update applications with a new key before deleting the old one.
+Deletion takes effect immediately. Anything using that key stops working at once, so deploy a replacement first.
 </Note>
 
-## API Key Security Best Practices
+## Security Best Practices
 
 <Warning>
 **Treat API keys like passwords.** Never share them or expose them publicly.
 </Warning>
 
-### Storage and Handling
+### Storage and handling
 
 <AccordionGroup>
-  <Accordion title="Use Environment Variables" icon="check">
+  <Accordion title="Use environment variables" icon="check">
     **Do this:**
     ```bash
-    # Store in environment variable
-    export QUIVA_API_KEY="your-api-key-here"
+    export QUIVA_API_KEY="ms-your-key-here"
     ```
-    
+
     **Never do this:**
     ```javascript
-    // Don't hardcode keys in your code
-    const apiKey = "ms_1234567890abcdef"; // BAD
+    // Don't hardcode keys in your source
+    const apiKey = "ms-abcdef0123456789"; // BAD
     ```
   </Accordion>
-  
-  <Accordion title="Use Secret Management Systems" icon="vault">
-    Store keys in secure secret management systems:
+
+  <Accordion title="Use a secret manager" icon="vault">
+    Store keys in a purpose-built secret store:
     - AWS Secrets Manager
     - HashiCorp Vault
     - Azure Key Vault
     - Google Secret Manager
-    - 1Password/LastPass for Teams
-    
-    These systems provide:
-    - Encrypted storage
-    - Access controls
-    - Audit trails
-    - Automatic rotation
+    - A team password manager
+
+    These give you encrypted storage, access control, and a record of who read what.
   </Accordion>
-  
-  <Accordion title="Never Commit to Version Control" icon="code-branch">
+
+  <Accordion title="Never commit to version control" icon="code-branch">
     Add these patterns to your `.gitignore`:
     ```
     .env
     .env.local
     .env.*.local
-    config/secrets.yml
-    **/api-keys.txt
+    *.creds
     ```
-    
-    Even in private repositories, avoid committing API keys. They can be exposed through:
-    - Repository forks
-    - Access changes
-    - CI/CD logs
-    - Backup systems
+
+    Even a private repository is the wrong place for a key — forks, access changes, CI logs and backups all leak it.
   </Accordion>
-  
-  <Accordion title="Limit Key Sharing" icon="users-slash">
-    **Never share keys via:**
+
+  <Accordion title="Don't share keys between people" icon="users-slash">
+    **Never send a key by:**
     - Email
-    - Slack or Teams messages
-    - Documentation (even internal)
-    - Shared documents or spreadsheets
-    
+    - Chat message
+    - A shared document or spreadsheet
+
     **Instead:**
-    - Create separate keys for each user
-    - Use your secret management system
-    - Grant appropriate role-based access
+    - Issue a separate key per person or per system
+    - Distribute through your secret manager
+    - Use a restricted key when the consumer only needs a few endpoints
   </Accordion>
 </AccordionGroup>
 
-### Key Rotation Strategy
+### Rotation
 
 <Steps>
-  <Step title="Generate New Key">
-    Create a new API key 2 weeks before the old one expires
+  <Step title="Create the replacement">
+    Issue a new key ahead of the old one's expiry date — the 7-day warning email is a useful trigger
   </Step>
-  
-  <Step title="Update Applications">
-    Deploy the new key to all applications and services:
-    - Update environment variables
-    - Update secret management entries
-    - Update CI/CD configurations
+
+  <Step title="Deploy it">
+    Update environment variables, secret manager entries and CI configuration
   </Step>
-  
-  <Step title="Test Thoroughly">
-    Verify all integrations work with the new key:
-    - Run automated tests
-    - Check production traffic
-    - Monitor error rates
+
+  <Step title="Verify">
+    Confirm every integration works on the new key before going further
   </Step>
-  
-  <Step title="Monitor Transition">
-    Keep both keys active briefly to ensure smooth transition
-  </Step>
-  
-  <Step title="Delete Old Key">
-    Only after confirming the new key works everywhere and the old key is no longer in use
+
+  <Step title="Delete the old key">
+    Only once nothing is still using it
   </Step>
 </Steps>
 
-<Tip>
-Set calendar reminders **2 weeks before** key expiration to avoid service disruption. Consider automating rotation using your secret management system.
-</Tip>
-
-### Organizing Multiple Keys
+### Organising multiple keys
 
 <CardGroup cols={2}>
-  <Card title="Separate Keys Per Environment" icon="layer-group">
-    Create different keys for:
-    - Production
-    - Staging
-    - Development/Testing
-    - CI/CD pipelines
-    - Third-party integrations
+  <Card title="One key per environment" icon="layer-group">
+    Separate keys for production, staging, development, CI and each third-party integration. A leak then has a bounded blast radius.
   </Card>
-  
-  <Card title="Use Descriptive Names" icon="tag">
-    Clear naming helps track usage:
-    - "Production API - Web App"
-    - "GitHub Actions - Main Pipeline"
-    - "Datadog Monitoring Integration"
-    - "Staging Environment - QA Team"
+
+  <Card title="Descriptive names" icon="tag">
+    The name and the last four characters are all you have to identify a key later:
+    - "Production — web app"
+    - "CI — main pipeline"
+    - "Monitoring integration"
   </Card>
 </CardGroup>
 
-### Monitoring API Key Usage
-
-Regularly audit your API keys to maintain security:
-
-**Monthly Review Checklist:**
-- List all active API keys in your account
-- Verify each key is still needed
-- Check last used dates for inactive keys
-- Delete keys that haven't been used in 30+ days
-- Confirm key names accurately describe current usage
-
-**Watch for Unusual Patterns:**
-- Unexpected spike in API calls
-- Calls from unfamiliar IP addresses or regions
-- Access outside normal business hours
-- Failed authentication attempts
-- Unusually large data transfers
-
-<Info>
-While QuivaWorks doesn't currently provide audit logs for API usage, we recommend implementing logging in your applications that use API keys to track their usage patterns.
-</Info>
-
-## If an API Key is Compromised
+## If a Key is Compromised
 
 <Warning>
-Act immediately if you suspect a key has been exposed or compromised.
+Act immediately if you suspect a key has been exposed.
 </Warning>
 
 <Steps>
-  <Step title="Revoke Immediately">
-    1. Navigate to **Settings → API Keys**
-    2. Click on the compromised key
-    3. Click "Delete"
-    4. Confirm deletion
+  <Step title="Delete it">
+    **Settings → API keys → Delete Key**. This revokes it instantly.
   </Step>
-  
-  <Step title="Generate Replacement">
-    Create a new API key with a different name immediately
+
+  <Step title="Issue a replacement">
+    Create a new key — and consider making the replacement a restricted key
   </Step>
-  
-  <Step title="Update Applications">
-    Deploy the new key to all affected services as quickly as possible
+
+  <Step title="Update everything using it">
+    Deploy the new key to every affected service
   </Step>
-  
-  <Step title="Review Recent Activity">
-    Check your application logs for any unauthorized or suspicious API usage
+
+  <Step title="Review your own logs">
+    QuivaWorks has no API audit log, so your application's logs are the only record of what the key did. Check them for calls you can't account for.
   </Step>
-  
-  <Step title="Assess Impact">
-    Determine:
-    - What resources were accessed
-    - What data may have been exposed
-    - What actions were performed
-    - Duration of potential unauthorized access
-  </Step>
-  
-  <Step title="Report if Needed">
-    For serious breaches involving sensitive data, follow your [incident response procedures](/essentials/security/incident-response)
+
+  <Step title="Work through the wider response">
+    If the exposure may extend beyond the key itself, follow the [incident response steps](/essentials/security/incident-response)
   </Step>
 </Steps>
 
-**Common Ways Keys Get Exposed:**
-- Accidentally committed to public GitHub repositories
-- Logged in plain text in application logs
-- Shared in Slack/email/chat messages
-- Included in error messages or stack traces
-- Stored in unencrypted configuration files
-- Exposed through compromised development machines
+**Common ways keys get exposed:**
+- Committed to a public repository
+- Written to application logs in plain text
+- Pasted into a chat or an email
+- Included in an error message or stack trace
+- Left in an unencrypted configuration file or a Downloads folder
 
 ## Using API Keys
 
-### Authentication
-
-Include your API key in the `Authorization` header:
+Send the key as a bearer token in the `Authorization` header:
 
 ```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.quiva.ai/v1/agents
+curl -H "Authorization: Bearer $QUIVA_API_KEY" \
+     -H "Content-Type: application/json" \
+     "$YOUR_ENDPOINT"
 ```
 
-### Common Integration Patterns
+<Info>
+HTTP paths are defined per account by your own gateway mappings, so there is no single shared base URL to publish here. Use the endpoint your account exposes.
+</Info>
 
 <Tabs>
   <Tab title="Node.js">
     ```javascript
-    // Using environment variables
     const apiKey = process.env.QUIVA_API_KEY;
-    
-    const response = await fetch('https://api.quiva.ai/v1/agents', {
+
+    const response = await fetch(process.env.QUIVA_ENDPOINT, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
@@ -290,201 +275,144 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
     });
     ```
   </Tab>
-  
+
   <Tab title="Python">
     ```python
     import os
     import requests
-    
-    # Load from environment
+
     api_key = os.environ['QUIVA_API_KEY']
-    
+
     headers = {
         'Authorization': f'Bearer {api_key}',
         'Content-Type': 'application/json'
     }
-    
-    response = requests.get(
-        'https://api.quiva.ai/v1/agents',
-        headers=headers
-    )
+
+    response = requests.get(os.environ['QUIVA_ENDPOINT'], headers=headers)
     ```
   </Tab>
-  
+
   <Tab title="cURL">
     ```bash
-    # Load from environment variable
     curl -H "Authorization: Bearer $QUIVA_API_KEY" \
          -H "Content-Type: application/json" \
-         https://api.quiva.ai/v1/agents
+         "$QUIVA_ENDPOINT"
     ```
   </Tab>
 </Tabs>
 
-### Error Responses
+### Error responses
+
+Errors come back in this shape:
+
+```json
+{
+  "status_code": 401,
+  "body": {
+    "error": "..."
+  }
+}
+```
 
 <AccordionGroup>
   <Accordion title="401 Unauthorized" icon="circle-xmark">
-    ```json
-    {
-      "error": "Invalid API key",
-      "message": "The provided API key is invalid or expired"
-    }
-    ```
-    
-    **Common Causes:**
-    - API key doesn't exist
-    - Key has been deleted
-    - Key has expired (after 3 months)
-    - Incorrect key format
-    
-    **Solution:**
-    Generate a new API key and update your application configuration.
+    **Common causes:**
+    - The key doesn't exist or was deleted
+    - The key expired and was removed automatically
+    - The key was copied incorrectly — truncated, or with whitespace
+    - The `Authorization` header isn't formatted as `Bearer <key>`
+
+    **Fix:** check the key still appears in **Settings → API keys**, then reissue it if not.
   </Accordion>
-  
+
   <Accordion title="403 Forbidden" icon="ban">
-    ```json
-    {
-      "error": "Insufficient permissions",
-      "message": "Your API key doesn't have access to this resource"
-    }
-    ```
-    
-    **Common Causes:**
-    - User role lacks required permissions
-    - Resource doesn't exist
-    - Resource belongs to different account
-    - Operation not allowed for this role
-    
-    **Solution:**
-    Check the user's role permissions or create a key from a user with appropriate access.
+    **Common causes:**
+    - The owning user's role doesn't permit the operation
+    - The resource belongs to a different account
+    - The key is restricted and this method or path isn't in its allowed list
+
+    **Fix:** check the role of the user who owns the key, and — for an `msr-` key — whether the call is one the key was pinned to.
   </Accordion>
-  
+
   <Accordion title="429 Too Many Requests" icon="gauge-high">
-    ```json
-    {
-      "error": "Rate limit exceeded",
-      "message": "Too many requests. Please try again later",
-      "retry_after": 60
-    }
-    ```
-    
-    **Common Causes:**
-    - Exceeded your plan's rate limits
-    - Too many concurrent requests
-    - Burst limit exceeded
-    
-    **Solution:**
-    Implement exponential backoff and respect the `retry_after` header. Consider upgrading your plan for higher limits.
+    A rate-limited response has a **plain-text** body, not JSON, and carries a **`Retry-After`** header telling you how long to wait.
+
+    **Fix:** read `Retry-After` and back off for at least that long. Implement exponential backoff for repeats.
   </Accordion>
 </AccordionGroup>
 
-## API Key Best Practices Checklist
+## Checklist
 
-Use this checklist when working with API keys:
+### Before creating a key
 
-### Before Creating
+- [ ] Decide whether user scope is sufficient — it usually is
+- [ ] Decide whether it can be a restricted key pinned to specific endpoints
+- [ ] Identify which user should own it, since the key inherits their permissions
+- [ ] Choose a descriptive name
+- [ ] Have the secret store ready before you click Add
 
-- [ ] Determine the specific purpose and required scope
-- [ ] Identify which user should own the key (inherits their permissions)
-- [ ] Choose a descriptive, meaningful name
-- [ ] Confirm you have a secure storage location ready
+### On creation
 
-### Upon Creation
+- [ ] Copy the key straight into your secret store — it is shown only once
+- [ ] Record where the key will be used
+- [ ] Note the expiry date
 
-- [ ] Copy the key immediately to secure storage
-- [ ] Store in password manager or secret management system
-- [ ] Never commit to version control
-- [ ] Document where the key will be used
-- [ ] Set a calendar reminder for rotation (before 3-month expiration)
+### In use
 
-### During Usage
+- [ ] Read the key from an environment variable or secret manager, never a literal
+- [ ] Log API errors, but never log the key
+- [ ] Keep separate keys per environment
 
-- [ ] Use environment variables, never hardcode
-- [ ] Implement proper error handling for API failures
-- [ ] Monitor usage and performance
-- [ ] Log API errors (but never log the key itself)
-- [ ] Use separate keys for different environments
+### Ongoing
 
-### Regular Maintenance
-
-- [ ] Review active keys monthly
-- [ ] Delete unused keys
-- [ ] Rotate keys before expiration
-- [ ] Audit API usage patterns
-- [ ] Update documentation when keys change
-- [ ] Test new keys before deleting old ones
+- [ ] Review your key list periodically and delete anything unused
+- [ ] Rotate ahead of expiry — the 7-day warning email is your prompt
+- [ ] Re-check any key that never expires
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="API key not working after creation">
-    **Possible Issues:**
-    - Key not copied correctly (extra spaces, truncation)
-    - Not included in Authorization header
-    - Using wrong API endpoint
-    - User permissions insufficient
-    
-    **Solutions:**
-    - Regenerate the key and copy carefully
-    - Verify header format: `Authorization: Bearer YOUR_KEY`
-    - Check API documentation for correct endpoints
-    - Verify user role has required permissions
+  <Accordion title="Key doesn't work right after creation">
+    - Confirm the key was copied whole, with no leading or trailing whitespace
+    - Check the header format: `Authorization: Bearer <key>`
+    - Confirm the endpoint exists in your account's gateway mappings
+    - Confirm the owning user's role permits the operation
   </Accordion>
-  
+
   <Accordion title="Key stopped working suddenly">
-    **Possible Issues:**
-    - Key expired (3-month lifespan)
-    - Key was deleted by admin
-    - User's permissions changed
-    - Account plan changed affecting limits
-    
-    **Solutions:**
-    - Check key expiration date
-    - Verify key still exists in settings
-    - Contact admin about permission changes
-    - Generate new key and update applications
+    - It may have reached its expiry date and been deleted automatically
+    - Someone may have deleted it — check whether it still appears in the list
+    - The owning user's role may have changed, or the user may have been suspended or deleted
   </Accordion>
-  
-  <Accordion title="Getting rate limit errors">
-    **Possible Issues:**
-    - Exceeded your plan's API rate limits
-    - Too many concurrent requests
-    - Application not handling retries properly
-    
-    **Solutions:**
-    - Implement exponential backoff
-    - Reduce request frequency
-    - Consider upgrading your plan
-    - Batch requests where possible
+
+  <Accordion title="Calls refused on a restricted key">
+    An `msr-` key only permits the method and path combinations it was pinned to at creation. There is no way to widen an existing restricted key — issue a new one with the endpoints you need.
   </Accordion>
-  
+
   <Accordion title="Key accidentally exposed">
-    **Immediate Actions:**
-    1. Delete the key immediately
-    2. Generate a new replacement key
-    3. Update all applications
-    4. Review recent API usage for unauthorized access
-    5. If in version control, contact support about repository history
+    1. Delete it immediately
+    2. Issue a replacement
+    3. Update every application using it
+    4. Review your own application logs for calls you can't account for
   </Accordion>
 </AccordionGroup>
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="API Reference" icon="book" href="/api-reference">
-    Complete API documentation and endpoints
-  </Card>
-  
   <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
     Secure your user account with MFA
   </Card>
-  
-  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
-    Comprehensive security practices
+
+  <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
+    Manage active logins
   </Card>
-  
+
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Platform and account security
+  </Card>
+
   <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
-    What to do if compromised
+    What to do if an account is compromised
   </Card>
 </CardGroup>

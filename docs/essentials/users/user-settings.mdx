@@ -4,551 +4,293 @@ description: "Manage your personal profile, security settings, and preferences"
 icon: "user-gear"
 ---
 
-# User Settings
+Your personal settings live at **Settings**, reached from the user menu. They are yours alone — nothing here changes anything for anyone else in the account.
 
-Configure your personal QuivaWorks account settings, including profile information, security options, and preferences. These settings are specific to you and don't affect other users.
+Settings is a list of sections down the left: **Profile**, **Advanced Mode**, **Appearance**, **Sound**, **Notifications**, **Credentials**, **Password and authentication**, **Sessions**, **API keys**, **Calendars**, **Recordings**, **Summarization Templates**, and **Logout**.
 
-## Accessing Your Settings
+<Note>
+Client users see a shorter list. Advanced Mode, API keys, Calendars, Recordings and Summarization Templates are hidden for them.
+</Note>
 
-Click your profile icon in the bottom left corner and select "Settings" to access your personal configuration.
+## Profile
 
-## Profile Information
+Your avatar and your name.
 
-### Updating Your Name
+- **Avatar** — **Upload** a picture, or **Remove** the one you have.
+- **Name** — first and last name, then **Save**.
 
-Change your display name:
+Your name is what other people in the account see next to you, including in the Users list.
 
-<Steps>
-  <Step title="Navigate to Profile">
-    Settings → Profile
-  </Step>
-  
-  <Step title="Update Name">
-    Edit your first and last name
-  </Step>
-  
-  <Step title="Save">
-    Click "Save Changes"
-  </Step>
-</Steps>
+## Appearance
 
-Your display name appears in:
-- User lists in account management
-- Activity logs and audit trails
-- Collaboration features
-- Email notifications
+Pick a theme: **Light**, **Dark** or **Auto**. Auto follows your system setting.
 
-## Password & Authentication
+## Sound
 
-### Changing Your Password
-
-<Steps>
-  <Step title="Navigate to Credentials">
-    Settings → Credentials
-  </Step>
-  
-  <Step title="Enter Current Password">
-    Verify your identity
-  </Step>
-  
-  <Step title="Enter New Password">
-    Must meet requirements:
-    - Minimum 8 characters (12+ recommended)
-    - Uppercase and lowercase letters
-    - At least one number
-    - At least one special character
-  </Step>
-  
-  <Step title="Confirm New Password">
-    Re-enter to verify
-  </Step>
-  
-  <Step title="Update">
-    Click "Update Password"
-  </Step>
-</Steps>
-
-<Info>
-After changing your password, all your other active sessions will be terminated. You'll remain logged in on your current device.
-</Info>
-
-### Forgot Your Password?
-
-If you can't remember your current password:
-
-1. Log out of your account
-2. Click "Forgot password?" on the login page
-3. Enter your account name and email
-4. Check your email for reset instructions
-5. Create a new password
-
-[Password recovery guide →](/essentials/security/authentication#password-recovery)
-
-### Multi-Factor Authentication (MFA)
-
-<Warning>
-MFA is strongly recommended for all users and required for Admin and Root roles.
-</Warning>
-
-#### Setting Up MFA
-
-<Tabs>
-  <Tab title="Passkey (Recommended)">
-    Use biometrics or device PIN for secure, passwordless authentication:
-    
-    <Steps>
-      <Step title="Navigate to MFA">
-        Settings → Password and Authentication
-      </Step>
-      
-      <Step title="Add Passkey">
-        Click "Add Passkey"
-      </Step>
-      
-      <Step title="Follow Device Prompts">
-        Complete setup using:
-        - Touch ID / Face ID (mobile)
-        - Windows Hello (PC)
-        - Touch ID (Mac)
-        - Security key (YubiKey, etc.)
-      </Step>
-      
-      <Step title="Save Recovery Codes">
-        Download and store securely
-      </Step>
-    </Steps>
-  </Tab>
-  
-  <Tab title="Authenticator App">
-    Use time-based codes from apps like Google Authenticator or Authy:
-    
-    <Steps>
-      <Step title="Navigate to MFA">
-        Settings → Password and Authentication
-      </Step>
-      
-      <Step title="Add Authenticator">
-        Click "Add Authenticator App"
-      </Step>
-      
-      <Step title="Scan QR Code">
-        Open your authenticator app and scan
-      </Step>
-      
-      <Step title="Enter Code">
-        Type the 6-digit code to verify
-      </Step>
-      
-      <Step title="Save Recovery Codes">
-        Download and store securely
-      </Step>
-    </Steps>
-  </Tab>
-</Tabs>
-
-[Complete MFA guide →](/essentials/security/authentication)
-
-#### Managing Recovery Codes
-
-Recovery codes provide backup access if you lose your MFA device.
-
-**To view your recovery codes:**
-
-1. Settings → Password and Authentication
-2. Scroll to "Recovery Codes"
-3. Click "View"
-
-**To generate new codes:**
-
-1. Settings → Password and Authentication
-2. Click "Generate New Recovery Codes"
-3. Download and store securely
-
-<Warning>
-Generating new codes invalidates all previous codes. Store them in a password manager or secure location immediately.
-</Warning>
-
-## Session Management
-
-### Viewing Active Sessions
-
-See all devices where you're currently logged in:
-
-1. Settings → Sessions
-2. Review each session:
-   - Device type (Macintosh, Windows, etc.)
-   - Browser (Chrome, Firefox, Safari)
-   - Location (when available)
-   - IP address
-   - Expiration time
-
-<img 
-  src="/images/essentials/user-sessions.png" 
-  alt="Active Sessions"
-  style={{ maxHeight: '400px', width: 'auto' }}
-  className="rounded-lg"
-/>
-
-### Terminating Sessions
-
-**To end a specific session:**
-
-1. Find the session in your list
-2. Click "Terminate session"
-
-**To end all other sessions:**
-
-1. Click "Terminate sessions" at the top
-2. Confirm the action
-
-<Tip>
-Use this if you forgot to log out on a shared computer or suspect unauthorized access.
-</Tip>
-
-### Session Lifetimes
-
-- **Access Token:** 1 hour
-- **Refresh Token:** 24 hours
-
-After 24 hours of inactivity, you'll need to log in again.
-
-[Complete session guide →](/essentials/security/sessions)
-
-## API Keys
-
-Manage API keys for programmatic access to QuivaWorks.
-
-### Creating an API Key
-
-<Steps>
-  <Step title="Navigate to API Keys">
-    Settings → API Keys
-  </Step>
-  
-  <Step title="Click Add">
-    Click the "Add" button
-  </Step>
-  
-  <Step title="Name Your Key">
-    Enter a descriptive name (e.g., "Production App", "CI/CD Pipeline")
-  </Step>
-  
-  <Step title="Copy Key">
-    **Copy immediately** - it won't be shown again
-  </Step>
-  
-  <Step title="Store Securely">
-    Save in password manager or secret management system
-  </Step>
-</Steps>
-
-<Warning>
-API keys inherit your user permissions and expire after 3 months. Never commit keys to version control.
-</Warning>
-
-### Managing Your Keys
-
-**To view your keys:**
-- Settings → API Keys
-- See all active keys with creation and expiration dates
-
-**To delete a key:**
-1. Click on the key name
-2. Click "Delete"
-3. Confirm deletion
-
-<Info>
-Deleting a key immediately revokes access. Any applications using it will stop working.
-</Info>
-
-[API key best practices →](/essentials/security/api-keys)
+Turns the product's notification sounds on and off.
 
 ## Notifications
 
-### Email Notifications
-
-You'll receive automatic email notifications for:
-
-<CardGroup cols={2}>
-  <Card title="Security Events" icon="shield-halved">
-    - Password changed
-    - Email change requested
-    - Passkey added
-    - Recovery codes viewed
-    - New device login
-  </Card>
-  
-  <Card title="Account Changes" icon="user">
-    - Added to new account
-    - Role changed
-    - Account renamed
-    - Suspended/reactivated
-  </Card>
-  
-  <Card title="Billing" icon="credit-card">
-    - Payment failed
-    - Subscription changed
-    - Plan upgraded/downgraded
-    - Invoice available
-  </Card>
-  
-  <Card title="System" icon="bell">
-    - Scheduled maintenance
-    - Service updates
-    - Important announcements
-  </Card>
-</CardGroup>
-
-<Note>
-Email notification preferences are not yet customizable. All security and account-related emails are sent automatically.
-</Note>
-
-## Personal Preferences
-
-### Language & Region
-
-Currently not customizable. The interface language is determined by:
-- Your browser settings
-- Available translations
-
-### Time Zone
-
-Currently not customizable. Times are displayed:
-- In your browser's local time zone
-- With clear timezone indicators
-
-### Theme
-
-Currently not customizable. The interface uses:
-- System-level dark/light mode preferences
-- Responsive design for all screen sizes
-
-<Info>
-Additional personalization options are planned for future releases.
-</Info>
-
-## Privacy & Data
-
-### Your Data Rights
-
-Under GDPR, you have the right to:
+Every kind of notification has its own **In app** and **Email** toggle, grouped by what it is about.
 
 <AccordionGroup>
-  <Accordion title="Access Your Data" icon="folder-open">
-    Request a copy of your personal data at any time.
-    
-    To export your data:
-    - Use buckets to download stored information
-    - Contact support@quiva.ai for complete data export
+  <Accordion title="Tasks" icon="list-check">
+    Status changes, assignment changes, mentions and watcher updates. These can be delivered both in app and by email.
   </Accordion>
-  
-  <Accordion title="Correct Your Information" icon="pen">
-    Update your personal information:
-    - Name and email in your profile settings
-    - Company details (if Root/Admin)
-    - Billing information (if appropriate role)
+
+  <Accordion title="Abbie" icon="robot">
+    Abbie run completed, check-ins, follow-ups, suggestions, conversation mentions, rapport suggestions, correction suggestions, skill suggestions, authorisation requests and decision requests.
+
+    Email is not available for Abbie notifications yet — the toggles are in-app only.
   </Accordion>
-  
-  <Accordion title="Delete Your Data" icon="trash">
-    Request account deletion:
-    - Only Root users can close accounts
-    - All data permanently deleted within 30 days
-    - Cannot be undone
-    
-    [Account closure guide →](/essentials/account/closing-account)
+
+  <Accordion title="Billing" icon="credit-card">
+    Low credit balance and auto top-up failed. In-app only for now.
   </Accordion>
-  
-  <Accordion title="Data Portability" icon="download">
-    Export your data in usable formats:
-    - Download from buckets
-    - Request complete export from support
+
+  <Accordion title="Delivery" icon="paper-plane">
+    Two controls that apply across everything above:
+
+    - **Email grouping** — batches email rather than sending one per event.
+    - **Quiet hours** — a start and end time during which you are not disturbed.
   </Accordion>
 </AccordionGroup>
 
-To exercise your rights, contact [support@quiva.ai](mailto:support@quiva.ai)
+### Time zone
 
-### What Data We Store
+Quiet hours, reminders and every other wall-clock decision follow the time zone stored on your profile.
 
-**Your Personal Information:**
-- Name and email address
-- Password (encrypted hash only)
-- MFA settings and recovery codes
-- Login activity and sessions
-- API keys you've created
-- Your activity within the platform
+QuivaWorks reads your browser's time zone and, when it differs from the one on file, asks whether to adopt it rather than switching silently. Declining is remembered on that device only, so travelling with a laptop does not quietly change your quiet hours on your phone.
 
-**We Never:**
-- Sell your data to third parties
-- Use your data to train AI models
-- Share your data between accounts
-- Access your data without permission
+## Credentials
 
-[Privacy policy →](https://quiva.ai/legal.html#privacy)
+This section changes the **email address** you sign in with. It is also the address that receives system notifications and password-reset mail.
 
-## Account Information
+Enter the new address and click **Request change**. If you have two-factor authentication set up, you will be asked to pass it first.
 
-### Your Current Account
+## Password and authentication
 
-View your account details:
+Everything about how you prove who you are, in one place.
 
-**Account Information:**
-- Account name you're logged into
-- Your email address
-- Your current role and permissions
-- Account owner and admins
+### Changing your password
 
-**Plan Information:**
-- Current plan tier
-- Usage statistics
-- Billing cycle
-- Next renewal date
+Click **Change password**, enter your current password and the new one twice.
 
-<Note>
-To view billing details, you need Root, Admin, or Billing role. [Learn about roles →](/essentials/users/roles-permissions)
-</Note>
+A password must be **8 to 72 characters** and contain an uppercase letter, a lowercase letter, a digit and a special character. Common words are rejected.
 
-### Switching Between Accounts
+<Info>
+If you have two-factor authentication enabled, a **Confirm that it's you** step runs before the change is applied.
+</Info>
 
-If you have access to multiple QuivaWorks accounts:
+Changing your password ends all of your other sessions — you stay signed in on the device you changed it from — and sends you a confirmation email.
 
-1. Log out of your current account
-2. On the login page, enter the **account name** for the account you want
-3. Enter your email and password
-4. Complete MFA verification
+If you cannot remember your current password, use **Forgot Password** on the login page. It asks for your email address and sends you a reset link.
 
-Each account is independent with its own resources and billing.
+### Passkey
+
+Passwordless sign-in using touch, facial recognition, a device password or a PIN. Use **Add** to register one and **Manage** to review what is registered.
+
+Passkeys also work at the login page itself, through **Login with Passkey**.
+
+### Two-factor authentication
+
+Under **Authenticator App**, click **Add** and scan the code with an authenticator app. After that, signing in asks for the six-digit code as well as your password.
+
+<Tip>
+Two-factor authentication is not mandatory for any role, and the setup screen offers **Set Up Later**. Turn it on anyway, especially if you hold root or admin.
+</Tip>
+
+### Recovery codes
+
+Recovery codes get you back in if you lose your two-factor device. There are ten of them.
+
+- **View** — shows your current codes.
+- **Get New** — issues a fresh set. The previous ten stop working immediately.
+
+<Warning>
+Store recovery codes in a password manager, not in email or a plain note. On the two-factor screen at sign-in, **Recovery Code** is one of the method tabs.
+</Warning>
+
+Root and admin users can also view or reissue recovery codes for other people in the account. Whenever codes are viewed, the owner is emailed a notice.
+
+## Sessions
+
+Every device you are currently signed in on, one card each. A card shows the account name, your role, location, IP address, device, browser and when it expires. Your current session is marked **Your session**.
+
+- **Terminate session** ends that one.
+- **Terminate sessions**, at the top of the page, ends them in bulk.
+
+<Warning>
+**Copy token** puts a live bearer token for that session on your clipboard. Anyone who gets hold of it can act as you until it expires. Only copy one when you have a specific need, and clear your clipboard afterwards.
+</Warning>
+
+### How long a session lasts
+
+- **Session token:** 24 hours
+- **Refresh token:** 7 days
+
+There is no configurable session timeout, no cap on how many sessions you can have, and no device-tracking setting.
+
+An administrator can end your sessions too, using **Logout** on your user in the Users list.
+
+[More on sessions →](/essentials/security/sessions)
+
+## API keys
+
+Keys for reaching QuivaWorks programmatically. The table lists **Name**, **Account**, **Last 4 Characters**, **Created** and **Expires**.
+
+### Creating a key
+
+<Steps>
+  <Step title="Open API keys">
+    Settings → **API keys**.
+  </Step>
+
+  <Step title="Add">
+    Click **Add** and give the key a descriptive name.
+  </Step>
+
+  <Step title="Copy it now">
+    Copy the key, or use **Download Credentials**. It is not shown again.
+  </Step>
+
+  <Step title="Store it somewhere safe">
+    A password manager or your secret store — never version control.
+  </Step>
+</Steps>
+
+### Prefixes
+
+- **`ms-`** — a normal key.
+- **`msr-`** — a restricted key, pinned to specific endpoints when it was created.
+
+The prefix uses a hyphen.
+
+### Expiry
+
+Expiry defaults to **90 days**, but it is configurable when you create the key — and a negative value produces a key that never expires. Because expiry varies key to key, check the **Expires** column rather than assuming a fixed lifetime.
+
+### Scope
+
+A key is scoped either to **you** or to the **account**.
+
+<Warning>
+An account-scoped key can only be created by root or admin, and its scope is re-checked every time it is used. It has a far larger blast radius than a personal key — treat it as a shared credential.
+</Warning>
+
+### Deleting a key
+
+Use the key's menu → **Delete Key**. Access stops immediately and anything using it breaks.
+
+<Info>
+There are no usage logs for API keys. If you need to know a key is no longer in use, rotate it and watch for what breaks.
+</Info>
+
+[More on API keys →](/essentials/security/api-keys)
+
+## The other sections
+
+- **Advanced Mode** — reveals the more technical surfaces in the product.
+- **Calendars** — connects your calendars.
+- **Recordings** — your meeting recordings.
+- **Summarization Templates** — the templates used to summarise meetings.
+- **Logout** — signs you out, after a confirmation.
+
+## Working in more than one account
+
+An account is a separate tenancy with its own people, resources and billing. To move between accounts, sign out and sign in again with the other **account name** on the login page.
 
 ## Troubleshooting
 
 <AccordionGroup>
   <Accordion title="Can't change my password">
-    **Common causes:**
-    - Entered wrong current password
-    - New password doesn't meet requirements
-    - Browser autocomplete interfering
-    
-    **Solutions:**
-    - Verify current password is correct
-    - Ensure new password has 8+ chars, uppercase, lowercase, number, special char
-    - Try disabling autocomplete
-    - Use "Forgot password?" if you can't remember current password
+    - Check the current password is right.
+    - The new one needs 8–72 characters with upper case, lower case, a digit and a special character, and must not be a common word.
+    - If two-factor is enabled, the change only lands after the **Confirm that it's you** step.
+    - Use **Forgot Password** on the login page if the current password is the problem.
   </Accordion>
-  
-  <Accordion title="Lost my MFA device">
-    **If you have recovery codes:**
-    1. Use a recovery code to log in
-    2. Go to Settings → Password and Authentication
-    3. Remove compromised MFA device
-    4. Add new MFA method
-    5. Generate new recovery codes
-    
-    **If you lost recovery codes too:**
-    - Contact an Admin to issue new recovery codes
-    - They can reset your MFA from user management
-    - Set up MFA again immediately after logging in
+
+  <Accordion title="Lost my two-factor device">
+    On the sign-in screen, switch to the **Recovery Code** tab and use one of your ten codes. Once you are in, remove the old device under **Password and authentication**, add a new one, and issue a fresh set of codes with **Get New**.
+
+    If you have lost the codes too, ask a root or admin user to issue new ones for you from the Users page.
   </Accordion>
-  
+
   <Accordion title="API key not working">
-    **Check these items:**
-    - Key hasn't expired (3-month limit)
-    - Key wasn't deleted
-    - Using correct Authorization header format
-    - Your role has necessary permissions
-    
-    **Solution:**
-    - Generate a new key if expired or deleted
-    - Verify format: `Authorization: Bearer YOUR_KEY`
-    - Check with Admin if permissions issue
+    - Check the **Expires** column — the lifetime is set per key, not fixed.
+    - Check the key was not deleted.
+    - Check the header format: `Authorization: Bearer YOUR_KEY`.
+    - A personal key carries your own access; if you are hitting a permission wall, your role may be the reason.
   </Accordion>
-  
-  <Accordion title="Not receiving security emails">
-    **Check:**
-    - Spam/junk folder
-    - Email filters or rules
-    - Correct email address in your profile
-    
-    **If still not receiving:**
-    - Verify your email address is correct
-    - Add noreply@quiva.ai to contacts
-    - Contact support if emails are being blocked
+
+  <Accordion title="Not receiving email">
+    - Check your spam folder and any filters.
+    - Confirm the address under **Credentials** is the one you expect.
+    - Check the **Notifications** section — the kind of message you are waiting for may have its Email toggle off, or fall inside your quiet hours.
+    - Abbie and billing notifications are in-app only for now; no email is sent for those.
   </Accordion>
-  
-  <Accordion title="Can't access certain settings">
-    Some settings require specific roles:
-    
-    - **Billing information:** Root, Admin, or Billing role only
-    - **User management:** Root or Admin only
-    - **Account closure:** Root only
-    
-    **Solution:**
-    Ask an Admin to grant appropriate permissions or make changes for you.
-    
-    [Learn about role permissions →](/essentials/users/roles-permissions)
+
+  <Accordion title="Can't reach a setting or page">
+    Some surfaces depend on your role: **Billing & Plans** needs root, admin or billing; the **Account** page needs root or admin; closing the account needs root. Clients also have several personal settings hidden.
+
+    [What each role can reach →](/essentials/users/roles-permissions)
   </Accordion>
 </AccordionGroup>
 
-## Security Best Practices
+## Keeping your account safe
 
 <CardGroup cols={2}>
-  <Card title="Enable MFA Immediately" icon="shield-check">
-    Set up MFA as soon as you create your account. Use passkeys for strongest security.
+  <Card title="Turn on two-factor" icon="shield-check">
+    Nothing enforces it, so it is on you. A passkey is the strongest option.
   </Card>
-  
-  <Card title="Use Strong Passwords" icon="key">
-    12+ characters with mixed case, numbers, and symbols. Use a password manager.
+
+  <Card title="Store recovery codes properly" icon="vault">
+    A password manager. Not email, not a note on your desktop.
   </Card>
-  
-  <Card title="Review Sessions Monthly" icon="calendar-check">
-    Check active sessions regularly and terminate any you don't recognize.
+
+  <Card title="Review your sessions" icon="calendar-check">
+    Terminate anything you do not recognise, and anything on a device you no longer have.
   </Card>
-  
-  <Card title="Secure Recovery Codes" icon="vault">
-    Store recovery codes in a password manager, not in email or unencrypted notes.
+
+  <Card title="Be careful with Copy token" icon="key">
+    It is a live credential. Copy one only when you need it.
   </Card>
-  
-  <Card title="Rotate API Keys" icon="rotate">
-    Generate new keys before the 3-month expiration. Delete unused keys immediately.
+
+  <Card title="Rotate API keys" icon="rotate">
+    Replace a key before its Expires date and delete the ones nothing uses.
   </Card>
-  
-  <Card title="Act on Security Emails" icon="envelope-open-text">
-    If you receive a security notification for an action you didn't perform, investigate immediately.
+
+  <Card title="Act on security email" icon="envelope-open-text">
+    A notice about something you did not do is worth chasing immediately.
   </Card>
 </CardGroup>
 
-[Complete security guide →](/essentials/security/overview)
+[Privacy policy →](https://quiva.ai/legal.html#privacy)
 
-## Getting Help
-
-<CardGroup cols={3}>
-  <Card title="Security Issues" icon="shield-halved" href="/essentials/security/incident-response">
-    Suspect unauthorized access or compromise
-  </Card>
-  
-  <Card title="Account Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    General account and technical questions
-  </Card>
-  
-  <Card title="Privacy Questions" icon="user-lock" href="mailto:support@quiva.ai">
-    Data privacy and GDPR requests
-  </Card>
-</CardGroup>
-
-## Related Resources
+## Related
 
 <CardGroup cols={2}>
   <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
-    Complete MFA and password guide
+    Passkeys, two-factor and recovery codes in full
   </Card>
-  
+
   <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
-    Detailed API key management
+    Scopes, restricted keys and rotation
   </Card>
-  
+
   <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
-    Advanced session management
+    Active logins and how to end them
   </Card>
-  
+
   <Card title="Roles & Permissions" icon="key" href="/essentials/users/roles-permissions">
-    What your role can access
+    What your role can reach
+  </Card>
+
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Protecting your account
+  </Card>
+
+  <Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+    Account and technical questions
   </Card>
 </CardGroup>

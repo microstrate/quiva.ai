@@ -1,0 +1,169 @@
+---
+title: "Building a form"
+description: "The form editor — the palette, the canvas and the inspector, plus generating a layout from a description and previewing before you save"
+icon: "grid-2-plus"
+---
+
+Forms are built in the **form editor**, a full-page, three-column screen. Reach it from
+**Manage Record Sets**, or from the "…" menu on a Record Set in a Space's Records tab, where the
+entry is labelled **Form Editor**.
+
+<Note>
+A form can only place fields that already exist. If the Record Set has no schema yet the canvas says
+so — add the properties first, from the **View & edit the schema** control in the header.
+</Note>
+
+---
+
+## The three columns
+
+<CardGroup cols={3}>
+  <Card title="Palette" icon="shapes">
+    Everything you can add, on the left. Drag a tile onto the canvas, or click it to drop it at the
+    end.
+  </Card>
+  <Card title="Canvas" icon="table-cells">
+    The form itself, laid out as rows. This is what the person filling it in will see.
+  </Card>
+  <Card title="Inspector" icon="sliders">
+    Settings for whatever is selected — a field, a row, a repeater, an element, or the form as a
+    whole when nothing is selected.
+  </Card>
+</CardGroup>
+
+### The palette
+
+Four collapsible sections:
+
+| Section | Holds |
+|---|---|
+| **Layout** | Row shapes — one to four even columns, and uneven splits like 2 : 1, 1 : 3 and 1 : 2 : 1. Dropping one inserts an empty row. |
+| **Input Types** | The controls people type into. See [Fields and elements](/forms/elements). |
+| **Typography** | Headings, paragraphs, notes, links and alerts — text on the form that is not a question. |
+| **Containers** | The **Repeater**, for a repeating block, and cards for grouping a section visually. |
+
+<Warning>
+**Dropping an input does not bind it to a field.** A newly placed input is *unbound* — it shows on
+the canvas but has no property behind it and stores nothing. Select it and use the inspector's
+binding control to point it at a schema property. Unbound inputs are stripped when the form is
+saved.
+</Warning>
+
+### The canvas
+
+The canvas is a stack of rows, each row a grid of columns. Fields sit in the columns.
+
+- Drag a tile from the palette onto a row to place it; drag a placed field to move it.
+- Rows can be reordered.
+- The arrow keys move the selection and **Enter** opens it; **Escape** clears it.
+- A repeater gets its own miniature canvas inside the row, laid out the same way.
+
+### The inspector
+
+What the inspector offers depends on what is selected.
+
+| Selection | Tabs |
+|---|---|
+| A placed field | **Configure**, **Validation**, **Rules** |
+| A row | **Layout**, **Rules** |
+| A repeater | **Configure**, **Rules** |
+| A heading, note, alert or card | **Configure**, **Rules** |
+| Nothing | **Form settings** |
+
+**Configure** holds the presentation settings — label, placeholder, helper text, spacing, default
+value, and for choice inputs the list of options. **Validation** holds the constraints — required,
+minimum and maximum, decimal places, date bounds, item and file limits. **Rules** is where
+conditional logic is authored; see [Form rules](/forms/form-rules).
+
+---
+
+## Form settings
+
+Click empty space to deselect, and the inspector shows the form as a whole: the gap between rows,
+plus three controls.
+
+<AccordionGroup>
+  <Accordion title="Generate Layout" icon="wand-magic-sparkles">
+    Opens **Generate form**. Describe the form you want in plain language — type `@` to reference a
+    field by name from the schema — and press **Generate**. What comes back **replaces the whole
+    canvas**, so generate first and refine by hand, rather than the other way round. If it cannot
+    build a layout it says so and leaves the canvas alone.
+  </Accordion>
+  <Accordion title="View form logic" icon="diagram-project">
+    Opens **Form logic**, a read-only overview of every conditional rule on the form, grouped by the
+    element it affects: which fields each condition watches, what the condition says in plain
+    English, and what it drives. It also flags a rule that reads a field which is **not placed on
+    this form** — a common cause of a rule that never fires. Disabled while the form has no rows.
+  </Accordion>
+  <Accordion title="Raw Editor" icon="code">
+    Edits the layout as JSON directly. It is an escape hatch for administrators and is not offered
+    to most accounts.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## The header
+
+Along the top: a back arrow, the form switcher, the **Edit / Preview** tabs, undo and redo, and
+**Save**. Save stays disabled until something changes.
+
+The switcher shows `Record Set › Form` and carries icon controls for:
+
+- **Edit form title & description**
+- **Duplicate form**
+- **Add form**
+- **View & edit the schema**
+- **Add flow** / **Edit flow** — see [Form flows](/forms/form-flows)
+- **Delete form** — disabled on the last remaining form
+
+<Note>
+A warning triangle appears in the header when the schema marks a field required but the form does
+not place it. Hover it for the list. Such a form can never be submitted successfully: the service
+insists on a value for a field nobody was asked for.
+</Note>
+
+---
+
+## Preview before you save
+
+The **Preview** tab renders the form exactly as someone filling it in would see it, and its submit
+control runs the **real** validation — both the placed-field checks and the schema checks — then
+reports the result without saving anything.
+
+<Steps>
+  <Step title="Switch to Preview">
+    Editing chrome disappears; conditional rules start evaluating against what you type.
+  </Step>
+  <Step title="Fill it in the way a colleague would">
+    Answer the question that drives your conditional logic both ways and watch the dependent rows
+    appear and disappear.
+  </Step>
+  <Step title="Submit">
+    You get either the list of validation failures or a confirmation that validation passed — with
+    an explicit reminder that nothing was saved.
+  </Step>
+  <Step title="Go back to Edit and Save">
+    Preview never writes. Saving the form is a separate, deliberate step.
+  </Step>
+</Steps>
+
+<Warning>
+Preview is the only place a conditional rule is genuinely exercised before real people meet it. A
+rule the engine cannot run is skipped rather than obeyed — the field stays visible and the rule does
+nothing — so a form carrying rules should never be saved without being previewed both ways. See
+[when a rule cannot be evaluated](/forms/form-rules#when-a-rule-cannot-be-evaluated).
+</Warning>
+
+---
+
+## Saving
+
+Saving sends **every** form on the Record Set — the one on screen merged into the copy of the others
+loaded when the editor opened. Two people editing two different forms of the same Record Set at the
+same time will therefore undo each other's work. Edit one at a time.
+
+Switching to another form in the switcher with unsaved edits prompts first: **Unsaved changes —
+switch forms and discard them?** Switching discards them; there is no per-form draft.
+
+Changing a form never touches records already saved. It changes only what is asked for next time.

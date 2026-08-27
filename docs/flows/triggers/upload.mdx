@@ -1,758 +1,169 @@
 ---
 title: 'Upload Trigger'
-description: 'Trigger flows when documents are uploaded - process PDFs, images, spreadsheets, and more'
+description: 'Start a flow by uploading a file, and give the run the file to work on'
 icon: 'upload'
 ---
 
-The Upload trigger allows you to trigger flows when documents are uploaded. Perfect for processing invoices, extracting data from forms, analyzing images, converting documents, and any workflow that starts with a file upload.
+# Upload Trigger
 
-When you add an Upload trigger, you can directly upload files through the trigger interface to test and run your flow with real documents.
+The Upload trigger gives a flow a drop zone. Drop a file into it and the flow runs, with the file stored and attached to the run.
 
----
+It is the simplest trigger in the product: there is nothing to configure. The node has a **General** tab for its name and ID, and an **Upload** tab holding the drop zone.
 
-## How It Works
-
-1. Add an Upload trigger to your flow
-2. Click on "Upload" in the left sidebar
-3. Choose whether to trigger the **Draft (test version)** or **Published (live version)** of your flow
-4. Upload your file using the form (drag and drop or click to upload)
-5. Your flow triggers automatically with the uploaded file
-6. The file becomes immediately available to your flow agents through the trigger data
-7. Files are automatically cleaned up after 2 weeks by default
+<Note>
+This is **not** a watch on a storage bucket. Nothing fires when a file appears in your object store by some other route. The trigger fires because the upload itself names the flow — which today means the drop zone on this node.
+</Note>
 
 ---
 
-## Configuration
+## Using it
 
-### Direct Upload Interface
+<Steps>
+  <Step title="Add an Upload trigger">
+    From the **Add Node** panel. The editor is titled **Upload File Trigger**.
+  </Step>
+  <Step title="Open the Upload tab">
+    Drag a file onto the drop zone, or click to choose one.
+  </Step>
+  <Step title="The flow runs">
+    A green confirmation appears: *"The file was uploaded successfully and the flow was triggered."*
+  </Step>
+</Steps>
 
-When you add the Upload trigger to your flow:
+One file at a time. Uploading several files means several runs, each carrying one file.
 
-1. Click on **"Upload"** in the left sidebar
-2. Select your trigger mode:
-   - **Draft** - Triggers the test version of your flow (for testing before publishing)
-   - **Published** - Triggers the live version of your flow
+<Warning>
+There is no progress indicator while the file uploads — the drop zone looks idle until the confirmation appears. Give a large file a moment before assuming nothing happened.
+</Warning>
 
-3. Upload your file:
-   - **Drag and drop** a file into the upload area
-   - **Click to upload** and browse for a file
+### Which version of the flow runs
 
-4. The flow triggers immediately with your uploaded file
+The **Trigger Flow** toggle offers **Draft** and **Published**.
 
-**Use cases:**
-- **Draft mode**: Test your flow with sample documents before going live
-- **Published mode**: Process production documents through your live workflow
-
-### File Storage
-
-Uploaded files are stored in your account's `microstrate-flow-object-trigger` bucket for **2 weeks** by default. After the storage period, files are automatically cleaned up to save space.
-
-### Accepted File Types
-
-**Documents:**
-- PDF (.pdf)
-- Microsoft Word (.docx, .pptx)
-- Text files (.txt, .md, .rtf)
-- CSV (.csv)
-- Excel (.xlsx)
-- LibreOffice
-
-**Images:**
-- JPEG (.jpg, .jpeg)
-- PNG (.png)
-- GIF (.gif)
-
-**Other:**
-- JSON (.json)
-- XML (.xml)
-- ZIP archives (.zip, .gzip, .tar)
-
-### File Size Limits
-
-**Default limits by plan:**
-
-- Free: 10 MB per file
-- Starter: 25 MB per file
-- Pro: 50 MB per file
-- Team: 100 MB per file
-- Enterprise: Custom limits
-
-Files exceeding the limit will be rejected with an error message.
-
-### Multiple Files
-
-**Single file mode (default):** One file per upload request.
-
-COMING SOON: **Multiple files mode:** Allow multiple files in single upload. Useful for batch processing. Each file will be processed by the flow.
+<Warning>
+**The toggle does nothing.** The upload always runs the version of the flow you have open in the editor, whatever the toggle is set to. In practice that means editing a flow and uploading runs the **draft**; opening the published flow and uploading runs the **published** one.
+</Warning>
 
 ---
 
-## Testing Your Flow
+## Where the file goes
 
-### Using Draft Mode
+Files land in a managed uploads bucket on your account and are **deleted after two weeks**. There is no way to extend that from the trigger.
 
-**Always test your flow in Draft mode first:**
+The stored key is a short random prefix plus your filename — `aB3xQ9.invoice.pdf` from `invoice.pdf`. The prefix keeps two uploads of the same name apart.
 
-1. Open your Upload trigger
-2. Select **"Draft"** as the trigger mode
-3. Upload a test file (invoice, form, image, etc.)
-4. Monitor the execution in your flow's draft environment
-5. Verify all steps work correctly with real file data
-6. Check that agents extract the correct information
-7. Ensure integrations and API calls function as expected
+### Limits
 
-**Benefits:**
-- Test with real files without affecting production
-- Iterate quickly on your flow design
-- Verify file processing logic works correctly
-- Safely test with sample documents before going live
+There is no accepted-file-type list. Any file the drop zone takes is uploaded, and nothing checks the extension or the content type at any point.
 
-### Using Published Mode
-
-Once you've tested in draft mode and published your flow:
-
-1. Select **"Published"** as the trigger mode
-2. Upload production files
-3. Flow processes files through your live workflow
-4. Monitor executions in your published flow logs
+The drop zone rejects files over **6 MB** in the browser. That is a client-side check on this control only — it is not a rule the platform enforces.
 
 ---
 
-## Working with Uploaded Files
+## What the flow receives
 
-### File Information Available to Agents
+`$.trigger` is exactly two keys:
 
-When a file is uploaded, your agents automatically have access to:
+```json
+{
+  "bucket": "microstrate-flow-object-trigger",
+  "key": "aB3xQ9.invoice.pdf"
+}
+```
 
-- **File name** - The original name of the uploaded file
-- **File type** - The MIME type (e.g., application/pdf, image/jpeg)
-- **File size** - Size in bytes
-- **File content** - The actual content of the file for processing
-- **Upload timestamp** - When the file was uploaded
+| Expression | Resolves to |
+|---|---|
+| `$.trigger.bucket` | the bucket the file went to |
+| `$.trigger.key` | the stored object key |
 
-### Using Agents to Process Files
+<Warning>
+**No metadata is delivered.** There is no file name, no MIME type, no size and no upload timestamp in the payload. The original filename survives only as the tail of `key`, after the random prefix. If a step needs the type, infer it from the extension or read it from the object itself.
+</Warning>
 
-Your AI agents can directly process uploaded files. Simply instruct your agent to:
+### Getting at the contents
 
-- **Extract data** from invoices, receipts, or forms
-- **Analyze content** from contracts or documents
-- **Recognize text** from images using OCR
-- **Parse data** from CSV or Excel files
-- **Summarize** long documents
-- **Categorize** documents by type or content
-- **Validate** that required information is present
+An [Assistant](/flows/steps/agents) step receives the file automatically — it is attached to the run as knowledge, so the assistant can read a PDF, a spreadsheet or an image without any fetch step in between. This is the intended shape for the trigger, and it is why the payload carries so little.
 
-**Example agent instructions:**
+Any other step reads the object store by bucket and key:
 
-*For invoice processing:*
-"Extract the invoice number, date, total amount, vendor name, and all line items from the uploaded PDF invoice."
+```
+obj://|$.trigger.bucket|/|$.trigger.key
+```
 
-*For resume screening:*
-"Read the uploaded resume and extract the candidate's name, email, phone, years of experience, education, and key skills. Then evaluate if they meet our minimum requirements of 3+ years experience in software development."
+### Routing on file type
 
-*For form data extraction:*
-"Extract all filled-in fields from the uploaded form image, including name, address, date, and signature status."
+There is no type field to branch on, so branch on the key:
 
----
+```
+$.trigger.key
+```
 
-## Use Cases
+Give a [Condition](/flows/steps/condition) step a rule over that string — the extension is the last part of it.
 
-### Invoice Processing
-
-**Scenario:** Automatically process uploaded invoices
-
-**Flow:**
-1. **Trigger:** Upload (accept .pdf)
-2. **Agent:** Extract invoice data
-   - Instruct agent to extract: invoice number, date, amount, line items, vendor info
-3. **Condition:** Check if amount is over approval threshold
-4. **Agent integration request:** Create entry in accounting system
-5. **Agent integration request:** Send notification to accounting team
-
-**Testing in Draft mode:**
-1. Upload a sample invoice
-2. Verify agent extracts all required fields correctly
-3. Check condition logic routes properly
-4. Confirm notifications are sent
-5. Publish flow and switch to Published mode for production invoices
-
-**Benefits:** Eliminate manual data entry, faster processing, reduce errors, automatic approval workflow.
+<Note>
+**What runs after the trigger is decided by each step's outcome, not by the arrows in the editor.** A Condition step's outcome names the step IDs to run next — one, several (they start at the same time), or the reserved `RESOLVE_SUCCESS` / `RESOLVE_ERROR` to end the run. A line drawn between two steps that no outcome names is decoration.
+</Note>
 
 ---
 
-### Resume Screening
+## Delivery
 
-**Scenario:** Screen uploaded resumes for job applications
+The upload and the flow run are two separate things, and only the first is confirmed to you.
 
-**Flow:**
-1. **Trigger:** Upload (accept .pdf, .docx)
-2. **Agent:** Extract candidate information and evaluate qualifications
-   - Instruct agent to extract: name, contact, experience, education, skills
-   - Evaluate against job requirements
-3. **Condition:** Does candidate meet minimum qualifications?
-   - Yes → Add to applicant tracking system
-   - No → Send polite rejection email
-4. **Agent integration request:** Notify hiring manager of qualified candidates
+<Warning>
+**A successful upload does not guarantee the flow started.** The upload is acknowledged as soon as the file is stored; the message that starts the flow is sent afterwards, is best-effort, and is not retried. If it is lost, the file sits in the bucket and nothing runs — with no error on either side.
+</Warning>
 
-**Testing in Draft mode:**
-1. Upload sample resumes with varying qualifications
-2. Verify agent extracts information correctly
-3. Test that qualification logic works properly
-4. Check both acceptance and rejection paths
-5. Validate ATS integration works
-
-**Benefits:** Automatic screening, consistent evaluation, faster response to candidates.
-
----
-
-### Form Data Extraction
-
-**Scenario:** Extract data from scanned forms
-
-**Flow:**
-1. **Trigger:** Upload (accept .pdf, .jpg, .png)
-2. **Agent:** Perform OCR and extract structured data
-   - Instruct agent to identify and extract all form fields
-3. **Agent:** Validate that required fields are filled
-4. **Condition:** Is data complete and valid?
-   - Yes → Save to database
-   - No → Flag for manual verification
-5. **Agent integration request:** Send confirmation or request additional info
-
-**Testing in Draft mode:**
-1. Upload sample scanned forms with varying quality
-2. Test OCR accuracy with different image types
-3. Verify data extraction maps to correct fields
-4. Check validation catches incomplete forms
-5. Test both complete and incomplete form paths
-
-**Benefits:** Digitize paper forms, reduce manual typing, improve accuracy.
-
----
-
-### Document Analysis
-
-**Scenario:** Analyze contract documents
-
-**Flow:**
-1. **Trigger:** Upload (accept .pdf, .docx)
-2. **Agent:** Read and analyze contract
-   - Instruct agent to extract: key terms, dates, obligations
-   - Identify non-standard clauses
-   - Flag potential risks
-3. **Agent:** Generate summary report
-4. **Agent integration request:** Save analysis to document management system
-5. **Agent integration request:** Email report to legal team
-
-**Testing in Draft mode:**
-1. Upload sample contracts
-2. Verify agent identifies key contract terms
-3. Check risk flagging works for non-standard clauses
-4. Test report generation format and content
-5. Validate document management system integration
-
-**Benefits:** Faster contract review, consistent analysis, risk identification.
-
----
-
-### Image Processing
-
-**Scenario:** Process and optimize uploaded images
-
-**Flow:**
-1. **Trigger:** Upload (accept .jpg, .png)
-2. **Function:** Validate image meets requirements (dimensions, format)
-3. **Function:** Resize image for web use
-4. **Function:** Generate thumbnails
-5. **Agent integration request:** Upload to CDN
-6. **Agent integration request:** Save URLs to database
-
-**Testing in Draft mode:**
-1. Upload test images of different sizes
-2. Verify resizing maintains quality
-3. Check thumbnail generation works
-4. Test CDN upload succeeds
-5. Validate database receives correct URLs
-
-**Benefits:** Automatic optimization, consistent image formats, faster page loads.
-
----
-
-### Receipt Processing
-
-**Scenario:** Extract data from expense receipts
-
-**Flow:**
-1. **Trigger:** Upload (accept .pdf, .jpg, .png)
-2. **Agent:** Extract receipt data and categorize
-   - Instruct agent to extract: merchant, date, amount, items, tax
-   - Categorize expense type (meals, travel, supplies, etc.)
-3. **Agent integration request:** Create expense record in system
-4. **Condition:** Does amount require manager approval?
-   - Yes → Create approval request
-   - No → Auto-approve
-5. **Agent integration request:** Notify employee of status
-
-**Testing in Draft mode:**
-1. Upload sample receipts of various formats
-2. Test extraction accuracy with different receipt types
-3. Verify expense categorization works correctly
-4. Check approval threshold logic
-5. Test notification delivery
-
-**Benefits:** Simplified expense reporting, automatic categorization, faster reimbursement.
-
----
-
-### Document Conversion
-
-**Scenario:** Convert documents to different formats
-
-**Flow:**
-1. **Trigger:** Upload (accept .docx, .xlsx, .pptx)
-2. **Function:** Convert to PDF
-3. **Function:** Generate preview images
-4. **Agent integration request:** Upload converted files to storage
-5. **Agent integration request:** Send download links to user
-
-**Testing in Draft mode:**
-1. Upload various document types
-2. Verify conversion maintains formatting
-3. Check preview image quality
-4. Test file storage upload
-5. Validate download links work
-
-**Benefits:** Universal format conversion, automatic processing, secure storage.
-
----
-
-### Data Import from Spreadsheets
-
-**Scenario:** Import data from uploaded spreadsheets
-
-**Flow:**
-1. **Trigger:** Upload (accept .csv, .xlsx)
-2. **Agent:** Parse and validate spreadsheet data
-   - Instruct agent to extract all rows and validate format
-   - Check for required columns
-   - Identify any errors or inconsistencies
-3. **Condition:** Is data valid?
-   - Yes → Proceed with import
-   - No → Generate error report
-4. **Agent integration request:** Bulk insert to database
-5. **Agent integration request:** Send confirmation or error report
-
-**Testing in Draft mode:**
-1. Upload sample spreadsheets with good and bad data
-2. Test parsing with different formats
-3. Verify validation catches invalid data
-4. Check error reporting is clear
-5. Test database insertion with small batches
-
-**Benefits:** Bulk data import, validation, error handling.
-
----
-
-## Best Practices
-
-### Testing Before Production
-
-**Always test in Draft mode:**
-
-1. Upload representative sample files
-2. Verify each step processes correctly
-3. Check error handling works
-4. Test with edge cases (corrupted files, wrong formats, etc.)
-5. Validate integrations connect properly
-6. Only switch to Published mode after thorough testing
-
-### Instructing Agents Effectively
-
-**Be specific in agent instructions:**
-
-- **Clear extraction requirements:** "Extract the invoice number, date, and total amount"
-- **Validation criteria:** "Check that all required fields are filled"
-- **Conditional logic:** "If the amount is over $1,000, flag for approval"
-- **Error handling:** "If the document is unreadable, indicate what information is missing"
-
-**Examples of good agent instructions:**
-
-*For invoices:*
-"Extract the following from the invoice: invoice number, invoice date, due date, vendor name, billing address, all line items with descriptions and amounts, subtotal, tax, and total. Format the output as structured data."
-
-*For contracts:*
-"Read this contract and identify: contract start date, end date, parties involved, key obligations for each party, payment terms, termination clauses, and any non-standard or unusual provisions. Flag any clauses that deviate from our standard contract template."
-
-*For resumes:*
-"Extract candidate information: full name, email, phone, current job title, years of experience, education (degree, school, year), and list of technical skills. Then evaluate: Does candidate have 5+ years of software engineering experience? Does candidate have a bachelor's degree or equivalent? List any skills matching our requirements: Python, React, AWS."
-
-### Using Conditions for Routing
-
-**Route files based on content:**
-
-Use Condition steps after your agent to route based on what was extracted:
-
-- Check if required information is present
-- Verify amounts are within acceptable ranges
-- Determine if manual review is needed
-- Route to different processing paths based on file type or content
-
-**Example condition logic:**
-
-*After invoice extraction:*
-- If amount > $5,000 → flag for approval
-- If amount ≤ $5,000 → Auto-approve and process
-
-*After resume screening:*
-- If meets minimum qualifications → Add to ATS and notify hiring manager
-- If doesn't meet qualifications → Send rejection email
-
-### File Validation
-
-**Use agents to validate files:**
-
-Instruct your agent to check:
-- Is the file readable and not corrupted?
-- Does it contain the expected type of content?
-- Are required fields or information present?
-- Is the data in the expected format?
-
-Add a Condition step after the agent to route invalid files to an error handler.
-
-### Error Handling
-
-**Build robust error handling:**
-
-- Use Condition steps to check for errors
-- Create separate paths for invalid files
-- Send clear error notifications
-- Errors are automatically logged for review
-
-**Example error handling flow:**
-
-1. Agent processes file
-2. Condition: Did agent successfully extract data?
-   - Yes → Continue processing
-   - No → Send error notification with file details
-
-### File Storage Management
-
-**Understanding file lifecycle:**
-
-- Files are stored for 2 weeks by default
-- Automatic cleanup after storage period
-- Files are accessible to agents during flow execution
-- Extract and save important data within your flow
-
-**Best practices:**
-- Process files promptly after upload
-- Don't rely on files being available after 2 weeks
-- Have agents extract and save all needed data during the flow
-- Monitor storage usage across your account
-
----
-
-## Working with Different File Types
-
-### PDF Documents
-
-**What agents can do:**
-- Extract all text content
-- Identify and extract specific data fields
-- Recognize tables and structured data
-- Read form fields
-- Extract embedded images
-
-**Common use cases:**
-- Invoice processing
-- Contract analysis
-- Form extraction
-- Document conversion
-
-**Agent instruction tips:**
-- Be specific about what data to extract
-- Ask agent to identify document structure
-- Request structured output format
-
----
-
-### Images
-
-**What agents can do:**
-- Perform OCR to extract text
-- Identify objects and scenes
-- Read handwritten text
-- Extract data from forms or documents
-- Analyze image content
-
-**Common use cases:**
-- Receipt processing
-- Form data extraction
-- Business card scanning
-- Quality inspection
-
-**Agent instruction tips:**
-- Specify what text or data to extract
-- Ask agent to describe image quality
-- Request validation of extracted data
-
----
-
-### Spreadsheets (Excel and CSV)
-
-**What agents can do:**
-- Read and parse data from rows and columns
-- Identify column headers
-- Extract specific data ranges
-- Validate data formats
-- Summarize data
-
-**Common use cases:**
-- Data import
-- Inventory updates
-- Financial data processing
-- Customer list uploads
-
-**Agent instruction tips:**
-- Specify which columns are important
-- Define expected data format
-- Ask agent to validate data quality
-- Request identification of errors
-
----
-
-### Word Documents
-
-**What agents can do:**
-- Extract all text content
-- Identify document structure
-- Parse tables and lists
-- Extract specific sections
-- Summarize content
-
-**Common use cases:**
-- Resume parsing
-- Report analysis
-- Template processing
-- Content extraction
-
-**Agent instruction tips:**
-- Ask agent to identify document sections
-- Specify what information to extract
-- Request structured output
-
----
-
-### JSON and XML
-
-**What agents can do:**
-- Parse structured data
-- Extract specific fields
-- Validate data structure
-- Transform data format
-
-**Common use cases:**
-- Data integration
-- Configuration import
-- API data processing
-
-**Agent instruction tips:**
-- Specify which fields to extract
-- Define expected data structure
-- Request validation of required fields
+If a run must not be missed, do not rely on this trigger alone. Put an [HTTP Request trigger](/flows/triggers/http-request) in front of it, where the caller gets a response and can retry.
 
 ---
 
 ## Troubleshooting
 
-### Upload Not Triggering Flow
+<AccordionGroup>
+  <Accordion title="The upload succeeded but the flow did not run">
+    Check **Monitoring** for a run at that time. If there is none, the trigger message was lost — re-upload the file.
+  </Accordion>
 
-**Check these items:**
+  <Accordion title="The wrong version of the flow ran">
+    The **Draft / Published** toggle is inert. Open the version you want to run, then upload.
+  </Accordion>
 
-1. **Flow status:** Ensure flow is saved
-2. **Trigger mode:** Verify you selected Draft or Published
-3. **File size:** Check file is within plan limits
-4. **File type:** Ensure file extension is allowed
-5. **Execution logs:** Review flow history for errors
+  <Accordion title="A large file is rejected">
+    The drop zone caps at 6 MB.
+  </Accordion>
 
-### Agent Not Processing File Correctly
+  <Accordion title="An assistant step cannot see the file">
+    Check the step is an Assistant step — only those receive the file automatically. Anything else has to read the object store using `$.trigger.bucket` and `$.trigger.key`.
+  </Accordion>
 
-**Common solutions:**
+  <Accordion title="A step needs the original filename">
+    Take it from `$.trigger.key`, after the random prefix and the first full stop.
+  </Accordion>
 
-1. **Test in Draft mode:** Upload sample files and check agent output
-2. **Clarify instructions:** Make agent instructions more specific
-3. **Check file format:** Ensure file type is supported
-4. **File quality:** Try with higher quality images or clearer PDFs
-5. **Review execution:** Check agent step output in flow logs
-
-### File Not Readable
-
-**Possible causes:**
-
-- File is corrupted or damaged
-- File format not supported
-- File is password protected
-- Image quality too low for OCR
-- File encoding issues
-
-**Solutions:**
-- Request file be re-uploaded
-- Try different file format
-- Remove password protection
-- Scan at higher resolution
-- Save with standard encoding
-
-### Processing Too Slow
-
-**Optimization tips:**
-
-1. **Test file size:** Use appropriately sized files
-2. **Simplify agent tasks:** Break complex tasks into steps
-3. **Optimize flow:** Remove unnecessary steps
-4. **Check integrations:** Ensure external APIs respond quickly
-
-### Data Extraction Inaccurate
-
-**Improvement strategies:**
-
-1. **Refine agent instructions:** Be more specific about what to extract
-2. **Add validation:** Use agents to double-check extracted data
-3. **Test with samples:** Try various file formats in Draft mode
-4. **Use structured prompts:** Ask agent to format output consistently
-5. **Add error checking:** Use Conditions to verify data quality
-
----
-
-## Monitoring and Debugging
-
-### Using Execution Logs
-
-Monitor your flow executions:
-
-1. Go to your flow's execution history
-2. Find the execution triggered by your file upload
-3. Review each step's output
-4. Check for errors or unexpected behavior
-5. View file information in trigger data
-6. Review agent responses and extracted data
-
-### Testing Different Scenarios
-
-**In Draft mode, test:**
-
-- Valid files that should succeed
-- Invalid file types that should be rejected
-- Corrupted files to test error handling
-- Files at or near size limits
-- Files with edge cases (empty, malformed, etc.)
-- Files with missing or incomplete data
-
-### Common Issues and Solutions
-
-**Issue:** Agent not extracting data correctly
-
-**Solution:**
-1. Upload sample in Draft mode
-2. Review agent output in execution logs
-3. Adjust agent instructions to be more specific
-4. Test with different file samples
-5. Add validation steps to check data quality
-
-**Issue:** Flow timing out on large files
-
-**Solution:**
-1. Test with smaller files first
-2. Break processing into smaller steps
-3. Consider file size limits for your use case
-4. Optimize agent prompts to be more efficient
-
-**Issue:** Integrations not receiving correct data
-
-**Solution:**
-1. Verify data extraction in Draft mode
-2. Check agent output format matches integration requirements
-3. Add a Map step to transform data if needed
-4. Test integration separately
-5. Review execution logs for errors
-
----
-
-## Advanced Flow Building
-
-### Conditional Processing by File Type
-
-Use Condition steps to route based on file type:
-
-**Flow example:**
-1. Upload trigger receives file
-2. Condition: Check file extension
-   - If PDF → Send to PDF processing agent
-   - If Image → Send to OCR agent
-   - If Spreadsheet → Send to data import agent
-   - Otherwise → Send error notification
-
-### Sequential Processing Steps
-
-Break complex tasks into multiple agent steps:
-
-**Example for contract analysis:**
-1. **Agent 1:** Extract basic contract information (parties, dates, terms)
-2. **Agent 2:** Analyze risk clauses using extracted information
-3. **Agent 3:** Generate summary report combining both analyses
-4. **Agent integration request:** Save results and notify legal team
-
-### Validation Workflows
-
-Add validation before main processing:
-
-**Example flow:**
-1. Upload trigger
-2. **Agent:** Quick validation check - is file readable? Does it contain expected content?
-3. **Condition:** Is file valid?
-   - Yes → Proceed to main processing
-   - No → Send error notification and stop
-4. Main processing continues...
-
-### Batch Processing Multiple Files
-
-If multiple files mode is enabled:
-
-1. Upload trigger receives multiple files
-2. **Loop through files** (using flow logic)
-3. Process each file with agents
-4. Aggregate results
-5. Send combined report
-
-### Human-in-the-Loop Approval
-
-Add approval steps for sensitive operations:
-
-**Example flow:**
-1. Upload invoice
-2. Agent extracts data
-3. Condition: Is amount over $10,000?
-   - Yes → Send approval request to manager, wait for response
-   - No → Auto-process
-4. Continue based on approval decision
+  <Accordion title="A file uploaded a while ago no longer exists">
+    Files are removed after two weeks. Copy anything the flow needs to keep into your own storage during the run.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Email Trigger" icon="envelope" href="/flows/triggers/email">
-    Trigger flows from incoming emails
+  <Card title="Assistant Step" icon="robot" href="/flows/steps/agents">
+    Reading the uploaded document
   </Card>
-  
-  <Card title="Agent Steps" icon="robot" href="/flows/steps/agents">
-    Learn how to configure agents for file processing
-  </Card>
-  
-  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
-    Send processed data to external systems
-  </Card>
-  
+
   <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
-    Route files based on content or type
+    Routing on the file's extension
+  </Card>
+
+  <Card title="Email Trigger" icon="envelope" href="/flows/triggers/email">
+    The same pattern, with files arriving as attachments
+  </Card>
+
+  <Card title="Triggers Overview" icon="bolt" href="/flows/triggers/overview">
+    Every way a flow can start
   </Card>
 </CardGroup>

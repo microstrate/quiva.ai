@@ -1,208 +1,254 @@
 ---
 title: "Core Concepts"
-description: "Understand the fundamental building blocks of the QuivaWorks platform"
+description: "Abbie, Spaces, assistants, flows and the account — the building blocks of QuivaWorks"
 icon: "puzzle-piece"
 ---
 
-## Overview
+QuivaWorks is built from a small set of pieces. **Abbie** does the work, **Spaces** hold it, **assistants** are configured for specific jobs, **flows** run on triggers, and the **account** is the boundary everything sits inside.
 
-QuivaWorks is built around a small set of core concepts that work together to create an intelligent AI platform for teams. Understanding these will help you build effective assistants, design automations, and get the most out of the platform.
+## Abbie
+
+**Abbie** is the AI coworker and the first thing in the sidebar. You give her a task in conversation and she works through it, using the tools, knowledge and integrations available to your account.
+
+Abbie has five areas:
+
+| Area | What it's for |
+|---|---|
+| **Home** | "Here's what Abbie's been up to, and what she needs from you" — connections, inbox, reminders and recent conversations |
+| **Chat** | Conversations with Abbie |
+| **Backlog** | Everything Abbie is tracking for you and your team — multi-step asks she's still working through, and anything parked waiting on you |
+| **Logs** | The trace of a run: what she did, in order |
+| **Settings** | How Abbie behaves — see below |
+
+**Abbie's settings** cover Rapport (tone and how she works with you), Profile, Skills, Integrations, Model pool, Synapse Memory, Environment, Outreach and Task filing.
+
+<Info>
+Pipeline traces and diagnostics are kept for **7 days**, independently of the conversation retention period set for the account.
+</Info>
+
+---
+
+## Spaces
+
+A **Space** is where a body of work lives. Open **Spaces** in the sidebar to create and browse them.
+
+Each Space has four sections:
+
+<CardGroup cols={2}>
+  <Card title="Files" icon="folder" href="/spaces/file-management">
+    Documents and attachments belonging to the Space
+  </Card>
+  <Card title="Tasks" icon="list-check" href="/spaces/tasks">
+    Work items, with their own prefix so they read as `ABC-1`, `ABC-2`, …
+  </Card>
+  <Card title="Records" icon="table" href="/spaces/records">
+    Structured data captured through configured record types and form views
+  </Card>
+  <Card title="Chats" icon="comments">
+    Conversations scoped to this Space
+  </Card>
+</CardGroup>
+
+<Card title="Spaces overview" icon="folder-tree" href="/spaces/spaces">
+  How a Space is put together and how to configure one →
+</Card>
+
+---
+
+## Meetings
+
+**Meetings** is its own top-level area. Meetings can be recorded and transcribed, and each plan includes a monthly allowance of recording and transcript hours — see [Plans & Pricing](/get-started/plans-and-pricing).
+
+---
 
 ## Assistants
 
-**Assistants** are the heart of QuivaWorks — AI collaborators configured for specific tasks, roles, or domains. Unlike general-purpose AI, QuivaWorks assistants retain context, access your systems, and improve through intentional refinement.
+**Assistants** are AI collaborators configured for a specific task, role or domain. Where Abbie is your general coworker, an assistant is shaped for one job and can be shared with the whole team.
 
-### Team vs. Personal Assistants
+### Team vs. personal assistants
 
 <CardGroup cols={2}>
-  <Card title="Team Assistants" icon="users">
-    Accessible to everyone in your account. Use for standardised workflows, shared tools, and company-wide resources.
+  <Card title="Team assistants" icon="users">
+    Available to everyone in the account. Use for standardised workflows, shared tools and company-wide resources.
   </Card>
-  <Card title="Personal Assistants" icon="user">
-    Private to the creator only. Use for individual work, experiments, or personal use cases.
+  <Card title="Personal assistants" icon="user">
+    Private to the creator. Use for individual work and experiments.
   </Card>
 </CardGroup>
 
-### Configuration Layers
+### Configuration layers
 
 Every assistant has two configuration layers that merge at runtime:
 
-- **Team Settings** — Shared instructions, knowledge, integrations, and context variables for the entire team
-- **Personal Settings** — Individual configurations that layer on top of team settings without affecting others
+- **Team Settings** — shared instructions, knowledge, integrations and context variables
+- **Personal Settings** — your own configuration, layered on top without affecting anyone else
 
-**Account-Level Settings** sit above both and apply to all your assistants when enable in each assistants settings:
+**Account-level settings** sit above both and apply to every assistant where you enable them on that assistant:
 
 | Setting | Purpose |
 |---|---|
-| **Global Instructions** | Default instructions applied to all assistant invocations |
-| **Global Knowledge** | Company-wide knowledge sources, enabled per assistant |
-| **Branding** | Customise the look and feel of the interface |
+| [**Global Assistant Instructions**](/essentials/account/global-admin-branding-settings#global-assistant-instructions) | Instructions applied automatically to every interaction |
+| [**Global Assistant Knowledge**](/essentials/account/global-admin-branding-settings#global-knowledge) | Files available as knowledge to any assistant with the feature enabled |
+| **Branding** | App name, favicon and colours for the whole account |
 
-### Assistant Configuration
-
-Each assistant is configured across four areas:
+### The four configuration areas
 
 <CardGroup cols={2}>
   <Card title="Instructions" icon="scroll">
-    Define the assistant's role, personality, tone, and responsibilities
+    Role, personality, tone and responsibilities
   </Card>
   <Card title="Knowledge" icon="book">
-    Give the assistant access to your documentation and context
+    Documentation and context the assistant can draw on
   </Card>
   <Card title="Integrations" icon="plug">
-    Connect to your systems via MCP protocol
+    Your systems, connected over MCP
   </Card>
   <Card title="Context Variables" icon="sliders">
-    Configure environment-specific parameters
+    Fixed values the assistant should always know — a project name, a default region. Never credentials.
   </Card>
 </CardGroup>
 
-<Card title="Learn more about Assistants" icon="sparkles" href="/assistants/overview">
-  Dive deeper into creating and configuring assistants →
+<Card title="Learn more about assistants" icon="sparkles" href="/assistants/overview">
+  Creating, configuring and refining assistants →
 </Card>
 
 ---
 
 ## Flows
 
-**Flows** are automated sequences of steps that execute in response to a trigger. Think of a flow as a recipe for automation — triggers start the process, steps perform actions, and variable mappings pass data between steps.
-
-### Flow Structure
+**Flows** are automated sequences that run in response to a trigger. A trigger starts the flow, steps do the work, and variable mappings pass data between them.
 
 <CardGroup cols={3}>
-  <Card title="Triggers" icon="bolt">
-    Start flows via webhooks, schedules, HTTP requests, emails, file uploads, or stream events
+  <Card title="Triggers" icon="bolt" href="/flows/triggers/overview">
+    Webhooks, schedules, HTTP requests, emails, file uploads and stream events
   </Card>
-  <Card title="Steps" icon="list-check">
-    Run assistants, make decisions, transform data, call APIs, loop over items, or wait for human input
+  <Card title="Steps" icon="list-check" href="/flows/steps/overview">
+    Run assistants, branch on conditions, transform data, call APIs, loop, or wait for a person
   </Card>
-  <Card title="Functions" icon="code">
-    Utility operations for key-value storage, object storage, streams, and data manipulation
+  <Card title="Functions" icon="code" href="/flows/functions/overview">
+    Key-value and object storage, streams, and data manipulation
   </Card>
 </CardGroup>
 
-Flows support conditional branching, parallel execution, nested flows, and human-in-the-loop approval gates.
+Flows support conditional branching, parallel execution, nested flows and human-in-the-loop approval gates.
 
-<Card title="Learn more about Flows" icon="diagram-project" href="/flows/overview">
-  Explore triggers, steps, and flow configuration →
+<Card title="Learn more about flows" icon="diagram-project" href="/flows/overview">
+  Triggers, steps and flow configuration →
 </Card>
 
 ---
 
-## Integrations & MCP
+## Integrations and MCP
 
-**Model Context Protocol (MCP)** is an open standard that connects assistants and flows to external systems, tools, and data sources.
+**Model Context Protocol (MCP)** is an open standard that connects assistants and flows to external systems, tools and data sources.
 
-### What MCP Enables
+- **Pre-built integrations** — connect to popular tools out of the box
+- **Generated integrations** — build an MCP server from an OpenAPI specification for your own internal APIs
+- **Enhanced specs** — OpenAPI specs with embedded instructions are supported
 
-- **Pre-built integrations** — Connect to popular business tools out of the box
-- **Auto-generation Custom integrations** — Create MCP servers automatically from OpenAPI specifications to build your own for proprietary systems and internal APIs
-- **Enhanced specs** — OpenAPI specs with embedded agent instructions are supported
+### Built-in tools
 
-### Built-in Tools
-
-Every assistant comes with a set of built-in tools available out of the box:
+These tools are available without any integration set-up:
 
 <AccordionGroup>
-  <Accordion title="Research & Content">
-    - **Web Search** — Recent news and general web results
-    - **Content Fetching** — Retrieve and parse URLs as markdown
-    - **Document Analysis** — Search and analyse knowledge base documents
+  <Accordion title="Research">
+    - **Web search** — general web results
+    - **News search** — recent news results
+    - **Web fetch** — retrieve and parse a URL
   </Accordion>
-  <Accordion title="Data & Computation">
-    - **Math Evaluation** — Solve mathematical expressions
-    - **JSON Extraction** — Extract values using JSONPath
-    - **Regular Expressions** — Pattern matching using Go RE2 syntax
-    - **Date/Time Parsing** — Parse and format with timezone support
-    - **Data Encoding/Decoding** — Convert data using various schemes
-    - **Cryptographic Hashing** — Industry-standard hash generation
+  <Accordion title="Data and computation">
+    - **Calculator** — evaluate mathematical expressions
+    - **JSON query** — extract values using JSONPath
+    - **Regex** — pattern matching
+    - **Date/time** — parse and format dates and times
+    - **Encoding** — convert data between encodings
+    - **Hash** — generate hashes
   </Accordion>
-  <Accordion title="Task Management">
-    - **Task Management** — Create and manage structured task lists
-    - **Escalation** — Route requests to human supervisors when needed
+  <Accordion title="People in the loop">
+    - **Escalate** — route a request to a person when judgement is needed
   </Accordion>
 </AccordionGroup>
 
-### Sub-Agents
+Escalations go to the account's **Escalation Responders** if nobody is named on the assistant or flow; if none are set, they go to the account root.
 
-For tool-heavy workflows, QuivaWorks automatically uses sub-agents to prevent context window overload. The context window is split across multiple tool calls, each handled by a dedicated sub-agent, with results consolidated back to the main assistant.
+<Card title="Tools and connectors" icon="plug" href="/assistants/tools-and-connectors">
+  Connecting assistants to your systems →
+</Card>
+
+### Sub-agents
+
+For tool-heavy work, QuivaWorks splits the job across sub-agents so a single context window doesn't have to hold everything. Each sub-agent handles part of the work and results are consolidated back.
 
 ---
 
-## Learning System
+## Learning
 
-Assistants improve through **intentional refinement** — not automatic adjustment. You stay in control of when and how your assistants evolve.
+Assistants improve through **intentional refinement** — you decide when and how they change.
 
 <Steps>
-  <Step title="Vote on Interactions">
-    Use thumbs up/down to flag what works and what doesn't in real conversations
+  <Step title="Vote on interactions">
+    Thumbs up or down on real conversations to mark what worked
   </Step>
-  <Step title="Review Insights">
-    The Learning tab consolidates feedback into actionable patterns from successful interactions
+  <Step title="Review insights">
+    The Learning tab consolidates that feedback into patterns
   </Step>
-  <Step title="Refine Behaviour">
-    Update instructions, knowledge, or settings based on what you've learned
+  <Step title="Refine behaviour">
+    Update instructions, knowledge or settings based on what you've learned
   </Step>
 </Steps>
 
 <Info>
-QuivaWorks uses intentional refinement by design. Assistants don't change automatically — you decide when and how to update them based on the insights surfaced.
+Assistants don't change on their own. Nothing is applied until you apply it.
 </Info>
 
-<Card title="Learn more about Learning" icon="brain" href="/assistants/learning">
-  See how to improve assistants through feedback and insights →
+<Card title="Learn more about learning" icon="brain" href="/assistants/learning">
+  Improving assistants through feedback →
 </Card>
+
+---
+
+## The account
+
+The **account** is the tenancy boundary. Users, Spaces, assistants, flows, credits and storage all belong to one account, and data is isolated per account.
+
+- **Users and roles** — seven roles: root, admin, developer, monitor, billing, collaborator and client. Only root and admin can invite people or change roles.
+- **Account settings** — details, branding, global instructions and knowledge, escalation responders, data retention and specialization. Open **Account** in the sidebar (root and admin only).
+- **Billing & Plans** — plan, credit balance, usage log and top-ups.
+
+<CardGroup cols={2}>
+  <Card title="Roles and permissions" icon="user-shield" href="/essentials/users/roles-permissions">
+    What each role can do
+  </Card>
+  <Card title="Account settings" icon="gear" href="/essentials/account/account-settings">
+    Everything that applies to the whole account
+  </Card>
+</CardGroup>
 
 ---
 
 ## Collaboration
 
-QuivaWorks is built for teams. Any assistant session can be shared with teammates in real-time — no separate tools or context-switching required.
+Abbie conversations can be shared with named people as **Editor** or **Read-only**, or with everyone in the account. The owner controls access and can change or revoke it at any time.
 
-- **@Mentions** — Type `@` in any session to invite team members instantly
-- **Shared With Me** — A dedicated sidebar section showing all sessions shared with you
-- **Unread Badges** — Track new messages across all shared sessions
-- **Smart Notifications** — Get alerts when teammates complete tasks or reply
-- **Multi-Tab Conversations** — Run multiple assistant sessions simultaneously; assistants continue working while you switch tabs
-
-<Card title="Learn more about Collaboration" icon="handshake" href="/get-started/collaboration">
-  See how to share sessions and work with your team →
+<Card title="Learn more about collaboration" icon="handshake" href="/get-started/collaboration">
+  Sharing conversations, access levels and @mentions →
 </Card>
 
 ---
 
-## How It All Works Together
-
-<Steps>
-  <Step title="Create an Assistant">
-    Configure instructions, knowledge, and integrations for your use case. Set team settings for shared standards and personal settings for individual customisation.
-  </Step>
-  <Step title="Work Together">
-    Use the assistant in sessions. Share with teammates using `@`, track updates with unread badges, and collaborate in real-time.
-  </Step>
-  <Step title="Automate with Flows">
-    Build flows to trigger assistants automatically — on a schedule, via webhook, from an email, or any other trigger.
-  </Step>
-  <Step title="Improve Over Time">
-    Vote on interactions, review the Learning tab, and intentionally refine your assistants based on the insights surfaced.
-  </Step>
-</Steps>
-
----
-
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Create Your First Assistant" icon="sparkles" href="/assistants/creating-first-assistant">
-    Build an assistant tailored to your use case
+  <Card title="Getting started" icon="rocket" href="/get-started/getting-started">
+    Create your account and secure it
   </Card>
-  <Card title="Explore Flows" icon="diagram-project" href="/flows/overview">
-    Automate tasks with triggers and steps
+  <Card title="Create your first assistant" icon="sparkles" href="/assistants/creating-first-assistant">
+    Build an assistant for your use case
   </Card>
-  <Card title="Team Collaboration" icon="users" href="/get-started/collaboration">
-    Share sessions and work together in real-time
+  <Card title="Explore Spaces" icon="folder-tree" href="/spaces/spaces">
+    Files, tasks, records and chats
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference">
-    Integrate QuivaWorks programmatically
+  <Card title="Plans & pricing" icon="credit-card" href="/get-started/plans-and-pricing">
+    Credits, storage and retention by plan
   </Card>
 </CardGroup>

@@ -24,7 +24,32 @@
               "get-started/plans-and-pricing"
             ]
           },
-
+          {
+            "group": "Spaces",
+            "icon": "folder-tree",
+            "pages": [
+              "spaces/spaces",
+              "spaces/tasks",
+              "spaces/task-actions",
+              "spaces/records",
+              "spaces/file-management",
+              "spaces/scheduling",
+              "spaces/escalations",
+              "spaces/client-portal"
+            ]
+          },
+          {
+            "group": "Forms",
+            "icon": "clipboard-list",
+            "pages": [
+              "forms/overview",
+              "forms/building-a-form",
+              "forms/elements",
+              "forms/form-rules",
+              "forms/rule-assistant",
+              "forms/form-flows"
+            ]
+          },
           {
             "group": "Assistants",
             "pages": [
@@ -48,6 +73,17 @@
               "assistants/multi-agent",
               "assistants/prompt-engineering",
               "assistants/best-practices"
+            ]
+          },
+          {
+            "group": "Collaboration",
+            "pages": [
+              "collaboration/overview",
+              "collaboration/collaborative-sessions",
+              "collaboration/at-mention-guide",
+              "collaboration/shared-with-me-section",
+              "collaboration/unread-badges-notifications",
+              "collaboration/team-best-practices"
             ]
           },
           {
@@ -100,7 +136,6 @@
               "flows/best-practices"
             ]
           },
-
           {
             "group": "Account Management",
             "pages": [
@@ -137,7 +172,6 @@
               }
             ]
           },
-
           {
             "group": "Advanced",
             "pages": [
@@ -147,13 +181,9 @@
                 "icon": "arrow-right-arrow-left",
                 "pages": [
                   "advanced/variable-mapping/overview",
-                  "advanced/variable-mapping/basic-syntax",
-                  "advanced/variable-mapping/jsonpath-features",
-                  "advanced/variable-mapping/pipe-operator",
-                  "advanced/variable-mapping/filters-and-expressions",
-                  "advanced/variable-mapping/advanced-techniques",
-                  "advanced/variable-mapping/examples",
-                  "advanced/variable-mapping/reference"
+                  "advanced/variable-mapping/jsonpath",
+                  "advanced/variable-mapping/concatenation",
+                  "advanced/variable-mapping/examples"
                 ]
               },
               {
@@ -164,20 +194,7 @@
                   "advanced/rules/getting-started",
                   "advanced/rules/core-concepts",
                   "advanced/rules/operations-reference",
-                  "advanced/rules/common-patterns",
-                  "advanced/rules/examples",
-                  "advanced/rules/advanced-techniques",
-                  "advanced/rules/technical-reference"
-                ]
-              },
-              {
-                "group": "Annie",
-                "pages": [
-                  "annie/sota-landscape",
-                  "annie/annie-architecture",
-                  "annie/competitive-anaylsis",
-                  "annie/hypothesis",
-                  "annie/partner-propositions"
+                  "advanced/rules/common-patterns"
                 ]
               }
             ]
@@ -236,7 +253,9 @@
         "groups": [
           {
             "group": "Change Log",
-            "pages": ["changelog/latest-release", "changelog/product-updates"]
+            "pages": [
+              "changelog/product-updates"
+            ]
           }
         ]
       }
@@ -283,5 +302,59 @@
     "socials": {
       "linkedin": "https://linkedin.com/company/quivaworks"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/advanced/variable-mapping",
+      "destination": "/advanced/variable-mapping/overview"
+    },
+    {
+      "source": "/advanced/variable-mapping/basic-syntax",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/variable-mapping/jsonpath-features",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/variable-mapping/pipe-operator",
+      "destination": "/advanced/variable-mapping/concatenation"
+    },
+    {
+      "source": "/advanced/variable-mapping/filters-and-expressions",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/variable-mapping/advanced-techniques",
+      "destination": "/advanced/variable-mapping/examples"
+    },
+    {
+      "source": "/advanced/variable-mapping/reference",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/rules/examples",
+      "destination": "/advanced/rules/common-patterns"
+    },
+    {
+      "source": "/advanced/rules/advanced-techniques",
+      "destination": "/advanced/rules/common-patterns"
+    },
+    {
+      "source": "/advanced/rules/technical-reference",
+      "destination": "/advanced/rules/core-concepts"
+    },
+    {
+      "source": "/advanced/steps",
+      "destination": "/flows/steps/overview"
+    },
+    {
+      "source": "/advanced/steps/overview",
+      "destination": "/flows/steps/overview"
+    },
+    {
+      "source": "/changelog/latest-release",
+      "destination": "/changelog/product-updates"
+    }
+  ]
 }

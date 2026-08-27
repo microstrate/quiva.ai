@@ -1,0 +1,428 @@
+---
+title: "Form rules"
+description: "Conditional visibility, conditional requirement and computed values on a form — the operators that actually work, and what happens when a rule cannot be run"
+icon: "code-branch"
+---
+
+A **form rule** makes part of a form react to what has been answered so far: a row that appears only
+for one kind of request, a field that becomes required once a box is ticked, a total that fills
+itself in.
+
+---
+
+## QuivaWorks has two rule engines. This is the other one
+
+<Warning>
+**Nothing carries across between them.** An operator, a syntax or a pattern from
+[the flow Rules documentation](/advanced/rules/overview) will not work on a form, and the reverse is
+equally true. If you have used the flow Rules step, treat this page as an unrelated language. The
+operators that work here are listed below and nowhere else.
+</Warning>
+
+They share a word and nothing else.
+
+| | **Form and record rules** | **The flow Rules step** |
+|---|---|---|
+| Where | The form editor's **Rules** tab, on a placed field, row or element | Inside a [flow](/flows/overview), as a [Rules step](/flows/steps/rules) |
+| What it decides | Whether part of a form shows, whether it is required, what value it holds | Business outcomes from a set of facts, mid-workflow |
+| Written as | JsonLogic — a nested expression, `{"operator": [operands]}` | Facts and declarative rules, documented at [Rules](/advanced/rules/overview) |
+| Runs | In the browser, as someone types | In the flow engine, when the step executes |
+
+---
+
+## What a rule is
+
+A rule is attached to one thing on the form — a placed field, a row, or a presentational element —
+and has three parts:
+
+<CardGroup cols={3}>
+  <Card title="A property" icon="crosshairs">
+    What the rule drives. **Visible**, **Required**, **Disabled**, **Read-only** or **Value** on a
+    field; **Visible** on a row.
+  </Card>
+  <Card title="A condition" icon="code">
+    A JsonLogic expression evaluated against the answers so far.
+  </Card>
+  <Card title="A description" icon="align-left">
+    Plain English, for whoever opens the form next. Optional, and worth writing every time.
+  </Card>
+</CardGroup>
+
+| What is selected | Properties a rule can drive |
+|---|---|
+| A placed field | Visible, Required, Disabled, Read-only, Value |
+| A row | Visible |
+| A heading, note, link, alert or card | See [what a rule can change on each](/forms/elements#what-a-rule-can-change-on-each) |
+
+Rules live on the placed element, not on the Record Set — so two forms over the same fields can have
+completely different logic.
+
+<Note>
+**One rule per property per element.** The editor never creates a second, and a hand-written second
+rule for the same property causes the form to disagree with itself: the field renders according to
+the last rule but is treated as hidden if *any* of them says hidden. Combine conditions into one
+rule with `and` / `or` instead.
+</Note>
+
+---
+
+## Writing a condition
+
+A condition is a JSON object with one key — the operator — whose value is the list of things it
+operates on. `{"var": "field_name"}` reads an answer.
+
+```json
+{ "==": [ { "var": "request_type" }, "equipment" ] }
+```
+
+Read as: *the answer to `request_type` is `equipment`*.
+
+`var` reads any field on the form, not just nearby ones. Nested fields use a dot —
+`{"var": "contact.country"}` — exactly as they are written when placing a field.
+
+You rarely type this by hand. The **Rules** tab's **Generate** box turns a plain-language sentence
+into the expression for you; see [The rule assistant](/forms/rule-assistant). The **Raw** tab is
+there when you want to write or adjust the JSON directly.
+
+---
+
+## The operators that work
+
+This is the complete set. Anything not on this list does not exist, and a rule
+using it is [ignored when the form runs](#when-a-rule-cannot-be-evaluated).
+
+<AccordionGroup>
+  <Accordion title="Comparing" icon="equals">
+    | Operator | Meaning |
+    |---|---|
+    | `==` | Equal, allowing `4` and `"4"` to match |
+    | `===` | Equal, and the same type |
+    | `!=` / `!==` | The negations of those two |
+    | `>` `>=` `<` `<=` | Ordinary comparison. Also usable as a range: `{"<=": [1, {"var": "headcount"}, 10]}` reads *headcount is between 1 and 10* |
+  </Accordion>
+  <Accordion title="Combining" icon="code-merge">
+    | Operator | Meaning |
+    |---|---|
+    | `and` | Every condition holds |
+    | `or` | At least one holds |
+    | `!` / `not` | The condition does not hold |
+    | `!!` | The value is present and not blank — the idiom for *has been answered* |
+    | `if` | `[condition, then, condition, then, …, otherwise]`. Also spelled `?:` |
+    | `??` | The first operand that is not null |
+  </Accordion>
+  <Accordion title="Membership and text" icon="magnifying-glass">
+    | Operator | Meaning |
+    |---|---|
+    | `in` | Two jobs: `{"in": [{"var":"team"}, ["operations","support"]]}` is *one of these*; `{"in": ["urgent", {"var":"notes"}]}` is *this text appears somewhere in that answer* |
+    | `cat` | Joins values into one string |
+    | `substr` | A slice of a string. Negative counts from the end |
+    | `length` | The length of a string, or the number of items in a list |
+  </Accordion>
+  <Accordion title="Arithmetic" icon="calculator">
+    `+` `-` `*` `/` `%` `min` `max`
+
+    Mostly used with the **Value** property, to fill a field in from other answers.
+  </Accordion>
+  <Accordion title="Working over a list" icon="list">
+    | Operator | Meaning |
+    |---|---|
+    | `some` | At least one item satisfies a condition |
+    | `none` | No item does |
+    | `all` / `every` | Every item does |
+    | `filter` | The items that do |
+    | `map` | One value pulled out of each item |
+    | `reduce` | The items folded into a single value |
+    | `merge` | Several lists joined into one |
+
+    Inside these, `{"var": "…"}` refers to the **item**, not the record: `{"var": "qty"}` is that
+    item's quantity.
+  </Accordion>
+  <Accordion title="Presence and structure" icon="key">
+    | Operator | Meaning |
+    |---|---|
+    | `missing` | Which of the named fields have no value |
+    | `missing_some` | Which are missing, once fewer than *n* are present |
+    | `exists` | Whether a field is present at all |
+    | `keys` | The property names of an object |
+    | `get` | A named property of an object |
+    | `val` | An alternative spelling of `var` — **avoid it**, see below |
+    | `preserve`, `pipe`, `eachKey`, `try`, `throw` | Present, and not needed for form logic |
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+**The plausible names that are not there.** Every one of these was tried against the engine that
+ships in the product, and every one is absent:
+
+`includes` · `startsWith` · `endsWith` · `contains` · `count` · `size` · `sum` · `avg` ·
+`toLowerCase` · `toUpperCase` · `trim` · `split` · `join` · `match` · `regex` · `now` · `date` ·
+`dateDiff` · `abs` · `round` · `floor` · `ceil` · `number` · `string` · `typeof` · `isEmpty` ·
+`notEmpty` · `between` · `log`
+
+For *contains text* use `in` with the text first. For *is blank* use `!!`. For *between* use the
+three-operand range form of `<=`. For *matches a pattern*, put a pattern on the field's schema
+instead — validation can enforce it, a rule cannot test it. There is no string-case, rounding or
+date arithmetic available to a form rule at all; compute those in a [flow](/flows/overview) and write
+the answer back.
+</Warning>
+
+<Note>
+**Use `var`, not `val`.** Both evaluate correctly, but only `var` is understood by the **Form logic**
+overview, so a rule written with `val` appears to depend on nothing and the "this rule reads a field
+that is not on the form" warning stops working for it.
+</Note>
+
+---
+
+## How values behave when nothing has been answered
+
+The most common surprise is a rule that reacts to a field nobody has filled in yet. These are the
+behaviours worth knowing, all of them observed rather than assumed.
+
+| Expression | With the field unanswered |
+|---|---|
+| `{"var": "anything"}` | `null` |
+| `{"var": ["anything", "fallback"]}` | `"fallback"` — but only when the field is genuinely **absent**. A field answered and then cleared holds an empty string, and the fallback does not apply |
+| `{"!!": {"var": "anything"}}` | `false` — also false for a blank string, an empty list, `0` and *no* |
+| `{">": [{"var": "anything"}, 5]}` | `false` |
+| `{"<": [{"var": "anything"}, 5]}` | **`true`** |
+| `{"==": [{"var": "anything"}, null]}` | `true` |
+| `{"in": ["x", {"var": "anything"}]}` | `false` |
+
+<Warning>
+**That fifth row is a real trap.** *Show this when the headcount is under ten* shows the field to
+everybody who has not answered the headcount yet, because an unanswered number counts as lower than
+everything. Guard the comparison:
+
+```json
+{ "and": [ { "!!": { "var": "headcount" } }, { "<": [ { "var": "headcount" }, 10 ] } ] }
+```
+</Warning>
+
+For *this field, or a stand-in when it is blank*, `if` is the reliable form — the `var` fallback and
+`??` both let an empty answer through:
+
+```json
+{ "if": [ { "!!": { "var": "approver" } }, { "var": "approver" }, "Unassigned" ] }
+```
+
+<Note>
+A multi-valued control on a **text** field stores its answers as one comma-separated string, so
+`{"in": ["…", {"var": "accessories"}]}` is a *substring* test, not a membership test — `"top"`
+matches `"laptop,desktop"`. Where this matters, type the field as a **list** so `in` tests real
+membership.
+</Note>
+
+---
+
+## When a rule cannot be evaluated
+
+A condition the engine cannot run — an operator that does not exist, a malformed expression — has
+**no opinion**, and the rule is skipped entirely:
+
+| Property | What happens |
+|---|---|
+| **Visible** | The element stays **visible**. A broken rule cannot hide a question. |
+| **Required**, **Disabled**, **Readonly** | The field keeps whatever its schema and its own settings gave it. |
+| **Value** | Nothing is computed and the answer is left alone. |
+
+```json
+{ "equals": [ { "var": "request_type" }, "equipment" ] }
+```
+
+`equals` is not an operator, so that rule does nothing at all — the field it guards behaves as if
+the rule were not there. That is deliberate: a question showing when it should not is a nuisance, a
+question that has silently vanished is a lost answer.
+
+The rule card says so while you are writing it. A rule naming an operator the engine does not have
+carries a red note above the description, listing the offending names:
+
+> This rule uses an operator the form engine does not support: `equals`. It will be ignored when the
+> form runs.
+
+Two habits still worth keeping:
+
+<Steps>
+  <Step title="Check the summary line on the rule card">
+    Every rule shows a one-line plain-English summary in its header — *Show this element when
+    request_type is "equipment".* If yours instead reads like a function call —
+    `contains(notes, "urgent")` — the summary could not be produced. Arithmetic and list operators
+    read that way legitimately, so it is a prompt to look, not a verdict.
+  </Step>
+  <Step title="Preview the form both ways">
+    Switch to **Preview** and answer the driving question each way. A field that appears in **both**
+    states has a condition that is not doing its job — either broken, or always true.
+  </Step>
+</Steps>
+
+<Note>
+**An unfinished rule is harmless.** A rule created but never given a condition has *no opinion* — it
+neither shows nor hides anything, and the property keeps whatever it would have had. It shows in the
+Rules tab as *Not configured yet*. Tidy them up anyway: an empty rule reads to the next person as if
+the case has been handled.
+
+To force a state permanently, use a hard **always** or **never** rather than an empty condition.
+</Note>
+
+---
+
+## What conditional visibility does and does not clear
+
+When a form is submitted, anything hidden at that moment is **stripped out before validation and
+before saving**. That is the point of conditional forms: an answer given under one branch and then
+hidden when the branch changed does not survive onto the record, and does not block submission by
+being required.
+
+The clearing follows every container that removes a field from view — a row, a **Card**, a
+**Collapsable card**, a **Repeater**, and the field's own rule. A field is cleared when it sits, at
+any depth, under something hidden.
+
+**Required-ness follows visibility, on both sides.** A hidden field's answer is pruned and its
+schema `required` is skipped, and the form tells the server which refs its rules hid so the save is
+not rejected either. A question nobody could see never blocks a submission.
+
+| Placed as | Hiding it clears |
+|---|---|
+| A field in a row, at any depth | That field |
+| An object placed as a whole group | The group and every member under it |
+| A field inside a Card or Collapsable card | That field |
+| A Repeater | The whole list. Individual item fields cannot be pruned separately — an item's rules render against that item |
+
+<Note>
+This applies to the rules the **form** evaluates. Writing to a record through the API is unaffected:
+a required field is still required unless the caller names it in `hidden_fields`. See
+[Records](/spaces/records).
+</Note>
+
+---
+
+## Which answers a rule can see
+
+By default, every rule reads the **whole record being filled in**, wherever on the form it is
+attached. A rule on the last row can read the first question.
+
+That stays true even when the form is being filled a section or a step at a time: each step is
+checked against the whole record, and only the messages belonging to that step's own fields are
+shown. A rule on step four that depends on an answer from step one therefore evaluates correctly,
+and a required field further along does not block the step in front of it.
+
+### Rules inside a repeater
+
+A repeater is the exception. Its item fields render against **one item**, so a rule attached to a
+field inside a repeater reads that item's answers, not the record's. Inside a `line_items` repeater,
+`{"var": "qty"}` is *this line's quantity*.
+
+<Warning>
+A rule inside a repeater **cannot reach a field outside it**. If a repeater's fields need to react to
+a top-level answer, put the rule on the row containing the whole repeater instead — remembering that
+this hides the repeater without clearing what is in it.
+</Warning>
+
+To ask about a repeater's contents *from outside* it, use the list operators on the repeater's own
+field:
+
+```json
+{ "some": [ { "var": "line_items" }, { ">": [ { "var": "qty" }, 1 ] } ] }
+```
+
+---
+
+## Worked examples
+
+Every example below has been run against the engine that ships in the product.
+
+<AccordionGroup>
+  <Accordion title="Show a row only for one kind of request" icon="eye">
+    Property: **Visible**, on the row.
+    ```json
+    { "==": [ { "var": "request_type" }, "equipment" ] }
+    ```
+  </Accordion>
+  <Accordion title="Require a field once another has been answered" icon="asterisk">
+    Property: **Required**, on the field.
+    ```json
+    { "!!": { "var": "external_supplier" } }
+    ```
+  </Accordion>
+  <Accordion title="Show something only when two things are true" icon="code-merge">
+    ```json
+    { "and": [
+      { "==": [ { "var": "request_type" }, "equipment" ] },
+      { ">":  [ { "var": "total_cost" }, 1000 ] }
+    ] }
+    ```
+  </Accordion>
+  <Accordion title="Show for any of several teams" icon="list-check">
+    ```json
+    { "in": [ { "var": "team" }, [ "operations", "support" ] ] }
+    ```
+    And its negation, for *any team except these*:
+    ```json
+    { "!": { "in": [ { "var": "team" }, [ "finance", "legal" ] ] } }
+    ```
+  </Accordion>
+  <Accordion title="Show when a note mentions something" icon="magnifying-glass">
+    ```json
+    { "in": [ "urgent", { "var": "notes" } ] }
+    ```
+    Case-sensitive, and there is no way to make it otherwise — there is no lower-casing operator.
+  </Accordion>
+  <Accordion title="Show based on a nested answer" icon="folder-tree">
+    ```json
+    { "==": [ { "var": "contact.country" }, "GB" ] }
+    ```
+  </Accordion>
+  <Accordion title="Show when a number falls in a range" icon="ruler">
+    ```json
+    { "<=": [ 1, { "var": "headcount" }, 10 ] }
+    ```
+  </Accordion>
+  <Accordion title="Show when a list has anything in it" icon="list">
+    ```json
+    { ">": [ { "length": { "var": "sites" } }, 0 ] }
+    ```
+  </Accordion>
+  <Accordion title="Show when any line item qualifies" icon="layer-group">
+    ```json
+    { "some": [ { "var": "line_items" }, { ">": [ { "var": "qty" }, 1 ] } ] }
+    ```
+  </Accordion>
+  <Accordion title="Fill a total in from two other fields" icon="calculator">
+    Property: **Value**.
+    ```json
+    { "+": [ { "var": "hardware_cost" }, { "var": "software_cost" } ] }
+    ```
+    A computed value is written into the record, so it is validated, saved, and visible to any other
+    rule that reads it.
+  </Accordion>
+  <Accordion title="Fill a field in differently depending on an answer" icon="code-branch">
+    Property: **Value**.
+    ```json
+    { "if": [
+      { ">": [ { "var": "total_cost" }, 1000 ] },
+      "Approval required",
+      "Auto-approved"
+    ] }
+    ```
+  </Accordion>
+  <Accordion title="Build a label out of two answers" icon="font">
+    Property: **Value**.
+    ```json
+    { "cat": [ { "var": "team" }, " — ", { "var": "request_type" } ] }
+    ```
+  </Accordion>
+  <Accordion title="Turn something on or off permanently" icon="toggle-on">
+    A condition of `true` or `false`, written in the **Raw** tab, is a complete and valid rule. The
+    summary reads *always* or *never (always off)*. Useful for parking a field as read-only, or for
+    switching a section off without deleting it.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Seeing all the logic at once
+
+**Form settings → View form logic** opens a read-only overview of every rule on the form, grouped by
+the element it affects, showing which answers each condition watches and what it drives. It flags a
+rule that reads a field **not placed on this form** — the usual reason a rule that looks right never
+fires.

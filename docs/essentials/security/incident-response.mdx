@@ -1,630 +1,155 @@
 ---
-title: "Security Overview"
-description: "Comprehensive guide to securing your QuivaWorks account and understanding platform security"
-icon: "shield"
+title: "Incident Response"
+description: "What to do when you suspect a QuivaWorks account has been compromised"
+icon: "triangle-exclamation"
 ---
 
-# Security Overview
+If you think an account has been compromised, the priority is to cut off the intruder's existing access before you investigate. This page is the sequence to follow.
 
-Security is foundational to QuivaWorks' architecture. This comprehensive guide outlines the security features available to protect your account and data, along with best practices for maintaining a strong security posture.
+<Warning>
+**Terminating sessions is the step that ends live access.** Changing a password, suspending a user or deleting an API key each closes a different door — and suspending a user does **not** log them out. Work through the steps in order rather than picking one.
+</Warning>
 
-## Platform Security
+## Signs of a compromise
 
-QuivaWorks is built with enterprise-grade security from the ground up.
+Investigate if you see any of these:
 
-### Compliance & Certifications
-
-<CardGroup cols={2}>
-  <Card title="ISO 27001" icon="certificate">
-    Information security management system certified
-  </Card>
-  
-  <Card title="SOC 2 Type II" icon="file-shield">
-    Coming soon - Independent audit of security controls
-  </Card>
-  
-  <Card title="GDPR Compliant" icon="scale-balanced">
-    Full compliance with EU data protection regulations
-  </Card>
-  
-  <Card title="PCI DSS" icon="credit-card">
-    Payment card data security for billing
-  </Card>
-</CardGroup>
+- A **security notification email** for something nobody performed — a password change, a new passkey, recovery codes viewed, an email address change request, or a new user added
+- A session in **Settings → Sessions** from a location, IP address, device or browser you don't recognise
+- A user, role or status you didn't expect on the **Users** page, or a **Last Login** that doesn't match what that person did
+- An **API key** in **Settings → API keys** that nobody remembers creating
+- Unexplained credit consumption in the credit usage log under **Billing & Plans**
 
 <Note>
-HIPAA compliance is available on Enterprise plans only. Contact us if you need to process protected health information.
+QuivaWorks does not keep an account audit log. The signals above are the record you have, so capture screenshots of anything unusual before you start terminating things — sessions disappear from the list once they are terminated.
 </Note>
 
-### Data Protection
+## If your own account is compromised
 
-<AccordionGroup>
-  <Accordion title="Encryption at Rest" icon="lock">
-    **AES-256 Encryption**
-    
-    All data stored within QuivaWorks is encrypted at rest using industry-standard AES-256 encryption:
-    - Agent configurations
-    - Flow definitions
-    - Conversation history
-    - User data
-    - API keys (hashed)
-    - Backups
-    
-    Enterprise customers can use customer-managed encryption keys (CMEK) for additional control.
-  </Accordion>
-  
-  <Accordion title="Encryption in Transit" icon="shield-halved">
-    **TLS 1.3**
-    
-    All data transmitted to and from QuivaWorks is protected using TLS 1.3:
-    - Web console access (HTTPS)
-    - API requests
-    - Agent communications
-    - Webhook calls
-    - File uploads
-    
-    We do not support older, insecure protocols like SSL or TLS 1.0/1.1.
-  </Accordion>
-  
-  <Accordion title="Data Residency" icon="globe">
-    **Geographic Control**
-    
-    Choose where your data is processed and stored:
-    - **EU** - European Union data centers (GDPR compliant)
-    - **US** - United States data centers
-    - **Australia** - Sydney data center
-    
-    Configure during account creation or modify in **Account Management → Mesh**. Your selection determines compliance with regional data protection laws.
-  </Accordion>
-  
-  <Accordion title="Data Isolation" icon="border-all">
-    **Multi-Tenant Security**
-    
-    Each account's data is logically isolated:
-    - Separate databases per account
-    - Network segmentation
-    - Access controls between tenants
-    - No data sharing between accounts
-    
-    Enterprise plans can opt for dedicated infrastructure for complete physical isolation.
-  </Accordion>
-</AccordionGroup>
+<Steps>
+  <Step title="Change your password">
+    Open **Settings → Password and authentication** and click **Change password**. You'll be asked to confirm your identity with two-factor authentication first.
 
-### Infrastructure Security
+    This terminates every other session on your account and leaves your current one signed in. You'll receive a confirmation email.
+  </Step>
 
-QuivaWorks' proprietary multi-cloud mesh architecture provides resilience and security:
+  <Step title="If you're locked out, reset instead">
+    If the intruder has already changed your password, click **Forgot Password** on the login screen and enter your email address, then click **Reset Password**. Follow the link in the email you receive — it's valid for 2 days.
 
-<CardGroup cols={3}>
-  <Card title="Redundancy" icon="copy">
-    Minimum 3 servers per account with automatic failover
-  </Card>
-  
-  <Card title="Backups" icon="clock-rotate-left">
-    Continuous replication across mesh nodes
-  </Card>
-  
-  <Card title="DDoS Protection" icon="shield-virus">
-    Built-in protection against distributed attacks
-  </Card>
-</CardGroup>
+    Resetting while signed out terminates **every** session on the account, including the intruder's.
+  </Step>
 
-## Account Security Features
+  <Step title="Check no sessions remain">
+    Open **Settings → Sessions**. Only your current session — the one with the green **Your session** pill — should be left. Click **Terminate sessions** to clear anything else.
+  </Step>
 
-### Multi-Factor Authentication (MFA)
+  <Step title="Delete your API keys">
+    Open **Settings → API keys** and delete every key you can't account for. A key keeps working regardless of your password, so this step is not optional.
+
+    Reissue replacements afterwards and update whatever was using them. See [API keys](/essentials/security/api-keys).
+  </Step>
+
+  <Step title="Check your authentication methods">
+    Back in **Settings → Password and authentication**, open **Manage** under Passkey and remove any passkey you didn't register. Check whether an authenticator app you don't recognise is enrolled.
+  </Step>
+
+  <Step title="Issue new recovery codes">
+    Click **Get New** in the Recovery codes section. This invalidates the old set, including any copy the intruder took.
+  </Step>
+
+  <Step title="Enable MFA if it wasn't on">
+    A passkey or an authenticator app stops a stolen password being enough on its own. See [Authentication](/essentials/security/authentication).
+  </Step>
+</Steps>
 
 <Warning>
-MFA is strongly recommended for all users and required for Admin and Root roles.
+A session token copied with **Copy token** stays valid until that session expires or is terminated. If a token may have leaked, terminating the session it came from is the only thing that revokes it — changing your password terminates other sessions, so it covers this too.
 </Warning>
 
-QuivaWorks supports two MFA methods:
+## If another user's account is compromised
 
-<Tabs>
-  <Tab title="Passkeys (Recommended)">
-    **Modern, phishing-resistant authentication**
-    
-    - Uses device biometrics (Touch ID, Face ID, Windows Hello)
-    - Based on FIDO2/WebAuthn standards
-    - Cannot be phished or intercepted
-    - Works across devices with synchronization
-    
-    [Set up passkeys →](/essentials/security/authentication#passkeys)
-  </Tab>
-  
-  <Tab title="Authenticator Apps">
-    **Time-based one-time passwords (TOTP)**
-    
-    - Compatible with Google Authenticator, Authy, Microsoft Authenticator
-    - Works offline
-    - Widely supported
-    - Industry standard
-    
-    [Set up authenticator app →](/essentials/security/authentication#authenticator-app)
-  </Tab>
-</Tabs>
+Root and admin users can act on other members of the account. Open **Users** in the sidebar — depending on your account it sits at the top level or under **More** — and use the dot menu on the user's row.
 
-### Session Management
+<Steps>
+  <Step title="Logout — first">
+    **Logout** revokes that user's tokens and ends every session they have open. This is the step that stops an intruder who is currently signed in.
+  </Step>
 
-Control and monitor access to your account:
+  <Step title="Suspend — second">
+    **Suspend** blocks the account from signing in again. Do it after Logout, not instead of it: suspending on its own leaves any live session working until it expires.
+  </Step>
 
-- **Session Lifetimes**: 1-hour access tokens, 24-hour refresh tokens
-- **Multi-Device Support**: Track all active sessions
-- **Remote Termination**: Log out from any device remotely
-- **Activity Monitoring**: See device, browser, location, and IP for each session
+  <Step title="Delete their API keys">
+    Keys are managed by their owner in **Settings → API keys**, so have the user delete theirs once you've spoken to them. A key issued by a compromised user keeps working after Logout and Suspend.
 
-[Learn more about sessions →](/essentials/security/sessions)
+    Treat an account-scoped key as the most urgent of these — see [API keys](/essentials/security/api-keys#scope).
+  </Step>
 
-### API Key Security
+  <Step title="Issue new recovery codes">
+    Use **Issue new recovery codes** in the same dot menu to invalidate the existing set.
+  </Step>
 
-Secure programmatic access with best practices:
+  <Step title="Have them reset their password">
+    They start it themselves with **Forgot Password** on the login screen. There is no admin-initiated password reset.
+  </Step>
 
-- **User-Scoped**: Keys inherit creator's permissions
-- **3-Month Expiration**: Automatic key rotation requirement
-- **Instant Revocation**: Delete compromised keys immediately
-- **Environment Variables**: Never hardcode in applications
+  <Step title="Delete the user if they should no longer have access">
+    **Delete** removes them from the account entirely.
+  </Step>
+</Steps>
 
-[Manage API keys →](/essentials/security/api-keys)
+## If an API key is exposed
 
-## Security Best Practices
+1. Delete the key in **Settings → API keys** — this revokes it immediately
+2. Issue a replacement, and consider making it a restricted key limited to the endpoints it actually needs
+3. Deploy the replacement everywhere the old key was used
+4. Review your own application logs — they are the only record of what the key did
 
-### For All Users
+The full sequence is in [API keys](/essentials/security/api-keys#if-a-key-is-compromised).
+
+## After containment
 
 <AccordionGroup>
-  <Accordion title="Use Strong, Unique Passwords" icon="key">
-    **Password Requirements:**
-    - Minimum 8 characters (12+ recommended)
-    - Uppercase and lowercase letters
-    - Numbers and special characters
-    - Unique to QuivaWorks (never reuse)
-    
-    **Best Practices:**
-    - Use a password manager (1Password, LastPass, Bitwarden)
-    - Enable the password generator
-    - Store securely, never in email or notes
-    - Change immediately if compromised
+  <Accordion title="Work out what was reachable" icon="magnifying-glass">
+    Establish what the compromised identity could see. A user's role determines this, so start from the [roles reference](/essentials/users/roles-permissions) and the resources granted to that user.
+
+    An account-scoped API key or a root or admin session should be assumed to have reached everything in the account.
   </Accordion>
-  
-  <Accordion title="Enable MFA Immediately" icon="shield-check">
-    Set up multi-factor authentication on your first login:
-    
-    1. Choose passkey (preferred) or authenticator app
-    2. Complete the setup process
-    3. Save recovery codes in a secure location
-    4. Test login with MFA before closing setup
-    
-    **Never skip MFA setup** - it's your strongest defense against unauthorized access.
+
+  <Accordion title="Review the account's users and roles" icon="users-gear">
+    Check the Users page for accounts added during the incident, roles that were elevated, and anyone who no longer needs access.
   </Accordion>
-  
-  <Accordion title="Secure Recovery Codes" icon="life-ring">
-    Recovery codes are your backup access method:
-    
-    **Storage Options:**
-    - Password manager (best option)
-    - Encrypted file on secure device
-    - Physical safe or lockbox
-    - Bank safe deposit box
-    
-    **Never store in:**
-    - Email
-    - Cloud notes (Evernote, Google Keep)
-    - Unencrypted files
-    - Shared documents
-  </Accordion>
-  
-  <Accordion title="Review Sessions Regularly" icon="clock">
-    Check active sessions at least monthly:
-    
-    1. Navigate to **Settings → Sessions**
-    2. Verify all devices and locations
-    3. Terminate unfamiliar sessions
-    4. Report suspicious activity immediately
-    
-    Look for:
-    - Unfamiliar locations
-    - Unknown devices
-    - Unusual login times
-    - IP addresses you don't recognize
-  </Accordion>
-  
-  <Accordion title="Keep Software Updated" icon="arrow-up">
-    Maintain updated software for security patches:
-    
-    - **Browser**: Use latest version of Chrome, Firefox, Safari, or Edge
-    - **Operating System**: Enable automatic security updates
-    - **Security Software**: Use reputable antivirus/anti-malware
+
+  <Accordion title="Tighten what let it happen" icon="shield-check">
+    - Enable MFA on every privileged account
+    - Reduce the number of root and admin users
+    - Replace broad API keys with restricted ones
+    - Delete keys and users that exist only out of habit
   </Accordion>
 </AccordionGroup>
 
-### For Administrators
+## Getting help
 
-<AccordionGroup>
-  <Accordion title="Enforce MFA for All Users" icon="users-gear">
-    Make multi-factor authentication mandatory:
-    
-    - **Critical**: All Root and Admin users
-    - **Recommended**: All Developer users
-    - **Required**: Users accessing sensitive data
-    
-    Monitor MFA adoption in user management and follow up with users who haven't enabled it.
-  </Accordion>
-  
-  <Accordion title="Apply Least Privilege Principle" icon="user-shield">
-    Assign minimum necessary permissions:
-    
-    - **Root**: Only for account owners (limit to 1-2 people)
-    - **Admin**: Trusted team leads and IT staff
-    - **Developer**: Technical team members
-    - **Monitor**: View-only for stakeholders
-    - **Billing**: Finance team only
-    
-    Review roles quarterly and adjust as needed.
-  </Accordion>
-  
-  <Accordion title="Conduct Regular Security Audits" icon="magnifying-glass">
-    **Monthly Reviews:**
-    - Active users and their roles
-    - Active sessions across all users
-    - API keys and their usage
-    - Unusual resource activity
-    
-    **Quarterly Reviews:**
-    - User permission levels
-    - Security policy compliance
-    - Incident response procedures
-    - Security training effectiveness
-  </Accordion>
-  
-  <Accordion title="Offboarding Procedures" icon="right-from-bracket">
-    When users leave your organization:
-    
-    1. **Immediately**: Suspend their account
-    2. **Within 1 hour**: Terminate all their sessions
-    3. **Within 24 hours**: Delete all their API keys
-    4. **Within 1 week**: Transfer resource ownership if needed
-    5. **Final**: Delete the user account
-    
-    Document the process and maintain audit trail.
-  </Accordion>
-  
-  <Accordion title="Security Training" icon="chalkboard-user">
-    Educate team members on security:
-    
-    - Onboarding security training for new users
-    - Quarterly security awareness updates
-    - Phishing awareness and testing
-    - Password and MFA best practices
-    - Incident reporting procedures
-    
-    Make security everyone's responsibility.
-  </Accordion>
-</AccordionGroup>
+<Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+  Contact us through the help centre for anything you can't resolve from the steps above, or to report a security vulnerability.
+</Card>
 
-### For Developers
-
-<AccordionGroup>
-  <Accordion title="Secure API Keys" icon="code">
-    Never expose API keys in code:
-    
-    **Do:**
-    ```bash
-    # Use environment variables
-    export QUIVA_API_KEY="your-key"
-    ```
-    
-    **Don't:**
-    ```javascript
-    // Never hardcode keys
-    const apiKey = "ms_1234567890"; // BAD
-    ```
-    
-    - Use environment variables or secret managers
-    - Add `.env` to `.gitignore`
-    - Rotate keys every 3 months
-    - Delete unused keys immediately
-    
-    [API key best practices →](/essentials/security/api-keys)
-  </Accordion>
-  
-  <Accordion title="Implement Proper Error Handling" icon="triangle-exclamation">
-    Prevent information leakage through errors:
-    
-    ```javascript
-    try {
-      // API call
-    } catch (error) {
-      // Don't expose sensitive details
-      console.error("API error occurred");
-      // Log full error securely on server
-      logger.error(error);
-    }
-    ```
-    
-    Never expose:
-    - API keys in error messages
-    - Stack traces to end users
-    - Database query details
-    - Internal system information
-  </Accordion>
-  
-  <Accordion title="Use HTTPS Only" icon="lock">
-    Always use encrypted connections:
-    
-    - Never use HTTP for API calls
-    - Verify SSL certificates
-    - Pin certificates in mobile apps
-    - Use secure WebSocket connections (WSS)
-    
-    ```javascript
-    // Always use HTTPS
-    const url = "https://api.quiva.ai/v1/agents";
-    ```
-  </Accordion>
-  
-  <Accordion title="Validate and Sanitize Input" icon="filter">
-    Protect against injection attacks:
-    
-    - Validate all user input
-    - Sanitize data before processing
-    - Use parameterized queries
-    - Implement rate limiting
-    - Validate file uploads
-    
-    Never trust client-side validation alone.
-  </Accordion>
-</AccordionGroup>
-
-## Security Notifications
-
-QuivaWorks sends automatic email notifications for important security events:
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Password Changed" icon="key">
-    Immediate notification when password is updated
+  <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
+    Terminate sessions and log other users out
   </Card>
-  
-  <Card title="Email Change Requested" icon="envelope">
-    Alert when email address change is initiated
+
+  <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
+    Passwords, MFA and recovery codes
   </Card>
-  
-  <Card title="Passkey Added" icon="fingerprint">
-    Notification when new passkey is registered
+
+  <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
+    Scopes, restricted keys and revocation
   </Card>
-  
-  <Card title="Security Codes Viewed" icon="eye">
-    Alert when recovery codes are accessed
-  </Card>
-  
-  <Card title="User Added" icon="user-plus">
-    Notice when new user is invited to account
-  </Card>
-  
-  <Card title="API Key Created" icon="code">
-    Coming soon - Notification for new API keys
-  </Card>
-</CardGroup>
 
-<Warning>
-If you receive a security notification for an action you didn't perform, take immediate action by following our [Incident Response Guide](/essentials/security/incident-response).
-</Warning>
-
-## Vulnerability Management
-
-### Reporting Security Vulnerabilities
-
-<Info>
-We appreciate responsible disclosure of security vulnerabilities.
-</Info>
-
-If you discover a security issue:
-
-1. **Do not** publicly disclose the vulnerability
-2. **Do not** exploit the vulnerability
-3. **Email** [support@quiva.ai](mailto:support@quiva.ai) with:
-   - Detailed description of the vulnerability
-   - Steps to reproduce
-   - Potential impact assessment
-   - Your contact information
-4. **Allow** us reasonable time to address the issue
-5. **Receive** acknowledgment within 48 hours
-
-We're committed to:
-- Acknowledging reports within 48 hours
-- Providing regular updates on remediation progress
-- Crediting researchers (if desired) after fix is deployed
-- Addressing critical vulnerabilities within 24 hours
-
-### Our Security Practices
-
-<CardGroup cols={2}>
-  <Card title="Regular Penetration Testing" icon="shield-virus">
-    Third-party security assessments conducted regularly
-  </Card>
-  
-  <Card title="Automated Security Scanning" icon="radar">
-    Continuous monitoring for vulnerabilities and threats
-  </Card>
-  
-  <Card title="Security Patches" icon="wrench">
-    Critical vulnerabilities addressed within 24 hours
-  </Card>
-  
-  <Card title="Security Training" icon="graduation-cap">
-    Regular training for all development team members
-  </Card>
-</CardGroup>
-
-## Privacy and Data Handling
-
-### Data Collection
-
-We collect only what's necessary to provide our service:
-
-**Account Information:**
-- Email address and name
-- Company/organization details
-- Billing information (processed by Stripe)
-
-**Usage Information:**
-- Login activity and sessions
-- API usage patterns
-- Resource creation and modifications
-- Performance metrics
-
-**We Never:**
-- Sell your data to third parties
-- Use your data to train AI models
-- Share data between accounts
-- Access your data without permission (except for support requests you initiate)
-
-### Data Retention
-
-<AccordionGroup>
-  <Accordion title="Active Accounts" icon="circle-check">
-    Data is retained as long as your account is active:
-    - Agent configurations
-    - Flow definitions
-    - Conversation history
-    - User settings
-    - Audit logs
-  </Accordion>
-  
-  <Accordion title="Account Deletion" icon="trash">
-    When you close your account:
-    - All data is permanently deleted within 30 days
-    - Backup copies are removed from all systems
-    - Billing records retained for legal requirements only (7 years)
-    - No recovery possible after deletion
-    
-    This fulfills your right to erasure under GDPR.
-  </Accordion>
-  
-  <Accordion title="Inactive Accounts" icon="circle-pause">
-    Free accounts inactive for 12+ months:
-    - Email notification sent at 11 months
-    - Account scheduled for deletion
-    - 30-day grace period to log in and prevent deletion
-    - All data deleted after grace period
-  </Accordion>
-</AccordionGroup>
-
-### Your Rights (GDPR)
-
-<CardGroup cols={2}>
-  <Card title="Right to Access" icon="folder-open">
-    Request a copy of your personal data at any time
-  </Card>
-  
-  <Card title="Right to Rectification" icon="pen">
-    Update or correct your information in account settings
-  </Card>
-  
-  <Card title="Right to Erasure" icon="trash-can">
-    Delete your account and all associated data
-  </Card>
-  
-  <Card title="Right to Data Portability" icon="download">
-    Export your data (available via buckets)
-  </Card>
-</CardGroup>
-
-To exercise your rights, contact [support@quiva.ai](mailto:support@quiva.ai).
-
-## Compliance Resources
-
-<CardGroup cols={2}>
-  <Card title="Privacy Policy" icon="file-contract" href="https://quiva.ai/legal.html#privacy">
-    Complete privacy policy and data handling practices
-  </Card>
-  
-  <Card title="Terms of Service" icon="handshake" href="https://quiva.ai/legal.html#terms">
-    Legal terms and service agreement
-  </Card>
-  
-  <Card title="Security Whitepaper" icon="file-shield" href="/essentials/security/overview">
-    Technical security architecture details (coming soon)
-  </Card>
-  
-  <Card title="Compliance Docs" icon="certificate" href="/essentials/security/overview">
-    Certification documents and audit reports (coming soon)
-  </Card>
-</CardGroup>
-
-## Security Checklist
-
-Use this checklist to maintain strong account security:
-
-### Initial Setup
-
-- [ ] Enable MFA (passkey or authenticator app)
-- [ ] Save recovery codes in secure location
-- [ ] Set strong, unique password
-- [ ] Configure account regions for compliance
-- [ ] Review default security settings
-
-### Weekly
-
-- [ ] Review any security notification emails
-- [ ] Check for unfamiliar sessions when logging in
-- [ ] Report suspicious activity immediately
-
-### Monthly
-
-- [ ] Review all active sessions
-- [ ] Audit active API keys
-- [ ] Check for unused user accounts
-- [ ] Review resource changes and activity
-- [ ] Verify billing activity
-
-### Quarterly
-
-- [ ] Review all user roles and permissions
-- [ ] Rotate API keys
-- [ ] Conduct security audit
-- [ ] Update security documentation
-- [ ] Provide security training to team
-
-### Annually
-
-- [ ] Review and update security policies
-- [ ] Test incident response procedures
-- [ ] Evaluate compliance requirements
-- [ ] Assess need for additional security controls
-
-## Getting Help
-
-<CardGroup cols={3}>
-  <Card title="Security Issues" icon="shield-halved" href="mailto:support@quiva.ai">
-    support@quiva.ai
-    
-    Report vulnerabilities and incidents
-  </Card>
-  
-  <Card title="Privacy Questions" icon="user-lock" href="mailto:support@quiva.ai">
-    support@quiva.ai
-    
-    GDPR requests and data privacy
-  </Card>
-  
-  <Card title="General Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    Get help with account and technical issues
-  </Card>
-</CardGroup>
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Set Up MFA" icon="lock" href="/essentials/security/authentication">
-    Enable multi-factor authentication now
-  </Card>
-  
-  <Card title="Manage API Keys" icon="code" href="/essentials/security/api-keys">
-    Secure your programmatic access
-  </Card>
-  
-  <Card title="Monitor Sessions" icon="clock" href="/essentials/security/sessions">
-    Track and control active logins
-  </Card>
-  
-  <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
-    Know what to do if compromised
+  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
+    Platform and account security
   </Card>
 </CardGroup>

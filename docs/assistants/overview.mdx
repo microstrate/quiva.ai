@@ -91,8 +91,8 @@ Assistants can:
   2. Generates clear, user-focused documentation based on your style
   3. You review and provide feedback: "Make this more beginner-friendly, add real examples"
   4. Assistant revises based on your input
-  5. You vote on what worked well and consolidate successful patterns into a Learning file
-  6. Next time you create a documentation assistant, it can apply that Learning file to guide its behaviour
+  5. You vote on what worked well, and the Learning tab consolidates those votes into actionable insights
+  6. You review those insights and refine this assistant's instructions accordingly
   
   You're collaborating with an expert that understands your context, your systems, and your needs—not starting from scratch each time. You explicitly capture what works and apply it intentionally.
 </Card>
@@ -213,7 +213,7 @@ The Learning tab shows consolidated feedback, allowing you to make informed deci
     Provide training data, guidelines, policies, and context. Upload documents, paste knowledge, or link URLs. This is how your assistant learns your business.
   </Step>
   <Step title="Choose a Model">
-    All assistants default to Claude Haiku 4.5, included in every plan. On Team and Enterprise plans, you can bring your own API key to use a different model.
+    All assistants default to a fast Claude model, included in every plan. Accounts with bring-your-own-key enabled can connect their own API key to use a different model.
   </Step>
   <Step title="Connect Integrations">
     Add the systems your assistant needs: GitHub, CRM, knowledge bases, APIs. Start with essentials, add more as needed.
@@ -279,23 +279,20 @@ Your assistant intelligently decides which system to access for each task.
 
 ### Context Variables
 
-Configure dynamic settings:
+A free-form set of key/value pairs, configured on the **Instructions** tab, that gets injected verbatim into the assistant's system prompt — useful for things like a project name, a default region, or other values you want the assistant to always have on hand.
 
-- **Project & Repository** — Specify where the assistant should work
-- **API Keys & Credentials** — Securely store authentication
-- **Custom Parameters** — Define workflow-specific variables
-- **Environment Settings** — Set execution parameters
+<Warning>
+Values are not sanitised and can enable prompt injection — use Context Variables only with trusted input. They are not a place to store API keys or credentials; those belong in [Secrets](/assistants/tools-and-connectors) or an integration's own auth configuration.
+</Warning>
 
-Context Variables keep your assistant focused and secure.
-
-[Learn more about Context Variables →](/assistants/configuration/context-settings)
+[Learn more about Context Variables →](/assistants/configuration/information-settings#instructions-live-on-their-own-tab)
 
 ### Provider Settings
 
 Choose the AI model:
 
-- **Default Model** — Claude Haiku 4.5, included in all plans
-- **Bring Your Own Keys** — Connect your own Anthropic API key on Team and Enterprise plans
+- **Default Model** — a fast Claude model, included in all plans
+- **Bring Your Own Keys** — connect your own Anthropic API key on accounts with bring-your-own-key enabled
 - **Output Token Limits** — Set maximum response size
 - **Configuration** — Fine-tune behaviour settings
 
@@ -316,94 +313,28 @@ The Learning tab shows you exactly how your assistant is performing and where to
 
 [Learn more about Learning →](/assistants/learning)
 
-## When to Use Assistants
-
-Assistants excel when you need intelligent collaboration, judgment, and contextual decision-making. They're expert partners you work with to accomplish complex tasks.
-
-### Perfect For
-
-<AccordionGroup>
-  <Accordion title="Expert Collaboration & Research" icon="brain">
-    - Research complex topics with intelligent analysis
-    - Draft content with iterative refinement
-    - Brainstorm strategies and approaches
-    - Analyse data and generate insights
-    - Work collaboratively on problem-solving
-  </Accordion>
-
-  <Accordion title="Customer Service & Support" icon="headset">
-    - Answer customer questions with context
-    - Troubleshoot issues using knowledge bases
-    - Apply policies with judgment (returns, refunds)
-    - Handle complex, multi-turn conversations
-    - Escalate to humans when needed
-  </Accordion>
-
-  <Accordion title="Lead Qualification & Discovery" icon="user-check">
-    - Ask discovery questions dynamically
-    - Research companies and contacts
-    - Score leads based on your ICP criteria
-    - Enrich data from multiple sources
-    - Route qualified leads intelligently
-  </Accordion>
-
-  <Accordion title="Content Generation & Adaptation" icon="pen">
-    - Create personalised email campaigns
-    - Generate social media posts
-    - Adapt messaging by audience segment
-    - Maintain brand voice across channels
-    - Collaborate on content refinement
-  </Accordion>
-
-  <Accordion title="Data Processing & Analysis" icon="database">
-    - Extract information from documents
-    - Validate data against business rules
-    - Make contextual decisions on exceptions
-    - Cross-reference multiple systems
-    - Flag issues for human review
-  </Accordion>
-
-  <Accordion title="Sales & Outreach" icon="handshake">
-    - Personalise outreach at scale
-    - Research prospects automatically
-    - Follow up based on engagement
-    - Book meetings intelligently
-    - Qualify and route opportunities
-  </Accordion>
-</AccordionGroup>
-
-### Not Ideal For
-
-<Card title="When to Use Workflows Instead" icon="triangle-exclamation">
-  - **Simple, predictable tasks** - If it's always the same steps, use a function or condition
-  - **High-volume, low-variability** - Assistants have per-interaction costs; save them for complexity
-  - **Pure data transformation** - Use Rules or Functions for straightforward data manipulation
-  - **Time-critical micro-operations** - Assistants add latency; use functions for speed-critical tasks
-  - **Deterministic calculations** - Use Rules for exact math and logic
-
-**Rule of thumb**: If you can write "if X then Y" rules that cover all cases, use automation. If there's judgment, context, exceptions, or collaboration—use an assistant.
-</Card>
-
 ### Assistant Costs
 
 Assistants are billed through a credit system based on your plan:
 
 **How Credits Work:**
 - Each interaction consumes credits based on model usage and complexity
-- Included credits refresh monthly and are allocated per user
-- Purchase additional credits at discounted rates—they never expire and roll over
-- Credits apply regardless of which Claude model you're using
+- The included allowance refreshes monthly and is shared across the whole account, not allocated per user
+- On Pro and Team, purchase additional credits in packs—they never expire and roll over
+- Different models draw down credits at different rates, so cost varies by which model an assistant uses
 
 **Credit Allocation by Plan:**
-- **Free:** 500 credits per account
-- **Pro:** 1,000 credits per user (purchase additional at $8/1,000)
-- **Team:** 1,500 credits per user (purchase additional at $7/1,000)
+- **Free:** 1,500 credits per account per month; top-up packs aren't available on Free
+- **Pro:** 20,000 credits per account per month, plus optional top-up packs
+- **Team:** 90,000 credits per account per month, plus optional top-up packs
+
+Pro and Team share the same top-up ladder, priced per pack rather than a flat per-1,000 rate—larger packs cost less per credit.
 
 **Default Model:**
-All new assistants use Claude Haiku 4.5, our fastest and most cost-effective model. It's optimised for most business workflows whilst keeping costs low.
+All new assistants use a fast Claude model by default—cost-effective and optimised for most business workflows.
 
 **Cost Optimisation Tips:**
-- Use Claude Haiku 4.5 for most tasks—excellent balance of performance and cost
+- Use the default model for most tasks—a good balance of performance and cost
 - Start with shorter conversations and context to reduce credit consumption
 - Consolidate feedback through the Learning system to refine instructions and reduce re-work
 - Monitor assistant performance in the analytics dashboard to identify cost-saving opportunities
@@ -429,8 +360,8 @@ See [Plans & Pricing](/get-started/plans-and-pricing) for detailed billing infor
     Connect GitHub, CRM, APIs, and more
   </Card>
   
-  <Card title="Context Variables" icon="sliders" href="/assistants/configuration/context-settings">
-    Configure dynamic settings and security
+  <Card title="Context Settings" icon="sliders" href="/assistants/configuration/context-settings">
+    Tune memory, context limits and output schema
   </Card>
   
   <Card title="Provider Settings" icon="cpu" href="/assistants/configuration/provider-settings">

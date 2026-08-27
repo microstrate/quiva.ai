@@ -1,857 +1,260 @@
 ---
 title: "User Management"
-description: "Add team members, assign roles, and manage user access"
+description: "Invite people to your account, set their role, and manage their access"
 icon: "users"
 ---
 
-# User Management
+Everyone who works in your account is managed from one page: open **Users** in the sidebar — depending on your account it sits at the top level or under **More**.
 
-Manage your team members, control access levels, and configure user permissions. Understand how user seats work across different plans.
+Only **root** and **admin** can invite, change a role, suspend or remove someone. Developer and monitor can open the page and read the list, but cannot change anything on it. Billing and collaborator do not see it at all.
 
-## Understanding User Seats
+## Seats
 
-QuivaWorks uses a per-seat licensing model:
+A seat is one non-suspended person on the account.
 
 <CardGroup cols={2}>
-  <Card title="Free Plan" icon="gift">
-    **Maximum 3 users**
-    
-    Fixed limit - cannot add more users without upgrading
+  <Card title="Free" icon="gift">
+    **2 seats.** To add a third person, move to a paid plan.
   </Card>
-  
-  <Card title="Paid Plans (Pro/Team)" icon="users">
-    **Unlimited users**
-    
-    Each user added increases your monthly bill by the per-user rate
+
+  <Card title="Pro and Team" icon="users">
+    **Unlimited seats.** The plan is a flat monthly price — adding people does not change it.
   </Card>
 </CardGroup>
 
-### How User Seats Work
+Two things do not consume a seat:
 
-**Free Plan:**
-- Maximum 3 active users allowed
-- Cannot add additional users without upgrading to a paid plan
-- Must remove existing users before adding new ones if at limit
-
-**Paid Plans (Pro/Team):**
-- Add as many users as needed
-- Each user increases your monthly bill:
-  - Pro: +$19/user/month (or $15/user/month annual)
-  - Team: +$39/user/month (or $31/user/month annual)
-- Users added mid-cycle are prorated
-- Users removed provide credit at next billing cycle
-
-**Important:** Suspended users still occupy a licensed seat and count toward your billing. To free up a seat, you must fully delete the user.
+- **Suspended users.** Suspending someone frees their seat immediately. You do not have to delete them to get it back.
+- **Clients.** A user with the client role never consumes a seat, on any plan.
 
 <Info>
-**Billing Impact:** Every active or suspended user in your account counts toward your total user count and affects your bill. Monitor your user list regularly to avoid paying for unused seats.
+QuivaWorks does not charge per user. Pro and Team are flat monthly subscriptions, and what you are billed for is usage — credits, storage and meeting hours. [Plans and pricing →](/get-started/plans-and-pricing)
 </Info>
 
-## Adding Users
+When the account is at its seat limit, the Users page shows an **Update Plan** button and the **Invite** button is disabled with the limit in its tooltip. Un-suspending someone is checked against the same limit, so while you are full an un-suspend is refused until a seat is free.
 
-Invite team members to collaborate on your QuivaWorks account.
+## Inviting someone
 
 <Steps>
-  <Step title="Check Available Seats">
-    **Free Plan:** Verify you have fewer than 3 users
-    
-    **Paid Plans:** No limit - each new user adds to your monthly bill
+  <Step title="Open Users">
+    Open **Users** in the sidebar.
   </Step>
-  
-  <Step title="Navigate to Users">
-    Go to **Account Management → Users**
-  </Step>
-  
+
   <Step title="Click Invite">
-    Click the "Invite" button
+    The **Invite** button is in the top right. It only appears for root and admin.
   </Step>
-  
-  <Step title="Enter User Details">
-    - **Email address** - Where the invitation will be sent
-    - **First and last name**
-    - **Role** - Select appropriate access level
-    
-    [Understanding roles →](/essentials/users/roles-permissions)
+
+  <Step title="Fill in the invitation">
+    - **Email** — where the invitation goes
+    - **Role** — one of admin, developer, monitor, billing, collaborator or client
+    - **First Name** and **Last Name**
+
+    [What each role can reach →](/essentials/users/roles-permissions)
   </Step>
-  
-  <Step title="Send Invitation">
-    Click "Invite" to send the invitation email
+
+  <Step title="Send">
+    Click **Invite**.
   </Step>
 </Steps>
 
-Users will appear with **"Invitation Pending"** status until they accept.
+The person appears in the list with the status **Invitation Pending** until they accept.
 
-<img 
-  src="/images/essentials/user-invited-email.png" 
+<img
+  src="/images/essentials/user-invited-email.png"
   alt="User Invitation Email"
   style={{ maxHeight: '300px', width: 'auto' }}
   className="rounded-lg"
 />
 
-### Billing Impact When Adding Users
+Clients are invited the same way but get a passwordless invitation: a magic link and a 6-digit code, either of which signs them in through **Passwordless Client Sign-In** on the login page.
 
-<Tabs>
-  <Tab title="Free Plan">
-    **No additional cost, but limited to 3 users**
-    
-    - User 1: $0
-    - User 2: $0
-    - User 3: $0
-    - User 4: ❌ Must upgrade to add
-    
-    To add a 4th user, upgrade to Pro or Team plan.
-  </Tab>
-  
-  <Tab title="Paid Plans">
-    **Each user increases your monthly bill**
-    
-    **Example - Pro Plan (Monthly):**
-    - Current: 10 users × $19/user = $190/month
-    - Add 2 users mid-cycle → prorated charge
-    - Next billing: 12 users × $19/user = $228/month
-    
-    **Example - Team Plan (Annual):**
-    - Current: 25 users × $31/user = $775/month
-    - Add 5 users → prorated for remaining year
-    - Next annual billing: 30 users × $31/user = $930/month
-  </Tab>
-</Tabs>
+<Note>
+There is no "resend invitation" control. If an invitation does not arrive, check the recipient's spam folder and confirm the address on the list is right.
+</Note>
 
-<Warning>
-**Free Plan Limit:** If you have 3 users and attempt to add a 4th, you'll be prompted to upgrade to a paid plan. You cannot exceed 3 users on the Free plan.
-</Warning>
+## The Users page
 
-## User Roles
+The list is titled **Manage Users** and has five columns: **Name**, **Email**, **Role**, **Status** and **Last Login**. Status is one of **Active**, **Suspended** or **Invitation Pending**.
 
-Choose the appropriate role based on what each user needs to do:
+Above the table are a search box and two filters, **Role** and **Status**, so you can pull out (for example) everyone suspended, or everyone holding admin.
+
+Click a person's name to open them. Their card carries the **Role** dropdown with **Update Role**, and a dot menu with everything else.
+
+## Roles
 
 <CardGroup cols={2}>
-  <Card title="Root" icon="crown">
-    **Account owners only**
-    
-    Complete control including account closure
-    
-    [View permissions →](/essentials/users/roles-permissions#root)
+  <Card title="Root" icon="crown" href="/essentials/users/roles-permissions#root">
+    The account creator. Cannot be assigned to anyone.
   </Card>
-  
-  <Card title="Admin" icon="user-shield">
-    **Team leads and IT**
-    
-    Full management except account closure
-    
-    [View permissions →](/essentials/users/roles-permissions#admin)
+
+  <Card title="Admin" icon="user-shield" href="/essentials/users/roles-permissions#admin">
+    Full management except closing the account.
   </Card>
-  
-  <Card title="Billing" icon="credit-card">
-    **Finance team**
-    
-    Manage billing and subscriptions only
-    
-    [View permissions →](/essentials/users/roles-permissions#billing)
+
+  <Card title="Developer" icon="code" href="/essentials/users/roles-permissions#developer">
+    Secrets, Monitor and Flows. Reads the member list.
   </Card>
-  
-  <Card title="Developer" icon="code">
-    **Technical team**
-    
-    Build and deploy resources
-    
-    [View permissions →](/essentials/users/roles-permissions#developer)
+
+  <Card title="Monitor" icon="eye" href="/essentials/users/roles-permissions#monitor">
+    Monitor, and reads the member list.
   </Card>
-  
-  <Card title="Monitor" icon="eye">
-    **Stakeholders**
-    
-    View-only access
-    
-    [View permissions →](/essentials/users/roles-permissions#monitor)
+
+  <Card title="Billing" icon="credit-card" href="/essentials/users/roles-permissions#billing">
+    Billing & Plans. No Users, no Account.
+  </Card>
+
+  <Card title="Collaborator" icon="user-group" href="/essentials/users/roles-permissions#collaborator">
+    No Flows, Users, Secrets or Gateway.
+  </Card>
+
+  <Card title="Client" icon="user-lock" href="/essentials/users/roles-permissions#client">
+    External, passwordless, scoped by grant. No seat.
   </Card>
 </CardGroup>
 
-<Tip>
-Always apply the **principle of least privilege** - assign the minimum role needed for each user to do their job effectively. Remember: all users consume a seat regardless of their role.
-</Tip>
+### Changing a role
 
-## Managing Users
+Open the person, pick a role from the **Role** dropdown and click **Update Role**.
 
-### Updating User Roles
+<Warning>
+Changing a role signs that person out of the account. They sign in again and come back with the new access.
+</Warning>
 
-Only Root and Admin users can change roles.
+A root user's row shows their role as fixed text with no dropdown and no dot menu, so root users cannot be re-roled, suspended or deleted from this page.
 
-<Steps>
-  <Step title="Navigate to Users">
-    Go to **Account Management → Users**
-  </Step>
-  
-  <Step title="Select User">
-    Click on the user's email address
-  </Step>
-  
-  <Step title="Change Role">
-    Select the new role from the dropdown
-  </Step>
-  
-  <Step title="Confirm">
-    Click "Update Role"
-  </Step>
-</Steps>
+### Scoping a client to specific resources
 
-Changes take effect immediately. Changing a user's role does not affect seat count or billing.
+For a user with the client role, root and admin see an extra dot-menu item: **Manage Resources**. It grants access to named Spaces, flows, assistants, records, record configurations, files, folders and tasks, with **Read**, **Write** and **Delete** on each — plus **Execute** where the type supports it.
 
-**Restrictions:**
-- You cannot change your own role
-- Admins cannot modify Root user roles
-- Admins cannot assign the Root role
+A client with no grants sees nothing. [More on the client role →](/essentials/users/roles-permissions#client)
 
-### Suspending Users
+## Suspending users
 
-Temporarily restrict access without deleting the account:
+Suspend blocks someone from signing in, without deleting anything they own.
 
 <Steps>
-  <Step title="Find User">
-    Navigate to **Account Management → Users** and click on user's email
+  <Step title="Open the person">
+    Click their name on the Users page.
   </Step>
-  
+
   <Step title="Suspend">
-    Click the dot menu (⋮) → "Suspend"
-  </Step>
-  
-  <Step title="Confirm">
-    Confirm the suspension
+    Dot menu (⋮) → **Suspend**.
   </Step>
 </Steps>
 
-**What happens:**
-- User cannot log in
-- All active sessions are terminated
-- User resources remain in the account
-- Can be reactivated by an Admin at any time
-
-**When to use:**
-- Employee on extended leave
-- Temporary contractor work completed
-- Investigating potential security issue
-- Pending account transfer
+Their status becomes **Suspended** and their seat is freed. To reverse it, use **Unsuspend** in the same menu — it is checked against your seat limit, so it will be refused if the account is full.
 
 <Warning>
-**Billing Impact:** Suspended users still occupy a licensed seat and count toward your total user count. You will continue to be billed for suspended users. To free up a seat and stop billing, you must delete the user.
+Suspending someone does **not** end the sessions they already have. If you need them out immediately, use **Logout** as well.
 </Warning>
 
-<Note>
-View suspended users by filtering for "Suspended" status in user management.
-</Note>
+## Logging a user out
 
-### Terminating User Sessions
+**Logout** in the dot menu revokes that person's tokens and ends their sessions everywhere. Use it when a device is lost, when you suspect unauthorised access, or alongside a suspension.
 
-Force a user to log out from all devices:
+## Deleting users
 
 <Steps>
-  <Step title="Find User">
-    Navigate to **Account Management → Users** and click on user's email
+  <Step title="Open the person">
+    Click their name on the Users page.
   </Step>
-  
-  <Step title="Logout">
-    Click the dot menu (⋮) → "Logout"
-  </Step>
-  
-  <Step title="Confirm">
-    Confirm to terminate all sessions
-  </Step>
-</Steps>
 
-**Use cases:**
-- User reports device stolen
-- Suspected unauthorized access
-- User forgot to log out on shared computer
-- Troubleshooting access issues
-
-<Info>
-Users can also manage their own sessions in their [personal settings](/essentials/security/sessions).
-</Info>
-
-### Deleting Users
-
-Permanently remove a user from your account and free up a licensed seat:
-
-<Steps>
-  <Step title="Find User">
-    Navigate to **Account Management → Users** and click on user's email
-  </Step>
-  
   <Step title="Delete">
-    Click the dot menu (⋮) → "Delete"
-  </Step>
-  
-  <Step title="Confirm">
-    Confirm the deletion
+    Dot menu (⋮) → **Delete**, then confirm.
   </Step>
 </Steps>
 
 <Warning>
-**This action is permanent and cannot be undone.**
-
-What's deleted:
-- User's personal settings
-- User's sessions and API keys
-- User's MFA settings
-
-What's preserved:
-- Resources they created (agents, flows, MCP servers)
-- All data remains accessible to the team
+Deletion cannot be undone. Resources created in the account stay in the account; the person's access to it is removed.
 </Warning>
 
-### Billing Impact When Removing Users
+To bring someone back, send a fresh invitation to the same address.
 
-<Tabs>
-  <Tab title="Free Plan">
-    **No billing impact**
-    
-    Deleting a user frees up a seat to add another user (up to 3 total).
-  </Tab>
-  
-  <Tab title="Paid Plans">
-    **Reduces your next bill**
-    
-    **Example - Pro Plan:**
-    - Current: 15 users × $19/user = $285/month
-    - Delete 3 users on day 10 of cycle
-    - You're still charged for them until end of current period
-    - Next billing: 12 users × $19/user = $228/month
-    - Monthly savings: $57
-    
-    **Important:** No immediate refund or credit for mid-cycle deletions. The reduction applies to your next billing cycle.
-  </Tab>
-</Tabs>
+## Recovery codes
+
+Root and admin can view or reissue another person's recovery codes from their dot menu. Both entries are hidden while an invitation is still pending.
+
+- **View recovery codes** — shows the codes currently in force.
+- **Issue new recovery codes** — confirms first, warning that the user's old codes will no longer be valid, then shows the new set.
 
 <Info>
-**Freeing Up Seats:** To stop being billed for a user and free up their seat, you must delete them (not just suspend them). The seat becomes available immediately for a new user, but billing adjustments apply at your next billing cycle.
+Whenever recovery codes are viewed, the user is emailed a "security codes viewed" notice, so nobody's codes can be read without them knowing.
 </Info>
 
-## Managing Seat Capacity
+There is no admin-initiated password reset. Someone who cannot get in uses **Forgot Password** on the login page themselves.
 
-### Checking Current Seat Usage
-
-<Steps>
-  <Step title="Navigate to Users">
-    Go to **Account Management → Users**
-  </Step>
-  
-  <Step title="View User Count">
-    See total count at the top:
-    - Active users (including pending invitations)
-    - Suspended users (still consuming seats)
-  </Step>
-  
-  <Step title="Check Billing">
-    Go to **Account Management → Billing and Plans** to see:
-    - Total user count
-    - Cost per user
-    - Total monthly/annual charge
-  </Step>
-</Steps>
-
-### When You Can't Add More Users (Free Plan)
-
-If you've reached the 3-user limit on the Free plan:
-
-<Tabs>
-  <Tab title="Option 1: Upgrade">
-    **Upgrade to Pro or Team**
-    
-    <Steps>
-      <Step title="Go to Billing">
-        Navigate to **Account Management → Billing and Plans**
-      </Step>
-      
-      <Step title="Select Plan">
-        Choose Pro ($19/user/month) or Team ($39/user/month)
-      </Step>
-      
-      <Step title="Confirm">
-        Complete upgrade and add unlimited users
-      </Step>
-    </Steps>
-    
-    [Compare plans →](/get-started/plans-and-pricing)
-  </Tab>
-  
-  <Tab title="Option 2: Remove Users">
-    **Delete existing users to free up seats**
-    
-    <Steps>
-      <Step title="Identify Users to Remove">
-        Review your user list for inactive or unnecessary accounts
-      </Step>
-      
-      <Step title="Delete Users">
-        Delete users you no longer need
-      </Step>
-      
-      <Step title="Add New User">
-        Once under 3 users, you can add new ones
-      </Step>
-    </Steps>
-    
-    Remember: Suspended users still count, so you must delete them to free up seats.
-  </Tab>
-</Tabs>
-
-### Optimizing Seat Usage
+## Onboarding and offboarding
 
 <AccordionGroup>
-  <Accordion title="Audit Inactive Users" icon="user-slash">
-    **Monthly review:**
-    
-    1. Navigate to **Account Management → Users**
-    2. Check last login date for each user
-    3. Identify users who haven't logged in for 30+ days
-    4. Contact inactive users to verify they still need access
-    5. Delete accounts that are no longer needed
-    
-    **Why this matters:**
-    On paid plans, every inactive user costs $19-$39/month. Removing 5 inactive users on the Pro plan saves $95/month ($1,140/year).
+  <Accordion title="Bringing someone in" icon="user-plus">
+    1. Pick the narrowest role that lets them do the job — collaborator or client is often enough for someone outside the core team.
+    2. Invite them, and check the invitation arrived.
+    3. For a client, set their resource grants with **Manage Resources** before you tell them to sign in. Until you do, they will see an empty dashboard.
+    4. Encourage them to set up two-factor authentication and store their recovery codes.
   </Accordion>
-  
-  <Accordion title="Use Suspension Carefully" icon="pause">
-    **Remember:** Suspended users still consume seats and incur charges.
-    
-    **Best practices:**
-    - Use suspension for short-term situations only (1-2 weeks max)
-    - For extended leave or departures, delete the user instead
-    - Can always re-invite the user later if needed
-    - Monitor suspended users weekly
-    
-    **Example cost:**
-    3 suspended users on Pro plan = 3 × $19 = $57/month wasted
+
+  <Accordion title="When someone leaves" icon="right-from-bracket">
+    1. **Logout** — ends their existing sessions straight away. Suspension alone does not.
+    2. **Suspend** — blocks any new sign-in and frees the seat.
+    3. Check whether anything they owned needs handing over.
+    4. **Delete** when you are sure, or leave them suspended — a suspended user costs you nothing.
   </Accordion>
-  
-  <Accordion title="Consolidate Roles" icon="user-group">
-    **Consider if you need separate users for:**
-    
-    - Finance team members who only check billing occasionally
-    - Stakeholders who rarely log in to view reports
-    - Contractors who completed their work months ago
-    
-    **Alternative approaches:**
-    - Share credentials for infrequent billing access (not recommended for security)
-    - Export reports and share externally for stakeholders
-    - Delete contractor accounts when work is complete
-    
-    Balance security best practices with cost optimization.
-  </Accordion>
-  
-  <Accordion title="Plan for Growth" icon="chart-line">
-    **When planning user additions:**
-    
-    Calculate monthly cost impact:
-    - Pro: Each user = +$19/month (+$228/year)
-    - Team: Each user = +$39/month (+$468/year)
-    
-    **Example - Adding 10 users to Pro:**
-    - Monthly increase: 10 × $19 = $190/month
-    - Annual increase: $2,280/year
-    - Consider annual billing for 20% discount
-    
-    Budget accordingly when onboarding new team members.
+
+  <Accordion title="Reviewing access" icon="calendar-check">
+    The **Last Login** column and the **Role** filter are the two tools for this. Look for people who have not signed in for a long time, and for elevated roles that outlasted the reason they were granted.
+
+    Remember that developer and monitor can both read the whole member list, so "they only have monitor" is not the same as "they cannot see who works here".
   </Accordion>
 </AccordionGroup>
-
-## Recovery Codes
-
-Admins can issue or view recovery codes for users who have enabled MFA.
-
-### Issuing New Recovery Codes
-
-<Steps>
-  <Step title="Find User">
-    Navigate to **Account Management → Users** and click on user's email
-  </Step>
-  
-  <Step title="Issue Codes">
-    Click the dot menu (⋮) → "Issue new recovery codes"
-  </Step>
-  
-  <Step title="Confirm">
-    Click "I Am Sure" in the dialog
-  </Step>
-  
-  <Step title="Save Codes">
-    Download, print, or copy the codes securely
-  </Step>
-</Steps>
-
-<Info>
-When recovery codes are issued or viewed, the user receives a "Security Codes Viewed" email notification to alert them of the access.
-</Info>
-
-### Viewing Existing Codes
-
-<Steps>
-  <Step title="Find User">
-    Navigate to **Account Management → Users** and click on user's email
-  </Step>
-  
-  <Step title="View Codes">
-    Click the dot menu (⋮) → "View recovery codes"
-  </Step>
-</Steps>
-
-<Warning>
-**Root user recovery codes** cannot be viewed by anyone else, including Admins. Root users must store their recovery codes securely as they cannot be recovered if lost.
-</Warning>
-
-## Resource Sharing
-
-<Info>
-All resources (agents, flows, MCP servers) are shared across your entire account. All team members can access resources based on their role permissions.
-</Info>
-
-**How it works:**
-- Resources are organized into collections within flows
-- Access is controlled by role, not by who created the resource
-- When a user is deleted, their resources remain accessible to the team
-- No per-user resource ownership or isolation
-
-**Role-based access:**
-- **Root/Admin:** Full access to all resources
-- **Developer:** Can create, modify, and delete all resources
-- **Monitor:** Can view all resources (read-only)
-- **Billing:** Cannot access resources
-
-[Learn more about role permissions →](/essentials/users/roles-permissions)
-
-## Best Practices
-
-### User Lifecycle Management
-
-<AccordionGroup>
-  <Accordion title="Onboarding New Users" icon="user-plus">
-    **When adding new team members:**
-    
-    1. Verify seat availability (Free plan) or budget impact (Paid plans)
-    2. Create account with appropriate role
-    3. Send invitation email
-    4. Verify they receive and accept invitation
-    5. Confirm they enable MFA (required for Admin/Root)
-    6. Provide onboarding documentation
-    7. Review access after first week
-    
-    Start with minimal permissions and increase as needed.
-    
-    **Billing reminder:**
-    - Free plan: Can only add if under 3 total users
-    - Paid plans: Each user adds $19-$39/month to your bill
-  </Accordion>
-  
-  <Accordion title="Regular Access Reviews" icon="calendar-check">
-    **Monthly reviews:**
-    - List all active users
-    - Check last login date for each user
-    - Verify each user still needs access
-    - Identify suspended users (still being billed)
-    - Confirm roles are still appropriate
-    - Delete inactive accounts to reduce costs
-    
-    **Quarterly reviews:**
-    - Comprehensive audit of all permissions
-    - Review role assignments
-    - Update access based on job changes
-    - Document why each elevated role is needed
-    - Calculate actual cost of user seats
-    
-    **Cost optimization:**
-    Removing just 5 inactive users on Pro plan saves $1,140/year.
-  </Accordion>
-  
-  <Accordion title="Offboarding Process" icon="right-from-bracket">
-    **When users leave your organization:**
-    
-    **Immediately:**
-    1. Suspend the user account
-    2. Terminate all their sessions
-    
-    **Within 1 hour:**
-    3. Delete all their API keys
-    
-    **Within 24 hours:**
-    4. Review their resources for any needed handoff
-    5. **Delete the user account** (not just suspend)
-       - Frees up the licensed seat
-       - Stops billing for that user at next cycle
-       - Cannot be undone - data is preserved but user access is removed
-    
-    **Document:**
-    - Who left and when
-    - What resources they managed
-    - Who took over their responsibilities
-    
-    <Warning>
-    Don't leave users in "Suspended" status long-term. Delete them to stop incurring charges and free up the seat.
-    </Warning>
-  </Accordion>
-  
-  <Accordion title="Security for Elevated Roles" icon="shield-check">
-    **Mandatory for Root and Admin:**
-    - Enable MFA immediately
-    - Use passkeys when possible
-    - Store recovery codes in password manager
-    - Use strong, unique passwords
-    - Review sessions monthly
-    
-    **Recommended for all users:**
-    - Enable MFA
-    - Use password manager
-    - Review active sessions regularly
-    
-    [Security best practices →](/essentials/security/overview)
-  </Accordion>
-</AccordionGroup>
-
-### Role Assignment Guidelines
-
-<Tabs>
-  <Tab title="Small Teams (2-5)">
-    **Typical structure:**
-    - 1 Root (founder/owner)
-    - 0-1 Admin (if needed)
-    - 2-4 Developers
-    
-    **Why:**
-    Small teams usually don't need separate Billing or Monitor roles. Developers can handle most operational tasks.
-    
-    **Cost (Pro Plan, Monthly):**
-    - 5 users × $19/user = $95/month
-    - Annual: $1,140/year (or $900/year with 20% annual discount)
-  </Tab>
-  
-  <Tab title="Growing Teams (6-20)">
-    **Typical structure:**
-    - 1 Root (owner)
-    - 1-2 Admins (team leads)
-    - 1 Billing (finance)
-    - 3-12 Developers
-    - 0-5 Monitors (stakeholders)
-    
-    **Why:**
-    Separation of duties becomes important. Finance should handle billing independently from technical operations.
-    
-    **Cost (Pro Plan, 15 users, Monthly):**
-    - 15 users × $19/user = $285/month
-    - Annual: $3,420/year (or $2,700/year with 20% annual discount)
-    
-    **Optimization tip:**
-    Consider if all Monitor users need continuous access or if they can receive periodic reports instead.
-  </Tab>
-  
-  <Tab title="Large Orgs (20+)">
-    **Typical structure:**
-    - 1-2 Root (owner + backup)
-    - 2-5 Admins (department leads)
-    - 1-2 Billing (finance team)
-    - 10+ Developers
-    - 5+ Monitors
-    
-    **Why:**
-    Clear separation of duties, compliance requirements, multiple teams and departments.
-    
-    **Cost (Team Plan, 30 users, Monthly):**
-    - 30 users × $39/user = $1,170/month
-    - Annual: $14,040/year (or $11,160/year with 20% annual discount)
-    
-    **Enterprise option:**
-    At this scale, consider Enterprise plan for custom pricing, enhanced support, and additional features.
-  </Tab>
-</Tabs>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Can't add more users (Free plan)">
-    **Error:** "Maximum users reached" or "Upgrade required"
-    
-    **Cause:** Free plan is limited to 3 users total (active + suspended + pending invitations)
-    
-    **Solutions:**
-    
-    **Option 1 - Delete existing users:**
-    1. Review your user list
-    2. Delete users who no longer need access
-    3. Remember: Suspended users count toward the limit
-    4. Once under 3 users, you can add new ones
-    
-    **Option 2 - Upgrade to paid plan:**
-    1. Go to **Account Management → Billing and Plans**
-    2. Choose Pro ($19/user/month) or Team ($39/user/month)
-    3. Add unlimited users
-    
-    [Compare plans →](/get-started/plans-and-pricing)
+  <Accordion title="The Invite button is disabled">
+    Your account is at its seat limit — the tooltip shows the limit, and an **Update Plan** button appears next to it. Free accounts have 2 seats. Suspending someone frees a seat, and inviting a client does not use one at all.
   </Accordion>
 
-  <Accordion title="User didn't receive invitation email">
-    **Solutions:**
-    
-    1. Check spam/junk folder
-    2. Verify correct email address was entered
-    3. Click "Resend Invitation" in user management
-    4. Try different email address if corporate email blocks it
-    5. Ask user to check email filters/rules
-    
-    If still not received after 10 minutes, contact support.
-    
-    **Note:** Pending invitations count toward your user limit on Free plan.
+  <Accordion title="An unsuspend was refused">
+    Un-suspending takes a seat back, so it is checked against the same limit as an invitation. Free up a seat or move to a paid plan first.
   </Accordion>
-  
-  <Accordion title="Can't change a user's role">
-    **Common causes:**
-    
-    - You don't have Admin or Root role
-    - Trying to change your own role (not allowed)
-    - Admin trying to change Root user (not allowed)
-    - Admin trying to assign Root role (not allowed)
-    
-    **Solution:**
-    Ask a Root user or different Admin to make the change.
+
+  <Accordion title="A suspended user still has access">
+    Suspension blocks new sign-ins; it does not end sessions that already exist. Use **Logout** in their dot menu.
   </Accordion>
-  
-  <Accordion title="Suspended user still has access">
-    **Why this happens:**
-    
-    Active sessions don't terminate automatically on suspension.
-    
-    **Solution:**
-    1. Click on the user
-    2. Use the "Logout" option to terminate all sessions
-    3. Sessions expire after 24 hours maximum anyway
-    
-    **Billing reminder:**
-    Suspended users are still billed. Delete them to stop charges.
+
+  <Accordion title="Someone cannot change a role">
+    Only root and admin can. Root itself cannot be assigned or changed by anybody — a root row has no role dropdown.
   </Accordion>
-  
-  <Accordion title="Still being billed for removed users">
-    **Why this happens:**
-    
-    User seat charges apply for the full billing period when a user is removed.
-    
-    **Expected behavior:**
-    - User deleted on day 10 of monthly cycle
-    - You're still charged for them for the full month
-    - Next month's bill reflects the reduced user count
-    - No prorated refunds for mid-cycle deletions
-    
-    **This is normal and expected.**
-  </Accordion>
-  
-  <Accordion title="Need to recover deleted user">
-    **Unfortunately:**
-    
-    Deleted users cannot be recovered. You'll need to:
-    1. Send a new invitation to the same email
-    2. They'll need to accept and set up a new account
-    3. Re-enable MFA
-    4. Their old resources remain accessible to the team
-    
-    **Billing impact:**
-    - If you re-invite immediately, you're billed continuously for the seat
-    - If you wait until next cycle, you can add them at the new billing rate
-  </Accordion>
-  
-  <Accordion title="Too many Admin users">
-    **Security concern:**
-    
-    Having too many Admins increases security risk.
-    
-    **Recommendation:**
-    - Limit Admin to 2-5 people maximum
-    - Review if all Admins still need that level of access
-    - Consider downgrading some to Developer role
-    - Document why each Admin role is necessary
-    
-    **Note:** Changing roles doesn't affect seat count or billing, so no cost concern here.
-  </Accordion>
-  
-  <Accordion title="Understanding user count vs. billing">
-    **What counts toward billing:**
-    - ✅ Active users
-    - ✅ Suspended users (still billed!)
-    - ✅ Pending invitations (once accepted)
-    - ❌ Deleted users (stopped at next billing cycle)
-    
-    **Free Plan:**
-    - Maximum 3 total users (all types)
-    - No per-user charges
-    
-    **Paid Plans:**
-    - Every active and suspended user incurs charges
-    - View exact count in **Billing and Plans**
+
+  <Accordion title="Somebody cannot find the Users page">
+    Billing and collaborator do not get the **Users** item, and clients see only their own dashboard. Everyone else does — but developer and monitor get read-only access.
   </Accordion>
 </AccordionGroup>
 
-## User Management Checklist
-
-### New User Setup
-
-- [ ] Verify seat availability (Free) or budget impact (Paid)
-- [ ] Calculate monthly cost increase for paid plans
-- [ ] Determine appropriate role (least privilege)
-- [ ] Send invitation with clear expectations
-- [ ] Verify invitation accepted within 48 hours
-- [ ] Confirm MFA enabled (if Admin/Root)
-- [ ] Provide onboarding documentation
-- [ ] Review access after trial period
-
-### Regular Maintenance
-
-- [ ] Monthly: Review active users list
-- [ ] Monthly: Check for inactive accounts (free up seats)
-- [ ] Monthly: Review suspended users (still being billed!)
-- [ ] Monthly: Calculate actual user seat costs
-- [ ] Quarterly: Audit role assignments
-- [ ] Quarterly: Verify elevated roles still needed
-- [ ] Annually: Comprehensive security review
-
-### User Departure
-
-- [ ] Suspend account immediately
-- [ ] Terminate all sessions
-- [ ] Delete API keys within 1 hour
-- [ ] Review and transfer resources
-- [ ] **Delete user account within 24 hours** (not just suspend)
-- [ ] Confirm seat freed up in user management
-- [ ] Verify next bill reflects reduced user count
-- [ ] Document handoff and transition
-
-### Cost Optimization
-
-- [ ] Monthly: Identify users who haven't logged in for 30+ days
-- [ ] Monthly: Delete inactive users to reduce costs
-- [ ] Monthly: Convert long-term suspended users to deleted
-- [ ] Quarterly: Review if Monitor-role users can be removed
-- [ ] Quarterly: Calculate potential savings from user reduction
-- [ ] Annually: Consider annual billing for 20% discount
-
-## Related Resources
+## Related
 
 <CardGroup cols={2}>
   <Card title="Roles & Permissions" icon="key" href="/essentials/users/roles-permissions">
-    Detailed breakdown of what each role can do
+    What each of the seven roles can reach
   </Card>
-  
+
+  <Card title="Client Portal" icon="user-lock" href="/spaces/client-portal">
+    What a client user actually sees
+  </Card>
+
   <Card title="Plans & Pricing" icon="credit-card" href="/get-started/plans-and-pricing">
-    Understand per-user pricing and costs
+    Seats, credits and what is actually billed
   </Card>
-  
-  <Card title="Billing & Subscriptions" icon="receipt" href="/essentials/account/billing-subscriptions">
-    Manage billing and view user seat charges
-  </Card>
-  
+
   <Card title="Authentication" icon="lock" href="/essentials/security/authentication">
-    Set up MFA for your users
+    Passkeys, two-factor and recovery codes
   </Card>
-  
+
   <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
-    Monitor and manage active logins
+    Active logins and how to end them
   </Card>
-  
+
   <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
-    Complete security best practices
+    Protecting your account
   </Card>
 </CardGroup>

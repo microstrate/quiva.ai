@@ -1,43 +1,41 @@
 ---
 title: "Getting Started"
-description: "Create your account and start building AI assistants in minutes"
+description: "Create your account, verify your email, and secure your login"
 icon: "rocket"
 ---
 
-# Getting Started with QuivaWorks
+This guide takes you from signing up to a secured account that's ready to use.
 
-Welcome to QuivaWorks! This guide will help you create your account and get started building intelligent AI assistants in minutes.
-
-## Quick Start Checklist
+## Quick start checklist
 
 <Steps>
   <Step title="Create Your Account">
     Sign up and verify your email address
   </Step>
   <Step title="Secure Your Account">
-    Set up multi-factor authentication
+    Add a passkey or an authenticator app, and save your recovery codes
   </Step>
-  <Step title="Select a Plan">
-    Choose the plan that fits your needs
+  <Step title="Choose a Plan">
+    Start on Free, or move to Pro or Team when you need more
   </Step>
-  <Step title="Build Your First Assistant">
-    Create and deploy your first AI assistant
+  <Step title="Start Working">
+    Brief Abbie, create a Space, or build your first assistant
   </Step>
 </Steps>
 
-## Create Your Account
+## Create your account
 
-### Registration Process
+### Registration
 
 1. Visit [https://app.quiva.ai/en/signup](https://app.quiva.ai/en/signup)
-2. Complete the registration form with:
-   - **Account Name** - Your unique login identifier (case-sensitive). Allows the same email to be used across multiple accounts
-   - **Email Address** - Your primary contact email (can be changed later)
-   - **Password** - Minimum 8 characters with uppercase, lowercase, number, and special character
+2. Fill in the form:
+   - **Account Name (Unique Identifier)** — the name you and your team will sign in with. It is case-insensitive: it's lowercased and trimmed when saved, so `Acme` and `acme` are the same account. The same email address can be used across more than one account.
+   - **Owner Email** — the account owner's email address. It can be changed later in personal **Settings** under **Credentials**.
+   - **Password** — see the policy below
    - **Country**
-   - **First and Last Name**
-3. Accept our [Terms](https://quiva.ai/legal.html#terms) and [Privacy Policy](https://quiva.ai/legal.html#privacy)
-4. Complete Cloudflare verification - to make sure you're a human!
+   - **Name** — first and last
+3. Accept the [Terms](https://quiva.ai/legal.html#terms) and [Privacy Policy](https://quiva.ai/legal.html#privacy)
+4. Complete the Cloudflare check — to confirm you're a human
 
 <img 
   src="/images/essentials/registration-screen.png" 
@@ -46,26 +44,37 @@ Welcome to QuivaWorks! This guide will help you create your account and get star
   className="rounded-lg"
 />
 
-### Email Verification
+### Password policy
 
-After registration, verify your email using one of two methods:
+Your password must:
+
+- be **at least 8 characters** and **no more than 72**
+- contain at least one **uppercase** letter
+- contain at least one **lowercase** letter
+- contain at least one **number**
+- contain at least one **special character**
+- avoid **common words** — a password containing one is rejected
+
+### Email verification
+
+After registering, verify your email using either method in the "Confirm Your Email Address" email:
 
 <Tabs>
-  <Tab title="Login Code">
-    1. Check your email for "Confirm Your Email Address"
-    2. Locate the 6-digit verification code
-    3. Enter the code on the verification screen
+  <Tab title="Verification code">
+    1. Open the email
+    2. Find the 6-digit verification code
+    3. Enter it on the verification screen
   </Tab>
-  <Tab title="Magic Link">
-    1. Check your email for "Confirm Your Email Address"
-    2. Click the "Confirm your email" button
-    3. You'll be redirected to log into your new account
+  <Tab title="Magic link">
+    1. Open the email
+    2. Click **Confirm your email**
+    3. You'll be taken to your new account
   </Tab>
 </Tabs>
 
-<Warning>
-Accounts not verified within 48 hours are automatically deleted and must be recreated. Check your spam folder if you don't receive the email within 5 minutes.
-</Warning>
+<Note>
+Verification links and codes expire after **2 days**. Your account is not deleted if you don't verify in time — a new verification email can be issued. Check your spam folder if nothing arrives within a few minutes.
+</Note>
 
 <img 
   src="/images/essentials/account-registration-email.png" 
@@ -74,94 +83,80 @@ Accounts not verified within 48 hours are automatically deleted and must be recr
   className="rounded-lg"
 />
 
-## Select Your Plan
-
-Choose the plan that matches your needs:
-
-<CardGroup cols={2}>
-  <Card title="Free" icon="gift" href="/get-started/plans-and-pricing">
-    Perfect for exploring and proof of concepts
-    - Up to 3 users
-    - 500 included credits per account
-    - 1GB storage
-  </Card>
-  
-  <Card title="Pro" icon="chart-line" href="/get-started/plans-and-pricing">
-    For growing teams and businesses
-    - Unlimited users
-    - 1,000 included credits per user
-    - 5GB storage per user
-  </Card>
-  
-  <Card title="Team" icon="users" href="/get-started/plans-and-pricing">
-    For larger organisations
-    - Unlimited users
-    - 1,500 included credits per user
-    - Bring your own LLM keys
-  </Card>
-  
-  <Card title="Enterprise" icon="building" href="/get-started/plans-and-pricing">
-    For large teams with custom requirements
-    - On-premise / BYO Cloud
-    - Custom pricing & resource allocations
-    - Strategic consulting
-  </Card>
-</CardGroup>
-
-<Info>
-You can change your plan at any time. See our complete [Pricing & Plans guide](/get-started/plans-and-pricing) for detailed comparisons.
-</Info>
-
-## Secure Your Account
-
-<Warning>
-Before building assistants, secure your account with multi-factor authentication.
-</Warning>
-
-We strongly recommend setting up MFA on your first login:
-
-1. You'll be prompted to enable MFA after verifying your email
-2. Choose your authentication method:
-   - **Passkey** (Recommended) - Use biometrics or device PIN
-   - **Authenticator App** - Use Google Authenticator, Authy, etc.
-3. Save your recovery codes in a secure location
-
-<Info>
-Learn more in our [Authentication Guide](/essentials/security/authentication)
-</Info>
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Build Your First Assistant" icon="sparkles" href="/assistants/creating-first-assistant">
-    Create and deploy an intelligent AI assistant
-  </Card>
-  
-  <Card title="Invite Team Members" icon="user-plus" href="/essentials/users/user-management">
-    Add users and assign roles
-  </Card>
-  
-  <Card title="Explore the Marketplace" icon="store" href="https://app.quiva.ai/en/hub/marketplace">
-    Browse pre-built assistants and integrations
-  </Card>
-  
-  <Card title="API Documentation" icon="code" href="/api-reference">
-    Integrate QuivaWorks programmatically
-  </Card>
-</CardGroup>
-
-## Need Help?
+## Choose your plan
 
 <CardGroup cols={3}>
-  <Card title="Documentation" icon="book" href="/get-started/overview">
-    Comprehensive guides and tutorials
+  <Card title="Free" icon="gift" href="/get-started/plans-and-pricing#free">
+    **$0**
+    - 2 seats
+    - 1,500 credits per month
+    - 45-day conversation retention
   </Card>
   
+  <Card title="Pro" icon="chart-line" href="/get-started/plans-and-pricing#pro">
+    **$399/month**
+    - Unlimited seats
+    - 20,000 credits per month
+    - 90-day conversation retention
+  </Card>
+  
+  <Card title="Team" icon="users" href="/get-started/plans-and-pricing#team">
+    **$1,199/month**
+    - Unlimited seats
+    - 90,000 credits per month
+    - 365-day conversation retention
+  </Card>
+</CardGroup>
+
+<Info>
+Pricing is per account, not per user. You can change plan at any time — see [Plans & Pricing](/get-started/plans-and-pricing).
+</Info>
+
+## Secure your account
+
+We strongly recommend adding a second factor on your first login. You'll be offered it after verifying your email, and you can choose **Set Up Later** and come back to it in personal **Settings** under **Password and authentication**.
+
+1. Choose a method:
+   - **Passkey** — sign in with touch, facial recognition, a device password or a PIN
+   - **Authenticator App** — Google Authenticator, Authy, or similar
+2. Save your **recovery codes** somewhere safe. You get 10, and they let you back in if you lose your device.
+
+<Warning>
+Recovery codes are the only way back in if you lose access to your second factor. Store them outside the account.
+</Warning>
+
+<Info>
+More detail in the [Authentication guide](/essentials/security/authentication).
+</Info>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Core concepts" icon="puzzle-piece" href="/get-started/core-concepts">
+    How Abbie, Spaces, assistants and flows fit together
+  </Card>
+  
+  <Card title="Create a Space" icon="folder-tree" href="/spaces/spaces">
+    Organise files, tasks, records and chats
+  </Card>
+  
+  <Card title="Build your first assistant" icon="sparkles" href="/assistants/creating-first-assistant">
+    Configure instructions, knowledge and integrations
+  </Card>
+  
+  <Card title="Invite your team" icon="user-plus" href="/essentials/users/user-management">
+    Add users and assign roles
+  </Card>
+</CardGroup>
+
+## Need help?
+
+<CardGroup cols={2}>
   <Card title="Community" icon="users" href="https://quiva.ai/community">
     Connect with other builders
   </Card>
   
-  <Card title="Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    Get help from our team
+  <Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+    Common questions and how to reach us
   </Card>
 </CardGroup>

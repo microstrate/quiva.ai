@@ -1,134 +1,112 @@
 ---
-title: "Unread Badges & Smart Notifications"
-description: "Never miss updates with automatic unread count tracking and real-time alerts"
+title: "Notifications"
+description: "Where notifications appear, how long they are kept, and how to control what reaches you"
+icon: "bell"
 ---
 
-# Unread Badges & Smart Notifications
+# Notifications
 
-Unread badges and smart notifications keep you informed about updates in shared sessions without overwhelming you with alerts.
+Notifications are how work that happened without you gets back to you: a task reassigned, a
+colleague mentioning you in a conversation, Abbie finishing a run or needing a decision.
 
-## Unread Badges
+## Where they appear
 
-### How Badges Work
+<Steps>
+  <Step title="The bell">
+    The bell in the sidebar carries a dot whenever anything is unread.
+  </Step>
+  <Step title="The panel">
+    Opening it lists the most recent notifications. When there are unread ones, the header shows
+    an **N unread** pill and a **Mark all as read** action; each row can be marked read on its
+    own. With nothing waiting it says so: *Nothing new. Updates, assignments and mentions land
+    here.*
+  </Step>
+  <Step title="The full history">
+    **View all notifications** at the foot of the panel opens the history page, which filters by
+    period (Today, Yesterday, This week) and by type, has an **Unread only** toggle, and offers
+    **Clear filters** and **Mark all as read**.
+  </Step>
+</Steps>
 
-**Unread count badges** appear next to sessions showing how many new messages or results you haven't viewed yet.
+<Note>
+Notifications are stored for one week. The history page replays what is retained, so a week is
+the whole of what it can ever show.
+</Note>
 
-![Unread Badges](image-placeholder-unread-badges.png)
+<Info>
+The Conversations sidebar itself carries no per-conversation unread count. Unread state lives on
+the bell.
+</Info>
 
-**Badge indicators:**
-- **1-9** – Exact count of unread items
-- **9+** – More than 9 unread items
-- **No badge** – Everything is read
+## Choosing what reaches you
 
-### Where Badges Appear
+**Settings → Notifications**. Preferences are set per notification kind, and each kind's
+supported channels — in-app, email — are switched independently.
 
-- **Shared With Me section** – Shows unread counts for shared sessions
-- **Group headers** – Cumulative count for all sessions in a group
-- **Tab indicators** – Global task tabs show unread counts
-- **Sidebar** – Shared session folders show badge aggregates
+### Tasks
 
-### How Badges Clear
+In-app and email:
 
-Badges automatically clear when you:
+- Status changes
+- Assignment changes
+- Mentions
+- Watcher updates
 
-1. **Open the session** – Viewing the conversation marks items as read
-2. **Scroll to the bottom** – Reading all new messages clears the badge
-3. **Close and reopen** – Coming back to a session resets the view
-4. **Refresh page** – Forces a refresh of unread status
+<Note>
+Task mentions are always delivered in-app. That switch is locked rather than hidden, so it is
+clear it is deliberate.
+</Note>
 
-## Real-Time Notifications
+### Abbie
 
-### What Triggers a Notification
+In-app only — email is not available for these yet:
 
-You'll receive notifications when:
+| Kind | Fires when |
+|---|---|
+| Abbie run completed | A run finishes. |
+| Abbie check-ins | Abbie checks in after you have gone quiet for a while. |
+| Abbie follow-ups | Something is parked waiting on you. |
+| Abbie suggestions | Abbie has a suggestion for you. |
+| Conversation mentions | A colleague mentions you in a conversation. |
+| Rapport suggestions | Abbie proposes a change to how she works with you. |
+| Correction suggestions | Abbie drafts a correction from something that went wrong. |
+| Skill suggestions | Abbie drafts a new skill for review. |
+| Authorisation requests | Abbie needs your authorisation to continue. |
+| Decision requests | Abbie needs you to choose between options. |
 
-- ✅ A team member replies in a shared session
-- ✅ The AI completes a task in a shared session
-- ✅ A new session is shared with you
-- ✅ Someone removes you from a session (optional)
+Authorisation and decision requests are split out from the rest deliberately: muting the chasing
+of parked work should not also mute a prompt that is blocking real progress.
 
-### Notification Channels
+### Billing
 
-**In-app notifications:**
-- Visual toast notifications in the bottom-right
-- Sound alert (configurable)
-- Badge updates on tabs and sidebars
+In-app only:
 
-**Browser notifications:**
-- If enabled in your browser and notification settings
-- Work even when the tab is not in focus
+- **Low credit balance** — your balance has dropped to a warning level, before it runs out.
+- **Auto top-up failed** — an automatic top-up could not be charged. Retries pause until the
+  balance recovers, so this is the only warning you get.
 
-### Notification Settings
+## Delivery
 
-Control notifications in **Account Management → Notification Settings**:
+Two account-wide controls sit below the kinds:
 
-- **Enable/disable** real-time notifications
-- **Sound on/off** – Toggle notification audio
-- **By session type** – Different settings for shared vs. private sessions
-- **Quiet hours** – Set times when notifications are muted
+- **Email grouping** — Real-time, Hourly digest or Daily digest. This governs email only; in-app
+  delivery is unaffected.
+- **Quiet hours** — off by default. Turn it on and set a **from** and **to** time to pause
+  notifications between them. Mentions still come through. The window follows the timezone on
+  your profile, which the setting names so there is no guessing.
 
-## Smart Notification Features
+<Warning>
+There is no snooze or do-not-disturb control on the bell. Quiet hours and the per-kind switches
+are how notifications are quietened.
+</Warning>
 
-### Do Not Disturb
+## Related
 
-Pause notifications temporarily:
-
-1. Click the **bell icon** in the top navigation
-2. Select **Mute for 1 hour** or **Mute until tomorrow**
-3. Notifications resume automatically
-
-### Notification Preview
-
-Hover over a notification to see:
-
-- **Who** – Which team member or AI took the action
-- **What** – What was added (message, result, etc.)
-- **When** – Timestamp of the update
-
-### Grouping Notifications
-
-When multiple updates happen in the same session:
-
-- **Grouped together** – See all updates from one session in one notification
-- **Reduces noise** – Instead of 5 notifications, you see 1 with "5 new updates"
-- **Single action** – Click once to jump to that session
-
-## Badge Strategies
-
-### Strategy 1: Active Monitoring
-
-**Use when:** You're actively collaborating on a live project
-
-- Keep notifications enabled
-- Respond to badges immediately
-- Check "Shared With Me" frequently
-
-### Strategy 2: Asynchronous Collaboration
-
-**Use when:** Team works on different schedules
-
-- Enable notifications but mute sound
-- Check badges during your work session
-- Respond when you have time to focus
-
-### Strategy 3: Daily Review
-
-**Use when:** You want to batch your collaboration work
-
-- Disable real-time notifications
-- Mute notifications during focus time
-- Review all badges once per day
-
-## FAQ
-
-**Q: Why don't all sessions show badges?**  
-A: Badges only appear for unread messages. Once you've viewed everything, the badge disappears.
-
-**Q: Can I turn off badges?**  
-A: No, but you can disable notifications in your notification settings. Badges will still show (silently).
-
-**Q: Why did my badge disappear without opening the session?**  
-A: If another team member viewed the message, it may be marked as read for everyone (depending on your workspace settings).
-
-**Q: Can I see which specific messages are unread?**  
-A: New messages appear with a visual indicator in the session. Scroll to see what's new.
+<CardGroup cols={2}>
+  <Card title="@Mentions" icon="at" href="/collaboration/at-mention-guide">
+    What generates a conversation mention in the first place.
+  </Card>
+  <Card title="Team Practices" icon="people-group" href="/collaboration/team-best-practices">
+    Habits that keep the volume down without muting the things that matter.
+  </Card>
+</CardGroup>

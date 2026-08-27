@@ -50,8 +50,7 @@ The assistant handles everything else.
 
 ### Receiving Your Public URL
 
-After deployment, you'll receive a unique public URL like:
-https://[unique-id].quiva.ai
+After deployment, you'll receive a public URL on a randomly generated subdomain, shown on the app card once deployment finishes.
 
 This URL:
 
@@ -82,13 +81,10 @@ Anyone with the link can open your app in a web browser. No login, no installati
 ### Common Deployment Use Cases
 
 **Interactive Calculators**
-Mortgage calculators, pricing tools, ROI estimators, and cost breakdowns.
+Unit converters, pricing tools, ROI estimators, and cost breakdowns.
 
 **Customer Dashboards**
 Real-time metrics displays, analytics visualizations, and data summaries.
-
-**Feedback & Survey Forms**
-Collect feedback, run surveys, or gather information from customers.
 
 **Interactive Portfolios**
 Showcase your work with interactive projects, galleries, and case studies.
@@ -108,11 +104,10 @@ Interactive tutorials, quizzes, learning games, and educational apps.
 If you need to make changes to a deployed app:
 
 1. **Generate a new version** — Ask the assistant to create an updated version of your application
-2. **Deploy again** — Request deployment of the updated app
-3. **Your existing URL is updated** — You don't need a new public link for the updated version
+2. **Update the existing app** — Ask the assistant to update the app rather than deploy a new one, and it keeps the same URL
 
 <Callout type="info">
-Each deployment uses the same URL. If you require a new URL you can ask the assistant to deploy it again with a new URL/Gateway.
+Deploying an app again always mints a new URL. To keep your existing URL, ask the assistant to update the existing app instead of deploying a new one.
 </Callout>
 
 ### Removing Access
@@ -122,7 +117,7 @@ To stop sharing a deployed app:
 - **Stop sharing the URL** — Simply don't share it further
 - **Communicate updates** — Notify people who have the link if it's no longer available
 - **Generate a new version** — Create a new app with fresh functionality
-- **Delete the existing app** - Navigate to your apps, and click the "delete" button for the app you want to remove
+- **Delete the existing app** - Navigate to your apps, click "delete" for the app you want to remove, and type the app's name to confirm
 
 ---
 
@@ -146,7 +141,7 @@ No, deployed apps are read-only for visitors. Only you (through your assistant) 
 </Accordion>
 
 <Accordion title="What if I want a custom domain for my app?">
-The public URLs provided by QuivaWorks work reliably. For custom domains, get in touch with us to ask about additional options.
+Custom domains are self-service, per app: open the app card, select **Manage**, then go to the **Domains** tab to add and configure one.
 </Accordion>
 
 <Accordion title="Are deployed apps secure?">
@@ -166,29 +161,33 @@ Through the public URL, apps are openly accessible. For detailed analytics or us
 <Card
   title="Generate Your Web App"
   icon="sparkles"
+  href="/assistants/document-generation"
 >
 Ask your assistant to create an interactive web application. Be specific about functionality, design, and purpose.
 </Card>
 
 <Card
-  title="Test in Preview"
-  icon="eye"
+  title="Assistant Capabilities"
+  icon="stars"
+  href="/assistants/capabilities"
 >
-Review the generated app in the UI. Test all interactive features and request modifications if needed.
+See the full range of what an assistant can do beyond deploying web apps.
 </Card>
 
 <Card
-  title="Deploy to Production"
-  icon="rocket"
+  title="Creating Your First Assistant"
+  icon="wand-magic-sparkles"
+  href="/assistants/creating-first-assistant"
 >
-Once satisfied, request deployment. Your assistant will handle gateway creation and provide your public URL.
+Set up an assistant that can generate and deploy apps for you.
 </Card>
 
 <Card
-  title="Share & Promote"
-  icon="share2"
+  title="Collaboration"
+  icon="users"
+  href="/get-started/collaboration"
 >
-Share your public URL with colleagues, clients, customers, or the world. Your app is now live and accessible.
+Share your public URL and collaborate with colleagues on deployed apps.
 </Card>
 </CardGroup>
 

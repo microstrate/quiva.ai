@@ -1,96 +1,125 @@
 ---
-title: "Collaborative Sessions"
-description: "How to share and collaborate on assistant conversations with your team"
+title: "Sharing a Conversation"
+description: "Open an assistant conversation to named colleagues or the whole account, set who can reply, and take access back"
+icon: "share-nodes"
 ---
 
-# Collaborative Sessions
+# Sharing a Conversation
 
-Collaborative sessions enable you and your team to work together on AI-powered tasks in real-time. Everyone sees the same conversation thread, live updates, and results as they happen.
+Every conversation belongs to the person who started it. Sharing is how you let colleagues
+read it — and, if you choose, reply in it.
 
-## What are Collaborative Sessions?
+<Note>
+Only the owner can share a conversation, change anyone's access, rename it or delete it.
+Everyone else sees no sharing controls at all, because those actions would be refused if
+they tried.
+</Note>
 
-A collaborative session is a shared assistant conversation that multiple team members can access simultaneously. Instead of forwarding chat history or screenshots, you can invite teammates directly into the conversation.
+## Opening the share panel
 
-**Benefits:**
-- Real-time visibility into assistant work
-- Team members can ask follow-up questions
-- No context switching or information loss
-- Automatic notifications when updates arrive
-- Organized conversation history
+<Steps>
+  <Step title="From the conversation">
+    Open the conversation and use the **share control at the top**. Its label tells you the
+    current state without being clicked — *Private*, *1 person*, *3 people* or *Team* — and
+    shows the faces of the people who have been added.
+  </Step>
+  <Step title="Or from the conversation list">
+    In the Conversations sidebar, open a row's overflow menu and choose **Share…**. The menu
+    appears on your own conversations only.
+  </Step>
+</Steps>
 
-## How Sharing Works
+## General access
 
-### Share a Session
+The top of the panel is one choice between three states:
 
-To invite team members to a session:
+| Option | What it means |
+|---|---|
+| **Only me** | Nobody else can open this conversation. |
+| **Specific people** | Only the people listed below the choice. |
+| **Everyone in the account** | Anyone in your account can read the whole conversation. |
 
-1. Open an assistant session
-2. In the **chat prompt**, click the **@ icon** (or type `@`)
-3. A dropdown appears showing available team members
-4. Select the team members you want to add
-5. Choose whether to **notify the AI** or just your team members
-6. Press **Enter** to add them to the session
+Widening to the whole account asks you to confirm first, and it can be undone at any time.
+Going back to **Only me** while people are named also removes their access — the panel warns
+you how many people that affects before it does anything.
 
-![Sharing a Session](image-placeholder-share-session.png)
+<Warning>
+Account-wide visibility grants **reading**, not replying. Someone who can see a team-visible
+conversation still needs an access level of their own before they can take a turn with the
+assistant.
+</Warning>
 
-### What Happens After Sharing
+## Access levels
 
-- **Instant access** – Selected team members gain access immediately
-- **Notifications** – They receive a notification about the shared session
-- **Live updates** – They see all new messages and results in real-time
-- **Session appears** – The shared session appears in their "Shared With Me" section
-- **Unread badges** – They see unread counts if they're not actively viewing
+Each person you add carries a level of their own:
 
-## Permissions in Shared Sessions
+| Level | Can read the thread | Can reply / prompt the assistant |
+|---|---|---|
+| **Editor** | Yes | Yes |
+| **Read-only** | Yes | No |
 
-All members in a shared session have **equal access**:
+The panel says it in one line: *Editors can reply in the conversation; readers can only follow
+it. Anyone mentioned in a message is added here too.*
 
-- ✅ View the full conversation history
-- ✅ Ask the assistant follow-up questions
-- ✅ See real-time updates and results
-- ✅ Contribute ideas and feedback
+### Adding someone
 
-## Session Types
+<Steps>
+  <Step title="Pick the level first">
+    The **as** dropdown beside the picker sets the level for the person you are about to add.
+    It defaults to **Editor**.
+  </Step>
+  <Step title="Then pick the person">
+    Choosing a name from **Add someone** is what sends the invite — there is no separate
+    confirm step, which is why the level is chosen first.
+  </Step>
+</Steps>
 
-### **Private Sessions**
+The picker offers active members of your account only. You are excluded from your own list,
+as is anyone already added and anyone whose invitation to the account is still pending.
 
-Your personal assistant conversations. Use the **lock icon** in the chat prompt to keep a session private.
+### Changing someone's level
 
-- Visible only to you
-- No other team members can see or access
-- Default for new sessions
+Use the dropdown on their row. The change takes effect immediately. If it fails, the dropdown
+snaps back to the level they actually hold rather than showing something that did not happen.
 
-### **Shared Sessions**
+### Removing someone
 
-Shared sessions that team members can access. Indicated by the **share icon** in the chat prompt.
+Each row has a **Remove** button. That is the whole revoke path, and it is the owner's:
+an invitee cannot remove themselves.
 
-- Shared with invited team members
-- Appears in their "Shared With Me" section
-- They receive notifications of updates
+Removal keeps working for someone who has since been suspended or removed from the account —
+which is exactly when it matters most.
 
-### **Team-Visible Sessions**
+## The share link
 
-Conversations your entire team can access without the need to share. Indicated by the **Multi-user Icon** in the chat prompt.
+The panel shows a link to the conversation and offers to copy it. The link is a shortcut,
+not a grant: if general access is **Only me**, nobody but you can open it, and the panel says
+so. Share with specific people or the whole account first, then send the link.
 
-- Shared with all team members
-- Appears by clicking on the team assistant and then selecting the history button on the right hand side
-- Notifications will be received if the chat is open only
+## What a read-only participant sees
 
-## Real-Time Collaboration Example
+- The full conversation, including everything the assistant has done.
+- A label at the top reading *Shared by …  · Read-only*, naming the owner.
+- No composer. In its place: *You have read-only access to this conversation. Ask its owner
+  for editor access to reply.*
 
-**Scenario:** Code review with an AI assistant
+Someone who opens a link to a conversation they were never added to — or whose access has
+since been removed — is told the conversation was not found or is no longer available to
+them, and is pointed back to their own list.
 
-1. **You** start a session with your code assistant
-2. **You** ask the assistant to review your function
-3. **You** @mention your teammate Sarah
-4. **Sarah** gets a notification and joins the session
-5. **Sarah** can ask the assistant follow-up questions
-6. **You** both see results instantly
-7. **No back-and-forth** – everything happens in one place
+## Sharing with someone outside your team
 
-## Best Practices
+Colleagues are account members. Everyone else — a customer, a supplier, a contractor — belongs
+in the client portal, which works on assignment rather than on the share panel described here.
+See [Client Portal](/spaces/client-portal).
 
-- **Share early** – Invite teammates before asking complex questions so they have full context
-- **Keep it focused** – One session per topic/task to avoid confusion
-- **Mute unnecessary notifications** – Turn off notifications for sessions you're not actively working on
-- **Clean up** – Remove team members when a project is complete
+## Next
+
+<CardGroup cols={2}>
+  <Card title="@Mentions" icon="at" href="/collaboration/at-mention-guide">
+    Add someone to a conversation from the composer, without opening the share panel.
+  </Card>
+  <Card title="Finding Shared Conversations" icon="list-ul" href="/collaboration/shared-with-me-section">
+    Where a shared conversation turns up for the person you shared it with.
+  </Card>
+</CardGroup>

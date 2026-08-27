@@ -1,0 +1,152 @@
+---
+title: "Scheduling"
+description: "Due dates, the Schedule view, and the recurring or one-time actions you can attach to a task"
+icon: "calendar"
+---
+
+# Scheduling
+
+A task can carry a **due date** and a **scheduled at** date, and can also carry its own
+recurring or one-time actions — a reminder, a flow, or an assistant, set to run automatically.
+This page covers all three, the calendar that plots them, and what happens to them once a task
+is closed.
+
+<Note>
+Full field-by-field task reference — including subtasks, comments and time tracking — lives on
+the [Tasks](/spaces/tasks) page. This page is about time: dates, the calendar, and automated
+actions.
+</Note>
+
+## Due dates and overdue
+
+A task's **due date** is its deadline. Once set, QuivaWorks shows how close it is wherever the
+date appears — on the task card, in the list, in its details:
+
+| Timing | Shown as |
+|---|---|
+| In the past | **overdue** |
+| Today | **due today** |
+| Tomorrow | **due in 1 day** |
+| Within a week | **due in N days** |
+| Within a month | **due in N weeks** |
+| Further out | **due in N months** / **due in N years** |
+
+`overdue` and `due today` are called out in a different colour from the rest, so a scan down a
+list or board finds them first.
+
+A **scheduled at** date is separate — when the work is planned to *start*, rather than when it's
+due. A task can have either, both, or neither.
+
+<Warning>
+A status marked **complete** closes the task to further scheduling activity — see
+[Completed tasks](#completed-tasks-stop-here) below. A closed task's due date no longer drives
+anything.
+</Warning>
+
+## The Schedule view
+
+The Tasks panel's third view — alongside List and Board — is **Schedule**: a calendar of
+everything time-based in the Space.
+
+<CardGroup cols={2}>
+  <Card title="Views" icon="calendar-days">
+    Day, week, month, year or list — switch from the calendar's own toolbar.
+  </Card>
+  <Card title="Entry types" icon="filter">
+    Due Tasks, Scheduled Tasks and Recurring Events — toggle each on or off independently.
+  </Card>
+</CardGroup>
+
+- **Due Tasks** plots each task on its due date.
+- **Scheduled Tasks** plots each task on its scheduled-at date.
+- **Recurring Events** plots every future occurrence of the recurring and one-time actions
+  described below, expanded out across the visible range.
+
+A due or scheduled entry can be dragged to a new date, which updates the task directly — a
+one-time or recurring event cannot, since it isn't tied to a single date to move.
+
+Opening a folder scopes the same three-view switcher to that folder's tasks; open the whole
+Space's Tasks panel for everything at once.
+
+## Scheduled actions on a task
+
+Beyond its due and scheduled dates, a task can carry its own **automated actions** — something
+that fires on a schedule without anyone opening the task. These live in the **Automation**
+section of the task form, alongside the task's other details.
+
+Add one with **Add recurring action** — despite the name, it covers both a single, one-time
+firing and a repeating schedule:
+
+<Steps>
+  <Step title="Choose when">
+    **Frequency**: Once, Daily, Weekly (pick the days), Every weekday, or Monthly (a specific day
+    of the month, or an ordinal weekday like "the second Tuesday"). Set a time of day, and — for
+    anything but Once — a timezone.
+  </Step>
+  <Step title="Optionally, set an end date">
+    Turn on **Ends** and pick a date. Left off, a recurring action keeps firing indefinitely.
+  </Step>
+  <Step title="Choose what happens">
+    **Notification**, **Assistant / AI action**, or **Flow trigger** — see below.
+  </Step>
+  <Step title="Save">
+    A summary line ("Recurs every Monday and Friday at 9:00 AM (Europe/London)") confirms exactly
+    what you've set before you save it.
+  </Step>
+</Steps>
+
+<Note>
+If you're still creating the task, an action you add is held until the task itself is saved, then
+created against it — the same pattern task actions use.
+</Note>
+
+An existing action can be reopened from the same list to edit or delete it.
+
+### The three action types
+
+<AccordionGroup>
+  <Accordion title="Notification" icon="bell">
+    Pick one or more recipients and write the message they'll be sent.
+  </Accordion>
+  <Accordion title="Assistant / AI action" icon="robot">
+    Pick an assistant and write the prompt it should act on, with the task as context.
+  </Accordion>
+  <Accordion title="Flow trigger" icon="diagram-project">
+    Pick a flow and, optionally, a JSON payload to trigger it with.
+  </Accordion>
+</AccordionGroup>
+
+### Who it runs as
+
+A scheduled action always runs as whoever set it up — or whoever last edited it, if it's been
+changed since. It never runs as anyone else. If that person's access to the account is later
+removed, their scheduled actions stop firing rather than continuing to run without them.
+
+## Completed tasks stop here
+
+Marking a task's status **complete** closes it. From that point on, none of the above continues
+for that task:
+
+- Recurring and one-time actions stop firing.
+- Overdue checks stop applying to its due date.
+
+This is what the **Complete** flag on a status is for — configured per Space in **Edit Space →
+Tasks → Statuses**. See [Tasks: Statuses](/spaces/tasks#statuses) for how statuses and the
+Complete flag are configured.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Tasks" icon="list-check" href="/spaces/tasks">
+    Every field on a task, and the List and Board views.
+  </Card>
+  <Card title="Task Actions" icon="circle-check" href="/spaces/task-actions">
+    The checklist a task can carry, separate from its scheduled actions.
+  </Card>
+  <Card title="File Management" icon="folder-tree" href="/spaces/file-management">
+    Folders, uploads and document approvals.
+  </Card>
+  <Card title="Spaces Overview" icon="folder-tree" href="/spaces/spaces">
+    The panel model this page builds on.
+  </Card>
+</CardGroup>

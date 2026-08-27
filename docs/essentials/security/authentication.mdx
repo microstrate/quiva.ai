@@ -4,285 +4,250 @@ description: "Secure your account with multi-factor authentication and passkeys"
 icon: "key"
 ---
 
-# Authentication & MFA
-
-Protect your QuivaWorks account with multi-factor authentication (MFA) and modern passkey technology.
+Protect your QuivaWorks account with multi-factor authentication (MFA) and passkeys.
 
 ## Why Enable MFA?
 
 <CardGroup cols={2}>
-  <Card title="Security" icon="shield-check">
-    Adds an additional layer of protection beyond passwords
+  <Card title="Stronger sign-in" icon="shield-check">
+    A stolen password on its own is no longer enough to reach your account
   </Card>
-  
-  <Card title="Compliance" icon="file-certificate">
-    Meet security requirements for regulated industries
+
+  <Card title="Phishing resistance" icon="fish">
+    Passkeys are bound to the site that issued them and can't be replayed elsewhere
   </Card>
-  
-  <Card title="Account Recovery" icon="life-ring">
-    Receive recovery codes for emergency access
-  </Card>
-  
-  <Card title="Peace of Mind" icon="heart">
-    Sleep better knowing your account is secure
+
+  <Card title="Account recovery" icon="life-ring">
+    Enabling MFA issues recovery codes you can use if you lose your device
   </Card>
 </CardGroup>
 
-<Warning>
-You'll be prompted to set up MFA every time you log in until it's enabled. We strongly recommend enabling MFA immediately after account creation.
-</Warning>
+<Note>
+QuivaWorks prompts you to set up MFA each time you log in until it's enabled, and the setup screen offers **Set Up Later**. MFA is never mandatory for any role — but we strongly recommend enabling it.
+</Note>
 
 ## Setting Up Multi-Factor Authentication
 
+Both methods live in the same place: open **Settings** from your user menu, then the **Password and authentication** tab.
+
 <Tabs>
   <Tab title="Passkey (Recommended)">
-    Passkeys provide passwordless authentication using biometrics or device PINs.
-    
+    Passkeys let you sign in with biometrics or a device PIN instead of a password.
+
     <Steps>
-      <Step title="Navigate to Settings">
-        Click your profile icon → "Settings" → "Password and Authentication"
+      <Step title="Open the tab">
+        **Settings → Password and authentication**
       </Step>
-      
-      <Step title="Add Passkey">
-        Click "Add Passkey"
+
+      <Step title="Add a passkey">
+        In the **Passkey** section, click **Add**. The screen is titled "Add passkey".
       </Step>
-      
-      <Step title="Complete Setup">
-        Follow your device's prompts:
-        - Touch/Face ID on mobile
-        - Windows Hello on PC
-        - Touch ID on Mac
-        - Security key (YubiKey, etc.)
+
+      <Step title="Complete setup">
+        Follow your device's prompts — Touch ID, Face ID, Windows Hello, a device password, a PIN, or a hardware security key.
       </Step>
-      
-      <Step title="Save Recovery Codes">
-        Store your recovery codes securely
+
+      <Step title="Save your recovery codes">
+        Store them somewhere safe before you close the screen
       </Step>
     </Steps>
-    
+
     <Info>
-    Passkeys are:
-    - More secure than passwords
-    - Resistant to phishing
-    - Faster to use
-    - Backed by FIDO2 standard
+    Existing passkeys are listed under **Manage**, where you can remove one or remove them all.
     </Info>
   </Tab>
-  
+
   <Tab title="Authenticator App">
-    Use time-based one-time passwords (TOTP) with apps like Google Authenticator, Authy, or Microsoft Authenticator.
-    
+    Use time-based one-time passwords (TOTP) with an app such as Google Authenticator, Authy, Microsoft Authenticator, or a password manager that supports TOTP.
+
     <Steps>
-      <Step title="Navigate to Settings">
-        Click your profile icon → "Settings" → "Password and Authentication"
+      <Step title="Open the tab">
+        **Settings → Password and authentication**
       </Step>
-      
-      <Step title="Add Authenticator">
-        Click "Add Authenticator App"
+
+      <Step title="Add an authenticator app">
+        Under **Two-factor authentication → Authenticator App**, click **Add**. The screen is titled "Add authenticator app".
       </Step>
-      
-      <Step title="Scan QR Code">
-        Open your authenticator app and scan the QR code displayed
+
+      <Step title="Scan the QR code">
+        Open your authenticator app and scan the code displayed
       </Step>
-      
-      <Step title="Enter Verification Code">
-        Enter the 6-digit code from your app to confirm setup
+
+      <Step title="Enter the verification code">
+        Type the 6-digit code from your app to confirm setup
       </Step>
-      
-      <Step title="Save Recovery Codes">
-        Download and securely store your recovery codes
+
+      <Step title="Save your recovery codes">
+        Store them securely
       </Step>
     </Steps>
-    
-    **Compatible Apps:**
-    - Google Authenticator
-    - Authy
-    - Microsoft Authenticator
-    - 1Password
-    - LastPass Authenticator
   </Tab>
 </Tabs>
 
 ## Recovery Codes
 
-Recovery codes provide emergency access if you lose your MFA device.
+Recovery codes give you a way back in if you lose your MFA device.
 
 <Warning>
-**Critical:** Store recovery codes in a secure location:
-- Password manager
-- Physical safe
-- Encrypted storage
-- Never in email or cloud notes
+Store recovery codes in a password manager, an encrypted file, or a physical safe. Never leave them in email, a shared document, or unencrypted notes.
 </Warning>
 
-### Characteristics of Recovery Codes
+### How they work
 
-- Each code can only be used **once**
-- You receive **10 codes** when enabling MFA
-- Generate new codes if you run out
-- Old codes become invalid when new ones are issued
+- You receive **10 codes**
+- Each code can be used **once**
+- Issuing a new set invalidates the old one
 
-### Viewing Your Recovery Codes
+### Viewing your recovery codes
 
-1. Click your profile icon → "Settings"
-2. Navigate to "Password and Authentication"
-3. Scroll to recovery codes section
-4. Click "View"
+1. Open **Settings → Password and authentication**
+2. Scroll to the **Recovery codes** section
+3. Click **View** to see the current set, or **Get New** to issue a fresh one
 
-### Using a Recovery Code
+An email notification is sent whenever recovery codes are viewed.
 
-1. On the MFA challenge screen, click "Use recovery code instead"
-2. Enter one of your recovery codes
-3. Click "Verify"
-4. **Important:** Generate new recovery codes immediately after using one
+### Using a recovery code
+
+On the two-factor challenge screen, switch to the **Recovery Code** method tab, enter one of your codes, and continue. Issue a new set afterwards if you're running low.
 
 <Note>
-If you've used all recovery codes, contact an Admin to issue new ones.
+If you've used all your codes, a root or admin user can issue a new set for you from **Issue new recovery codes** in the Users dot menu.
 </Note>
 
 ## Password Management
 
-### Password Requirements
+### Password requirements
 
-Your password must contain:
-- Minimum **8 characters**
-- At least one **uppercase** letter
-- At least one **lowercase** letter
-- At least one **number**
-- At least one **special character** (!@#$%^&*)
+Your password must be:
+
+- At least **8 characters** and at most **72 characters**
+- Containing at least one **uppercase** letter
+- Containing at least one **lowercase** letter
+- Containing at least one **number**
+- Containing at least one **special character**
+
+Common words are rejected.
 
 <Tip>
-Use a password manager to generate and store complex, unique passwords.
+Use a password manager to generate and store a long, unique password.
 </Tip>
 
-### Changing Your Password
+### Changing your password
 
-1. Click your profile icon → "Settings"
-2. Navigate to "Credentials"
-3. Enter your current password
-4. Enter your new password
-5. Confirm your new password
-6. Click "Update Password"
+1. Open **Settings → Password and authentication**
+2. In the **Password** section, click **Change password**
+3. Confirm your identity — changing a password requires passing two-factor authentication first
+4. Enter and confirm your new password
 
 <Info>
-All active sessions will be terminated except your current one. You'll receive an email notification confirming the password change.
+All your other sessions are terminated; your current session stays signed in. You'll receive an email confirming the change.
 </Info>
 
-### Forgot Your Password?
+### Forgot your password?
 
 <Steps>
-  <Step title="Initiate Recovery">
-    1. Visit [https://app.quiva.ai/en/login](https://app.quiva.ai/en/login)
-    2. Click "Forgot password?"
-    3. Enter your account name and email
-    4. Click "Send Recovery Email"
+  <Step title="Start the reset">
+    On the login screen, click **Forgot Password**, enter the email address associated with your account, and click **Reset Password**. Only the email address is needed.
   </Step>
-  
-  <Step title="Check Your Email">
-    Look for "Reset Your QuivaWorks Password" email with:
-    - Password reset link (recommended), or
-    - Temporary recovery code
+
+  <Step title="Follow the link in your email">
+    You'll receive an email containing a password reset link.
   </Step>
-  
-  <Step title="Reset Password">
-    1. Click the reset link or enter the code
-    2. Create a new password meeting requirements
-    3. Confirm your new password
-    4. Click "Reset Password"
-  </Step>
-  
-  <Step title="Log In">
-    You'll be logged in automatically. All other sessions are terminated.
+
+  <Step title="Set a new password">
+    Open the link, enter a new password meeting the requirements above, and confirm it.
   </Step>
 </Steps>
 
 <Warning>
-Password reset links expire after **15 minutes**. Request a new link if yours expires.
+Reset links are valid for **2 days**. Request a new one if yours has expired.
 </Warning>
+
+<Info>
+Resetting your password from the emailed link while signed out terminates **every** session on the account — including any an attacker is holding. A confirmation email is sent either way.
+</Info>
 
 ## Security Notifications
 
-You'll receive email notifications for these authentication events:
+You'll receive an email for these events:
 
 <CardGroup cols={2}>
-  <Card title="Password Changed" icon="lock">
-    When your password is updated
+  <Card title="Password changed" icon="lock">
+    When your password is changed or reset
   </Card>
-  
-  <Card title="Email Change Requested" icon="envelope">
-    When someone requests an email change
+
+  <Card title="Email change requested" icon="envelope">
+    When a change to your email address is initiated, and again when it completes
   </Card>
-  
-  <Card title="Passkey Added" icon="key">
+
+  <Card title="Passkey added" icon="key">
     When a new passkey is registered
   </Card>
-  
-  <Card title="Recovery Codes Viewed" icon="eye">
-    When recovery codes are accessed
+
+  <Card title="Recovery codes viewed" icon="eye">
+    When your recovery codes are accessed
   </Card>
 </CardGroup>
 
 <Tip>
-If you receive a notification for an action you didn't perform, immediately change your password and review your [active sessions](/essentials/security/sessions).
+If you receive a notification for something you didn't do, follow the [incident response steps](/essentials/security/incident-response) straight away.
 </Tip>
 
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Use Unique Passwords">
-    Never reuse passwords across different services. Use a password manager to track unique passwords for each account.
+  <Accordion title="Use a unique password">
+    Never reuse a password across services. A password manager makes this practical.
   </Accordion>
-  
-  <Accordion title="Enable MFA Immediately">
-    Set up MFA as soon as you create your account. Don't wait until a security incident occurs.
+
+  <Accordion title="Enable MFA now, not later">
+    Set it up when you create your account rather than after an incident.
   </Accordion>
-  
-  <Accordion title="Store Recovery Codes Securely">
-    Keep recovery codes in a password manager or physical safe. Never store them in email or unencrypted notes.
+
+  <Accordion title="Store recovery codes securely">
+    A password manager or a physical safe. Not email, not shared notes.
   </Accordion>
-  
-  <Accordion title="Prefer Passkeys">
-    Passkeys are more secure and convenient than authenticator apps. Use them when available.
+
+  <Accordion title="Prefer passkeys">
+    Passkeys can't be phished or replayed, and they're faster to use than a one-time code.
   </Accordion>
-  
-  <Accordion title="Review Sessions Regularly">
-    Check your active sessions monthly and terminate any you don't recognize.
+
+  <Accordion title="Register a second passkey">
+    A backup passkey on another device saves you from falling back to recovery codes.
   </Accordion>
-  
-  <Accordion title="Rotate Passwords Periodically">
-    Change your password every 60-90 days, especially for privileged accounts.
+
+  <Accordion title="Review your sessions">
+    Check [active sessions](/essentials/security/sessions) periodically and terminate anything you don't recognise.
   </Accordion>
 </AccordionGroup>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Lost access to MFA device">
+  <Accordion title="Lost access to your MFA device">
     1. Use a recovery code to log in
-    2. Immediately set up a new MFA method
-    3. Generate new recovery codes
-    4. If you've lost recovery codes too, contact an Admin
+    2. Set up a new MFA method immediately
+    3. Issue a new set of recovery codes
+    4. If you've lost your recovery codes too, ask a root or admin user to issue a new set from the Users dot menu
   </Accordion>
-  
-  <Accordion title="Authenticator app not working">
-    - Check your device's time is synced correctly
-    - Ensure you're using the latest code (refreshes every 30 seconds)
-    - Try removing and re-adding the account in your app
-    - Use a recovery code if the issue persists
+
+  <Accordion title="Authenticator app codes rejected">
+    - Check your device's clock is synchronised — TOTP depends on accurate time
+    - Use the current code; they refresh every 30 seconds
+    - Remove and re-add the account in your authenticator app
+    - Use a recovery code if the problem persists
   </Accordion>
-  
-  <Accordion title="Passkey not recognized">
-    - Ensure your device/browser supports passkeys
-    - Try registering a backup passkey on another device
-    - Clear browser cache if using a browser-based passkey
-    - Use authenticator app or recovery code as fallback
+
+  <Accordion title="Passkey not recognised">
+    - Confirm your device and browser support passkeys
+    - Register a backup passkey on another device
+    - Fall back to your authenticator app or a recovery code
   </Accordion>
-  
-  <Accordion title="Didn't receive password reset email">
-    - Check spam/junk folder
-    - Verify you entered the correct account name and email
-    - Wait 5 minutes (email delivery can be delayed)
-    - Try requesting another reset email
+
+  <Accordion title="Didn't receive the password reset email">
+    - Check your spam or junk folder
+    - Confirm you entered the correct email address — the reset form matches on email alone
+    - Allow a few minutes for delivery, then request another reset
   </Accordion>
 </AccordionGroup>
 
@@ -292,16 +257,16 @@ If you receive a notification for an action you didn't perform, immediately chan
   <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
     Secure programmatic access
   </Card>
-  
+
   <Card title="Sessions" icon="clock" href="/essentials/security/sessions">
     Manage active sessions
   </Card>
-  
+
   <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
-    Comprehensive security guide
+    Platform and account security
   </Card>
-  
+
   <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
-    What to do if compromised
+    What to do if an account is compromised
   </Card>
 </CardGroup>

@@ -1,1081 +1,284 @@
 ---
 title: 'Key-Value Storage Functions'
-description: 'Fast key-based data storage for configuration and state management'
+description: 'Five functions for reading and writing small values addressed by key'
 icon: 'database'
 ---
 
 # Key-Value Storage Functions
 
-Key-Value (KV) storage provides fast, simple data storage with key-based access. Perfect for configuration, caching, state management, and session storage.
+A key-value bucket stores small values under string keys. Use it for state a flow needs to keep between runs — a cursor, a counter, a cached lookup, a per-customer setting.
 
-<Info>
-**What is Key-Value Storage?** KV storage is a simple database where you store data with a unique key and retrieve it later using that key. Think of it like a dictionary or hash map that persists across flow executions.
-</Info>
+Five functions are available to a [Function step](/flows/steps/functions):
 
----
+| Function | Does |
+|---|---|
+| `create-key-value-bucket` | Create a bucket |
+| `put-kv-item` | Write one key |
+| `get-kv-bucket-item` | Read one key |
+| `list-key-value-buckets` | List the account's buckets |
+| `list-kv-bucket-items` | List keys and values in a bucket |
 
-## Function List
+Buckets are per-account. There is no delete function — remove a bucket or a key from the platform UI.
 
-<CardGroup cols={2}>
-  <Card title="kv-bucket-create" icon="plus" href="#kv-bucket-create">
-    Create a new KV bucket
-  </Card>
-  
-  <Card title="kv-key-put" icon="upload" href="#kv-key-put">
-    Add or update an item
-  </Card>
-  
-  <Card title="kv-key-get" icon="download" href="#kv-key-get">
-    Retrieve an item by key
-  </Card>
-  
-  <Card title="kv-bucket-list" icon="list" href="#kv-bucket-list">
-    List all KV buckets
-  </Card>
-  
-  <Card title="kv-key-list" icon="table" href="#kv-key-list">
-    List items in a bucket
-  </Card>
-</CardGroup>
+<Note>
+For anything larger than a small JSON document — a file, a PDF, an export — use [Object Storage](/flows/functions/object-storage) instead.
+</Note>
 
 ---
 
-## kv-bucket-create
+## Names and limits
 
-Create a new Key-Value storage bucket. Buckets are containers for related key-value pairs with configurable storage options, replication, and TTL settings.
+- **Bucket names** must match `[a-zA-Z0-9_-]+`. No dots, no spaces.
+- **Keys** must match `[-/_=.a-zA-Z0-9]+` and may not begin or end with a dot. A key built from user input needs sanitising first.
+- **`ttl` is in nanoseconds.** It is a Go duration on the wire: one hour is `3600000000000`.
+- **`history` defaults to 1 and caps at 64.**
 
-### Parameters
+<Warning>
+**Do not point these functions at the account's secrets store.** `get-kv-bucket-item`, `put-kv-item` and `list-kv-bucket-items` refuse it and return `{"error": "…"}` explaining why — a listing in particular would return every key and its plaintext value at once. Read one secret with [`secret-key-get-node`](/flows/functions/utility#secret-key-get-node), or put `SECRET::<name>::` in any node's configuration and let the platform resolve it before the run starts.
+</Warning>
+
+---
+
+## create-key-value-bucket
+
+Creates a bucket. Creating one that already exists returns an error in the body rather than replacing it.
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to create. Must be unique and can only contain alphanumeric characters, dashes, and underscores.
-  
-  **Naming conventions:**
-  - Use lowercase with hyphens: `user-preferences`, `api-cache`
-  - Be descriptive: `feature-flags` not `bucket1`
-  - Include purpose: `session-data`, `product-config`
+Bucket name. Must be unique in the account and match `[a-zA-Z0-9_-]+`.
 </ParamField>
 
 <ParamField path="description" type="string">
-  Optional description for the KeyValue store.
-</ParamField>
-
-<ParamField path="ttl" type="integer">
-  Time-to-live in nanoseconds. Keys expire after this duration. By default, keys do not expire.
-  
-  **Common TTL values (in nanoseconds):**
-  - `3600000000000` - 1 hour
-  - `86400000000000` - 1 day
-  - `604800000000000` - 7 days
-  - `2592000000000000` - 30 days
-  - No value - No expiration (permanent storage)
+Free text shown alongside the bucket.
 </ParamField>
 
 <ParamField path="history" type="integer">
-  Number of historical values to keep per key. Default is 1, maximum is 64.
+Revisions kept per key. Default `1`, maximum `64`.
+</ParamField>
+
+<ParamField path="ttl" type="integer">
+Key expiry in nanoseconds. Omitted means keys never expire.
 </ParamField>
 
 <ParamField path="max_bytes" type="integer">
-  Maximum size in bytes of the KeyValue store. Default is -1 (unlimited).
+Maximum total size of the bucket in bytes. Default `-1` (unlimited).
 </ParamField>
 
 <ParamField path="max_value_size" type="integer">
-  Maximum size of a value in bytes. Default is -1 (unlimited).
+Maximum size of a single value in bytes. Default `-1` (unlimited).
 </ParamField>
 
 <ParamField path="storage" type="string">
-  Type of storage backend to use. Default is `file`.
-  
-  **Options:**
-  - `file` - Persistent file storage
-  - `memory` - In-memory storage (faster but not persistent)
+`"file"` or `"memory"`. Default `"file"`. Lower case — a capitalised value is rejected.
 </ParamField>
 
 <ParamField path="num_replicas" type="integer">
-  Number of replicas to keep in clustered bstream. Default is 1, maximum is 5.
+Copies kept across the cluster. Default `1`, maximum `5`.
 </ParamField>
 
 <ParamField path="compression" type="boolean">
-  Enable underlying stream compression to reduce storage size.
+Compress the underlying storage.
 </ParamField>
 
-<ParamField path="metadata" type="object">
-  Optional bucket-specific metadata (custom key-value pairs).
-</ParamField>
-
-<ParamField path="placement" type="object">
-  Configure where the stream should be placed in a cluster.
-  
-  **Properties:**
-  - `cluster` (string) - Target cluster name
-  - `tags` (array of strings) - Placement tags
-</ParamField>
-
-<ParamField path="mirror" type="object">
-  Configuration for mirroring another KeyValue store.
-  
-  **Properties:**
-  - `name` (string, required) - Name of the stream to mirror
-  - `domain` (string) - Domain for cross-domain mirroring
-  - `filter_subject` (string) - Subject filter for selective mirroring
-  - `opt_start_seq` (integer) - Starting sequence number
-  - `opt_start_time` (integer) - Starting timestamp
-  - `subject_transforms` (array) - Subject transformation rules
-</ParamField>
-
-<ParamField path="republish" type="object">
-  Configure immediate republishing of messages after storage.
-  
-  **Properties:**
-  - `dest` (string) - Destination subject pattern
-  - `source` (string) - Source subject pattern to match
-  - `headers_only` (boolean) - Only republish headers
-</ParamField>
-
-<ParamField path="sources" type="array">
-  Configure sources for the KeyValue store (for aggregating from multiple streams).
-  
-  **Each source has:**
-  - `name` (string) - Name of source stream
-  - `domain` (string) - Source domain
-  - `filter_subject` (string) - Subject filter
-  - `opt_start_seq` (integer) - Starting sequence
-  - `opt_start_time` (integer) - Starting timestamp
-  - `subject_transforms` (array) - Transformation rules
-</ParamField>
-
-### Response
+**Payload**
 
 ```json
 {
-  "status_code": 200,
-  "body": {
-    "message": "Bucket created successfully"
-  }
+  "bucket": "run-state",
+  "description": "Per-flow cursors",
+  "history": 5,
+  "ttl": 2592000000000000
 }
 ```
 
-### Error Response
+**Returns**
 
 ```json
-{
-  "status_code": 400,
-  "body": {
-    "error": "Bucket already exists"
-  }
-}
+{ "status_code": 200, "body": { "message": "success" } }
 ```
 
-### Example Usage
-
-<CodeGroup>
-```json Basic Bucket
-{
-  "function": "kv-bucket-create",
-  "params": {
-    "bucket": "user-preferences",
-    "description": "Store user preferences and settings",
-    "ttl": 2592000000000000
-  }
-}
-```
-
-```json High-Performance Cache
-{
-  "function": "kv-bucket-create",
-  "params": {
-    "bucket": "api-cache",
-    "description": "High-speed API response cache",
-    "storage": "memory",
-    "ttl": 3600000000000,
-    "compression": true,
-    "max_bytes": 1073741824
-  }
-}
-```
-
-```json Replicated Bucket
-{
-  "function": "kv-bucket-create",
-  "params": {
-    "bucket": "critical-config",
-    "description": "Replicated configuration storage",
-    "num_replicas": 3,
-    "storage": "file",
-    "history": 5
-  }
-}
-```
-</CodeGroup>
-
-### Common Use Cases
-
-<AccordionGroup>
-  <Accordion title="User Preferences" icon="user-gear">
-    Store user settings and preferences with reasonable TTL
-    
-    ```json
-    {
-      "bucket": "user-preferences",
-      "description": "User settings and preferences",
-      "ttl": 2592000000000000,
-      "storage": "file"
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="High-Speed Cache" icon="bolt">
-    In-memory cache for frequently accessed data
-    
-    ```json
-    {
-      "bucket": "api-cache",
-      "storage": "memory",
-      "ttl": 3600000000000,
-      "compression": true
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="Feature Flags" icon="flag">
-    Store feature toggles with history tracking
-    
-    ```json
-    {
-      "bucket": "feature-flags",
-      "history": 10,
-      "storage": "file"
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="Session Data" icon="clock">
-    Temporary session storage with automatic expiration
-    
-    ```json
-    {
-      "bucket": "user-sessions",
-      "ttl": 86400000000000,
-      "storage": "memory"
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
+A bucket that already exists comes back as `{"status_code": 409, "body": {"error": "..."}}`.
 
 ---
 
-## kv-key-put
+## put-kv-item
 
-Add a new item or update an existing item in a Key-Value bucket.
-
-### Parameters
+Writes a value. Writing an existing key overwrites it; the previous value is kept only if the bucket's `history` is above 1.
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to store the item in. Bucket must exist.
+Bucket to write into. The bucket must already exist.
 </ParamField>
 
 <ParamField path="key" type="string" required>
-  Unique key for the item. If key exists, the value will be updated.
-  
-  **Key strategies:**
-  - User data: `user_${userId}` - e.g., `user_123`
-  - Session data: `session_${sessionId}` - e.g., `session_abc`
-  - Cache keys: `cache_${resource}_${id}` - e.g., `cache_product_456`
-  - Config: Descriptive names - e.g., `max_retries`, `api_timeout`
+Key to write. Must match `[-/_=.a-zA-Z0-9]+`.
 </ParamField>
 
 <ParamField path="value" type="string | object" required>
-  The value to store. Can be a string or an object that will be JSON-serialized.
-  
-  **Value types:**
-  - **String**: `"Hello World"`
-  - **Object**: `{"name": "John", "age": 30}`
-  - **Array**: `[1, 2, 3, 4]` (as object)
-  - **Number/Boolean**: Must be wrapped in object or converted to string
+The value. An object is stored as JSON; a string is stored as text.
 </ParamField>
 
-### Response
+**Payload**
 
 ```json
 {
-  "status_code": 200,
-  "body": {
-    "message": "Key written successfully"
-  }
+  "bucket": "run-state",
+  "key": "sync.orders.cursor",
+  "value": { "last_id": "$.GET_ORDERS.body.body.results[-1:].id", "at": "$.env.run_id" }
 }
 ```
 
-### Error Response
+**Returns**
 
 ```json
-{
-  "status_code": 404,
-  "body": {
-    "error": "Bucket not found"
-  }
-}
+{ "status_code": 200, "body": { "message": "success" } }
 ```
-
-### Example Usage
-
-<CodeGroup>
-```json Store User Preferences
-{
-  "function": "kv-key-put",
-  "params": {
-    "bucket": "user-preferences",
-    "key": "user_${$.trigger.user_id}",
-    "value": {
-      "theme": "${$.trigger.theme}",
-      "language": "${$.trigger.language}",
-      "email_notifications": "${$.trigger.email_notifications}"
-    }
-  }
-}
-```
-
-```json Cache API Response
-{
-  "function": "kv-key-put",
-  "params": {
-    "bucket": "api-cache",
-    "key": "weather_${$.trigger.city}",
-    "value": "${$.http_request.response}"
-  }
-}
-```
-
-```json Store String Value
-{
-  "function": "kv-key-put",
-  "params": {
-    "bucket": "app-config",
-    "key": "api_endpoint",
-    "value": "https://api.example.com/v1"
-  }
-}
-```
-</CodeGroup>
-
-### Common Patterns
-
-<AccordionGroup>
-  <Accordion title="Configuration Storage" icon="gear">
-    Store application configuration
-    
-    ```text
-    Flow:
-    → Agent decides configuration value
-    → Store in KV: kv-key-put
-      Bucket: "app-config"
-      Key: "max_upload_size"
-      Value: {"bytes": 10485760, "mb": 10}
-    → Other flows read this config
-    ```
-  </Accordion>
-  
-  <Accordion title="Rate Limiting" icon="gauge-high">
-    Track API usage per user
-    
-    ```text
-    Flow:
-    → Get current count: kv-key-get
-    → Increment count
-    → Store updated count: kv-key-put
-      Key: "rate_limit_${user_id}"
-      Value: {"count": 45, "reset_at": "..."}
-    → Check if over limit
-    ```
-  </Accordion>
-  
-  <Accordion title="User State Management" icon="user">
-    Maintain user state across sessions
-    
-    ```text
-    Flow:
-    → User performs action
-    → Update state: kv-key-put
-      Key: "user_state_${user_id}"
-      Value: {"onboarding_step": 3, "completed_tutorial": true}
-    → Next visit: Retrieve state, continue where left off
-    ```
-  </Accordion>
-  
-  <Accordion title="Deduplication" icon="clone">
-    Prevent duplicate processing
-    
-    ```text
-    Flow:
-    → Receive event with ID
-    → Check if processed: kv-key-get
-      Key: "processed_${event_id}"
-    → If not found:
-      → Process event
-      → Mark as processed: kv-key-put
-        Key: "processed_${event_id}"
-        Value: {"timestamp": "...", "status": "processed"}
-    ```
-  </Accordion>
-</AccordionGroup>
 
 ---
 
-## kv-key-get
+## get-kv-bucket-item
 
-Retrieve an item from a Key-Value bucket by its key.
-
-### Parameters
+Reads one key.
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to retrieve from.
+Bucket to read from.
 </ParamField>
 
 <ParamField path="key" type="string" required>
-  The key of the item to retrieve.
+Key to read.
 </ParamField>
 
-<ParamField path="json" type="boolean" required>
-  Whether to parse the value as JSON. Set to `true` to parse objects, `false` to get raw string.
-  
-  **When to use:**
-  - `true` - When you stored an object and want it parsed
-  - `false` - When you stored a string or want the raw value
+<ParamField path="json" type="boolean">
+Return the value as it is rather than re-serialising it. Defaults to `false` — see the warning below.
 </ParamField>
 
-### Response
+**Payload**
+
+```json
+{ "bucket": "run-state", "key": "sync.orders.cursor", "json": true }
+```
+
+**Returns**
+
+```json
+{
+  "status_code": 200,
+  "body": {
+    "body": { "key": "sync.orders.cursor", "value": { "last_id": "ord_88" } },
+    "metadata": { "bucket": "run-state", "revision": 7 }
+  }
+}
+```
+
+<Warning>
+**Set `json: true` whenever the value is an object.** The storage layer already returns JSON values parsed. Leaving `json` off then runs the parsed value back through `JSON.stringify`, so an object comes back as a JSON *string* and a plain string comes back wrapped in quotes. With `json: true` the value is left as it is.
+</Warning>
+
+Reference the value as `$.STEP_ID.body.body.value`.
+
+---
+
+## list-key-value-buckets
+
+Lists every key-value bucket in the account. Takes no parameters — an empty payload `{}` is correct.
+
+**Returns**
 
 ```json
 {
   "status_code": 200,
   "body": {
     "body": {
-      "key": "user_123",
-      "value": {
-        "theme": "dark",
-        "language": "en"
-      }
-    },
-    "metadata": {
-      "Bucket": "user-preferences"
+      "results": [
+        { "name": "run-state", "description": "Per-flow cursors", "entry_total": 12, "created": "2026-08-20T09:14:02Z" }
+      ],
+      "results_total": 1
     }
   }
 }
 ```
 
-### Not Found Response
-
-```json
-{
-  "status_code": 404,
-  "body": {
-    "error": "Key not found"
-  }
-}
-```
-
-### Example Usage
-
-<CodeGroup>
-```json Get Object Value
-{
-  "function": "kv-key-get",
-  "params": {
-    "bucket": "user-preferences",
-    "key": "user_${$.trigger.user_id}",
-    "json": true
-  }
-}
-```
-
-```json Get String Value
-{
-  "function": "kv-key-get",
-  "params": {
-    "bucket": "api-cache",
-    "key": "weather_${$.trigger.city}",
-    "json": false
-  }
-}
-```
-
-```text In Flow
-Functions: Get user preferences
-  Function: kv-key-get
-  Bucket: "user-preferences"
-  Key: user_${user_id}
-  JSON: true
-↓
-Condition: Check status_code
-  → 200: Use value from body.body.value
-  → 404: Use defaults
-```
-</CodeGroup>
-
-### Common Patterns
-
-<AccordionGroup>
-  <Accordion title="Cache-Aside Pattern" icon="memory">
-    Check cache before making expensive call
-    
-    ```text
-    Flow:
-    → Get from cache: kv-key-get (json: true)
-    → Check status_code
-    → If 200: Use cached value
-    → If 404:
-      → Make API call
-      → Store in cache: kv-key-put
-      → Return value
-    ```
-  </Accordion>
-  
-  <Accordion title="Load User Context" icon="user-circle">
-    Load user data for personalization
-    
-    ```text
-    Trigger: User request
-    ↓
-    Functions: Get user preferences
-      Function: kv-key-get
-      Bucket: "user-preferences"
-      Key: user_${user_id}
-      JSON: true
-    ↓
-    Agent: Respond with personalized content
-      Uses: body.body.value
-    ```
-  </Accordion>
-  
-  <Accordion title="Feature Flag Check" icon="toggle-on">
-    Check if feature is enabled
-    
-    ```text
-    Functions: Check feature flag
-      Function: kv-key-get
-      Bucket: "feature-flags"
-      Key: "new_checkout_flow"
-      JSON: true
-    ↓
-    Condition: status_code === 200 AND body.body.value.enabled
-      → Yes: Use new flow
-      → No: Use old flow
-    ```
-  </Accordion>
-</AccordionGroup>
-
 ---
 
-## kv-bucket-list
+## list-kv-bucket-items
 
-List all Key-Value storage buckets in your account with their metadata.
-
-### Parameters
-
-This function takes no input parameters. It returns all buckets in your account.
-
-### Response
-
-```json
-{
-  "status_code": 200,
-  "body": {
-    "body": {
-      "results_total": 2,
-      "results": [
-        {
-          "name": "user-preferences",
-          "description": "Store user preferences and settings",
-          "entry_total": 1523,
-          "created": 1693574400000,
-          "metadata": {}
-        },
-        {
-          "name": "api-cache",
-          "description": "Cache external API responses",
-          "entry_total": 342,
-          "created": 1696240200000,
-          "metadata": {}
-        }
-      ]
-    },
-    "metadata": {}
-  }
-}
-```
-
-### Example Usage
-
-<CodeGroup>
-```json List All Buckets
-{
-  "function": "kv-bucket-list",
-  "params": {}
-}
-```
-
-```text In Flow
-Functions: List all KV buckets
-  Function: kv-bucket-list
-↓
-Map: Format bucket list
-  Input: ${$.functions.body.body.results}
-↓
-Agent: Show storage overview to admin
-```
-</CodeGroup>
-
-### Common Use Cases
-
-<AccordionGroup>
-  <Accordion title="Storage Monitoring" icon="chart-pie">
-    Monitor storage usage and health
-    
-    ```text
-    List all buckets
-    → Check entry_total counts
-    → Alert if approaching limits
-    → Identify unused buckets
-    ```
-  </Accordion>
-  
-  <Accordion title="Admin Dashboard" icon="gauge">
-    Build storage management interface
-    
-    ```text
-    List buckets → Display in admin panel
-    → Show: Name, description, entry count
-    → Allow: View/manage buckets
-    ```
-  </Accordion>
-  
-  <Accordion title="Audit and Compliance" icon="shield-check">
-    Track all storage buckets for compliance
-    
-    ```text
-    List buckets
-    → Document all data stores
-    → Verify naming conventions
-    → Export for audit trail
-    ```
-  </Accordion>
-</AccordionGroup>
-
----
-
-## kv-key-list
-
-List all items (keys) contained within a Key-Value bucket.
-
-### Parameters
+Lists the keys in one bucket, **with their values**. A bucket holding anything sensitive should not be listed from a flow.
 
 <ParamField path="bucket" type="string" required>
-  Name of the bucket to list items from.
-</ParamField>
-
-<ParamField path="last_sequence" type="integer">
-  Sequence number to start listing from (for pagination). Use the sequence from the last item of the previous page.
+Bucket to list.
 </ParamField>
 
 <ParamField path="limit" type="integer">
-  Maximum number of items to return per request.
+Maximum entries in one page. Defaults to `100`.
 </ParamField>
 
-### Response
+<ParamField path="last_sequence" type="integer">
+Sequence to start from.
+</ParamField>
+
+**Payload**
+
+```json
+{ "bucket": "run-state", "limit": 100 }
+```
+
+**Returns**
 
 ```json
 {
   "status_code": 200,
   "body": {
     "body": {
-      "results_total": 1523,
       "results": [
-        {
-          "key": "user_123",
-          "value": "{\"theme\":\"dark\",\"language\":\"en\"}"
-        },
-        {
-          "key": "user_456",
-          "value": "{\"theme\":\"light\",\"language\":\"es\"}"
-        }
-      ]
+        { "key": "sync.orders.cursor", "value": { "last_id": "ord_88" } },
+        { "key": "sync.orders.mode", "value": "incremental" }
+      ],
+      "results_total": 2
     },
-    "metadata": {}
+    "metadata": { "bucket": "run-state", "limit": 100 }
   }
 }
 ```
 
-<Warning>
-**Note:** The `value` field in list results is always returned as a string. You'll need to parse JSON values manually if needed.
-</Warning>
+A value that is valid JSON comes back parsed; anything else comes back as a string. So the shape of `value` varies from row to row, and code reading a listing has to cope with both.
 
-### Example Usage
-
-<CodeGroup>
-```json List All Items
-{
-  "function": "kv-key-list",
-  "params": {
-    "bucket": "user-preferences",
-    "limit": 100
-  }
-}
-```
-
-```json Paginated Listing
-{
-  "function": "kv-key-list",
-  "params": {
-    "bucket": "user-sessions",
-    "last_sequence": 100,
-    "limit": 50
-  }
-}
-```
-
-```text In Flow
-Functions: List all keys
-  Function: kv-key-list
-  Bucket: "user-sessions"
-  Limit: 100
-↓
-Map: Process each key
-  Parse JSON values if needed
-↓
-Agent: Generate activity report
-```
-</CodeGroup>
-
-### Pagination Pattern
-
-```text
-First Request:
-  kv-key-list(bucket: "data", limit: 100)
-  → Returns items 0-99
-  → Last item has sequence: 99
-
-Next Request:
-  kv-key-list(bucket: "data", last_sequence: 99, limit: 100)
-  → Returns items 100-199
-  → Continue until results_total reached
-```
-
-### Common Patterns
-
-<AccordionGroup>
-  <Accordion title="Bulk Export" icon="download">
-    Export all items for backup or migration
-    
-    ```text
-    Page 1: List items (limit: 1000)
-    → Process each page
-    → Use last_sequence for next page
-    → Export to file or external system
-    → Continue until all items processed
-    ```
-  </Accordion>
-  
-  <Accordion title="Data Cleanup" icon="broom">
-    Find and remove old or unused items
-    
-    ```text
-    List all items (paginated)
-    → Parse each value
-    → Check timestamps or usage
-    → Delete old items
-    ```
-  </Accordion>
-  
-  <Accordion title="Analytics" icon="chart-line">
-    Analyze stored data patterns
-    
-    ```text
-    List all items
-    → Parse JSON values
-    → Aggregate by patterns
-    → Generate insights
-    → Optimize storage
-    ```
-  </Accordion>
-  
-  <Accordion title="Search and Filter" icon="filter">
-    Find items matching criteria
-    
-    ```text
-    List items (paginated)
-    → Parse values
-    → Filter by key pattern or value content
-    → Return matching items
-    ```
-  </Accordion>
-</AccordionGroup>
+`results_total` counts the rows **in this page**, not the bucket. When a page is cut short the body also carries `truncated: true` and a `next_cursor` string; send that string back as `cursor` to continue. Treat the cursor as opaque.
 
 ---
 
-## Best Practices
+## Failure
+
+Every function on this page catches its own errors and returns `{"error": "<message>"}`. **That is a successful step** — the run continues and the next step reads an object with an `error` key where it expected data.
+
+If a later step depends on the read succeeding, branch on it:
+
+```json
+[
+  { "outcome": ["HANDLE_MISS"], "condition": { "operator": "notEmpty", "input": "$.GET_CURSOR.error" } },
+  { "outcome": ["USE_CURSOR"] }
+]
+```
+
+The final cell has no condition, so it always matches. Leave it out and a run where the read succeeded ends with `failed to determine next steps`.
+
+See [Building Reliable Flows](/flows/best-practices) for what a part-completed run leaves behind.
+
+---
+
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Use Descriptive Keys" icon="key">
-    Include entity type in key: `user_123`, `session_abc`, `cache_product_456`
-  </Card>
-  
-  <Card title="Set Appropriate TTLs" icon="clock">
-    Configure TTL at bucket creation. Remember: TTL is in nanoseconds!
-  </Card>
-  
-  <Card title="Choose Right Storage Type" icon="hard-drive">
-    Use `memory` for high-speed cache, `file` for persistent data
-  </Card>
-  
-  <Card title="Handle Status Codes" icon="code">
-    Always check `status_code` in responses (200 = success, 404 = not found)
-  </Card>
-  
-  <Card title="Parse JSON Carefully" icon="brackets-curly">
-    Use `json: true` in kv-key-get for objects. List results are always strings.
-  </Card>
-  
-  <Card title="Plan for Replication" icon="copy">
-    Use `num_replicas` for critical data to ensure high availability
-  </Card>
-</CardGroup>
-
----
-
-## Performance Tips
-
-<AccordionGroup>
-  <Accordion title="Choose Right Storage Backend" icon="server">
-    Match storage type to use case
-    
-    - ✅ Memory storage: High-speed cache, temporary data
-    - ✅ File storage: Persistent data, long-term storage
-    - ❌ Memory storage: Critical data that must survive restarts
-  </Accordion>
-  
-  <Accordion title="Enable Compression for Large Values" icon="compress">
-    Reduce storage size and network transfer
-    
-    ```json
-    {
-      "bucket": "document-cache",
-      "compression": true,
-      "storage": "file"
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="Use History for Versioning" icon="clock-rotate-left">
-    Track value changes over time
-    
-    ```json
-    {
-      "bucket": "config-history",
-      "history": 10
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="Set Max Value Size" icon="ruler">
-    Prevent oversized values from consuming resources
-    
-    ```json
-    {
-      "bucket": "user-data",
-      "max_value_size": 1048576
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Example Workflows
-
-### User Preference Management
-
-<Steps>
-  <Step title="Create Bucket">
-    ```json
-    {
-      "function": "kv-bucket-create",
-      "params": {
-        "bucket": "user-preferences",
-        "description": "User settings",
-        "ttl": 2592000000000000,
-        "storage": "file"
-      }
-    }
-    ```
-  </Step>
-  
-  <Step title="Store Preferences">
-    ```json
-    {
-      "function": "kv-key-put",
-      "params": {
-        "bucket": "user-preferences",
-        "key": "user_${user_id}",
-        "value": {
-          "theme": "dark",
-          "language": "en",
-          "notifications": true
-        }
-      }
-    }
-    ```
-  </Step>
-  
-  <Step title="Load on Login">
-    ```json
-    {
-      "function": "kv-key-get",
-      "params": {
-        "bucket": "user-preferences",
-        "key": "user_${user_id}",
-        "json": true
-      }
-    }
-    ```
-  </Step>
-</Steps>
-
-### API Response Caching
-
-<Steps>
-  <Step title="Create Cache Bucket">
-    ```json
-    {
-      "function": "kv-bucket-create",
-      "params": {
-        "bucket": "api-cache",
-        "storage": "memory",
-        "ttl": 3600000000000,
-        "compression": true
-      }
-    }
-    ```
-  </Step>
-  
-  <Step title="Check Cache">
-    ```json
-    {
-      "function": "kv-key-get",
-      "params": {
-        "bucket": "api-cache",
-        "key": "weather_${city}",
-        "json": true
-      }
-    }
-    
-    # Check status_code
-    # If 200: Use cached value
-    # If 404: Fetch from API
-    ```
-  </Step>
-  
-  <Step title="Cache Miss - Store Response">
-    ```json
-    {
-      "function": "kv-key-put",
-      "params": {
-        "bucket": "api-cache",
-        "key": "weather_${city}",
-        "value": "${api_response}"
-      }
-    }
-    ```
-  </Step>
-</Steps>
-
-### Feature Flag System
-
-<Steps>
-  <Step title="Create Flags Bucket">
-    ```json
-    {
-      "function": "kv-bucket-create",
-      "params": {
-        "bucket": "feature-flags",
-        "history": 10,
-        "storage": "file"
-      }
-    }
-    ```
-  </Step>
-  
-  <Step title="Set Feature Flag">
-    ```json
-    {
-      "function": "kv-key-put",
-      "params": {
-        "bucket": "feature-flags",
-        "key": "new_checkout",
-        "value": {
-          "enabled": true,
-          "rollout_percentage": 100,
-          "updated_at": "${now}"
-        }
-      }
-    }
-    ```
-  </Step>
-  
-  <Step title="Check in Flow">
-    ```json
-    {
-      "function": "kv-key-get",
-      "params": {
-        "bucket": "feature-flags",
-        "key": "new_checkout",
-        "json": true
-      }
-    }
-    
-    # If status_code == 200 and body.body.value.enabled:
-    #   Use new checkout
-    # Else:
-    #   Use old checkout
-    ```
-  </Step>
-</Steps>
-
----
-
-## Important Notes
-
-<Warning>
-**TTL is in Nanoseconds**: When setting TTL, remember that the value must be in nanoseconds, not seconds. 1 hour = 3,600,000,000,000 nanoseconds.
-</Warning>
-
-<Warning>
-**JSON Parsing**: The `json` parameter in `kv-key-get` is required. Set it to `true` to parse object values, `false` for strings.
-</Warning>
-
-<Warning>
-**List Values are Strings**: When using `kv-key-list`, all values are returned as strings. You must parse JSON values manually.
-</Warning>
-
-<Info>
-**Bucket Names are Permanent**: Bucket names cannot be changed after creation. Choose descriptive, meaningful names from the start.
-</Info>
-
----
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Stream Functions" icon="water" href="/flows/functions/streams">
-    Real-time event processing
-  </Card>
-  
   <Card title="Object Storage" icon="box" href="/flows/functions/object-storage">
-    Store large files and documents
+    For files and anything large
   </Card>
-  
-  <Card title="Data Transformation" icon="shuffle" href="/flows/functions/utility">
-    Transform and encode data
+
+  <Card title="Streams" icon="stream" href="/flows/functions/streams">
+    For an append-only history rather than a current value
   </Card>
-  
-  <Card title="Functions Step" icon="function" href="/flows/steps/functions">
-    Using Functions in flows
+
+  <Card title="Utilities" icon="shuffle" href="/flows/functions/utility">
+    Secrets, encoding, templating, format conversion
+  </Card>
+
+  <Card title="Functions Overview" icon="book" href="/flows/functions/overview">
+    The full catalogue
   </Card>
 </CardGroup>

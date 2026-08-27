@@ -1,0 +1,129 @@
+---
+title: 'Concatenation'
+description: 'Building a string out of literal text and resolved values with the | delimiter'
+icon: 'text'
+---
+
+# Concatenation
+
+A mapped string that contains a `|` is built rather than looked up. The engine splits the string on every `|`, resolves each segment that begins with `$.`, leaves every other segment as literal text, and joins the pieces.
+
+```json
+{ "summary": "Order |$.GET_ORDER.data.id| for |$.trigger.customer.name" }
+```
+
+```json
+{ "summary": "Order ord_88 for Dana Reyes" }
+```
+
+The result is always a string. `|` is the only reason to reach for this form — a mapping with no `|` never interpolates, so `"Order $.trigger.id"` stays exactly as written.
+
+<Warning>
+**`|` is a delimiter, not an operator.** Nothing may follow it but another segment. There is no `| default(…)`, `| upper`, `| join(", ")`, `| number` or `| date(…)`, and segments cannot be chained into a pipeline. Every `|` you write adds a join point and nothing else.
+</Warning>
+
+---
+
+## The rules
+
+A leading or trailing `|` produces an empty segment, which contributes nothing. That makes `"$.a.b|"` a way of forcing a value to a string.
+
+| Written | Data | Result |
+|---|---|---|
+| `$.user.first\| \|$.user.last` | `{"first":"Ada","last":"L"}` | `"Ada L"` |
+| `$.date.year\|-\|$.date.month` | `{"year":"2025","month":"01"}` | `"2025-01"` |
+| `Hello, \|$.user.name\|!` | `{"user":{"name":"Sam"}}` | `"Hello, Sam!"` |
+| `https://api.example.com/users/\|$.trigger.user_id\|` | `{"trigger":{"user_id":"USR-789"}}` | `"https://api.example.com/users/USR-789"` |
+
+Line breaks inside a literal segment are kept, so a multi-line template works as written.
+
+---
+
+## How each value is stringified
+
+| Value | With a trailing `\|` |
+|---|---|
+| `"Alice"` | `"Alice"` |
+| `30` | `"30"` |
+| `true` | `"true"` |
+| `null` | `"null"` |
+| nothing matched | `""` |
+| an array **value** — `["a","b","c"]` | `"[\"a\",\"b\",\"c\"]"` |
+| an object **value** — `{"k":1}` | `"{\"k\":1}"` |
+| several **matches** — `$.items[*].n` | `"x,y"` |
+
+<Note>
+Objects and arrays are serialised as JSON, not as `[object Object]`.
+</Note>
+
+The last two rows are the distinction that catches people out. **A single match holding an array is serialised as JSON; several matches are joined with commas.**
+
+```
+$.tags|          →  "[\"a\",\"b\",\"c\"]"     one match, whose value is an array
+$.items[*].n|    →  "x,y"                    two matches, each a string
+```
+
+The separator for multiple matches is always a comma. It cannot be changed.
+
+---
+
+## Forcing a key to exist
+
+A path that matches nothing resolves to `[]` and the key stays in the output holding an empty array. A trailing `|` turns that into `""`, which is usually easier to consume downstream.
+
+```json
+{ "phone": "$.user.phone", "email": "$.user.email|" }
+```
+
+against `{"user": {"name": "Alice"}}`:
+
+```json
+{ "phone": [], "email": "" }
+```
+
+Use it on fields you will render into text. Do not use it on a value a later step reads as a number, a list or an object — the trailing `|` converts all three to strings.
+
+---
+
+## What it cannot do
+
+<AccordionGroup>
+  <Accordion title="Supply a default value" icon="triangle-exclamation">
+    `$.order.status|pending` does **not** fall back to `"pending"`. Both segments are emitted, so with a status of `shipped` the result is `"shippedpending"`, and with no status at all it is `"pending"` — right by accident in one case and wrong in the other.
+
+    Put the default in the literal text instead, where the intent is visible: `"Status: |$.order.status"` yields `"Status: shipped"` or `"Status: "`. For a genuine fallback, use an [Eval step](/flows/steps/eval).
+  </Accordion>
+
+  <Accordion title="Choose between two values" icon="triangle-exclamation">
+    `$.customer.tier===premium|high|normal` is not a conditional. It resolves to `"highnormal"` whatever the data holds — the first segment does not start with `$.`, so it is emitted literally and evaluates nothing.
+
+    Branching belongs in a [Condition step](/flows/steps/condition) or a [Rules step](/flows/steps/rules).
+  </Accordion>
+
+  <Accordion title="Emit a literal | character" icon="triangle-exclamation">
+    Every `|` is a delimiter and there is no escape. `$.x| | |$.y` splits into five segments and produces `"1  2"` — two spaces, no bar. A pipe-separated string has to be assembled in an [Eval step](/flows/steps/eval).
+  </Accordion>
+
+  <Accordion title="Appear anywhere in a JSONPath expression" icon="triangle-exclamation">
+    Because the split happens before JSONPath sees the string, a `|` inside a filter destroys it. `$.users[?(@.role==='admin' || @.role==='moderator')]` fails the step with `Unexpected "?" at character 0`. There is no way to write OR in a filter.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="JSONPath" icon="brackets-curly" href="/advanced/variable-mapping/jsonpath">
+    Every selector and filter that works
+  </Card>
+  <Card title="Examples" icon="code" href="/advanced/variable-mapping/examples">
+    Worked mappings, run end to end
+  </Card>
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    Formatting, defaults and conditionals
+  </Card>
+  <Card title="Overview" icon="book" href="/advanced/variable-mapping/overview">
+    Data sources, path shapes, failure modes
+  </Card>
+</CardGroup>

@@ -1,470 +1,238 @@
 ---
 title: 'Email Trigger'
-description: 'Trigger flows from incoming emails - automate email processing, support tickets, and lead capture'
+description: 'Start a flow when mail arrives at an address issued for it'
 icon: 'envelope'
 ---
 
-The Email trigger allows you to trigger flows when emails are received at a specific email address. Perfect for automating customer support, processing lead inquiries, handling support tickets, and any workflow that starts with an email.
+# Email Trigger
 
-When you add an Email trigger, you can generate unique email addresses for both draft and published versions of your flow. Any email sent to these addresses will trigger the corresponding version of your flow with the full email content and attachments.
+An email trigger issues a pair of addresses for a flow. Mail sent to either one starts the flow, with the message's contents as `$.trigger`.
+
+You do not receive mail at your own domain — you forward to the issued address from a mailbox you already have.
 
 ---
 
-## How It Works
+## Getting your addresses
 
-1. Add an Email trigger to your flow
-2. Click on "Trigger" in the left sidebar, then click "Get New" to generate unique email addresses
-3. QuivaWorks generates two unique email addresses:
-   - One for triggering the **draft** version of your flow
-   - One for triggering the **published** version of your flow
-4. Save the trigger configuration
-5. Configure email forwarding or share the addresses with users
-6. When emails arrive at these addresses, your flow triggers automatically with the full email content, attachments, and metadata
+<Steps>
+  <Step title="Add an Email trigger">
+    From the **Add Node** panel. Open the node and choose the **Trigger** tab.
+  </Step>
+  <Step title="Press Get">
+    The button reads **Get** the first time and **Get New** afterwards.
+  </Step>
+  <Step title="Copy both addresses">
+    They appear as **To trigger draft flow** and **To trigger published flow**.
+  </Step>
+</Steps>
+
+The trigger node is the only place these addresses are shown. There is no list of them elsewhere in the product.
+
+### The format
+
+```
+trigger+draft<name>@quiva.ai     runs the draft flow
+trigger+<name>@quiva.ai          runs the published flow
+```
+
+`<name>` is generated for you — two adjectives, a noun and a number, such as `sparklyjollybubble650`. Both addresses are plus-address variants of the same real mailbox, and they differ only in the literal `draft` prefix.
+
+This makes the email trigger the easiest one to test against: send to the draft address while you are building, switch to the published address when you go live.
+
+<Warning>
+**Addresses are re-issuable, not permanent.** Pressing **Get New** generates a fresh pair and replaces the ones on the node. The previous pair is *not* revoked — it is simply forgotten by the trigger, so anything still forwarding to it stops working with no error anywhere. Update your forwarding rules before you press it.
+</Warning>
+
+---
+
+## Forwarding mail to it
+
+Set your existing mailbox to forward to the issued address. The trigger node's **Email Forwarding** tab links to each provider's own instructions:
+
+<CardGroup cols={2}>
+  <Card title="Gmail" icon="envelope" href="https://support.google.com/mail/answer/10957">
+    Settings → Forwarding and POP/IMAP
+  </Card>
+  <Card title="Outlook / Hotmail" icon="envelope" href="https://support.microsoft.com/en-us/office/turn-on-automatic-forwarding-in-outlook-7f2670a1-7fff-4475-8a3c-5822d63b0c8e">
+    Settings → Mail → Forwarding
+  </Card>
+  <Card title="Yahoo Mail" icon="envelope" href="https://help.yahoo.com/kb/SLN29133.html">
+    Settings → Mailboxes → Forwarding
+  </Card>
+  <Card title="Apple iCloud Mail" icon="envelope" href="https://support.apple.com/en-gb/guide/icloud/mm6b1a3960/icloud">
+    Mail settings → Forwarding
+  </Card>
+</CardGroup>
+
+Most providers make you confirm the destination before forwarding starts, by mailing it a code. The issued address cannot show you that message, so forward selectively with a filter where your provider supports one, or use a provider that confirms by a link you can approve from the sending side.
 
 <Tip>
-If your forwarding address requires verification, triggering the verification email will start a flow which can be viewed in the monitor (under the flow menu on the left). By clicking on the logs, you can view the trigger details including the complete body of the received email which allows you to click the verification link. 
+A provider-side filter is the only way to narrow what reaches the flow. Everything that arrives starts a run, so forward the mail you actually want processed rather than the whole mailbox.
 </Tip>
 
 ---
 
-## Configuration
+## What the flow receives
 
-### Generating Email Addresses
+`$.trigger` is a flat object with eight keys and nothing else:
 
-When you add an Email trigger to your flow:
-
-1. Click on **"Trigger"** in the left sidebar
-2. Click the **"Get New"** button
-3. QuivaWorks automatically generates two unique email addresses:
-
-**Draft Flow Address:**
-```
-trigger+draftsparklyjollybubble650@quiva.ai
-```
-
-**Published Flow Address:**
-```
-trigger+sparklyjollybubble650@quiva.ai
+```json
+{
+  "email_from": ["sam@example.com"],
+  "email_subject": "Invoice 4471",
+  "email_body": "Please look at the attached invoice.",
+  "email_html_body": "<p>Please look at the attached invoice.</p>",
+  "email_date": "2026-08-27T09:14:02Z",
+  "email_uid": 1842,
+  "attachments_bucket": "microstrate-flow-email-trigger-attachments",
+  "email_attachments": ["email_1842.invoice.pdf"]
+}
 ```
 
-**Important Notes:**
-- The draft address triggers your draft flow (for testing before publishing)
-- The published address triggers your live published flow
-- Each flow gets unique addresses that are permanent and don't change
-- Select each email address and copy them to your clipboard
+| Expression | Resolves to |
+|---|---|
+| `$.trigger.email_from` | `["sam@example.com"]` |
+| `$.trigger.email_from[0]` | `"sam@example.com"` |
+| `$.trigger.email_subject` | `"Invoice 4471"` |
+| `$.trigger.email_body` | the plain-text part |
+| `$.trigger.email_html_body` | the HTML part |
+| `$.trigger.email_date` | `"2026-08-27T09:14:02Z"` |
+| `$.trigger.email_uid` | `1842` |
+| `$.trigger.email_attachments` | `["email_1842.invoice.pdf"]` |
 
-### Email Forwarding
+<Warning>
+**`email_from` is an array, not a string.** Used in a concatenation it renders as `["sam@example.com"]`, brackets and quotes included. Write `$.trigger.email_from[0]` wherever you want the address itself.
+</Warning>
 
-You can forward emails from your existing email address to the QuivaWorks email addresses. This allows you to use your branded email address (like support@yourcompany.com) while triggering QuivaWorks flows.
-
-#### Gmail
-
-1. Open Gmail Settings (click the gear icon, then "See all settings")
-2. Go to the **"Forwarding and POP/IMAP"** tab
-3. Click **"Add a forwarding address"**
-4. Enter your QuivaWorks trigger email address (e.g., `trigger+sparklyjollybubble650@quiva.ai`)
-5. Click **"Next"**, then **"Proceed"**, then **"OK"**
-6. Gmail will send a confirmation email to the forwarding address
-7. Check your QuivaWorks flow execution logs or use the draft address to retrieve the confirmation code
-8. Enter the confirmation code in Gmail to verify
-9. Select **"Forward a copy of incoming mail"** and choose the QuivaWorks address
-10. Click **"Save Changes"**
-
-[Official Gmail forwarding documentation](https://support.google.com/mail/answer/10957?hl=en)
-
-#### Outlook / Hotmail
-
-1. Open Outlook Settings (click the gear icon, then "View all Outlook settings")
-2. Go to **Mail** → **Forwarding**
-3. Check **"Enable forwarding"**
-4. Enter your QuivaWorks trigger email address
-5. Choose whether to keep a copy in Outlook
-6. Click **"Save"**
-
-[Official Outlook forwarding documentation](https://support.microsoft.com/en-us/office/turn-on-automatic-forwarding-in-outlook-7f2670a1-7fff-4475-8a3c-5822d63b0c8e)
-
-#### Yahoo Mail
-
-1. Click the **Settings icon** (gear), then **"More Settings"**
-2. Click **"Mailboxes"** in the left sidebar
-3. Select your email address
-4. Click **"Forwarding"**
-5. Enter your QuivaWorks trigger email address
-6. Click **"Verify"** and follow the confirmation steps
-7. Check **"Enable forwarding"**
-8. Click **"Save"**
-
-[Official Yahoo Mail forwarding documentation](https://help.yahoo.com/kb/SLN28204.html)
-
-#### Apple iCloud Mail
-
-1. Go to [iCloud.com](https://www.icloud.com) and sign in
-2. Click **Mail**
-3. Click the **gear icon** (bottom left), then **"Preferences"**
-4. Click the **"General"** tab
-5. In the "Forwarding" section, enter your QuivaWorks trigger email address
-6. Choose whether to keep a copy in iCloud
-7. Click **"Done"**
-
-[Official iCloud Mail documentation](https://support.apple.com/guide/icloud/forward-emails-mm6b1a4f5e/icloud)
-
-### Gmail Filters (Advanced)
-
-For more control, you can create Gmail filters to forward only specific emails:
-
-1. In Gmail, search for emails using the criteria you want (e.g., `subject:support`)
-2. Click the search options dropdown and refine your criteria
-3. Click **"Create filter"**
-4. Check **"Forward it to"** and select your QuivaWorks address
-5. Optionally, choose other actions (like skip inbox, apply label, mark as read)
-6. Click **"Create filter"**
-
-**Examples:**
-- Forward only emails with "support" in subject
-- Forward only emails from specific domains
-- Forward only emails with attachments
-- Forward only unread emails
-
-### verification
-
-If your forwarding address requires verification, triggering the verification email will start a flow which can be viewed in the monitor (under the flow menu on the left). 
-
-<Frame>
-<img src="/images/flows/monitor-page.png" alt="View the monitor page to find emails that have triggered flows" />
-</Frame>
-
-By clicking on the logs, you can view the trigger details including the complete body of the received email which allows you to click the verification link. 
-
-<Frame>
-<img src="/images/flows/trigger-email-log.png" alt="Access the emal body to review and confirm the forwarding address" />
-</Frame>
-
-### Response Mode
-
-**Run in Background (Default):**
-
-Email triggers flow immediately, sender receives no automatic response. Flow processes email asynchronously. Best for most email automation scenarios.
-
-**Send Auto-Reply:**
-
-An auto-reply can be triggered in the flow by either setting up agent behaviour to use email tools, or by configuring a [HTTP request](/flows/steps/http-request)
+<Warning>
+There is no `to`, no `cc`, no `reply-to`, no message ID and no header map in the payload. A flow cannot see who else the mail was addressed to. There is also no node-id level: `$.trigger.email_trigger.email_from` and anything like it resolves to nothing — the eight keys sit directly under `$.trigger`.
+</Warning>
 
 ---
 
-## Accessing Email Data
+## Attachments
 
-### Email Metadata
+Attachments are stored as objects and referenced by key, not delivered inline.
 
-All email information is available under `$.trigger.{{EMAIL_TRIGGER_ID}}` e.g. email_trigger:
+- `$.trigger.attachments_bucket` names the bucket.
+- `$.trigger.email_attachments` lists the object keys, in the form `email_<uid>.<filename>`.
 
-These are exampled of how you might access properties using [variable mapping](/advanced/variable-mapping/overview)
+An [Assistant](/flows/steps/agents) step in the flow receives the files automatically — they are attached to the run as knowledge, so it can read them without a fetch step. Other steps read the object store by bucket and key.
 
 ```
-$.trigger.email_trigger.email_from
-$.trigger.email_trigger.email_body
-$.trigger.email_trigger.email_html_body
-$.trigger.email_trigger.email_date
-$.trigger.email_trigger.email_subject
-$.trigger.email_trigger.attachments_bucket; bucket name of attachments
-$.trigger.email_trigger.email_attachments; array of keys inside attachments_bucket
+$.trigger.email_attachments[0]
+obj://|$.trigger.attachments_bucket|/|$.trigger.email_attachments[0]
 ```
 
-If you are running your agent off the back of an email trigger, they will have all this information available for them to make decisions on how to process this information.
+<Note>
+An attachment that fails to store is skipped: the run still starts, and that file is simply absent from `email_attachments`. Attachments are retained for the account's configured log-retention window rather than indefinitely.
+</Note>
+
+There is no size limit enforced by the trigger. The practical ceilings come from your provider's own inbound limit and the platform's message-size limit, and a message over them fails before the trigger sees it.
 
 ---
 
-## Use Cases
+## Draft and published flows
 
-### Customer Support Automation
+This is the one trigger where the draft/published split is handled for you: the two addresses are the switch.
 
-**Scenario:** Automate customer support ticket creation
+| Send to | Runs |
+|---|---|
+| `trigger+draft<name>@quiva.ai` | the draft — whatever you last **Saved** |
+| `trigger+<name>@quiva.ai` | the published flow |
 
-**Flow:**
-- Trigger: Email (support@company.com forwards to QuivaWorks)
-- Agent: Analyze email content
-  - Extract customer issue
-  - Determine urgency level
-  - Identify customer sentiment
-- Agent integration request: Search knowledge base for solutions
-- Condition: Can auto-resolve?
-  - Yes: Send solution email
-  - No: Create support ticket
-- Agent integration request: Create ticket in helpdesk system
-- Agent integration request: Send acknowledgment email to customer
-
-**Benefits:** Instant response, automatic triage, knowledge base integration, 24/7 availability.
-
-### Lead Capture and Qualification
-
-**Scenario:** Process incoming lead inquiries from website contact form
-
-**Flow:**
-- Trigger: Email (leads@company.com forwards to QuivaWorks)
-- Agent: Extract lead information
-  - Company name, role, requirements
-  - Budget indicators, timeline
-- Agent integration request: Enrich company data
-- Agent: Qualify lead against ICP criteria
-- Condition: Qualified lead?
-  - Yes: Add to CRM + notify sales
-  - No: Add to nurture campaign
-- Agent integration request: Send personalized follow-up
-
-**Benefits:** Automatic lead qualification, instant response, sales team efficiency, no leads lost.
-
-### Invoice Processing via Email
-
-**Scenario:** Process invoices received via email
-
-**Flow:**
-- Trigger: Email (invoices@company.com forwards to QuivaWorks)
-- Condition: Has PDF attachment?
-- Agent: Extract invoice data from attachment
-  - Invoice number, amount, vendor, due date
-- Agent integration request: Validate against purchase orders
-- Condition: Approved?
-  - Yes: Create entry in accounting system
-  - No: Flag for manual review
-- Agent integration request: Notify accounts payable team
-
-**Benefits:** Eliminate manual data entry, faster processing, audit trail, automatic validation.
-
-### Order Confirmation Processing
-
-**Scenario:** Process order confirmation emails from suppliers
-
-**Flow:**
-- Trigger: Email (orders@company.com forwards to QuivaWorks)
-- Agent: Extract order details
-  - Order number, items, quantities, delivery date
-- Agent integration request: Update inventory management system
-- Agent integration request: Notify warehouse team
-- Condition: Rush order?
-  - Yes: Send priority notification
-  - No: Standard processing
-
-**Benefits:** Automatic inventory updates, team notifications, exception handling.
-
-### Job Application Processing
-
-**Scenario:** Process job applications received via email
-
-**Flow:**
-- Trigger: Email (careers@company.com forwards to QuivaWorks)
-- Condition: Has resume attachment?
-- Agent: Extract candidate information
-  - Name, contact, experience, skills
-- Agent: Screen against job requirements
-- Condition: Meets minimum qualifications?
-  - Yes: Add to applicant tracking system
-  - No: Send polite rejection
-- Agent integration request: Notify hiring manager
-
-**Benefits:** Automatic screening, consistent process, faster response to candidates.
-
-### Newsletter Subscription Management
-
-**Scenario:** Process newsletter subscription requests
-
-**Flow:**
-- Trigger: Email (subscribe@company.com forwards to QuivaWorks)
-- Agent: Extract email address from body
-- Agent integration request: Check if already subscribed
-- Condition: Already subscribed?
-  - Yes: Send "already subscribed" message
-  - No: Add to mailing list
-- Agent integration request: Send welcome email
-
-**Benefits:** Automatic subscription management, double-opt-in support, error handling.
-
-### Feedback Collection
-
-**Scenario:** Process customer feedback emails
-
-**Flow:**
-- Trigger: Email (feedback@company.com forwards to QuivaWorks)
-- Agent: Analyze feedback sentiment
-  - Positive, neutral, or negative
-  - Extract key themes
-- Agent integration request: Save to feedback database
-- Condition: Negative feedback?
-  - Yes: Alert customer success team
-  - No: Log for review
-- Agent integration request: Send thank you email
-
-**Benefits:** Sentiment analysis, immediate escalation, response tracking.
-
-### Document Approval Workflow
-
-**Scenario:** Process document approval requests
-
-**Flow:**
-- Trigger: Email (approvals@company.com forwards to QuivaWorks)
-- Agent: Extract document details from attachments
-- Agent integration request: Create approval request in system
-- Agent integration request: Notify approvers
-- Agent: Generate approval summary
-- Agent integration request: Send confirmation to requester
-
-**Benefits:** Automated routing, audit trail, status tracking.
+<Note>
+**What runs after the trigger is decided by each step's outcome, not by the arrows in the editor.** A Condition step's outcome names the step IDs to run next — one, several (they start at the same time), or the reserved `RESOLVE_SUCCESS` / `RESOLVE_ERROR` to end the run. A line drawn between two steps that no outcome names is decoration.
+</Note>
 
 ---
 
-## Best Practices
+## Seeing what arrived
 
-### Testing with Draft Address
+**Monitoring → Emails** lists every message that reached a flow: status, sender, flow, attachments and timestamp. Opening one shows the body and its attachments, and offers **Re-trigger** to run the flow again on the same message, and **Delete**.
 
-**Always test your flow using the draft address first:**
+That surface is genuinely useful, but be clear about what it does and does not tell you.
 
-1. Send test emails to your draft address (`trigger+draft...@quiva.ai`)
-2. Monitor the execution in your flow's draft environment
-3. Verify all steps work correctly with real email data
-4. Check that integrations and API calls function as expected
-5. Only use the published address once testing is complete
+<Warning>
+**`success` means the flow was started, not that it worked.** A run that then errors still shows `success` here. Flow failures live in the flow's own run history, not on the email record.
+</Warning>
 
-**Benefits:**
-- Test with real emails without affecting production
-- Iterate quickly on your flow design
-- Avoid errors in your live workflow
-- Safely test with sensitive data
+<Warning>
+**Mail that fails to match a flow leaves no record at all.** If the address has been re-issued, the flow deleted, or the address mistyped, nothing appears in Monitoring, no bounce is sent and the sender is told nothing. The message is silently dropped.
+</Warning>
 
-### Response Management
+<Warning>
+**A message is delivered once, with no retry.** If processing fails after the message is picked up, it is not tried again and does not reappear. Use **Re-trigger** where a record exists; where none does, the message is unrecoverable.
+</Warning>
 
-**Send appropriate responses:**
+Delivery normally takes seconds. There is no guaranteed latency and nothing reports how long it took.
 
-Acknowledge receipt quickly. Provide reference numbers. Set expectations. Include helpful information.
+---
 
-**Good auto-reply:**
-```
-Thank you for contacting us!
+## Security
 
-We've received your email and will respond within 24 hours.
+<Warning>
+**Anyone who learns a trigger address can run your flow with any content they like.** There is no sender allowlist, no SPF, DKIM or DMARC check, no spam filtering and no rate limit. The address itself is the only secret.
+</Warning>
 
-Reference Number: REF-{{executionId}}
-Subject: {{email.subject}}
+Treat an issued address as a credential:
 
-For urgent matters, please call: 1-800-SUPPORT
+- Do not publish it, and do not use it as a public contact address.
+- Validate `$.trigger.email_from[0]` in the flow's first step and stop the run when the sender is not one you expect.
+- Press **Get New** if an address leaks — but update your forwarding first, and remember the old one is orphaned rather than revoked.
 
-Best regards,
-Support Team
-```
-
-**Avoid:**
-- Generic "email received" without details
-- No reference number
-- No timeline expectations
-- No alternative contact methods
-
-### Security Considerations
-
-**Protect against malicious emails:**
-
-When building your agent behaviour, you can have your agent perform check on the email and pause for flagging with admin if the email fails validation, e.g. Check for phishing indicators. Monitor for suspicious patterns.
-
-**Red flags you can ask your agent to look for:**
-- Sender domain doesn't match claimed organization
-- Suspicious links in email body
-- Executable attachments
-- Requests for sensitive information
-- Urgency or threat language
-
-### Email Forwarding Tips
-
-**Best practices for email forwarding:**
-
-- **Always verify the forwarding address** before it becomes active
-- **Check if your email service allows filters** to forward only specific emails (recommended for high-volume inboxes)
-- **Be aware that some email services may disable forwarding** if you receive too many spam messages
-- **Keep your original inbox as a backup** in case forwarding fails
-- **Test with the draft address first** before using the published address
-- **Use Gmail filters** to forward only relevant emails and reduce noise
-- **Monitor your flow execution logs** to ensure emails are being received
-
+---
 
 ## Troubleshooting
 
-### Emails Not Triggering Flow
+<AccordionGroup>
+  <Accordion title="Mail is forwarded but the flow never runs">
+    Check the address character for character, including the `+` part. Then check whether **Get New** has been pressed since the forwarding rule was written — that replaces the addresses.
+  </Accordion>
 
-**Check email forwarding:** Verify forwarding is set up correctly in your email provider.
+  <Accordion title="Nothing appears in Monitoring → Emails">
+    The address did not resolve to a flow. That produces no record. It is nearly always a typo or a re-issued address.
+  </Accordion>
 
-**Verify trigger addresses:** Ensure you're sending to the correct QuivaWorks address (draft or published).
+  <Accordion title="The forwarding confirmation code never arrives">
+    The issued address cannot show you incoming mail before a flow exists to process it. Build a minimal flow that logs `$.trigger.email_body`, publish it, then start the forwarding setup and read the code out of the run.
+  </Accordion>
 
-**Check flow is active:** Ensure flow is saved and trigger configuration is complete.
+  <Accordion title="The body is empty">
+    Read both `$.trigger.email_body` and `$.trigger.email_html_body` — a mail sent as HTML only populates the second.
+  </Accordion>
 
-**Review email forwarding confirmation:** Some providers require confirmation before forwarding becomes active.
+  <Accordion title="A step compared the sender and never matched">
+    `email_from` is an array. Compare `$.trigger.email_from[0]`.
+  </Accordion>
 
-**Check spam/junk folder:** Your email service might be filtering forwarded emails.
+  <Accordion title="An attachment is missing from email_attachments">
+    It failed to store. The run went ahead without it; there is no retry for that file.
+  </Accordion>
 
-**Review execution logs:** Check your flow's execution logs to see if emails are being received.
+  <Accordion title="The record says success but nothing happened">
+    That status only covers starting the flow. Open the run itself to see where it failed.
+  </Accordion>
+</AccordionGroup>
 
-### Email Forwarding Not Working
-
-**Gmail:**
-- Ensure you completed the verification step
-- Check that forwarding is enabled in settings
-- Verify the forwarding address is correct
-- Check for filters that might be blocking forwarding
-
-**Outlook:**
-- Confirm forwarding is enabled
-- Check if "keep a copy" is affecting delivery
-- Verify email isn't being moved to folders before forwarding
-
-**Yahoo Mail:**
-- Ensure verification was completed
-- Check that forwarding is enabled
-- Verify no filters are blocking forwarding
-
-**General tips:**
-- Wait a few minutes after setting up forwarding (propagation time)
-- Send a test email to verify forwarding works
-- Check your original inbox to see if email arrived before forwarding
-
-### Missing Email Content
-
-**Check email format:** Some emails might be malformed.
-
-**Verify encoding:** Check character encoding is supported.
-
-**Check for attachments:** Content might be in attachments instead of body.
-
-**Review headers:** Check if content-type is supported.
-
-### Attachment Issues
-
-**Corrupted attachment:** Request sender to resend.
-
-**Unsupported format:** Check file type is supported.
-
-**Size limit exceeded:** Attachment too large for processing.
-
-### Processing Delays
-
-**High volume:** Many emails arriving simultaneously.
-
-**Large attachments:** Processing time increases with size.
-
-**Complex flows:** Flow has many steps or external API calls.
-
-**External service delays:** Third-party APIs responding slowly.
-
+---
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Stream Triggers" icon="stream" href="/flows/triggers/stream-triggers">
-    Advanced real-time message triggers
+  <Card title="Assistant Step" icon="robot" href="/flows/steps/agents">
+    Reading an attached document
   </Card>
-  
-  <Card title="Agent Steps" icon="robot" href="/flows/steps/agents">
-    Process emails with AI agents
-  </Card>
-  
-  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
-    Send responses and integrate systems
-  </Card>
-  
+
   <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
-    Route emails based on content
+    Checking the sender before doing any work
+  </Card>
+
+  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
+    Reading the message in later steps
+  </Card>
+
+  <Card title="Triggers Overview" icon="bolt" href="/flows/triggers/overview">
+    Every way a flow can start
   </Card>
 </CardGroup>

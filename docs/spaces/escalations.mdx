@@ -1,0 +1,128 @@
+---
+title: "Escalations"
+description: "The built-in Escalations Space — what lands in it, what its six statuses mean, and how it differs from a Space you create yourself"
+icon: "angles-up"
+---
+
+**Escalations** is a Space that is always there. It is not one you create, and it cannot be deleted. Its job is to catch work that automation could not finish on its own — a flow that needs a person, or a task that Abbie filed with nowhere else to put it.
+
+You will find it in the Space picker under **Operations**, alongside Leads.
+
+<Note>
+Escalations is built into the platform rather than stored on your account, which is why it is present on every account from day one, cannot be created twice, and cannot be removed. Its id is `ESCALATE`, and task references in it read `ESCALATE-1`, `ESCALATE-2`, and so on.
+</Note>
+
+---
+
+## What routes work into it
+
+<CardGroup cols={2}>
+  <Card title="A flow's escalation step" icon="diagram-project">
+    When a running flow reaches an escalation step, it creates a task here and **pauses the run** at that point, so the flow can be continued once a person has dealt with it.
+  </Card>
+  <Card title="Tasks filed with no Space named" icon="inbox">
+    Work promoted off Abbie's backlog, or created by Abbie without naming a Space, lands here by default.
+  </Card>
+</CardGroup>
+
+### From a flow
+
+The escalation step carries a title, a description, a priority and a message. The task it creates:
+
+- opens with the status **Open**
+- keeps a link back to the flow run it came from
+- is assigned to whoever the step names — and if the step names nobody, to the account's **Escalation Responders**
+
+Assignees are emailed. The message includes a link to the task and a link back to the paused run, so it can be continued from there.
+
+<Note>
+**Escalation Responders** are set in **Account settings → Escalation Responders**. They are the people notified for any escalation task, and authorised to respond, when nothing else in the assistant or flow configuration names someone. If no responders are set, the account root is used.
+</Note>
+
+### From Abbie
+
+Two routes read the same account-wide setting: the **Create task** button on Abbie's backlog, and Abbie's own task-creation tool. Until an account chooses otherwise, both file into Escalations.
+
+Change it in **Abbie's settings → Task filing**. The panel shows the current default and when it was last changed; anyone can see it, but only an account admin can change it.
+
+<Note>
+A task created through the API with an empty Space does not become an unfiled task — it resolves to Escalations, gets a proper `ESCALATE-n` reference, and appears in an Escalations-filtered list.
+</Note>
+
+---
+
+## The six statuses
+
+| Status | What it means |
+|---|---|
+| **Open** | Newly raised, nobody has picked it up. This is the status an escalation starts in. |
+| **In Progress** | Someone is working on it. |
+| **Waiting For User** | Parked — the next move belongs to the person the escalation is about. |
+| **Waiting For Internal Team** | Parked — the next move belongs to someone else inside the business. |
+| **Resolved** | Dealt with. **Counts as complete.** |
+| **Cancelled** | Dropped without being resolved. **Counts as complete.** |
+
+These six are fixed. They cannot be added to, renamed, reordered or removed.
+
+### Why two of them count as complete
+
+**Complete** is a flag on a status, separate from its name. It is what a board reads to decide a column is a finishing column, and what a task's subtask progress counts against. Both terminal stages carry it: an escalation that was cancelled is as finished as one that was resolved, because in both cases nobody is waiting on it any more.
+
+### Why these statuses carry no role
+
+In a Space you build, a status can be given a **role** — a stable meaning like "this is the intake stage" or "this is the done stage" — so automation can address a stage by what it *is* rather than by an id someone might later rename. The built-in Leads Space uses roles for exactly that reason, and a Space you build sets its own on [Edit Space → Tasks → Statuses](/spaces/task-actions#actions-move-the-task).
+
+Escalations deliberately has none, and that is a decision rather than an omission:
+
+- The two waiting stages have no honest role. Neither is intake, working, won, lost, to do or done.
+- **Resolved is not "won".** Forcing it into that shape would give a wrong answer to anything asking which stage means success.
+- These six ids never change, and everything writing to this Space names them directly. Where the ids are already stable, "no role" is a better answer than a misleading one.
+
+The practical consequence: address an escalation's stage by its id — `open`, `in_progress`, `waiting_for_user`, `waiting_for_internal_team`, `resolved`, `cancelled` — and never by a role.
+
+### No priorities, no tags
+
+Escalations defines none of either. A priority or a tag set on an escalation task is still stored, but it matches nothing configured, so no filter finds it and it renders as whatever raw text was written. Treat both as free-text notes here, not as things you can group by.
+
+---
+
+## How it differs from a Space you create
+
+|  | A Space you create | Escalations |
+|---|---|---|
+| Creating and deleting | You do both | Neither — it is always present |
+| Statuses | Define, rename, reorder, and choose which count as complete | Six fixed statuses, two of them complete |
+| Priorities and tags | Your own lists | None |
+| Board columns | Add, remove and reorder them | Read-only |
+| Records | A Records tab on the Space and inside every folder | No Records tab anywhere |
+| Edit Space menus | Information, Basic, Tasks, Records, Files | Information and Basic only |
+| Per-section assistants | Records, Tasks and Files each get their own | Not available |
+| Name, description, opening tab | Yours | Yours — these can be changed, and the change sticks |
+
+<Note>
+The Edit Space dialog says as much when you open it on Escalations: statuses, priorities, tags, the logo and assistants are managed by the platform and are not editable there. What is left is the Space's **name** and **description** under Information, and the **default view** — the tab that opens first — under Basic.
+</Note>
+
+<Warning>
+Everything else about Escalations that you might expect to configure is refused rather than silently ignored. Attempting to change its statuses, priorities, tags, owner, logo or assistants comes back naming exactly which fields were rejected.
+</Warning>
+
+---
+
+## Working an escalation
+
+<Steps>
+  <Step title="Pick it up">
+    Move it from **Open** to **In Progress** so it is clear someone has it. Escalations raised by a flow carry the run they came from, so start by reading what the flow was doing when it stopped.
+  </Step>
+  <Step title="Park it honestly if you have to wait">
+    **Waiting For User** and **Waiting For Internal Team** exist so that a stalled escalation is visibly stalled, and visibly stalled *on someone*. Leaving it in In Progress hides that.
+  </Step>
+  <Step title="Continue the flow, if there is one">
+    A flow escalation pauses its run. Dealing with the task does not restart it — the run is continued from the flow run itself, which the notification email links to directly.
+  </Step>
+  <Step title="Close it">
+    **Resolved** when it was dealt with, **Cancelled** when it was dropped. Both count as complete, so either one takes it off the board's active columns.
+  </Step>
+</Steps>
+</content>

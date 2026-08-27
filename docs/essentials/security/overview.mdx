@@ -4,36 +4,34 @@ description: "Understanding QuivaWorks' security features and how to protect you
 icon: "shield"
 ---
 
-# Security Overview
-
-Security is foundational to QuivaWorks' architecture. This guide provides an overview of platform security and helps you navigate our security documentation.
+Security is foundational to QuivaWorks' architecture. This guide covers platform security and helps you navigate the rest of the security documentation.
 
 ## Quick Security Setup
 
-New to QuivaWorks? Complete these essential security steps:
+New to QuivaWorks? Complete these steps:
 
 <Steps>
   <Step title="Enable MFA">
-    Set up multi-factor authentication immediately after creating your account
-    
+    Set up multi-factor authentication after creating your account
+
     [Set up MFA →](/essentials/security/authentication)
   </Step>
-  
-  <Step title="Save Recovery Codes">
-    Store your recovery codes in a password manager or secure location
-    
+
+  <Step title="Save recovery codes">
+    Store your recovery codes in a password manager or another secure location
+
     [About recovery codes →](/essentials/security/authentication#recovery-codes)
   </Step>
-  
-  <Step title="Review Sessions">
-    Check your active login sessions and terminate any you don't recognize
-    
+
+  <Step title="Review sessions">
+    Check your active sessions and terminate any you don't recognise
+
     [Manage sessions →](/essentials/security/sessions)
   </Step>
-  
-  <Step title="Secure API Keys">
-    If using the API, follow best practices for key management
-    
+
+  <Step title="Secure API keys">
+    If you're using the API, follow the key management practices
+
     [API security guide →](/essentials/security/api-keys)
   </Step>
 </Steps>
@@ -46,47 +44,76 @@ New to QuivaWorks? Complete these essential security steps:
   <Card title="ISO 27001" icon="certificate">
     Information security management system certified
   </Card>
-  
+
   <Card title="SOC 2 Type II" icon="file-shield">
     Coming soon - Independent audit of security controls
   </Card>
-  
-  <Card title="GDPR Compliant" icon="scale-balanced">
-    Full compliance with EU data protection regulations
+
+  <Card title="GDPR" icon="scale-balanced">
+    Compliant. We erase personal data and answer subject access requests on request — see
+    [Your data rights](#your-data-rights)
   </Card>
-  
+
   <Card title="PCI DSS" icon="credit-card">
-    Payment card data security for billing
+    Self-attested compliant; card data is handled by our payment provider
   </Card>
 </CardGroup>
 
 <Note>
-HIPAA compliance is available on Enterprise plans only. [Contact us](/contact) if you need to process protected health information.
+[Get in touch](https://quiva.ai/help-center/) if you need to process protected health information.
 </Note>
 
 ### Data Protection
 
 <CardGroup cols={2}>
-  <Card title="Encryption" icon="lock">
-    **At Rest:** AES-256 encryption for all stored data
-    
-    **In Transit:** TLS 1.3 for all communications
+  <Card title="Encryption in Transit" icon="lock">
+    All connections use HTTPS. TLS 1.2 is the minimum version accepted.
   </Card>
-  
-  <Card title="Data Residency" icon="globe">
-    Choose where your data is processed: EU, US, or Australia
-    
-    [Configure regions →](/essentials/account/account-settings#managing-account-regions)
+
+  <Card title="Data Hosting" icon="globe">
+    Choose how your data is hosted after signup. The available region is Europe.
+
+    [About data hosting →](/essentials/account/account-settings#data-hosting)
   </Card>
-  
+
   <Card title="Data Isolation" icon="border-all">
     Multi-tenant architecture with logical separation between accounts
   </Card>
-  
+
   <Card title="Redundancy" icon="copy">
-    Minimum 3 servers per account with continuous replication
+    Choose 1 or 3 nodes for your account. Three nodes replicate your data — and use three times the storage.
   </Card>
 </CardGroup>
+
+### Your data rights
+
+Under the GDPR you can ask us to give you a copy of the personal data we hold about you, correct
+it, or erase it. We honour all three.
+
+<Steps>
+  <Step title="Make the request">
+    Write to us through the [help centre](https://quiva.ai/help-center/) from the email address on
+    the account, saying which right you are exercising. We may ask you to confirm your identity
+    before we act on it.
+  </Step>
+
+  <Step title="We respond within one month">
+    That is the statutory deadline. Complex requests may take longer, and we will tell you before
+    the month is out if that applies.
+  </Step>
+
+  <Step title="Erasure">
+    Deleting your account removes its data. Where a request covers data we hold outside an
+    account, we erase that too, except where we are required to keep it — billing records, for
+    example, have their own statutory retention period.
+  </Step>
+</Steps>
+
+<Note>
+These requests are handled by our team rather than through a self-service screen today. We are
+building tooling to make export and erasure something you can run yourself; until then, the route
+above is the one that works, and it is the one we support.
+</Note>
 
 ## Account Security Features
 
@@ -94,224 +121,173 @@ HIPAA compliance is available on Enterprise plans only. [Contact us](/contact) i
 
 <CardGroup cols={2}>
   <Card title="Multi-Factor Authentication" icon="shield-check" href="/essentials/security/authentication">
-    Protect your account with passkeys or authenticator apps
-    
-    **Setup required for Admin/Root users**
+    Protect your account with passkeys or an authenticator app
+
+    **Prompted at every login until enabled**
   </Card>
-  
+
   <Card title="Session Management" icon="clock" href="/essentials/security/sessions">
-    Monitor and control active logins across all devices
-    
-    **24-hour automatic timeout**
+    Monitor and terminate active logins across all devices
+
+    **24-hour session tokens, 7-day refresh tokens**
   </Card>
-  
+
   <Card title="API Keys" icon="code" href="/essentials/security/api-keys">
-    Secure programmatic access with managed keys
-    
-    **3-month automatic expiration**
+    Programmatic access with user- or account-scoped keys
+
+    **90-day expiry by default**
   </Card>
-  
+
   <Card title="Role-Based Access" icon="users-gear" href="/essentials/users/roles-permissions">
-    Control permissions with 5 predefined roles
-    
-    **Apply least privilege principle**
+    Seven roles, from root through to client
+
+    **Apply least privilege**
   </Card>
 </CardGroup>
 
 ### Security Notifications
 
-You'll receive automatic email alerts for important security events:
+You'll receive an email for these events:
 
-- Password changes
-- Email address change requests
-- New passkeys or MFA devices added
+- Password changed or reset
+- Email address change requested, and again when it completes
+- A new passkey added
 - Recovery codes viewed
-- New users added to your account
+- A new user added to the account
+- An API key about to expire, and again when it expires
 
 <Warning>
-If you receive a notification for an action you didn't perform, follow our [Incident Response Guide](/essentials/security/incident-response) immediately.
+If you receive a notification for something you didn't do, work through the [incident response steps](/essentials/security/incident-response) immediately.
 </Warning>
 
 ## Security Best Practices
 
-### Essential Security Measures
-
 <AccordionGroup>
-  <Accordion title="For All Users" icon="user">
-    - Use a strong, unique password (12+ characters)
-    - Enable MFA immediately after account creation
+  <Accordion title="For all users" icon="user">
+    - Use a strong, unique password
+    - Enable MFA as soon as you create your account
     - Store recovery codes in a password manager
-    - Review active sessions monthly
-    - Keep your browser and OS updated
-    
-    [Detailed user security guide →](/essentials/security/authentication)
+    - Review your active sessions periodically
+    - Never paste a session token from **Copy token** anywhere it could be read by someone else
+    - Keep your browser and operating system updated
+
+    [Authentication guide →](/essentials/security/authentication)
   </Accordion>
-  
-  <Accordion title="For Administrators" icon="user-shield">
-    - Require MFA for all users (especially Admin/Root)
-    - Apply least privilege when assigning roles
-    - Conduct monthly security audits
-    - Implement proper offboarding procedures
-    - Provide regular security training
-    
+
+  <Accordion title="For administrators" icon="user-shield">
+    - Encourage MFA across the team — especially for root and admin users
+    - Apply least privilege when assigning roles, and review them periodically
+    - Offboard departing users promptly: **Logout** ends their live sessions, **Suspend** blocks future sign-ins, and their API keys need deleting separately
+    - Keep the number of root and admin users small
+
     [User management guide →](/essentials/users/user-management)
   </Accordion>
-  
-  <Accordion title="For Developers" icon="code">
-    - Never hardcode API keys in source code
-    - Use environment variables or secret managers
-    - Rotate API keys every 3 months
-    - Implement proper error handling
-    - Always use HTTPS for API calls
-    
-    [API security best practices →](/essentials/security/api-keys)
+
+  <Accordion title="For developers" icon="code">
+    - Never hardcode API keys in source
+    - Use environment variables or a secret manager
+    - Prefer a restricted key when an integration only needs a few endpoints
+    - Rotate keys before they expire — a warning email arrives 7 days ahead
+    - Never log a key or a session token
+
+    [API key best practices →](/essentials/security/api-keys)
   </Accordion>
 </AccordionGroup>
 
 ## If Something Goes Wrong
 
 <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
-  **Suspect a security breach?** Follow our step-by-step incident response guide to secure your account and minimize damage.
-  
+  **Suspect an account is compromised?** Work through the response steps to lock it down.
+
   **Common indicators:**
-  - Unfamiliar login locations
-  - Unexpected account changes
-  - Suspicious resource activity
-  - Unusual billing charges
+  - Sessions from locations or devices you don't recognise
+  - Security notification emails for actions nobody performed
+  - Account settings or users changed unexpectedly
+  - Unexplained credit consumption
 </Card>
 
-## Privacy & Data Handling
+## Privacy
 
-### What We Collect
-
-We collect only what's necessary to provide our service:
-- Account information (email, name, company details)
-- Usage information (login activity, API usage, resource modifications)
-- Billing information (processed by Stripe)
-
-**We never:**
-- Sell your data to third parties
-- Use your data to train AI models
-- Share data between accounts
-- Access your data without permission
-
-### Your Rights Under GDPR
+How QuivaWorks collects, uses and retains personal data is set out in the privacy policy.
 
 <CardGroup cols={2}>
-  <Card title="Right to Access" icon="folder-open">
-    Request a copy of your personal data
+  <Card title="Privacy Policy" icon="file-contract" href="https://quiva.ai/legal.html#privacy">
+    What we collect, how it's used, and your rights
   </Card>
-  
-  <Card title="Right to Rectification" icon="pen">
-    Update your information in account settings
-  </Card>
-  
-  <Card title="Right to Erasure" icon="trash-can">
-    Delete your account and all data
-    
-    [Close account →](/essentials/account/closing-account)
-  </Card>
-  
-  <Card title="Right to Portability" icon="download">
-    Export your data via buckets
+
+  <Card title="Terms of Service" icon="handshake" href="https://quiva.ai/legal.html#terms">
+    Legal terms and service agreement
   </Card>
 </CardGroup>
 
-Contact [support@quiva.ai](mailto:support@quiva.ai) to exercise your rights.
+You control how long assistant conversation history is kept from **Data Retention** on the Account page — see [account settings](/essentials/account/account-settings#data-retention). Closing your account is covered in [closing an account](/essentials/account/closing-account).
 
-## Vulnerability Reporting
+For a privacy or data protection question, contact us through the [help centre](https://quiva.ai/help-center/).
+
+## Reporting a Security Vulnerability
 
 <Info>
-We appreciate responsible disclosure of security vulnerabilities.
+We appreciate responsible disclosure.
 </Info>
 
-If you discover a security issue:
+If you find a security issue:
 
-1. **Do not** publicly disclose or exploit the vulnerability
-2. Email [support@quiva.ai](mailto:support@quiva.ai) with:
-   - Detailed description and steps to reproduce
-   - Potential impact assessment
-   - Your contact information
-3. Allow reasonable time for us to address the issue
-
-**Our commitment:**
-- Acknowledge reports within 48 hours
-- Provide regular updates on remediation
-- Address critical vulnerabilities within 24 hours
-- Credit researchers after deployment (if desired)
+1. **Do not** publicly disclose or exploit it
+2. Get in touch through the [help centre](https://quiva.ai/help-center/) with a description, steps to reproduce, your assessment of the impact, and how to contact you
+3. Allow reasonable time for us to investigate before disclosing
 
 ## Security Resources
 
 <CardGroup cols={2}>
   <Card title="Authentication Guide" icon="lock" href="/essentials/security/authentication">
-    Set up MFA, passkeys, and manage passwords
+    MFA, passkeys and passwords
   </Card>
-  
+
   <Card title="Session Management" icon="clock" href="/essentials/security/sessions">
-    Monitor and control active logins
+    Monitor and terminate active logins
   </Card>
-  
+
   <Card title="API Key Security" icon="code" href="/essentials/security/api-keys">
-    Best practices for programmatic access
+    Scopes, restricted keys and rotation
   </Card>
-  
+
   <Card title="Incident Response" icon="triangle-exclamation" href="/essentials/security/incident-response">
-    What to do if your account is compromised
+    What to do if an account is compromised
   </Card>
-  
+
   <Card title="User Management" icon="users" href="/essentials/users/user-management">
-    Control team access and permissions
+    Invite, suspend, log out and remove users
   </Card>
-  
-  <Card title="Privacy Policy" icon="file-contract" href="https://quiva.ai/legal.html#privacy">
-    Complete privacy policy and data practices
+
+  <Card title="Roles & Permissions" icon="users-gear" href="/essentials/users/roles-permissions">
+    What each of the seven roles can do
   </Card>
 </CardGroup>
 
 ## Security Checklist
 
-Quick reference for maintaining account security:
+### When you set up
 
-### Initial Setup
 - [ ] Enable MFA (passkey or authenticator app)
-- [ ] Save recovery codes securely
-- [ ] Configure account regions for compliance
-- [ ] Set up strong, unique password
+- [ ] Save your recovery codes somewhere secure
+- [ ] Set a strong, unique password
+- [ ] Choose how your data is hosted
 
-### Monthly
-- [ ] Review all active sessions
-- [ ] Audit active API keys
-- [ ] Check for unused user accounts
-- [ ] Verify billing activity
+### Periodically
 
-### Quarterly
-- [ ] Review user roles and permissions
-- [ ] Rotate API keys
-- [ ] Update security documentation
-- [ ] Conduct team security training
+- [ ] Review your active sessions
+- [ ] Review the API keys on your account and delete unused ones
+- [ ] Check for users who no longer need access
+- [ ] Review user roles against what people actually do
 
-### As Needed
-- [ ] Follow offboarding procedures for departing users
-- [ ] Investigate security notification emails
-- [ ] Review incident response plan
-- [ ] Update emergency contact information
+### As needed
+
+- [ ] Offboard departing users — **Logout**, **Suspend**, delete their keys, then delete the user
+- [ ] Investigate every security notification email you didn't expect
+- [ ] Rotate API keys ahead of expiry
 
 ## Getting Help
 
-<CardGroup cols={3}>
-  <Card title="Security Issues" icon="shield-halved" href="mailto:support@quiva.ai">
-    support@quiva.ai
-    
-    Vulnerabilities and incidents
-  </Card>
-  
-  <Card title="Privacy Questions" icon="user-lock" href="mailto:support@quiva.ai">
-    support@quiva.ai
-    
-    GDPR and data privacy
-  </Card>
-  
-  <Card title="General Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    Account and technical support
-  </Card>
-</CardGroup>
+<Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+  Security questions, privacy questions, vulnerability reports and general support
+</Card>

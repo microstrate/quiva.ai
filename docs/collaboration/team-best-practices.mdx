@@ -1,262 +1,96 @@
 ---
-title: "Team Collaboration Best Practices"
-description: "Tips and strategies for effective AI-powered team collaboration"
+title: "Team Practices"
+description: "Working habits that fit the owner-controlled, Editor / Read-only sharing model"
+icon: "people-group"
 ---
 
-# Team Collaboration Best Practices
+# Team Practices
 
-Get the most out of collaborative sessions with these proven strategies and workflows.
+Sharing has a specific shape: one owner, per-person access levels, and revocation that only the
+owner can perform. These habits work with that rather than against it.
 
-## Workflow Patterns
+## Decide the level, not just the person
 
-### Pattern 1: Real-Time Brainstorming
+Adding someone defaults to **Editor**, which means they can take a turn with the assistant and
+change where the conversation goes. That is usually right — but not always.
 
-**Best for:** Ideation, problem-solving, creative tasks
+<CardGroup cols={2}>
+  <Card title="Editor" icon="pen-to-square">
+    People who are going to do something: the operations manager who will ask the follow-up
+    question, the colleague picking the work up tomorrow.
+  </Card>
+  <Card title="Read-only" icon="eye">
+    People who need the record but must not steer it: a stakeholder watching a quarterly report
+    come together, someone reviewing after the fact.
+  </Card>
+</CardGroup>
 
-**Workflow:**
-1. Start a session with the AI assistant
-2. Ask an initial question
-3. @mention relevant team members
-4. All members contribute ideas in real-time
-5. The AI helps synthesize and expand ideas
+Downgrading is a deliberate act — set the level in the **as** dropdown before you pick the
+person, because picking is what sends the invite.
 
-**Tips:**
-- Keep sessions to 3-5 people to avoid chaos
-- Assign one person to guide the conversation
-- Use the AI to organize and summarize contributions
+## Treat ownership as a role
 
-### Pattern 2: Delegated Review
+The owner is whoever started the conversation, and sharing, renaming, deleting and revoking are
+all theirs alone. If they are away, nobody else can hand out access to that thread.
 
-**Best for:** Code reviews, content reviews, quality checks
+For work that has to survive one person's calendar, decide up front who starts it — or make it
+readable by the whole account so that reading it never depends on one person being at their desk.
 
-**Workflow:**
-1. You ask the AI to review something
-2. @mention subject matter experts
-3. Each expert sees the AI's analysis
-4. They provide feedback in the same session
-5. Iterate based on all feedback at once
+## One topic per conversation
 
-**Tips:**
-- Be specific about what needs review
-- Include context for reviewers
-- Set clear feedback deadlines
+Access is granted to the whole conversation, not to part of it. Sharing a thread that has
+wandered across three subjects shares all three, including everything said before the part you
+meant to show. Starting a fresh conversation is cheaper than regretting a share.
 
-### Pattern 3: Async Task Execution
+## Treat a mention as a sharing action
 
-**Best for:** Reports, analysis, writing tasks
+When the owner mentions someone new, that person is added as an Editor. It is the share panel
+reached from the composer, not a ping — so mention the people who should be in the conversation,
+and use a task comment or a message for people who just need telling.
 
-**Workflow:**
-1. Create a session with the AI
-2. @mention teammates who need to see results
-3. You work async – teammates check when they can
-4. Unread badges keep them informed
-5. They ask follow-up questions without context switching
+Mentioning someone who is already a read-only participant leaves their level alone. If you meant
+to promote them, do it in the panel.
 
-**Tips:**
-- Share the session upfront, not the final result
-- Let teammates see the working process
-- Encourage inline feedback
+## Prefer named people to the whole account
 
-### Pattern 4: Knowledge Capture
+**Everyone in the account** is a real option and a useful one for a reference thread — say,
+working out what an internal acronym is supposed to mean. It is the wrong default for anything
+with detail in it, because every member can then read the entire history.
 
-**Best for:** Learning, documentation, training
+## Take access back when the work ends
 
-**Workflow:**
-1. Experts collaborate with the AI on a topic
-2. @mention team members who need to learn
-3. The AI generates training materials in real-time
-4. Teammates can ask clarifying questions
-5. Full conversation becomes knowledge base
+Removing someone is one action on their row, and it keeps working even for people who have since
+been suspended or removed from the account. Reviewing the people list occasionally is the only
+way to know who can still read a thread — the list is the record.
 
-**Tips:**
-- Record the conversation for reference
-- Have the AI create summaries as you go
-- Pause to answer teammate questions
+## Name conversations so the list is navigable
 
-## Communication Strategies
+Renaming is owner-only, and the list is ordered by last activity, so a good title is what makes
+an old thread findable.
 
-### Be Clear About Intent
+| Weak | Better |
+|---|---|
+| Chat with the assistant | Q3 report — figures to check |
+| Work session 3 | New starter onboarding checklist |
+| Notes | Acronym glossary — ops team |
 
-When @mentioning, be explicit:
+## Manage notification volume properly
 
-❌ **Unclear:** `@Sarah – what do you think?`
+Nobody can silence a single conversation they were added to, so noise has to be handled at the
+preference level: switch off the kinds you do not need and set quiet hours for the times you do
+not want interrupting. See [Notifications](/collaboration/unread-badges-notifications).
 
-✅ **Clear:** `@Sarah – we're considering using React for this. Given your experience with Vue, what are the trade-offs?`
+If a colleague is drowning in one thread, the fix is usually to remove them from it, not to ask
+them to ignore it.
 
-### Provide Context Upfront
+## Keep the wrong things out
 
-Don't assume teammates have the backstory:
+A shared conversation is readable in full by everyone with access, from its first message
+onward. Credentials, personal data about people who are not in the room, and anything that only
+one team should hold do not belong in a thread you intend to share.
 
-❌ **Missing context:** `@Jake, review this?`
+## People outside your team
 
-✅ **With context:** `@Jake, we're optimizing the database query for the new dashboard. The current version takes 10s to load. Can you review the approach?`
-
-### Respect Async Boundaries
-
-Not everyone can respond immediately:
-
-- ✅ Share sessions expecting async responses
-- ✅ Mute notifications so people can focus
-- ✅ Don't expect immediate replies
-- ❌ Don't ping teammates constantly about shared sessions
-
-### Summarize Decisions
-
-When a team reaches consensus:
-
-1. Summarize the decision in the session
-2. Ask the AI to document key points
-3. Share the summary with non-participants
-4. Close the session with final status
-
-## Session Management
-
-### Naming Conventions
-
-Use clear, descriptive session names:
-
-| ❌ Bad | ✅ Good |
-|---------|---------|
-| `Chat with AI` | `Q3 Budget Review – Finance Team` |
-| `Work Session 3` | `Customer Churn Analysis – Data Team` |
-| `Collab` | `Content Review: Blog Series – Marketing` |
-
-### Participant Limits
-
-**Ideal team size:** 2-5 people
-
-- **2-3 people** – Quick decisions, focused work
-- **4-5 people** – Complex problems, diverse input
-- **6+ people** – Better as separate sessions with summary sharing
-
-### Session Duration
-
-- **1-2 hours** – Best for active collaboration
-- **4+ hours** – Consider splitting into multiple sessions
-- **Days/weeks** – Archive when decision is made
-
-## Performance Optimization
-
-### Keep Sessions Focused
-
-**Do:**
-- ✅ One topic per session
-- ✅ Define the goal upfront
-- ✅ End the session when complete
-- ✅ Archive after decision
-
-**Don't:**
-- ❌ Use one session for multiple unrelated topics
-- ❌ Leave sessions open indefinitely
-- ❌ Add people who aren't relevant
-
-### Manage Notifications
-
-**To reduce noise:**
-- Mute less urgent sessions
-- Disable notifications during focus time
-- Check Shared With Me once per hour instead
-- Turn off sound for non-critical sessions
-
-## Handling Conflicts
-
-### When Disagreement Happens
-
-1. **Keep it in the session** – Don't take offline unnecessarily
-2. **Ask the AI for options** – Neutral analysis helps
-3. **Let everyone contribute** – Hear all perspectives
-4. **Document the decision** – Why you chose one path
-5. **Move forward** – Commit to the decision
-
-### When Someone Misunderstands
-
-1. **Clarify kindly** – Misunderstandings happen
-2. **Use the AI to explain** – Fresh perspective helps
-3. **Provide examples** – Concrete examples > abstract concepts
-4. **Summarize** – Confirm understanding before moving on
-
-## Privacy & Security
-
-### What to Share
-
-- ✅ Work-related content
-- ✅ Analytical data
-- ✅ Code reviews
-- ✅ Strategy discussions
-
-### What NOT to Share
-
-- ❌ Sensitive customer data (PII)
-- ❌ Financial passwords or tokens
-- ❌ Personal information
-- ❌ Confidential business secrets
-
-**Tip:** Use the **lock icon** to keep sensitive sessions private.
-
-## Example Workflows
-
-### Workflow: New Feature Spec
-
-**Goal:** Align team on new feature specification
-
-**Steps:**
-1. Start session: "Payment System Redesign Spec"
-2. Write initial requirements
-3. @mention frontend lead, backend lead, PM
-4. Each provides constraints and technical input
-5. AI synthesizes into comprehensive spec
-6. Document final spec in session summary
-7. Archive and reference as source of truth
-
-**Time:** 30-60 minutes  
-**Participants:** 4 people
-
-### Workflow: Data Analysis Review
-
-**Goal:** Validate analysis and presentation
-
-**Steps:**
-1. Start session: "Q3 Marketing Analysis"
-2. Share raw data and initial analysis
-3. @mention data analyst and marketing director
-4. Analyst validates methodology
-5. Director suggests presentation improvements
-6. AI creates final report
-7. Both sign off in session
-
-**Time:** 45-90 minutes  
-**Participants:** 2-3 people
-
-### Workflow: Project Kickoff
-
-**Goal:** Align entire team before starting
-
-**Steps:**
-1. Create session: "Project X – Team Kickoff"
-2. Outline scope and timeline
-3. @mention all core team members
-4. Each shares their role and concerns
-5. AI documents decisions and action items
-6. Confirm everyone understands
-7. Session becomes kickoff record
-
-**Time:** 1-2 hours  
-**Participants:** 5-8 people
-
-## Metrics & Health Checks
-
-### Signs Your Collaboration is Working
-
-- ✅ Decisions happen faster
-- ✅ Fewer follow-up meetings needed
-- ✅ Team feels heard and informed
-- ✅ Context is preserved in sessions
-- ✅ Async work is productive
-
-### Red Flags
-
-- ❌ Sessions are too large (6+ people)
-- ❌ Conversations drag on (4+ hours)
-- ❌ People are ignored or not responding
-- ❌ Decisions aren't being documented
-- ❌ Team avoids using shared sessions
+Colleagues are account members. Customers, suppliers and contractors go through the client
+portal, which works on assignment rather than the sharing described here — see
+[Client Portal](/spaces/client-portal).

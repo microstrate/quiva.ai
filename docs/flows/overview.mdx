@@ -1,326 +1,117 @@
 ---
 title: "Flows Overview"
-description: "Build intelligent workflows with AI agents, automation, and business logic"
+description: "What a flow is, how a run moves from trigger to result, and where to go next"
 icon: "diagram-project"
 ---
 
-# Understanding Flows
+# Flows
 
-Flows are the foundation of automation in QuivaWorks. They allow you to build intelligent workflows that combine AI agents, business logic, data transformation, and integrations to automate complex business processes.
-
-## What is a Flow?
-
-A flow is a sequence of connected steps that execute in response to a trigger. Think of it as a recipe for automation:
-
-- **Triggers** start your flow (webhooks, schedules, form submissions, etc.)
-- **Steps** perform actions (run AI assistants, make decisions, transform data, call APIs)
-- **Connections** pass data between steps using variable mappings
-
-<img 
-  src="/images/flows/flow-diagram.png" 
-  alt="Flow Architecture"
-  className="rounded-lg"
-/>
-
-## Core Concepts
-
-### Agent-Centric Design
-
-QuivaWorks flows are designed around **AI agents** as the primary intelligence layer. While traditional automation requires you to program every step, agent-centric flows allow you to:
-
-- Define what you want to accomplish, not how to accomplish it
-- Let agents make intelligent decisions based on context
-- Handle exceptions and edge cases naturally through reasoning
-- Use tools and connectors dynamically based on the situation
-
-<Card title="Example: Customer Service Flow" icon="headset">
-**Traditional Automation**: If email contains "refund" → Send to refunds team. If email contains "technical" → Send to support team. Else → Send to general inbox.
-
-**Agent-Centric Flow**: Trigger on new email → Agent reads email, understands intent, checks order history, applies policies, and either resolves immediately or routes to appropriate team with context.
-
-The agent handles nuance, multiple topics, and exceptions without explicit programming.
-</Card>
-
-### Trigger → Agent → Tools Pattern
-
-The optimal flow pattern in QuivaWorks:
-
-1. **Trigger** - Start the flow (form submission, schedule, webhook, etc.)
-2. **Agent** - Process the trigger with intelligence and reasoning
-3. **Tools** - Give the agent access to your data and systems (connectors)
-
-This pattern allows maximum flexibility while maintaining simplicity.
-
-<Steps>
-  <Step title="Add a Trigger">
-    Choose how your flow starts (form, API, schedule, etc.)
-  </Step>
-  <Step title="Create an Agent">
-    Define the agent's role and capabilities
-  </Step>
-  <Step title="Attach Tools">
-    Connect your CRM, database, APIs, and other services
-  </Step>
-  <Step title="Deploy">
-    Activate your flow and let it run
-  </Step>
-</Steps>
-
-## Flow Components
-
-### Triggers
-
-Triggers define how and when your flow starts. Every flow needs at least one trigger.
-
-<CardGroup cols={2}>
-  <Card title="Embed Triggers" icon="window-maximize" href="/flows/triggers/embed-triggers">
-    Buttons, forms, and chat windows embedded in your website
-  </Card>
-  
-  <Card title="HTTP Request" icon="globe" href="/flows/triggers/http-request">
-    Custom API endpoints to trigger flows programmatically
-  </Card>
-  
-  <Card title="Webhook" icon="link" href="/flows/triggers/webhook">
-    Receive events from external applications
-  </Card>
-  
-  <Card title="Schedule" icon="clock" href="/flows/triggers/schedule">
-    Run flows on a recurring schedule
-  </Card>
-  
-  <Card title="Upload" icon="upload" href="/flows/triggers/upload">
-    Trigger when documents are uploaded
-  </Card>
-  
-  <Card title="Email" icon="envelope" href="/flows/triggers/email">
-    Process incoming emails automatically
-  </Card>
-  
-  <Card title="Stream Triggers" icon="stream" href="/flows/triggers/stream-triggers">
-    Real-time message processing (Advanced mode)
-  </Card>
-  
-  <Card title="View All Triggers" icon="arrow-right" href="/flows/triggers/overview">
-    Complete trigger reference
-  </Card>
-</CardGroup>
-
-### Steps
-
-Steps are the building blocks of your flow. They perform actions, make decisions, and transform data.
-
-<CardGroup cols={2}>
-  <Card title="Agents" icon="robot" href="/flows/steps/agents">
-    AI agents that reason, use tools, and make decisions
-  </Card>
-  
-  <Card title="Condition" icon="code-branch" href="/flows/steps/condition">
-    Branch your flow based on logic and rules
-  </Card>
-  
-  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
-    Call external APIs and services
-  </Card>
-  
-  <Card title="Map" icon="arrow-right-arrow-left" href="/flows/steps/map">
-    Transform and reshape data structures
-  </Card>
-  
-  <Card title="Rules" icon="gavel" href="/flows/steps/rules">
-    Apply business logic and calculations
-  </Card>
-  
-  <Card title="Human in the Loop" icon="user-check" href="/flows/steps/human-in-the-loop">
-    Request human approval or input
-  </Card>
-  
-  <Card title="Functions" icon="function" href="/flows/steps/functions">
-    Use utility functions and storage operations
-  </Card>
-  
-  <Card title="View All Steps" icon="arrow-right" href="/flows/steps/overview">
-    Complete steps reference
-  </Card>
-</CardGroup>
-
-## Common Flow Patterns
-
-### Customer Service Automation
+A **flow** is a graph of steps that runs when something triggers it. Each step does one thing — call an API, run an assistant, reshape data, decide what happens next — and stores its result where later steps can read it.
 
 ```
-Email Trigger → Customer Service Agent → 
-  - Tool: Search Knowledge Base
-  - Tool: Get Order History
-  - Tool: Apply Return Policy
-→ Condition → 
-  - Can Resolve → Send Response
-  - Needs Human → Human in the Loop
+trigger  →  steps  →  result
 ```
 
-### Lead Qualification
+- A [**trigger**](/flows/triggers/overview) starts the run. Whatever it receives becomes `$.trigger`.
+- [**Steps**](/flows/steps/overview) do the work. Each stores its result under its own step ID.
+- Steps read each other's results with [**variable mapping**](/advanced/variable-mapping/overview) — any string beginning with `$.`.
 
-```
-Form Trigger → Lead Qualification Agent →
-  - Tool: Search CRM
-  - Tool: Company Data API
-  - Tool: Scoring Rules
-→ Condition →
-  - Qualified → Add to CRM + Notify Sales
-  - Not Qualified → Add to Nurture Campaign
-```
+---
 
-### Content Generation
+## How a run behaves
 
-```
-Schedule Trigger → Content Creation Agent →
-  - Tool: Get Brand Guidelines
-  - Tool: Get Customer Data
-  - Tool: Get Performance Metrics
-→ Map (Format for Channels) →
-→ Multiple HTTP Requests →
-  - Post to Social Media
-  - Send to Email Platform
-  - Update Content Calendar
-```
-
-### Invoice Processing
-
-```
-Upload Trigger → Invoice Processing Agent →
-  - Tool: Extract Data (OCR)
-  - Tool: Get Purchase Orders
-  - Tool: Validate Against Rules
-→ Condition →
-  - Valid → Approve + Update ERP
-  - Invalid → Human in the Loop + Flag Issues
-```
-
-## Flow Execution
-
-### Response Modes
-
-Flows can run in two modes:
-
-<Tabs>
-  <Tab title="Wait for Completion">
-    The trigger waits for the entire flow to complete before responding. Best for:
-    - API endpoints that need to return results
-    - Form submissions that show confirmation
-    - Chat interactions that need immediate responses
-  </Tab>
-  <Tab title="Run in Background">
-    The trigger responds immediately and the flow runs asynchronously. Best for:
-    - Long-running processes
-    - Scheduled workflows
-    - Email processing
-    - Webhook handlers
-  </Tab>
-</Tabs>
-
-### Variable Mapping
-
-Data flows between steps using **variable mapping**. Each step can access:
-
-- Trigger data: `$.trigger.email`, `$.trigger.form.name`
-- Previous step outputs: `$.step_id.response`, `$.step_id.data`
-- Secrets: `SECRET::API_KEY::`
-- Transformations: Filters, JSONPath, pipes
-
-<Info>
-Learn more about variable mapping in our [Advanced Variable Mapping Guide](/advanced/variable-mapping/overview)
-</Info>
-
-## Building Your First Flow
-
-Ready to get started? Follow these guides:
-
-<CardGroup cols={2}>
-  <Card title="Create a Customer Service Agent" icon="headset" href="/flows/best-practices">
-    Build an agent that handles customer inquiries
-  </Card>
-  
-  <Card title="Automate Lead Qualification" icon="users" href="/flows/best-practices">
-    Qualify and route leads automatically
-  </Card>
-  
-  <Card title="Schedule Content Creation" icon="calendar" href="/flows/best-practices">
-    Generate and publish content on schedule
-  </Card>
-  
-  <Card title="Process Documents" icon="file" href="/flows/best-practices">
-    Extract and validate data from uploads
-  </Card>
-</CardGroup>
-
-## Best Practices
+Four things are worth knowing before you build anything.
 
 <AccordionGroup>
-  <Accordion title="Start Simple, Then Add Complexity" icon="seedling">
-    Begin with a trigger and a single agent. Test thoroughly. Then add conditions, additional steps, and error handling as needed.
+  <Accordion title="Steps do not run in sequence" icon="diagram-project">
+    The runner is a concurrent graph executor. Every step with no incoming edge starts at once, and a step starts as soon as all of its predecessors have finished. Independent branches run in parallel.
   </Accordion>
 
-  <Accordion title="Use Agents for Intelligence, Steps for Logic" icon="brain">
-    Let agents handle reasoning and decision-making. Use condition steps for branching based on clear outcomes. Don't try to program intelligence into conditions.
+  <Accordion title="A Condition's outcome decides what runs next" icon="code-branch">
+    Arrows in the editor are not routing. A [Condition step](/flows/steps/condition) names the step IDs to run — one, several, or the reserved `RESOLVE_SUCCESS` / `RESOLVE_ERROR` to end the run. A line no outcome names is decoration.
   </Accordion>
 
-  <Accordion title="Give Agents the Right Tools" icon="toolbox">
-    Connect relevant data sources and APIs. The more context an agent has, the better decisions it can make.
+  <Accordion title="The first error ends the whole run" icon="triangle-exclamation">
+    There is no per-step error branch. The failing step records the error, the run is cancelled, and anything still in flight is abandoned. Results from steps that already finished are kept. See [Building Reliable Flows](/flows/best-practices).
   </Accordion>
 
-  <Accordion title="Handle Errors Gracefully" icon="shield">
-    Add human-in-the-loop steps for critical decisions. Use condition steps to catch errors and provide fallback paths.
-  </Accordion>
-
-  <Accordion title="Test with Real Data" icon="flask">
-    Use actual customer emails, form submissions, and edge cases when testing. Agents perform best when trained on realistic scenarios.
-  </Accordion>
-
-  <Accordion title="Monitor and Iterate" icon="chart-line">
-    Review flow execution logs regularly. Refine agent instructions and tools based on actual performance.
+  <Accordion title="Editing changes the draft, not the live flow" icon="pen-to-square">
+    **Save** keeps your work. **Publish** is what makes it take effect. Testing in the editor runs the draft, so a flow that behaves correctly under test can still be running its old published version until you publish.
   </Accordion>
 </AccordionGroup>
 
-## Next Steps
+---
 
-<CardGroup cols={3}>
+## What a step can read
+
+Every step payload is resolved before the step runs. The data it can select from has these top-level keys and nothing else:
+
+| Key | Contents |
+|---|---|
+| `trigger` | The payload that started the run |
+| `static` | The flow's Static data |
+| `context` | Context variables passed in on the run request |
+| `env` | `auth_token`, `run_id` and `headers` for this run |
+| *step ID* | The result of a step that has already finished |
+
+```
+$.trigger.customer.email
+$.GET_ORDER.data.total
+$.env.run_id
+```
+
+<Warning>
+A path that matches nothing resolves to an **empty array**, not `null`. `$.trigger.nope` becomes `[]`.
+</Warning>
+
+---
+
+## Building one
+
+<Steps>
+  <Step title="Create a flow">
+    Flows live in collections. Create one from the Flows list.
+  </Step>
+  <Step title="Add a trigger">
+    Pick how the flow starts — a URL, a schedule, an email address, a form on your site. See [Triggers](/flows/triggers/overview).
+  </Step>
+  <Step title="Add steps">
+    Drag in the steps that do the work and wire them together. See [Steps](/flows/steps/overview).
+  </Step>
+  <Step title="Test the draft">
+    **Test** runs the draft against a payload you type, standing in for `$.trigger`.
+  </Step>
+  <Step title="Publish">
+    Publishing is what makes the flow live. Watch the first real runs under **Monitoring**.
+  </Step>
+</Steps>
+
+---
+
+## Where to go next
+
+<CardGroup cols={2}>
   <Card title="Triggers" icon="bolt" href="/flows/triggers/overview">
-    Learn about all trigger types
+    Every way a flow can start, and which ones can lose an event
   </Card>
-  
+
   <Card title="Steps" icon="list-check" href="/flows/steps/overview">
-    Explore available step types
+    The step types and how a run moves between them
   </Card>
-  
-  <Card title="Agents" icon="robot" href="/assistants/overview">
-    Deep dive into AI agents
+
+  <Card title="Built-in Functions" icon="function" href="/flows/functions/overview">
+    Storage, streams, encoding and templating
   </Card>
-  
-  <Card title="Variable Mapping" icon="arrow-right-arrow-left" href="/advanced/variable-mapping/overview">
-    Master data transformations
+
+  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
+    The `$.` syntax, in full
   </Card>
-  
+
   <Card title="Rules Engine" icon="gavel" href="/advanced/rules/overview">
-    Build business logic
+    Deriving values and decisions from a rule set
   </Card>
-  
-  <Card title="Best Practices" icon="star" href="/flows/best-practices">
-    Flow design patterns
-  </Card>
-</CardGroup>
 
-## Need Help?
-
-<CardGroup cols={3}>
-  <Card title="Community" icon="users" href="https://quiva.ai/community">
-    Ask questions and share flows
-  </Card>
-  
-  <Card title="Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    Get help from our team
-  </Card>
-  
-  <Card title="Examples" icon="code" href="/flows/best-practices">
-    Browse flow templates
+  <Card title="Building Reliable Flows" icon="shield-check" href="/flows/best-practices">
+    Failures, retries, timeouts and recovering a part-completed run
   </Card>
 </CardGroup>
