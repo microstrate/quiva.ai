@@ -79,10 +79,6 @@ Copies kept across the cluster. Default `1`, maximum `5`.
 Compress the underlying storage.
 </ParamField>
 
-<ParamField path="metadata" type="object">
-Arbitrary string key-value pairs stored against the bucket.
-</ParamField>
-
 **Payload**
 
 ```json
@@ -151,7 +147,7 @@ Key to read.
 </ParamField>
 
 <ParamField path="json" type="boolean">
-Parse the stored value as JSON before returning it. Defaults to `false`.
+Return the value as it is rather than re-serialising it. Defaults to `false` — see the warning below.
 </ParamField>
 
 **Payload**
@@ -167,13 +163,13 @@ Parse the stored value as JSON before returning it. Defaults to `false`.
   "status_code": 200,
   "body": {
     "body": { "key": "sync.orders.cursor", "value": { "last_id": "ord_88" } },
-    "metadata": { "Bucket": "run-state" }
+    "metadata": { "bucket": "run-state", "revision": 7 }
   }
 }
 ```
 
 <Warning>
-**Set `json: true` whenever you stored an object.** Without it the value is passed through `JSON.stringify`, so a stored object comes back as a JSON *string* and a stored string comes back wrapped in quotes. Downstream steps then see text where they expected a structure.
+**Set `json: true` whenever the value is an object.** The storage layer already returns JSON values parsed. Leaving `json` off then runs the parsed value back through `JSON.stringify`, so an object comes back as a JSON *string* and a plain string comes back wrapped in quotes. With `json: true` the value is left as it is.
 </Warning>
 
 Reference the value as `$.STEP_ID.body.body.value`.
@@ -192,7 +188,7 @@ Lists every key-value bucket in the account. Takes no parameters — an empty pa
   "body": {
     "body": {
       "results": [
-        { "name": "run-state", "description": "Per-flow cursors", "entry_total": 12, "created": 1755000000, "metadata": {} }
+        { "name": "run-state", "description": "Per-flow cursors", "entry_total": 12, "created": "2026-08-20T09:14:02Z" }
       ],
       "results_total": 1
     },
@@ -212,11 +208,11 @@ Bucket to list.
 </ParamField>
 
 <ParamField path="limit" type="integer">
-Maximum entries to return.
+Maximum entries in one page. Defaults to `100`.
 </ParamField>
 
 <ParamField path="last_sequence" type="integer">
-Resume point. Pass the sequence you stopped at to continue a paged listing.
+Sequence to start from.
 </ParamField>
 
 **Payload**
@@ -232,15 +228,20 @@ Resume point. Pass the sequence you stopped at to continue a paged listing.
   "status_code": 200,
   "body": {
     "body": {
-      "results": [{ "key": "sync.orders.cursor", "value": "{\"last_id\":\"ord_88\"}" }],
-      "results_total": 1
+      "results": [
+        { "key": "sync.orders.cursor", "value": { "last_id": "ord_88" } },
+        { "key": "sync.orders.mode", "value": "incremental" }
+      ],
+      "results_total": 2
     },
-    "metadata": { "Bucket": "run-state", "Limit": 100 }
+    "metadata": { "bucket": "run-state", "limit": 100 }
   }
 }
 ```
 
-Values in a listing are always strings. Parse them in an [Eval step](/flows/steps/eval) if you need the structure.
+A value that is valid JSON comes back parsed; anything else comes back as a string. So the shape of `value` varies from row to row, and code reading a listing has to cope with both.
+
+`results_total` counts the rows **in this page**, not the bucket. When a page is cut short the body also carries `truncated: true` and a `next_cursor` string; send that string back as `cursor` to continue. Treat the cursor as opaque.
 
 ---
 
