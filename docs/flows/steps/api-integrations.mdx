@@ -1,0 +1,133 @@
+---
+title: 'Integration'
+description: 'Call one action on a connected integration'
+icon: 'circle-nodes'
+---
+
+# Integration Step
+
+An Integration step calls a single action on a service you have already connected — the action list, the URL, the method and the credential all come from the integration itself, so you fill in the parameters and nothing else.
+
+Underneath, it makes the same HTTP call an [HTTP Request step](/flows/steps/http-request) would, and returns the same response shape. The difference is where the request comes from.
+
+---
+
+## Adding one
+
+The flow editor's toolbar has an **Integrations** menu listing every integration connected to your account. Drag one onto the canvas and the step is created pointing at it.
+
+The step then carries two identifiers of its own, outside the payload:
+
+<ParamField path="integration_id" type="string" required>
+Which connected integration this step calls. Set when you drag the integration in.
+</ParamField>
+
+<ParamField path="request_type_id" type="string" required>
+Which **action** on that integration to call, chosen from the **Action** dropdown on the Configuration tab. The dropdown lists each action as its method and path.
+</ParamField>
+
+Choosing an action rewrites the payload: `url` becomes the action's path, `method` becomes its method, and the query, header and body editors reset for the new shape.
+
+---
+
+## Configuration
+
+The **Configuration** tab shows the chosen action, an editable **Path**, and three sub-tabs:
+
+| Sub-tab | Contents |
+|---|---|
+| **Body** | The request body, checked against the action's own JSON schema as you type. Hidden for methods that take no body. |
+| **Headers** | Extra request headers |
+| **Query Params** | Query-string parameters |
+
+Values are JSONPath-resolved before the call, exactly as on an HTTP step:
+
+```json
+{
+  "url": "/v1/issues",
+  "method": "POST",
+  "data": {
+    "title": "$.CLASSIFY.result.summary",
+    "assignee": "$.trigger.owner_email"
+  }
+}
+```
+
+A **JSON Editor** button opens the whole payload as raw JSON when the form is not enough.
+
+---
+
+## Authorisation
+
+The **Configuration** tab includes the integration's own authorisation controls. What you see depends on how the integration authenticates:
+
+- **API key, bearer token or basic credentials** — entered on the step. Store the value as a secret and reference it as `SECRET::<name>::` rather than pasting it in.
+- **OAuth 2** — pick a **connection** rather than a token. Connections come in two scopes: **personal** (yours) and **shared** (the account's). The step fetches a live access token for the chosen connection each time it runs.
+
+The step also carries the integration's `security_schemes`, which is what decides where the credential is placed. This is why an integration step usually needs no header configuration at all.
+
+<Warning>
+If the integration exposes several security schemes and the step's `scheme_name` does not match one of them, **no credential is attached** and the call goes out unauthenticated. A 401 from a step you have just authorised is nearly always this.
+</Warning>
+
+---
+
+## The response
+
+Identical to an HTTP Request step:
+
+```json
+{
+  "status": 201,
+  "statusText": "201 Created",
+  "headers": { "Content-Type": "application/json" },
+  "data": { "id": "iss_412" }
+}
+```
+
+```
+$.CREATE_ISSUE.status
+$.CREATE_ISSUE.data.id
+```
+
+<Warning>
+The **Response Map** tab is present in this step's editor but is not applied to an integration step at run time — only Function and nested-flow steps have their response mapped. Reshape the result in a following [Map step](/flows/steps/map) instead.
+</Warning>
+
+---
+
+## Failure and retries
+
+The same rules as any outbound call: **any 4xx or 5xx fails the step, and a failed step ends the run.** The **Advanced Settings** tab offers `attempts` (total, capped at 5), `backoff_ms` (a constant wait, not exponential), `ignore_response_codes` and `flat_map`.
+
+<Note>
+Editing a flow changes its **draft**. **Publish** to make the change take effect. Connecting or re-authorising an integration takes effect immediately, because the connection is not part of the flow.
+</Note>
+
+---
+
+## Integration compared with assistant tools
+
+An Integration step calls one action, at a point you choose, with parameters you control. Attaching the same integration to an [assistant](/flows/steps/agents) instead lets the assistant decide whether to call it and with what — better when the decision is the hard part, worse when you need the call to happen exactly once, exactly this way.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
+    Call a service that is not connected
+  </Card>
+
+  <Card title="Assistant Step" icon="robot" href="/flows/steps/agents">
+    Let an assistant use the integration instead
+  </Card>
+
+  <Card title="Map Step" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Reshape the response
+  </Card>
+
+  <Card title="Flow Steps Overview" icon="list-check" href="/flows/steps/overview">
+    How a failure ends a run
+  </Card>
+</CardGroup>

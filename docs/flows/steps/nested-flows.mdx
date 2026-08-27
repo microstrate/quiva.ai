@@ -1,0 +1,150 @@
+---
+title: 'Nested Flow'
+description: 'Run another flow as a step'
+icon: 'diagram-project'
+---
+
+# Nested Flow Step
+
+A Nested Flow step runs one of your other flows and, optionally, waits for its result. Use it to keep a piece of work in one place — a lookup, a notification, an approval — and call it from every flow that needs it.
+
+---
+
+## Adding one
+
+The flow editor's toolbar has a **Flows** menu listing your saved flows. Above the list is a **Flow Action** dropdown that decides how the flow is added:
+
+| Flow Action | Effect |
+|---|---|
+| **Invoke and await response** | Drag it in as a step that waits for the sub-flow to finish |
+| **Invoke async** | Drag it in as a step that starts the sub-flow and moves on immediately |
+| **Replace current** | Opens that flow in the editor instead — not a step at all |
+
+The step stores the sub-flow's subject and an `await` flag set from that choice. Both are visible on the step's editor: **Subject** and the async/await toggle.
+
+---
+
+## The payload is the sub-flow's trigger
+
+Whatever the step's payload resolves to is handed to the sub-flow as its trigger, so the sub-flow reads it as `$.trigger.…`.
+
+<Warning>
+**The payload must be a JSON array.** Each element becomes one run of the sub-flow, and the runs happen in parallel. An object payload — the obvious thing to write — fails the step with `json: Unmarshal(nil *interface {})`. Wrap it:
+
+```json
+[ { "invoice_id": "$.trigger.invoice_id", "customer": "$.LOOKUP.data.customer" } ]
+```
+
+not
+
+```json
+{ "invoice_id": "$.trigger.invoice_id" }
+```
+</Warning>
+
+Passing several elements is a genuine fan-out — three elements start three runs of the sub-flow at once, and the step waits for all of them when it is set to await.
+
+---
+
+## What the step returns
+
+A `results` object, keyed by the position of each element in the payload array:
+
+```json
+{
+  "results": {
+    "0": {
+      "tracking_id": "ms.hub.run.…",
+      "status": "success",
+      "result": { "invoice_id": "inv_7", "total": 420 }
+    }
+  }
+}
+```
+
+```
+$.RAISE_INVOICE.results["0"].result.invoice_id
+$.RAISE_INVOICE.results["0"].status
+```
+
+The keys are strings, so read them with bracket notation. `$.RAISE_INVOICE.results.*.result.total` reads across every run.
+
+When the step is set to **Invoke async**, the sub-flow's `result` is not waited for and each entry carries only a `tracking_id`.
+
+---
+
+## Making the sub-flow return something useful
+
+By default a run's `result` is its **log** — every step's entry, in order — which is rarely what a parent flow wants.
+
+A flow's **Result** setting fixes that. It is a JSONPath mapping, resolved against the sub-flow's own data when the run finishes, and it replaces the log entirely:
+
+```json
+{ "invoice_id": "$.CREATE_INVOICE.data.id", "total": "$.CREATE_INVOICE.data.total" }
+```
+
+Set it on any flow you intend to call from another one. Without it the parent has to dig a value out of a log array.
+
+---
+
+## Response Map
+
+A nested-flow step is one of only two step types whose **Response Map** is applied (the other is a Function step). It is a JSONPath mapping resolved against the sub-flow's result, and what it produces is what gets stored under the step ID:
+
+```json
+{ "invoice": "$.results[\"0\"].result.invoice_id" }
+```
+
+turns the step's result into `{"invoice": "inv_7"}`, so downstream steps read `$.RAISE_INVOICE.invoice`.
+
+---
+
+## Timeouts and retries
+
+**Advanced Settings** works as expected on this step — including `timeout`, which is honoured here even though it is inert on an HTTP step:
+
+| Setting | Effect |
+|---|---|
+| `timeout` | How long to wait for the sub-flow, in milliseconds |
+| `attempts` | Total attempts, capped at 5 |
+| `backoff_ms` | A constant wait between attempts |
+| `ignore_response_codes` | Status codes from the sub-flow that must not be treated as a failure |
+| `flat_map` | Flatten the result to dotted keys before storing it |
+
+A sub-flow that fails returns a non-200, which fails the step — and a failed step ends the parent run.
+
+---
+
+## Things to watch
+
+<Warning>
+- **The sub-flow must exist when the parent is saved.** A nested-flow step with no subject is rejected with `a subject is required for the flow`.
+- **The sub-flow runs its own published version**, not the parent's draft. Publish the sub-flow before testing the parent against it.
+- **Nothing detects a cycle.** A flow that nests itself, directly or through another flow, will keep starting runs.
+</Warning>
+
+<Note>
+Editing a flow changes its **draft**. **Publish** to make the change take effect — for the parent and the sub-flow separately.
+</Note>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Function Step" icon="function" href="/flows/steps/functions">
+    The other step whose Response Map applies
+  </Card>
+
+  <Card title="Map Step" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    Reshape the sub-flow's result
+  </Card>
+
+  <Card title="Flow Steps Overview" icon="list-check" href="/flows/steps/overview">
+    How results are stored and read
+  </Card>
+
+  <Card title="Flows Overview" icon="diagram-project" href="/flows/overview">
+    Drafts, publishing and flow settings
+  </Card>
+</CardGroup>
