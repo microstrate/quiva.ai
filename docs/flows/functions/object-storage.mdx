@@ -73,8 +73,10 @@ Arbitrary string key-value pairs stored against the bucket.
 **Returns**
 
 ```json
-{ "status_code": 200, "body": { "message": "..." } }
+{ "status_code": 200, "body": { "message": "success" } }
 ```
+
+A bucket that already exists comes back as `{"status_code": 409, "body": {"error": "..."}}`.
 
 <Warning>
 **The `ttl` field this function's form offers does nothing.** The bucket configuration the platform actually reads names that setting `max_age`, so a `ttl` value is dropped and objects never expire. Delete objects you no longer want, or send `max_age` (in nanoseconds) through the JSON editor.
@@ -171,8 +173,7 @@ Lists every object bucket in the account. Takes no parameters — an empty paylo
         { "name": "invoice-exports", "description": "Nightly CSV exports", "size": 48211, "created": "2026-08-20T09:14:02Z" }
       ],
       "results_total": 1
-    },
-    "metadata": {}
+    }
   }
 }
 ```

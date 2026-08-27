@@ -34,7 +34,7 @@ For anything larger than a small JSON document — a file, a PDF, an export — 
 - **`history` defaults to 1 and caps at 64.**
 
 <Warning>
-Three of these functions — `get-kv-bucket-item`, `put-kv-item` and `list-kv-bucket-items` — refuse the account's secrets bucket outright and return `{"error": "…"}` explaining why. Read one secret with [`secret-key-get-node`](/flows/functions/utility#secret-key-get-node), or put `SECRET::<name>::` in any node's configuration and let the platform resolve it before the run starts.
+**Do not point these functions at the account's secrets store.** `get-kv-bucket-item`, `put-kv-item` and `list-kv-bucket-items` refuse it and return `{"error": "…"}` explaining why — a listing in particular would return every key and its plaintext value at once. Read one secret with [`secret-key-get-node`](/flows/functions/utility#secret-key-get-node), or put `SECRET::<name>::` in any node's configuration and let the platform resolve it before the run starts.
 </Warning>
 
 ---
@@ -93,10 +93,10 @@ Compress the underlying storage.
 **Returns**
 
 ```json
-{ "status_code": 200, "body": { "message": "..." } }
+{ "status_code": 200, "body": { "message": "success" } }
 ```
 
-On failure, `body` carries `error` instead of `message`.
+A bucket that already exists comes back as `{"status_code": 409, "body": {"error": "..."}}`.
 
 ---
 
@@ -129,7 +129,7 @@ The value. An object is stored as JSON; a string is stored as text.
 **Returns**
 
 ```json
-{ "status_code": 200, "body": { "message": "..." } }
+{ "status_code": 200, "body": { "message": "success" } }
 ```
 
 ---
@@ -191,8 +191,7 @@ Lists every key-value bucket in the account. Takes no parameters — an empty pa
         { "name": "run-state", "description": "Per-flow cursors", "entry_total": 12, "created": "2026-08-20T09:14:02Z" }
       ],
       "results_total": 1
-    },
-    "metadata": {}
+    }
   }
 }
 ```
