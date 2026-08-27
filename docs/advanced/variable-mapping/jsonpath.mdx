@@ -122,13 +122,13 @@ Ordinary JavaScript methods on the candidate's own values work:
 | `[?(@.tags.indexOf('a')>-1)]` | `"Widget"` |
 | `[?(typeof @ === 'string')]` | the string members of an array |
 
-A filter may contain another filter:
+A filter may contain another filter, as long as the inner one is the whole test:
 
 ```
-$.users[?(@.orders[?(@.total>1000)])]
+$.users[?(@.orders[?(@.total>1000)])]     selects users with an order over 1000
 ```
 
-selects users with at least one order over 1000.
+It cannot be followed by anything. `$.users[?(@.orders[?(@.total>1000)].length>5)]` fails to parse with `Unexpected "?" at character 12`, and combining it with `&&` returns no matches rather than an error. Count in an [Eval step](/flows/steps/eval) instead.
 
 ### Context variables
 
