@@ -1,584 +1,215 @@
 ---
 title: 'Schedule Trigger'
-description: 'Run flows automatically on a schedule - one-time, recurring, or cron-based'
+description: 'Run a flow at a first time you pick, then on a fixed repeat'
 icon: 'clock'
 ---
 
 # Schedule Trigger
 
-The Schedule trigger allows you to run flows automatically at specific times or intervals. Perfect for reports, maintenance tasks, batch processing, monitoring, and any work that needs to happen on a regular schedule.
+A schedule trigger runs a flow at a moment you choose, and then repeats it at a fixed interval.
 
-Schedule triggers can run once at a specific date and time, or repeatedly at intervals like every hour, day, week, month, or year.
-
----
-
-## How It Works
-
-Add a Schedule trigger to your flow. Set the initial start date and time. Choose a frequency for recurring execution (optional). The flow runs automatically at the scheduled times. No manual intervention required.
+It is deliberately small: one start time, one interval, one payload. There is no cron expression, no calendar, no timezone selector and no pause switch.
 
 ---
 
 ## Configuration
 
-### Initial Start Time
+The schedule editor has six fields and nothing else.
 
-Set the date and time for the first execution. Use your local timezone or UTC. The flow will first execute at this time.
+| Field | Required | What it does |
+|---|---|---|
+| **Name** | Yes | Identifies the schedule. See [Naming](#naming-matters-more-than-it-looks) — it is part of the schedule's identity. |
+| **Description** | No | Notes for you. |
+| **Trigger On** | Yes | Date and time of the **first** run. |
+| **Trigger Every** | No | Repeat interval. Leave it empty to run once and stop. |
+| **Trigger Input Type** | — | `Plain text` or `JSON`. |
+| **Trigger Input** | No | The payload the run receives as `$.trigger`. |
 
-**Date Format:** YYYY-MM-DD (e.g., 2025-10-15)
+### Trigger Every
 
-**Time Format:** HH:MM (24-hour format, e.g., 14:30 for 2:30 PM)
+A whole number followed by one unit:
 
-**Timezone:** Select from dropdown or use UTC
+| Unit | Meaning |
+|---|---|
+| `m` | minutes |
+| `d` | days |
+| `w` | weeks |
+| `M` | months — always **30 days** |
+| `y` / `Y` | years — always **365 days** |
 
-For immediate execution, set start time to current time or past time. For future execution, set any future date and time.
+`45m`, `1d`, `2w`, `3M`, `1y`. Anything else is rejected.
 
-### Frequency (Trigger Every)
+<Warning>
+**Avoid the `h` unit.** The editor's own help text offers `h → hours`, but the interval is currently parsed as **minutes** — `2h` repeats every two minutes, not every two hours. Write `120m` if you want two hours, or use `1d` and above.
+</Warning>
 
-Choose how often the flow should repeat after the initial execution.
+<Note>
+`M` and `y` are fixed durations, not calendar arithmetic. `1M` is 30 days regardless of the month, and `1y` is 365 days, so a yearly schedule drifts a day every leap year.
+</Note>
 
-**One-Time Execution:**
+The editor marks anything under `5m` as invalid, but it does not block saving and the platform accepts it. Treat five minutes as the floor even though nothing enforces it.
 
-Leave frequency blank or set to "Never". Flow runs once at the initial start time. No repeat executions. Useful for scheduled reports or one-time data migrations.
+### Trigger On and time zones
 
-**Recurring Execution:**
+**There is no timezone control anywhere on this trigger.** The picker works in your browser's local time and stores the absolute instant you chose. The server never re-reads a wall clock.
 
-Set frequency using time units:
+The consequence is worth stating plainly: repeats are fixed offsets from the previous run, so a `1d` schedule set for 09:00 keeps running at the same absolute moment across a daylight-saving change — which will read as 08:00 or 10:00 locally afterwards, permanently.
 
-- **Minutes:** 1m, 5m, 15m, 30m
-- **Hours:** 1h, 2h, 6h, 12h
-- **Days:** 1d, 2d, 3d, 7d
-- **Weeks:** 1w, 2w, 4w
-- **Months:** 1M, 2M, 3M, 6M
-- **Years:** 1y
+### Trigger Input
 
-**Examples:**
+Whatever you type becomes `$.trigger`, verbatim.
 
-- `1h` - Every hour
-- `1d` - Every day at the same time
-- `1w` - Every week on the same day
-- `1M` - Every month on the same date
-- `15m` - Every 15 minutes
-- `6h` - Every 6 hours
+- **Plain text** — `$.trigger` is that string.
+- **JSON** — `$.trigger` is the parsed object.
+- **Empty** — `$.trigger` is the empty string `""`.
 
-The trigger will run at the frequency specified until it is removed or disabled.
-
-### Timezone Handling
-
-**Local Timezone:**
-
-Schedule uses your selected timezone. Executions happen at the same local time even during daylight saving changes. Best for business hours schedules.
-
-**UTC:**
-
-Schedule uses UTC (Coordinated Universal Time). Executions happen at fixed UTC times regardless of local timezone. Best for global operations and avoiding DST complications.
-
-When scheduling for specific business hours, use local timezone. When coordinating across multiple timezones, use UTC.
-
----
-
-## Common Schedule Patterns
-
-### Business Hours
-
-**Daily at 9 AM:**
-
-- Start Time: Today at 09:00
-- Frequency: 1d
-- Timezone: Local
-
-**Weekday Mornings:**
-
-Create 5 separate schedules for Monday through Friday at 9 AM, or use a single schedule with 1d frequency starting on Monday.
-
-**Every Business Hour:**
-
-- Start Time: Today at 09:00
-- Frequency: 1h
-- Run from 9 AM to 5 PM (requires logic to stop after hours)
-
-### Reports and Analytics
-
-**Daily Report at Midnight:**
-
-- Start Time: Today at 00:00
-- Frequency: 1d
-- Timezone: UTC
-
-**Weekly Report (Monday Morning):**
-
-- Start Time: Next Monday at 08:00
-- Frequency: 1w
-- Timezone: Local
-
-**Monthly Report (First of Month):**
-
-- Start Time: 2025-11-01 at 00:00
-- Frequency: 1M
-- Timezone: UTC
-
-**Quarterly Report:**
-
-- Start Time: 2025-10-01 at 00:00
-- Frequency: 3M
-- Timezone: UTC
-
-### Maintenance and Cleanup
-
-**Nightly Cleanup (2 AM):**
-
-- Start Time: Today at 02:00
-- Frequency: 1d
-- Timezone: Local
-
-**Weekly Backup (Sunday 3 AM):**
-
-- Start Time: Next Sunday at 03:00
-- Frequency: 1w
-- Timezone: UTC
-
-**Hourly Cache Clear:**
-
-- Start Time: Now
-- Frequency: 1h
-- Timezone: UTC
-
-### Monitoring and Alerts
-
-**Every 5 Minutes:**
-
-- Start Time: Now
-- Frequency: 5m
-- Use for system health checks
-
-**Every 15 Minutes:**
-
-- Start Time: Now
-- Frequency: 15m
-- Use for API monitoring
-
-**Every Hour:**
-
-- Start Time: Now
-- Frequency: 1h
-- Use for metrics collection
-
-### Data Processing
-
-**Hourly Data Sync:**
-
-- Start Time: Now
-- Frequency: 1h
-- Fetch and process new data every hour
-
-**Daily Batch Processing:**
-
-- Start Time: Today at 01:00
-- Frequency: 1d
-- Process accumulated data overnight
-
-**Real-time Processing (Every Minute):**
-
-- Start Time: Now
-- Frequency: 1m
-- For near-real-time data updates
-
-Note: For very frequent schedules (every minute), consider if a different trigger type like webhooks or streams would be more efficient.
+<Warning>
+Nothing is added. There is no fire time, no schedule name, no occurrence counter and no flag saying the run was scheduled. A flow cannot tell from `$.trigger` that a schedule started it. If a step needs the time, take it from a date function inside the run.
+</Warning>
 
 ---
 
-## Use Cases
+## Schedules only exist once you publish
 
-### Automated Reports
+<Warning>
+**A schedule is created when the flow is published, not when it is saved.** The editor says so: *"Changes to this trigger will become active once the flow is published."* The platform refuses to schedule a draft outright — the error is `the flow subject cannot be draft`.
+</Warning>
 
-**Daily Sales Report:**
+Publishing does the whole job in one pass: it removes the schedules belonging to the previously published version and creates them from the version you just published.
 
-Schedule: Every day at 8 AM
+That gives a simple rule for every change:
 
-Flow:
-- Trigger: Schedule (1d at 08:00)
-- HTTP Request: Fetch sales data from yesterday
-- Agent: Analyze data and generate insights
-- HTTP Request: Send report email to team
+| You want to | Do this |
+|---|---|
+| Change the time or interval | Edit the trigger, then **Publish** |
+| Add a schedule | Add the trigger, then **Publish** |
+| Stop a schedule | Delete the trigger node, then **Publish** |
 
-**Weekly Analytics Summary:**
-
-Schedule: Every Monday at 9 AM
-
-Flow:
-- Trigger: Schedule (1w on Monday at 09:00)
-- Multiple HTTP Requests: Gather data from analytics platforms
-- Agent: Summarize key metrics and trends
-- HTTP Request: Post to Slack channel
-
-### Maintenance Tasks
-
-**Nightly Database Cleanup:**
-
-Schedule: Every day at 2 AM
-
-Flow:
-- Trigger: Schedule (1d at 02:00)
-- HTTP Request: Delete expired records
-- HTTP Request: Archive old data
-- HTTP Request: Run database optimization
-- HTTP Request: Send completion notification
-
-**Weekly Backup:**
-
-Schedule: Every Sunday at 3 AM
-
-Flow:
-- Trigger: Schedule (1w on Sunday at 03:00)
-- HTTP Request: Trigger backup job
-- Delay: Wait for backup completion
-- HTTP Request: Verify backup success
-- Condition: Alert if failed
-
-### Monitoring and Alerts
-
-**Hourly System Health Check:**
-
-Schedule: Every hour
-
-Flow:
-- Trigger: Schedule (1h)
-- Multiple HTTP Requests: Check service endpoints
-- Agent: Analyze response times and status codes
-- Condition: Any failures?
-  - Yes: Send alert to on-call team
-  - No: Log success
-
-**API Rate Limit Monitor:**
-
-Schedule: Every 15 minutes
-
-Flow:
-- Trigger: Schedule (15m)
-- HTTP Request: Check API usage
-- Agent: Calculate remaining quota
-- Condition: Below threshold?
-  - Yes: Send warning notification
-  - No: Continue monitoring
-
-### Data Synchronization
-
-**Hourly CRM Sync:**
-
-Schedule: Every hour
-
-Flow:
-- Trigger: Schedule (1h)
-- HTTP Request: Fetch new leads from website
-- Agent: Qualify and enrich lead data
-- HTTP Request: Create/update records in CRM
-- HTTP Request: Notify sales team of hot leads
-
-**Daily Inventory Update:**
-
-Schedule: Every day at midnight
-
-Flow:
-- Trigger: Schedule (1d at 00:00)
-- HTTP Request: Get inventory data from warehouse system
-- Map: Transform data format
-- HTTP Request: Update e-commerce platform
-- HTTP Request: Send low stock alerts if needed
-
-### Scheduled Notifications
-
-**Weekly Team Update:**
-
-Schedule: Every Friday at 4 PM
-
-Flow:
-- Trigger: Schedule (1w on Friday at 16:00)
-- HTTP Request: Gather project status updates
-- Agent: Summarize progress and blockers
-- HTTP Request: Post to team Slack channel
-
-**Monthly Invoice Reminder:**
-
-Schedule: First of every month at 9 AM
-
-Flow:
-- Trigger: Schedule (1M at 09:00)
-- HTTP Request: Fetch unpaid invoices
-- Agent: Generate personalized reminders
-- HTTP Request: Send email to customers
-
-### Content Publishing
-
-**Daily Social Media Post:**
-
-Schedule: Every day at 10 AM
-
-Flow:
-- Trigger: Schedule (1d at 10:00)
-- HTTP Request: Get content from queue
-- Agent: Optimize for platform
-- HTTP Request: Post to social media
-- HTTP Request: Track engagement
-
-**Weekly Blog Post:**
-
-Schedule: Every Wednesday at 9 AM
-
-Flow:
-- Trigger: Schedule (1w on Wednesday at 09:00)
-- HTTP Request: Get scheduled blog post
-- Agent: Final review and SEO optimization
-- HTTP Request: Publish to website
-- HTTP Request: Share on social channels
+There is no **Enabled** toggle to switch a schedule off, and deleting the node without publishing leaves the old schedule running.
 
 ---
 
-## Best Practices
+## Naming matters more than it looks
 
-### Choose Appropriate Frequencies
+A schedule's identity is the account, the published flow, and a hash of the trigger's **Name**.
 
-**For Real-time Needs:** Use webhooks or streams instead of very frequent schedules (every minute). Schedules are best for batch operations.
-
-**For Monitoring:** Every 5-15 minutes is reasonable. More frequent monitoring should use event-driven triggers.
-
-**For Reports:** Match business needs. Daily, weekly, or monthly is typical.
-
-**For Maintenance:** Schedule during low-traffic hours (overnight or weekends).
-
-### Timezone Considerations
-
-**Business Hours:** Use local timezone for schedules tied to business operations.
-
-**Global Operations:** Use UTC to avoid confusion across timezones.
-
-**Daylight Saving Time:** If using local timezone, be aware of DST transitions. UTC avoids this issue.
-
-**Test Timezone:** Always test schedules to ensure they run at expected times.
-
-### Performance and Efficiency
-
-**Batch Processing:** Group multiple operations in one scheduled run instead of many frequent runs.
-
-**Off-Peak Execution:** Schedule resource-intensive tasks during low-traffic periods.
-
-**Timeout Handling:** Ensure flows complete within reasonable time. Long-running flows should use background mode.
-
-**Error Recovery:** Implement retry logic and error notifications for critical scheduled tasks.
-
-### Monitoring and Alerts
-
-**Execution Logs:** Regularly review scheduled flow execution logs.
-
-**Failure Alerts:** Set up notifications for failed scheduled executions.
-
-**Success Confirmations:** For critical schedules, send success confirmations.
-
-**Metrics Tracking:** Monitor execution time and resource usage.
-
-### Maintenance
-
-**Review Schedules Regularly:** Disable unused schedules to reduce costs.
-
-**Update as Needed:** Adjust frequencies based on actual business needs.
-
-**Document Purpose:** Add clear descriptions to each schedule explaining its purpose.
-
-**Test After Changes:** Always test schedules after modifying flow logic.
+<Warning>
+**Two schedule triggers on the same flow with the same Name collapse into one.** The second silently replaces the first at publish, with no error and no warning. If a flow carries more than one schedule, give each a distinct name.
+</Warning>
 
 ---
 
-## Managing Schedules
+## Execution
 
-### Enable and Disable
+### The first run
 
-Toggle schedules on/off without deleting them. Useful for temporary pauses or seasonal schedules.
+At the moment given by **Trigger On**. Set a time in the past and it fires as soon as the flow is published.
 
-To disable: Open flow, find Schedule trigger, toggle "Enabled" to off.
+### Repeats
 
-To re-enable: Toggle back on. Next execution will occur at next scheduled time.
+Each run schedules the next one **when it starts**, as *now plus the interval* — not as *the previous scheduled time plus the interval*.
 
-### Updating Schedules
+Two things follow:
 
-Change start time: Updates apply to next execution, not current schedule.
+**Runs overlap.** The flow is launched and the next occurrence is armed immediately; nothing waits for the run to finish. An interval shorter than the flow's runtime means several copies running at once. There is no concurrency limit, no skip-if-running and no queue.
 
-Change frequency: New frequency applies immediately. Next execution calculated from last run.
+**The schedule drifts later.** Each cycle adds whatever delay there was between the due moment and the actual fire. A "daily" job creeps later every day and never corrects itself.
 
-Change timezone: Affects all future executions. Existing scheduled times recalculated.
+<Tip>
+If drift matters, use a shorter interval and make the flow's first step decide whether there is anything to do — a Condition on the current time, or on whether work is outstanding.
+</Tip>
 
-### Deleting Schedules
+### Failures
 
-Remove Schedule trigger from flow to permanently delete. All future executions canceled immediately. Past execution logs remain available.
+A run that errors still arms the next occurrence. There is no retry, no backoff and no alert; the failure appears in **Monitoring** and nowhere else.
 
-### Multiple Schedules
+### Downtime
 
-You can add multiple Schedule triggers to a single flow. Each trigger operates independently. Useful for different execution patterns (daily report plus weekly summary).
+The next occurrence is held in durable storage, so a restart does not lose a schedule. On restart, an occurrence that came due while the platform was down fires **once**, immediately — and the interval then restarts from that moment.
 
-You can also create separate flows for different schedules if they have different logic.
+<Warning>
+There is no catch-up. A five-minute schedule that missed six hours produces one run, not seventy-two. The skipped occurrences leave no record.
+</Warning>
+
+### Runs are always detached
+
+A scheduled run never waits for a result and never returns one, so nothing about the flow's outcome reaches the scheduler. Everything the run produces has to be written or sent by a step.
 
 ---
 
-## Execution Behavior
+## Reading the payload
 
-### First Execution
+With **Trigger Input Type** set to `JSON` and this input:
 
-If start time is in the past: Executes immediately upon activation.
+```json
+{ "report": "weekly-summary", "recipients": ["ops@example.com"], "window_days": 7 }
+```
 
-If start time is in the future: Waits until specified time.
+| Expression | Resolves to |
+|---|---|
+| `$.trigger.report` | `"weekly-summary"` |
+| `$.trigger.window_days` | `7` |
+| `$.trigger.recipients` | `["ops@example.com"]` |
+| `$.trigger.recipients[0]` | `"ops@example.com"` |
 
-One-time schedules: Execute once and stop.
+With **Plain text**, `$.trigger` is the whole string and there are no sub-paths.
 
-Recurring schedules: Execute, then wait for frequency interval.
-
-### Recurring Execution
-
-After initial execution, flow repeats at specified frequency. Frequency calculated from last execution time, not fixed intervals.
-
-Example with 1h frequency:
-- First execution: 10:00 AM
-- Second execution: 11:00 AM
-- Third execution: 12:00 PM
-
-If an execution takes longer than the frequency, next execution waits until current one completes.
-
-### Missed Executions
-
-If system downtime occurs during scheduled time: Execution happens immediately when system recovers.
-
-Multiple missed executions: Only one catch-up execution occurs, not multiple.
-
-For critical schedules: Implement additional monitoring to detect missed executions.
-
-### Overlapping Executions
-
-By default, new execution waits if previous execution still running. To allow parallel executions: Configure in advanced settings (requires Team or Enterprise plan).
-
-Be cautious with parallel executions as they can cause resource contention.
+<Note>
+**What runs after the trigger is decided by each step's outcome, not by the arrows in the editor.** A Condition step's outcome names the step IDs to run next — one, several (they start at the same time), or the reserved `RESOLVE_SUCCESS` / `RESOLVE_ERROR` to end the run. A line drawn between two steps that no outcome names is decoration.
+</Note>
 
 ---
 
 ## Troubleshooting
 
-### Schedule Not Running
+<AccordionGroup>
+  <Accordion title="The schedule never runs">
+    Almost always because the flow has not been published since the trigger was added. **Save** does not create a schedule; **Publish** does.
+  </Accordion>
 
-**Check schedule is enabled:** Verify toggle is on in trigger configuration.
+  <Accordion title="It runs far more often than I asked">
+    Check the unit. `2h` currently repeats every two minutes. Use `120m`.
+  </Accordion>
 
-**Check flow is published:** Unpublished flows don't execute schedules.
+  <Accordion title="A change to the time did nothing">
+    Publish the flow. Schedules are rebuilt from the published version at publish time and at no other point.
+  </Accordion>
 
-**Check start time:** Ensure start time is correct and timezone is set properly.
+  <Accordion title="I deleted the trigger but it is still running">
+    Publish the flow. The unschedule happens during publish.
+  </Accordion>
 
-**Check frequency:** Verify frequency is set if recurring execution expected.
+  <Accordion title="Only one of my two schedules fires">
+    Give them different **Name** values. Same name on the same flow means one schedule.
+  </Accordion>
 
-**Review execution logs:** Look for errors or skipped executions.
+  <Accordion title="Runs are piling up on top of each other">
+    The interval is shorter than the flow takes. Lengthen it, or have the flow exit early when a previous run is still in progress.
+  </Accordion>
 
-### Running at Wrong Time
-
-**Verify timezone setting:** Common issue when timezone is set incorrectly.
-
-**Check daylight saving time:** If using local timezone, DST transitions can shift times.
-
-**Confirm start time:** Double-check 24-hour time format (14:00 not 2:00).
-
-**Review execution logs:** Check actual execution timestamps.
-
-### Executions Failing
-
-**Check flow errors:** Review execution logs for error messages.
-
-**Test flow manually:** Run flow manually to identify issues.
-
-**Check external services:** Verify APIs and services are accessible.
-
-**Review timeout settings:** Ensure flow completes before timeout.
-
-### Performance Issues
-
-**Long execution times:** Optimize flow steps or break into smaller flows.
-
-**Resource limits:** Check if hitting plan limits for compute or storage.
-
-**Concurrent executions:** Reduce frequency if executions overlap.
-
-**External API delays:** Implement retry logic and timeout handling.
-
----
-
-## Schedule Limits by Plan
-
-**Free Tier:**
-- Maximum 5 active schedules
-- Minimum frequency: 1 hour
-- Best for: Testing and personal projects
-
-**Starter Plan:**
-- Maximum 25 active schedules
-- Minimum frequency: 15 minutes
-- Best for: Small businesses
-
-**Pro Plan:**
-- Maximum 100 active schedules
-- Minimum frequency: 5 minutes
-- Best for: Growing businesses
-
-**Team Plan:**
-- Maximum 500 active schedules
-- Minimum frequency: 1 minute
-- Parallel execution support
-- Best for: Teams and departments
-
-**Enterprise Plan:**
-- Unlimited schedules
-- Minimum frequency: Custom (down to seconds)
-- Advanced scheduling features
-- Priority execution
-- Best for: Large organizations
-
----
-
-## Advanced Scheduling
-
-### Conditional Execution
-
-Use Condition step at start of flow to check if execution should proceed:
-
-```javascript
-// Only run on weekdays
-const day = new Date().getDay();
-if (day === 0 || day === 6) {
-  return 'skip'; // Weekend, skip execution
-}
-```
-
-### Dynamic Scheduling
-
-Schedules are static, but you can build logic to handle dynamic needs:
-
-- Use Condition steps to route based on time of day
-- Use Agent to determine what actions to take
-- Use Map to process different data based on context
-
-### Execution History
-
-View past executions in flow logs. See execution time, duration, status (success/error), and full execution details.
-
-Filter by date range, status, or search by execution ID. Export logs for analysis or compliance.
+  <Accordion title="It runs an hour out after a clock change">
+    Expected. The start time is an absolute instant and repeats are fixed offsets — nothing re-reads a wall clock. Edit **Trigger On** and publish to move it back.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Upload Trigger" icon="upload" href="/flows/triggers/upload">
-    Trigger flows when documents are uploaded
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    Decide at run time whether there is work to do
   </Card>
-  
-  <Card title="Email Trigger" icon="envelope" href="/flows/triggers/email">
-    Trigger flows from incoming emails
+
+  <Card title="Monitoring" icon="chart-line" href="/flows/steps/overview">
+    Where scheduled runs and their failures appear
   </Card>
-  
-  <Card title="HTTP Request Step" icon="globe" href="/flows/steps/http-request">
-    Make API calls in scheduled flows
+
+  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
+    Reading the trigger input in later steps
   </Card>
-  
-  <Card title="Agent Steps" icon="robot" href="/flows/steps/agents">
-    Process scheduled data with AI agents
+
+  <Card title="Triggers Overview" icon="bolt" href="/flows/triggers/overview">
+    Every way a flow can start
   </Card>
 </CardGroup>
