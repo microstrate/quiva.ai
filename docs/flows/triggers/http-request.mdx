@@ -106,9 +106,17 @@ For the body above:
 Request headers are on `$.env.headers`, flattened to strings:
 
 ```
-$.env.headers["content-type"]
-$.env.headers.user-agent
+$.env.headers["Content-Type"]
+$.env.headers["User-Agent"]
 ```
+
+<Note>
+Two different casings live in this map. A header **the caller sent** arrives in
+canonical form — `Content-Type`, `User-Agent`, `X-Api-Key` — because Go's HTTP
+server normalises it on the way in. A header **the platform added** for you is
+lower-case: `x-method`, `x-url`, `x-account-id` and every `x-param-*`. Nothing
+after the gateway re-cases either, so match what you see here exactly.
+</Note>
 
 `$.env.auth_token` holds the bearer token the call carried, and `$.env.run_id` the run's tracking ID.
 
