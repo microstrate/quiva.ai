@@ -169,16 +169,6 @@
                   "advanced/rules/advanced-techniques",
                   "advanced/rules/technical-reference"
                 ]
-              },
-              {
-                "group": "Annie",
-                "pages": [
-                  "annie/sota-landscape",
-                  "annie/annie-architecture",
-                  "annie/competitive-anaylsis",
-                  "annie/hypothesis",
-                  "annie/partner-propositions"
-                ]
               }
             ]
           }
