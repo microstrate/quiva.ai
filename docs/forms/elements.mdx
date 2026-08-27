@@ -1,0 +1,196 @@
+---
+title: "Fields and elements"
+description: "Every control a form can place — which ones each field type accepts, what each one stores, and the headings, notes and cards that go around them"
+icon: "input-text"
+---
+
+Everything on a form is one of four things: an **input** bound to a schema field, an **object group**,
+a **repeater**, or a **presentational element** that asks for nothing.
+
+---
+
+## Inputs
+
+A field's schema type decides which controls it can wear. The editor offers only compatible ones, so
+you cannot accidentally put a date picker on a number.
+
+| Schema type | Controls offered |
+|---|---|
+| **Text** | Text, Textarea, Email, Select, Multi-select, Multi-toggle, Chips, List, Date, Date range, Phone, Country, Multi-country, Uploader |
+| **Number** / **Integer** | Number, Currency, Slider |
+| **Yes/No** | Toggle, Checkbox |
+| **List** | Chips, List; **Multi-select** as well when the list has a fixed set of allowed values; **Uploader** as well when it is a list of text |
+| **Object** | Key-value |
+
+When a field is placed without a control being chosen, it gets the default for its type: text fields
+become a **Text** box, numbers a **Number** box, yes/no a **Toggle**, lists **Chips**, and objects a
+**Key-value** editor.
+
+### What each one stores
+
+<AccordionGroup>
+  <Accordion title="Text, Textarea, Email, Phone" icon="font">
+    A single string. **Email** looks like a text box but rejects anything that is not a valid
+    address when the field has a value; leaving it empty is governed by *required*, not by the email
+    check.
+  </Accordion>
+  <Accordion title="Select, Multi-toggle, Checkbox on a text field" icon="caret-down">
+    A choice from a fixed list. These need **two** things set up, and both live in the inspector:
+    the allowed values on the field itself (under **Validation**), and the human-readable choices on
+    the placed input (under **Options**, each an internal value plus the label people see).
+
+    Set the allowed values and forget the choices and the control renders empty. Set the choices and
+    forget the allowed values and nothing is checked. Set both with different value lists and every
+    selection is rejected as *must be one of the allowed values*. Author them together, with
+    identical values.
+  </Accordion>
+  <Accordion title="Multi-select, Multi-toggle, Multi-country, Checkbox, Uploader on a text field" icon="list-check">
+    These are multi-valued controls, but on a **text** field they store their answers as one
+    comma-separated string. The control expands it for editing and re-joins it on save.
+
+    If you want a genuine list in the data — to count it, to check a minimum number of items, or to
+    read it item by item — type the field as a **list**, not as text.
+  </Accordion>
+  <Accordion title="Number, Currency, Slider" icon="input-numeric">
+    A number. Currency and Slider are presentation over the same value: currency adds the symbol and
+    decimal handling, the slider adds a track with a minimum and maximum.
+  </Accordion>
+  <Accordion title="Toggle, Checkbox on a yes/no field" icon="toggle-on">
+    True or false.
+  </Accordion>
+  <Accordion title="Date, Date range" icon="calendar">
+    A date, or a pair of dates. Minimum and maximum dates are set under **Validation**.
+  </Accordion>
+  <Accordion title="Country, Multi-country" icon="flag">
+    A country code, or several. The list can be narrowed to a chosen set, and shown with native
+    names alongside English ones.
+  </Accordion>
+  <Accordion title="Chips, List, Key-value" icon="tags">
+    **Chips** collect short values as removable tags. **List** gives an add/remove list of plain
+    values. **Key-value** edits an object as name/value pairs, for the cases where the shape is not
+    known in advance.
+  </Accordion>
+  <Accordion title="Uploader" icon="cloud-arrow-up">
+    Attaches files to the record. Its settings cover where files are stored, the upload button and
+    dropzone wording, the maximum number of files, the maximum size of each, and which file types
+    are allowed. The file count is checked on submit; going over it blocks the form.
+  </Accordion>
+</AccordionGroup>
+
+### Settings on a placed input
+
+The inspector splits an input's settings into groups, and which groups appear depends on the
+control:
+
+| Group | Holds |
+|---|---|
+| **Settings** | Label, placeholder, helper text, spacing below, default value, and control-specific display options |
+| **Options** | The list of choices, and how it is sorted — choice controls only |
+| **File storage** | Where uploads are kept — the Uploader only |
+| **Validation** | Required, minimum and maximum, decimal places, date bounds, item and file limits |
+
+<Note>
+The presentation settings live on the field **as placed on this form**, not on the Record Set. The
+same field can carry a different label, a different placeholder and a different control on two
+different forms.
+</Note>
+
+<Warning>
+A minimum, a maximum or a maximum item count set on the *control* shapes what the control lets
+someone do — it does not police what a record may contain. A value written by the API or by Abbie
+bypasses the control entirely. If a limit genuinely matters, set it on the field's schema too.
+</Warning>
+
+---
+
+## Object groups
+
+Place a field whose type is **object** and that has known properties, and the form draws a bordered
+group headed by the object's title, with every one of its members rendered as its own input,
+recursively.
+
+That is one node on the canvas doing the work of many — quick to place, and it stays in step with
+the schema automatically when a member is added.
+
+<Warning>
+**The members are not separate elements.** They cannot be given their own control, their own label,
+or their own conditional rule; a rule placed on the group applies to the group as a whole. If any
+member needs its own treatment, place each member individually instead of placing the object.
+</Warning>
+
+---
+
+## Repeaters
+
+A **Repeater** collects a list of things, each with the same set of fields — line items on an
+equipment request, sites on a supplier record, people on a visit report. It binds to a field typed
+as a **list of objects**, and you lay out the fields of one item inside it; the person filling the
+form then adds as many items as they need.
+
+Its settings:
+
+| Setting | Effect |
+|---|---|
+| **Label** | The heading above the list |
+| **Required (at least one item)** | Blocks submission with an empty list |
+| **Min items** / **Max items** | Bounds on how many items can be added |
+| **Collapsible** | Whether each item can be folded away |
+| **Collapsed by default** | Whether items start folded |
+
+<Note>
+A repeater cannot contain another repeater. For a genuinely two-level list, hold the inner list on
+the item as a **Chips** or **List** field.
+</Note>
+
+Fields inside a repeater belong to the item, not to the record — which matters when you write a
+conditional rule on one. See
+[rules inside a repeater](/forms/form-rules#rules-inside-a-repeater).
+
+---
+
+## Presentational elements
+
+These render text and structure. They are never bound to a field and never store anything.
+
+| Element | What it is |
+|---|---|
+| **Heading** | A section title, in one of six sizes, left/centre/right aligned |
+| **Paragraph** | A block of rich text |
+| **Note** | Smaller rich text, optionally truncated after a set number of lines |
+| **Link** | Clickable text pointing at a web address, with an optional note beneath it |
+| **Alert** | A coloured callout with a title, body text and an icon. Its type is Info, Success, Warning, Error or None |
+| **Card** | A box around a group of rows, with a border, an optional coloured accent bar, rounded corners and an optional shadow |
+| **Collapsible card** | The same, with a header the reader can fold away, and a choice of whether it starts open |
+
+Cards are containers: they hold rows laid out exactly like the top level of the form.
+
+### What a rule can change on each
+
+Presentational elements can be driven by [form rules](/forms/form-rules) too — usually to make a
+warning appear, or to change what it says.
+
+| Element | Rules can drive |
+|---|---|
+| Heading | Visible, Text |
+| Paragraph, Note | Visible, Text |
+| Link | Visible, Link, Underline |
+| Alert | Visible, Title, Text, Type, Show icon, Icon |
+| Card | Border, Shadow, Rounded corners |
+| Collapsible card | Border, Shadow, Rounded corners, Note, Text (its header) |
+
+<Warning>
+**Neither card kind offers a Visible rule, and that is deliberate.** Hiding a section by hiding the
+card around it leaves the answers inside it in the record and still subject to schema validation.
+To make a section conditional, put the rule on the **row** that contains the card — and keep the
+conditional fields in ordinary rows rather than inside the card. The full explanation, with what
+goes wrong, is in
+[what conditional visibility does and does not clear](/forms/form-rules#what-conditional-visibility-does-and-does-not-clear).
+</Warning>
+
+### Shared value sets
+
+- **Size** — Extra small, Small, Medium, Large, Extra large, Huge
+- **Alignment** — Left, Centre, Right
+- **Alert type** — Info, Success, Warning, Error, None
+- **Card accent** — None, Primary, Success, Warning, Error
+- **Border** — All sides, Top, Bottom, Top & bottom, Left

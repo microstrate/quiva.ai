@@ -1,0 +1,166 @@
+---
+title: "The rule assistant"
+description: "Describing a form rule in plain language and having it written for you — what the assistant is given, what it hands back, and where it needs checking"
+icon: "wand-magic-sparkles"
+---
+
+[Form rules](/forms/form-rules) are JsonLogic expressions. Most people should never have to write
+one. The **rule assistant** takes a sentence — *only show this when the request is for equipment and
+the cost is over a thousand* — and produces both the expression and a plain-English statement of
+what it does.
+
+It lives on every rule card, in the **Rules** tab of the form editor's inspector.
+
+---
+
+## The rule card
+
+Select a field, a row or an element, open **Rules**, and add a rule. Each rule is a card with:
+
+<CardGroup cols={2}>
+  <Card title="A header" icon="tag">
+    The property the rule drives, a tick once it has a condition, and a one-line summary of what the
+    condition says.
+  </Card>
+  <Card title="A Description box" icon="align-left">
+    Free text, read by whoever opens the form next. This is the only thing most people will read
+    before trusting the rule.
+  </Card>
+</CardGroup>
+
+Below those, two tabs: **Generate** and **Raw**.
+
+---
+
+## Generate: a sentence into a rule
+
+<Steps>
+  <Step title="Say what you want in the prompt box">
+    Ordinary language. Type `@` to reference a field by name — the picker lists every field in the
+    Record Set, nested ones grouped under their parent, and inserts the correct reference so the
+    rule points at the right thing.
+  </Step>
+  <Step title="Press Generate rule">
+    The assistant is told which property the rule drives, the fields available with their types and
+    any fixed lists of allowed values, and the structure of the form you are editing.
+  </Step>
+  <Step title="It fills in the condition and the description together">
+    On success the rule card updates and confirms *Rule generated*. The description it writes lands
+    in the Description box; if you had already written one, yours is kept.
+  </Step>
+  <Step title="Check it, then preview it">
+    Read the summary in the card header, then switch to **Preview** and exercise the rule both ways.
+  </Step>
+</Steps>
+
+If it cannot turn the prompt into a rule, it says so — *Could not build a rule* — and the rule is
+left exactly as it was. Nothing is half-written. Rephrasing more concretely, and naming the fields
+with `@` rather than describing them, is usually enough.
+
+---
+
+## Generate a description for a rule that already exists
+
+Once a rule has a condition, a wand button appears beside the Description box. It asks the assistant
+to read the rule and write out what it does in prose — useful for a rule inherited from someone else,
+or one written in the Raw tab.
+
+This does not change the rule. It only fills in the description.
+
+---
+
+## The summary line
+
+Separately from the assistant, every rule card carries a short summary in its header, worked out
+directly from the condition without asking anything:
+
+| Condition | Summary |
+|---|---|
+| `{"==": [{"var": "request_type"}, "equipment"]}` | *Show this element when request_type is "equipment".* |
+| `{"!!": {"var": "external_supplier"}}` | *Require this field when external_supplier.* |
+| `{"in": [{"var": "team"}, ["operations", "support"]]}` | *Show this element when team is one of "operations", "support".* |
+| `{"<=": [1, {"var": "headcount"}, 10]}` | *Show this element when headcount is between 1 and 10.* |
+| `false` | *Show this element never (always off).* |
+
+It is always up to date, because it is derived from the condition rather than stored alongside it —
+which makes it the honest reading when a hand-edited condition and a stale description disagree.
+
+<Note>
+A condition the summary cannot phrase comes out looking like a function call —
+`contains(notes, "urgent")`. Arithmetic and list operators read this way legitimately (`+(a, b)`),
+so it is a reason to look rather than proof of a fault. But if a *comparison* comes out that way,
+the operator is almost certainly one that
+[does not exist](/forms/form-rules#when-a-rule-silently-hides-a-field).
+</Note>
+
+---
+
+## Raw: editing the rule directly
+
+The **Raw** tab shows the rule as JSON — its property, its condition, its description — and applies
+what you type as you type it. Invalid JSON is flagged and not applied.
+
+Use it to adjust a generated rule, to write an operator combination the assistant did not reach for,
+or to set a bare `true` / `false`.
+
+<Note>
+The rule's internal id is always regenerated from the element and the property it drives. Changing it
+in the Raw tab has no effect.
+</Note>
+
+---
+
+## What it cannot do
+
+<Warning>
+**The assistant can produce an operator the engine does not have.** It is a language model writing
+JsonLogic, and JsonLogic dialects elsewhere include `contains`, `startsWith` and `matches`, which
+this engine does not. A rule using one evaluates to nothing, and a **Visible** rule that evaluates to
+nothing hides the field permanently and silently. Check the generated condition against
+[the operator list](/forms/form-rules#the-operators-that-work), and preview the form before saving.
+</Warning>
+
+<AccordionGroup>
+  <Accordion title="It has no memory between rules" icon="rotate-left">
+    Every generation is a fresh, one-shot request. It does not know about the rule you generated a
+    moment ago on another field, and it cannot be corrected by a follow-up message. To refine, edit
+    the prompt and generate again, or adjust the result in the Raw tab.
+  </Accordion>
+  <Accordion title="It does not see everything on the form" icon="eye-slash">
+    The structure it is given covers the form's rows and the fields placed in them. Fields inside a
+    **Repeater**, and presentational elements such as headings and alerts, are not described to it.
+    A rule about a repeater's contents needs checking especially carefully, because the scope rules
+    inside a repeater are unusual — see
+    [rules inside a repeater](/forms/form-rules#rules-inside-a-repeater).
+  </Accordion>
+  <Accordion title="It cannot tell you a rule is a bad idea" icon="triangle-exclamation">
+    It writes the rule you asked for. It will not warn you that hiding a schema-required field
+    blocks submission, that a **Visible** rule on a card does not clear what is inside it, or that a
+    *less than* comparison shows the field to everyone who has not answered yet. Those are covered
+    in [Form rules](/forms/form-rules).
+  </Accordion>
+  <Accordion title="It does not check the rule against real data" icon="flask">
+    Nothing is executed during generation. The only place a rule is genuinely exercised before
+    people meet it is the editor's **Preview** tab.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## A working habit
+
+<Steps>
+  <Step title="Generate">
+    Describe the rule, referencing fields with `@`.
+  </Step>
+  <Step title="Read the summary line">
+    Not the description — the summary, which is derived from the condition itself.
+  </Step>
+  <Step title="Preview both ways">
+    Make the condition true, then false, and confirm the form does what you meant in both states.
+  </Step>
+  <Step title="Keep the description honest">
+    If you hand-edit the condition afterwards, update the description or regenerate it. A stale
+    description is worse than none — it is the thing the next person trusts.
+  </Step>
+</Steps>

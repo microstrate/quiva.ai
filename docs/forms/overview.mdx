@@ -1,0 +1,172 @@
+---
+title: "Forms"
+description: "The layouts people fill in to create a record — how a form relates to its Record Set, where forms are filled, and what the person filling one actually sees"
+icon: "rectangle-list"
+---
+
+A **form** is a layout over a [Record Set](/spaces/records#record-sets). The Record Set decides *what*
+data exists and what is valid; the form decides *how it is asked for* — which fields appear, in what
+order, in what columns, with which controls, and under what conditions.
+
+The two are deliberately separate. One Record Set can carry several forms, so a supplier onboarding
+set can have a short "Add a supplier" form for the operations team and a longer "Full supplier
+review" form for procurement, both writing to the same records.
+
+---
+
+## How a form relates to its Record Set
+
+<CardGroup cols={2}>
+  <Card title="The schema owns validity" icon="list-check">
+    Field names, types, required-ness, allowed values, minimums and patterns. Enforced on every
+    save, by the browser and again by the service.
+  </Card>
+  <Card title="The form owns presentation" icon="grid-2-plus">
+    Which fields are placed, their layout, their labels and placeholders, which control renders
+    them, and the conditional logic that shows or hides them.
+  </Card>
+</CardGroup>
+
+A form places fields — it does not create them. A field must exist in the schema before it can be
+placed, and a field left out of a form is still part of the record; it is simply not asked for on
+that form.
+
+<Note>
+Because presentation lives on the placed field rather than on the schema, the *same* field can be a
+plain text box on one form and a dropdown with a curated list of choices on another. Changing a
+label on one form never touches the other.
+</Note>
+
+### What a form carries
+
+| Part | Notes |
+|---|---|
+| A title | What the form is called in the switcher, the Space's form picker, and the modal header. |
+| A description | Optional. Shown to the person filling it in. |
+| An id | Derived from the title when the form is created, and it appears in the editor URL. Duplicate titles get a numbered suffix. |
+| A layout | The grid of rows, fields, containers and presentational elements. See [Building a form](/forms/building-a-form). |
+
+A Record Set always keeps **at least one** form — the delete control is disabled on the last one. Where
+nothing has picked a particular form, the one named *Default* is used, falling back to the first form
+in the list.
+
+---
+
+## Several forms, and which one a Space uses
+
+When a Record Set offers more than one form, each Space picks the one it uses at
+**Edit Space → Records → Form views**, which lists every attached Record Set with a dropdown of its
+forms. A Record Set with a single form has nothing to choose.
+
+<Warning>
+Pinning a form is per Space, not per person. Everyone working in that Space gets the same form for
+that Record Set. If two groups genuinely need different questions, that is two Spaces or two Record
+Sets — not two forms in one Space.
+</Warning>
+
+---
+
+## Where a form is actually filled in
+
+There is no single "forms" area. A form surfaces in three places, all of which write to the same
+records.
+
+<AccordionGroup>
+  <Accordion title="The Space's Records tab" icon="table">
+    Open a Space, go to **Records**, pick a Record Set on the left. **New record** opens the Space's
+    pinned form as a create form; clicking an existing row opens the record, and **Edit** reopens the
+    same form with the stored values loaded.
+  </Accordion>
+  <Accordion title="A task action" icon="circle-check">
+    A task can carry a **Fill in form** action pointing at a Record Set — and, where the set offers
+    several forms, at a named one. The assignee completes it from the task rather than from the
+    record table. Several forms on one action become several steps, completed in order and
+    resumable. See [Task Actions](/spaces/task-actions).
+  </Accordion>
+  <Accordion title="Inside a conversation with Abbie" icon="comments">
+    A form can be raised as a card in a chat, either whole or cut into sections that Abbie asks about
+    a few at a time. See [Form flows](/forms/form-flows).
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+**There is no public form link.** A QuivaWorks form cannot be published to an anonymous URL the way
+a survey tool publishes one. Everyone who fills a form in is signed in — a colleague in the Space, or
+a client signed into the [client portal](/spaces/client-portal). If you need to collect something
+from someone with no account at all, that is a job for an inbound channel, not a form link.
+</Warning>
+
+---
+
+## What the person filling it in sees
+
+The form renders as the rows you laid out, in order, with the columns you chose. It collapses to a
+single column on a narrow screen.
+
+<Steps>
+  <Step title="Fields appear and disappear as they answer">
+    A field or a row carrying a conditional rule shows only while its condition holds. Nothing is
+    greyed out or crossed through — it is simply not there. See [Form rules](/forms/form-rules).
+  </Step>
+  <Step title="Validation runs on submit, not on every keystroke">
+    Pressing the submit control checks the whole form at once and marks each failing field with its
+    own message underneath it.
+  </Step>
+  <Step title="Hidden answers are discarded">
+    Anything hidden by a rule at the moment of submission is stripped out before validation and
+    before saving. A value typed under an earlier answer, then hidden when that answer changed, does
+    not survive onto the record.
+  </Step>
+  <Step title="The record is checked again on the way in">
+    The service validates every record against the Record Set's schema on create and on update. A
+    record that fails is rejected outright — nothing is coerced and nothing is partly saved.
+  </Step>
+</Steps>
+
+### The two validation passes
+
+A submit runs two checks and merges the results.
+
+| Pass | Covers | Where the rule lives |
+|---|---|---|
+| The placed field | **Required**, a valid email address in an Email input, and the file count on an Uploader | On the field as you placed it on *this* form |
+| The schema | Types, allowed values, minimum and maximum, length, pattern, item counts | On the Record Set, so it applies to every form |
+
+Where both have something to say about one field, the schema's message is the more specific one and
+is the one shown.
+
+<Note>
+**Required has two homes, and they behave differently.** Marking a field required in the schema makes
+it required everywhere, on every form and on every API write. Marking a placed field required in the
+form's inspector makes it required *on that form only*. A short intake form can leave a field optional
+while a fuller review form insists on it — as long as the schema itself does not demand it.
+</Note>
+
+---
+
+## A word of warning about "rules"
+
+Forms have conditional logic, and so do [flows](/flows/overview) — and the two are **completely
+different engines with completely different syntax**. A form's rules are JsonLogic; a flow's
+[Rules step](/flows/steps/rules) is a facts-and-rules engine documented separately at
+[Rules](/advanced/rules/overview). Nothing you learn about one applies to the other. See
+[QuivaWorks has two rule engines](/forms/form-rules#quivaworks-has-two-rule-engines-this-is-the-other-one).
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Building a form" icon="grid-2-plus" href="/forms/building-a-form">
+    The editor: palette, canvas, inspector, and generating a layout from a description.
+  </Card>
+  <Card title="Fields and elements" icon="input-text" href="/forms/elements">
+    Every control available, what each one stores, and the headings, notes and cards around them.
+  </Card>
+  <Card title="Form rules" icon="code-branch" href="/forms/form-rules">
+    Conditional visibility, conditional requirement and computed values.
+  </Card>
+  <Card title="Form flows" icon="diagram-project" href="/forms/form-flows">
+    Cutting one form into sections Abbie asks about a few at a time.
+  </Card>
+</CardGroup>

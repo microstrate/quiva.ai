@@ -1,0 +1,176 @@
+---
+title: "Form flows"
+description: "Cutting one long form into sections Abbie asks about a few fields at a time, in conversation, with somewhere to pick up from"
+icon: "diagram-project"
+---
+
+A long form is a wall. A **flow** cuts one form into ordered **sections** and lets
+[Abbie](/assistants/overview) work through them in a conversation — a few fields, then the next few,
+with a line of her own before each one.
+
+It is the same form, the same fields, the same rules and the same validation. Only the delivery
+changes.
+
+<Note>
+A flow is not a second form and is not a separate page anyone visits. It is a set of dividers laid
+across one form you have already built. Everything about labels, controls, layout and conditional
+logic comes from that form.
+</Note>
+
+---
+
+## When a flow is the right shape
+
+<CardGroup cols={2}>
+  <Card title="Use a flow when" icon="circle-check">
+    The form is long enough that seeing all of it discourages people, or when the natural way to
+    collect it is a conversation — an onboarding questionnaire, an intake checklist, a review that
+    happens over more than one sitting.
+  </Card>
+  <Card title="Don't use a flow when" icon="circle-xmark">
+    The form is short. One section asking for the whole form is exactly the same as opening the
+    form, and the editor says so.
+  </Card>
+</CardGroup>
+
+For a task that asks someone to complete **several different forms** in order, you want a
+[task action](/spaces/task-actions) with several forms on it, not a flow. That runs as numbered
+steps on the task, tracks *2 / 5 steps completed*, and can be picked up where it was left. A flow
+cuts a **single** form and runs inside a conversation.
+
+---
+
+## Building one
+
+Open the form in the editor and use the **Add flow** control in the header — the same control reads
+**Edit flow** once one exists.
+
+<Steps>
+  <Step title="Name it">
+    **Title** is what the flow is called — *Supplier onboarding*, *Equipment request*.
+  </Step>
+  <Step title="Write the opening line">
+    **Intro** is what Abbie says before the first section — *Let's get you set up — a few quick
+    questions.*
+  </Step>
+  <Step title="Choose the form to cut">
+    **Form** picks which of the Record Set's forms the sections are cut from. It must be a form with
+    fields on it.
+  </Step>
+  <Step title="Split it">
+    The form's rows are listed, with a **Split here** control between them. Each split starts a new
+    section. Give each section a title, and optionally a line for Abbie to say when she raises it.
+  </Step>
+  <Step title="Save">
+    **Create flow** the first time, **Save** afterwards. **Remove flow** deletes the flow and leaves
+    the form untouched.
+  </Step>
+</Steps>
+
+A section is a **contiguous run of rows**, in the order they appear on the form. You cannot reorder
+the form by cutting it, and you cannot put one row into two sections. If the order is wrong, change
+the form.
+
+### What the editor will not let you save
+
+The editor checks the cut as you make it, and the service checks it again on save.
+
+| Problem | Why it is refused |
+|---|---|
+| A section starts at a row the form does not have | The divider has nothing to anchor to |
+| Two sections claim the same row | A row belongs to exactly one section |
+| A section starts above the previous one | Sections run in the form's own order |
+| A section owns no rows | It could never be answered |
+| A required field is in no section | Named explicitly: *"…" does not collect "…", which this record requires, so the record could never be completed. Add it to the form, or make it optional* |
+
+A flow left with a single section is allowed but pointed out: *One section asks for the whole form at
+once, which is the same as opening it. Split it to ask a few fields at a time.*
+
+That last check is the important one. A flow that never asks for a field the schema insists on
+produces a record that can never be completed, so it is caught at authoring time rather than at the
+end of somebody's questionnaire.
+
+---
+
+## What happens while someone answers
+
+The flow appears in the conversation as a card: the section's title, the fields of that section, a
+position indicator, and **Back** and **Next** controls, with the last section offering **Send
+answers**.
+
+<AccordionGroup>
+  <Accordion title="Every section writes as it goes" icon="floppy-disk">
+    Finishing a section saves that section's answers onto the record straight away. Nothing is held
+    in the browser waiting for the end.
+  </Accordion>
+  <Accordion title="Only the section in front of you is checked" icon="check">
+    Each section is validated against the whole record, but only the messages belonging to *its*
+    fields are shown — so a required field four sections away never blocks the section someone is
+    actually on. Everything is checked in full at the end.
+  </Accordion>
+  <Accordion title="Conditional rules still read the whole record" icon="code-branch">
+    A rule in section four can depend on an answer given in section one. See
+    [which answers a rule can see](/forms/form-rules#which-answers-a-rule-can-see).
+  </Accordion>
+  <Accordion title="It can be picked up later" icon="rotate-left">
+    Reopening the flow reopens it at the section after the last one with an answer in it. A section
+    of entirely optional questions does not trap the resume.
+  </Accordion>
+  <Accordion title="It can be put down mid-way" icon="window-minimize">
+    The card can be minimised without losing what has been typed — it says so on the collapsed
+    card.
+  </Accordion>
+  <Accordion title="The final send tidies up" icon="broom">
+    The last section replaces the record's data rather than merging into it, so an answer given
+    early and then hidden by a rule later does not survive onto the finished record. It is validated
+    in full, and only then marked complete — which is what fires anything waiting on the record
+    being finished.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+Because completion is withheld until the last section, anything that runs when a record is completed
+fires **once**, at the end — not on every section.
+</Note>
+
+---
+
+## Letting people start it by asking
+
+A flow can sit and wait to be raised, or it can be triggered by what someone says. The **Run from
+chat** section of the flow editor handles that: *Let someone start this flow by asking for it.* It
+appears once the flow has been saved and reopened — it is not offered while there are unsaved edits.
+
+- **Trigger words** are the phrases that start the flow. Add them one at a time.
+- **Create trigger** wires them up; **Edit skill** and **Remove trigger** manage them afterwards.
+- Without trigger words, Abbie can still find the flow, but only by searching — so the words are
+  worth setting.
+
+<Warning>
+Two things to watch:
+
+- **Changing the flow does not rewrite its trigger.** The editor flags it — *This flow has changed
+  since the trigger was written, so the assistant describes the wrong steps* — and **Update trigger**
+  rewrites what Abbie is told while keeping the name, trigger words and patterns you set.
+- **Removing the flow does not remove the trigger.** Left behind, it tells whoever asks that the flow
+  is gone. Remove the trigger too.
+</Warning>
+
+---
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Task Actions" icon="circle-check" href="/spaces/task-actions">
+    Several separate forms as ordered, resumable steps on a task.
+  </Card>
+  <Card title="Form rules" icon="code-branch" href="/forms/form-rules">
+    How conditional logic behaves when a form is answered a section at a time.
+  </Card>
+  <Card title="Building a form" icon="grid-2-plus" href="/forms/building-a-form">
+    The form a flow cuts has to exist first.
+  </Card>
+  <Card title="Records" icon="database" href="/spaces/records">
+    Record Sets, schemas, and what completing a record sets off.
+  </Card>
+</CardGroup>
