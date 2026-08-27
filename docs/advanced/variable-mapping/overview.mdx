@@ -1,404 +1,212 @@
 ---
-title: "Overview"
-description: "Introduction to mapping and transforming data between flow nodes"
+title: 'Variable Mapping'
+description: 'How JSONPath expressions pull data from earlier steps into a step you are configuring'
+icon: 'brackets-curly'
 ---
 
-Variable mapping allows you to dynamically reference and transform data as it flows between nodes in your workflow. Instead of hardcoding values, you can pull data from previous nodes, triggers, and apply transformations on the fly.
+# Variable Mapping
 
-## What is Variable Mapping?
+Every step in a flow is configured with a JSON object. Before the step runs, that object is resolved: **any string beginning with `$.` is read as a JSONPath expression** and replaced by the value it finds in the run's data. Everything else is copied through unchanged.
 
-When building flows in QuivaWorks, you work with two primary data sources:
-
-1. **Node outputs** - Data produced by previous nodes in your flow
-2. **Trigger data** - Data provided when the flow is initiated
-
-Variable mapping lets you:
-
-- **Reference data** from any previous node or the flow trigger
-- **Transform data** using powerful JSONPath expressions
-- **Combine data** from multiple sources
-- **Build dynamic strings** with the pipe operator
-- **Filter and query** complex data structures
-
-<CodeGroup>
-```json Node Data
-{
-  "email": "$.fetch_customer.email",
-  "name": "$.fetch_customer.firstName| |$.fetch_customer.lastName"
-}
-```
-
-```json Trigger Data
-{
-  "orderId": "$.trigger.order_id",
-  "userId": "$.trigger.user_id",
-  "eventType": "$.trigger.event"
-}
-```
-
-```json Combined
-{
-  "message": "Order |$.trigger.order_id| for |$.fetch_customer.name| is ready!"
-}
-```
-</CodeGroup>
+That resolver is variable mapping. It is the same code everywhere it appears, so what you learn here applies to every step, not just the [Map step](/flows/steps/map).
 
 <Info>
-Variable mapping is powered by [JSONPath Plus v1.1.0](https://github.com/JSONPath-Plus/JSONPath) with custom QuivaWorks extensions for enhanced functionality.
+The engine is [jsonpath-plus](https://github.com/JSONPath-Plus/JSONPath) behind a thin wrapper. The wrapper adds exactly one thing: `|` concatenation. There is no expression language, no transform functions and no filters beyond what JSONPath itself provides.
 </Info>
 
-## Data Sources
+---
 
-<Tabs>
-  <Tab title="Node Data">
-    Access output from any previous node in your flow using the node's unique ID:
-    
-    ```
-    $.NODE_ID.property
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "customerEmail": "$.fetch_customer.email",
-      "orderTotal": "$.calculate_total.amount"
-    }
-    ```
-    
-    Nodes execute sequentially, so you can only reference nodes that have already executed.
-  </Tab>
-  
-  <Tab title="Trigger Data">
-    Access data provided when the flow starts using the special `trigger` keyword:
-    
-    ```
-    $.trigger.property
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "webhookOrderId": "$.trigger.order_id",
-      "webhookEvent": "$.trigger.event_type",
-      "webhookTimestamp": "$.trigger.timestamp"
-    }
-    ```
-    
-    Trigger data is available to all nodes in the flow from the very first node.
-  </Tab>
-  
-  <Tab title="Combined Usage">
-    Combine trigger data with node outputs for powerful workflows:
-    
-    ```json
-    {
-      "summary": {
-        "eventType": "$.trigger.event",
-        "userId": "$.trigger.user_id",
-        "userDetails": "$.fetch_user.details",
-        "processedAt": "$.process_data.timestamp",
-        "message": "Event |$.trigger.event| processed for user |$.fetch_user.name|"
-      }
-    }
-    ```
-    
-    This pattern is common in webhook-driven workflows.
-  </Tab>
-</Tabs>
+## What is available to read
 
-## Quick Reference
+The run's data is a flat object with these keys:
 
-<AccordionGroup>
-  <Accordion title="Basic Syntax" icon="text">
-    ```
-    $.NODE_ID.property              # Access node data
-    $.trigger.property              # Access trigger data
-    $.NODE_ID.nested.deep.value     # Nested properties
-    ```
-  </Accordion>
-  
-  <Accordion title="Array Operations" icon="list">
-    ```
-    $.NODE_ID.items[0]              # First item (0-based)
-    $.NODE_ID.items[-1]             # Last item
-    $.NODE_ID.items[*]              # All items
-    $.NODE_ID.items[0:3]            # First 3 items
-    ```
-  </Accordion>
-  
-  <Accordion title="Filters & Queries" icon="filter">
-    ```
-    $.items[?(@.price>10)]          # Filter by condition
-    $..email                        # Recursive search
-    $.items[?(@.active===true)]     # Equality check
-    ```
-  </Accordion>
-  
-  <Accordion title="String Building" icon="plus">
-    ```
-    text|$.NODE.value               # Concatenate static text with values
-    $.first| |$.last                # Join values with separator
-    $.NODE.value|                   # Force string conversion
-    ```
-    
-    **Trailing pipe behavior:**
-    - Missing data: Returns `""` (empty string)
-    - Arrays: Returns comma-separated string (e.g., `"a,b,c"`)
-    - Objects: Returns `"[object Object]"`
-    - Primitives: Returns value as-is
-  </Accordion>
-</AccordionGroup>
+| Key | Contents |
+|---|---|
+| `trigger` | The payload that started the run |
+| `static` | The flow's Static Data block, itself resolved before the first step |
+| `context` | Context variables supplied with the run |
+| `env` | `auth_token`, `run_id`, and `headers` (a flat map of the request headers) |
+| *step ID* | One key per **finished** step, holding that step's result |
+
+A step's result is stored flat under its own ID. If a step's ID is `GET_ORDER`, its result is at `$.GET_ORDER`, and a field inside it at `$.GET_ORDER.data.total`. There is no `.output` or `.result` wrapper.
 
 <Warning>
-**Key Points to Remember:**
-- Arrays are 0-based: `[0]` is first, `[-1]` is last
-- Use `===` for equality in filters, not `=`
-- Everything is case-sensitive
-- QuivaWorks auto-detects `$.` anywhere in your mapping
+**Only finished steps are readable.** Branches that fan out from the same step run at the same time, so one of them cannot read another. A reference to a step that has not finished resolves to `[]`, not an error.
 </Warning>
-
-## How Variable Mapping Works
-
-<Steps>
-  <Step title="Flow Starts">
-    Trigger data becomes available immediately via `$.trigger.*`
-  </Step>
-  
-  <Step title="First Node Executes">
-    Can access trigger data but not other node data yet
-  </Step>
-  
-  <Step title="Subsequent Nodes Execute">
-    Each node can access:
-    - Trigger data (`$.trigger.*`)
-    - All previous node outputs (`$.node_id.*`)
-  </Step>
-  
-  <Step title="Data Transforms">
-    JSONPath expressions extract and transform data as needed
-  </Step>
-  
-  <Step title="Flow Completes">
-    Final node has access to all trigger and node data
-  </Step>
-</Steps>
-
-### Example Flow Data Structure
-
-```json
-{
-  "trigger": {
-    "event": "order.created",
-    "order_id": "ORD-12345",
-    "user_id": "USR-789"
-  },
-  "fetch_customer": {
-    "id": "USR-789",
-    "name": "Alice Smith",
-    "email": "alice@example.com",
-    "tier": "premium"
-  },
-  "fetch_order": {
-    "id": "ORD-12345",
-    "total": 299.99,
-    "items": [
-      {"product": "Widget", "price": 149.99},
-      {"product": "Gadget", "price": 150.00}
-    ]
-  },
-  "calculate_discount": {
-    "amount": 29.99,
-    "percentage": 10
-  }
-}
-```
-
-**Access this data:**
-```json
-{
-  "triggerEvent": "$.trigger.event",
-  "customerName": "$.fetch_customer.name",
-  "orderTotal": "$.fetch_order.total",
-  "firstProduct": "$.fetch_order.items[0].product",
-  "finalAmount": "$.fetch_order.total",
-  "discountApplied": "$.calculate_discount.amount"
-}
-```
-
-## When to Use Variable Mapping
-
-<CardGroup cols={2}>
-  <Card title="Webhook Processing" icon="webhook">
-    Access incoming webhook data via `$.trigger` and enrich with additional API calls
-  </Card>
-  <Card title="API Integration" icon="cloud">
-    Map responses from external APIs to your flow data structure
-  </Card>
-  <Card title="Data Transformation" icon="arrows-rotate">
-    Convert data formats between different systems and services
-  </Card>
-  <Card title="Dynamic Content" icon="message">
-    Create personalized messages, emails, and notifications
-  </Card>
-  <Card title="Conditional Logic" icon="code-branch">
-    Route data based on conditions and business rules
-  </Card>
-  <Card title="Data Aggregation" icon="layer-group">
-    Combine data from multiple sources into unified structures
-  </Card>
-</CardGroup>
-
-## Common Use Cases
-
-<Tabs>
-  <Tab title="Webhook to Email">
-    ```json
-    {
-      "to": "$.fetch_customer.email",
-      "subject": "Order Confirmation #|$.trigger.order_id|",
-      "body": "Hi |$.fetch_customer.firstName|, your order for |$.fetch_order.items.length| items totaling $|$.fetch_order.total| has been confirmed!"
-    }
-    ```
-  </Tab>
-  
-  <Tab title="Data Enrichment">
-    ```json
-    {
-      "enrichedData": {
-        "rawEvent": "$.trigger",
-        "userProfile": "$.fetch_user",
-        "accountDetails": "$.fetch_account",
-        "computedScore": "$.calculate_score.value",
-        "timestamp": "$.trigger.timestamp"
-      }
-    }
-    ```
-  </Tab>
-  
-  <Tab title="Conditional Routing">
-    Conditional logic in JSONPath works through filter expressions. Use filters to select data based on conditions:
-    
-    ```text
-    {
-      "highPriorityItems": "$.trigger.items[?(@.priority==='high' || @.priority==='urgent')]",
-      "premiumCustomers": "$.customers[?(@.tier==='premium')]",
-      "largeOrders": "$.orders[?(@.amount>1000)]",
-      "activeVerifiedUsers": "$.users[?(@.active===true && @.verified===true)]"
-    }
-    ```
-    
-    For routing decisions, check conditions and use the results in your flow logic:
-    
-    ```text
-    {
-      "isPremiumCustomer": "$.fetch_customer[?(@.tier==='premium')]",
-      "isHighPriority": "$.trigger[?(@.priority==='high')]",
-      "requiresEscalation": "$.trigger[?(@.amount>1000)]"
-    }
-    ```
-    
-    These filter results return arrays:
-    - Empty array `[]` means condition is false
-    - Array with data `[{...}]` means condition is true
-    
-    Use these results in subsequent nodes to make routing decisions.
-  </Tab>
-</Tabs>
-
-## Getting Started Checklist
-
-<Steps>
-  <Step title="Understand Data Sources">
-    Learn the difference between `$.trigger` (flow input) and `$.node_id` (node outputs)
-  </Step>
-  <Step title="Master Basic Syntax">
-    Practice accessing properties using `$.NODE_ID.property` pattern
-  </Step>
-  <Step title="Work with Arrays">
-    Get comfortable with array indexing `[0]`, slicing `[0:3]`, and wildcards `[*]`
-  </Step>
-  <Step title="Try the Pipe Operator">
-    Build dynamic strings using QuivaWorks' custom `|` concatenation
-  </Step>
-  <Step title="Learn Filters">
-    Filter data with conditions like `[?(@.price>10)]`
-  </Step>
-  <Step title="Test in Debugger">
-    Use the Flow Debugger to test your mappings with real data
-  </Step>
-</Steps>
-
-## Documentation Structure
-
-This comprehensive guide is organized into focused sections:
-
-<CardGroup cols={2}>
-  <Card title="Basic Syntax" icon="1" href="/advanced/variable-mapping/basic-syntax">
-    Core concepts, trigger data, and simple examples
-  </Card>
-  <Card title="JSONPath Features" icon="2" href="/advanced/variable-mapping/jsonpath-features">
-    Standard JSONPath capabilities and operators
-  </Card>
-  <Card title="Pipe Operator" icon="3" href="/advanced/variable-mapping/pipe-operator">
-    QuivaWorks' string concatenation and fallbacks
-  </Card>
-  <Card title="Filters & Expressions" icon="4" href="/advanced/variable-mapping/filters-and-expressions">
-    Query, filter, and select data
-  </Card>
-  <Card title="Advanced Techniques" icon="5" href="/advanced/variable-mapping/advanced-techniques">
-    Power user features and optimization
-  </Card>
-  <Card title="Examples" icon="6" href="/advanced/variable-mapping/examples">
-    Real-world use cases and patterns
-  </Card>
-  <Card title="Reference" icon="bookmark" href="/advanced/variable-mapping/reference">
-    Syntax tables and troubleshooting
-  </Card>
-</CardGroup>
-
-<Tip>
-**New to Variable Mapping?** Start with [Basic Syntax](/advanced/variable-mapping/basic-syntax) to learn the fundamentals.
-
-**Need a quick answer?** Jump to the [Reference](/advanced/variable-mapping/reference) for syntax tables and troubleshooting.
-
-**Want to see it in action?** Check out [Examples](/advanced/variable-mapping/examples) for real-world patterns.
-</Tip>
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card 
-    title="Learn Basic Syntax" 
-    icon="play" 
-    href="/advanced/variable-mapping/basic-syntax"
-  >
-    Start with the fundamentals of variable mapping
-  </Card>
-  <Card 
-    title="View Examples" 
-    icon="code" 
-    href="/advanced/variable-mapping/examples"
-  >
-    See real-world variable mapping patterns
-  </Card>
-  <Card 
-    title="Quick Reference" 
-    icon="book" 
-    href="/advanced/variable-mapping/reference"
-  >
-    Syntax tables and troubleshooting guide
-  </Card>
-  <Card 
-    title="Flow Builder" 
-    icon="diagram-project" 
-    href="/flows/overview"
-  >
-    Learn how to build flows with multiple nodes
-  </Card>
-</CardGroup>
 
 ---
 
-<Info>
-**Need help?** Visit our [Help Center](https://quiva.ai/help-center/) or join the [Community](https://quiva.ai/community) for support.
-</Info>
+## Where mapping is applied
+
+| Surface | What is resolved |
+|---|---|
+| Any step's payload | The whole payload object |
+| Eval step | The **Params** object only — never the code |
+| Flow **Static Data** | Resolved once, before the first step |
+| Flow **Result** mapping | Resolved when the run finishes |
+| Function and Flow step **Response Map** | Resolved against the step's result |
+| Stream trigger `debounceOn` / `orderOn` | The key expression |
+
+---
+
+## The two forms
+
+### A query
+
+A string that starts with `$.` **and contains no `|`** is a JSONPath query. The value it finds is returned with its type intact.
+
+```json
+{ "name": "$.trigger.customer.name", "total": "$.GET_ORDER.data.total" }
+```
+
+```json
+{ "name": "Dana Reyes", "total": 35 }
+```
+
+Numbers stay numbers, booleans stay booleans, objects and arrays keep their shape.
+
+See [JSONPath](/advanced/variable-mapping/jsonpath) for everything a query can express.
+
+### A concatenation
+
+A string containing `|` is split on the `|` characters. Segments starting with `$.` are looked up and turned into text; every other segment is emitted literally; the pieces are joined.
+
+```json
+{ "summary": "Order |$.GET_ORDER.data.id| for |$.trigger.customer.name" }
+```
+
+```json
+{ "summary": "Order ord_88 for Dana Reyes" }
+```
+
+The result is always a string. See [Concatenation](/advanced/variable-mapping/concatenation).
+
+<Warning>
+`|` is a delimiter, never an operator. `$.order.status|pending` does not fall back to `"pending"` — it produces `"shippedpending"`. There is no `| default(…)`, no `| upper`, and no chaining of any kind.
+</Warning>
+
+---
+
+## Path shapes
+
+The thing you write a mapping into does not have to be a string.
+
+<Tabs>
+  <Tab title="Object">
+    Every value is resolved, to any depth. Keys are preserved.
+
+    ```json
+    { "customer": { "email": "$.trigger.email", "channel": "web" } }
+    ```
+
+    ```json
+    { "customer": { "email": "dana@example.com", "channel": "web" } }
+    ```
+  </Tab>
+  <Tab title="Array">
+    Each element is resolved and the array keeps its length and order.
+
+    ```json
+    ["$.trigger.id", "static", 7]
+    ```
+
+    ```json
+    ["T1", "static", 7]
+    ```
+  </Tab>
+  <Tab title="A resolved key">
+    A **key** may be an expression too. It is replaced by the value it resolves to.
+
+    ```json
+    { "$.trigger.email": { "total": "$.GET_ORDER.data.total" } }
+    ```
+
+    ```json
+    { "dana@example.com": { "total": 35 } }
+    ```
+
+    Concatenation works in a key as well: `"user-|$.trigger.id"` becomes `"user-T1"`.
+  </Tab>
+  <Tab title="Anything else">
+    Numbers, booleans and plain strings are copied through untouched. A string with no `$.` in it is literal text, even if it looks like a path.
+
+    ```json
+    { "message": "Order $.trigger.order_id is being processed" }
+    ```
+
+    ```json
+    { "message": "Order $.trigger.order_id is being processed" }
+    ```
+
+    Interpolation needs `|`. Without it, nothing is substituted.
+  </Tab>
+</Tabs>
+
+<Note>
+A `null` in a mapping resolves to `{}`, not `null`. Omit the key instead.
+</Note>
+
+---
+
+## The two failure modes
+
+These are the only two ways a mapping surprises you, and both are silent.
+
+### A path that matches nothing
+
+**It resolves to `[]`, and the key stays in the output.**
+
+```json
+{ "userName": "$.node.name", "userPhone": "$.node.phone" }
+```
+
+against `{"node": {"name": "Alice"}}`:
+
+```json
+{ "userName": "Alice", "userPhone": [] }
+```
+
+The key is not removed, and the value is not `null` or `undefined`. A downstream step that checks for a missing key will not find one — test with `Array.isArray(x) && x.length === 0`, or add a trailing `|` to get `""` instead.
+
+### A path that matches many where you expected one
+
+**One hit returns the value itself. Zero or several hits return an array.** The shape of the result therefore depends on the data, not on the expression.
+
+With three items priced 149.99, 150.00 and 9.99:
+
+| Expression | Result |
+|---|---|
+| `$.items[?(@.price>100)].product` | `["Widget", "Gadget"]` |
+| `$.items[?(@.price>149.99)].product` | `"Gadget"` |
+| `$.items[?(@.price>9999)].product` | `[]` |
+
+The same expression returns a list, a bare string, or an empty array purely according to how many rows matched. Anything reading that value must cope with all three, so prefer an [Eval step](/flows/steps/eval) when the count matters.
+
+---
+
+## Testing a mapping
+
+The Map and Eval step editors each have a **Run Test** button that resolves the mapping against sample data using the same engine the flow uses, so what you see is what the step will produce.
+
+<Note>
+Editing a flow changes its **draft**. A change only affects the live flow once you **Publish** it.
+</Note>
+
+---
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="JSONPath" icon="brackets-curly" href="/advanced/variable-mapping/jsonpath">
+    Every selector and filter that works, with its real output
+  </Card>
+  <Card title="Concatenation" icon="text" href="/advanced/variable-mapping/concatenation">
+    Building strings with `|`, and what it cannot do
+  </Card>
+  <Card title="Examples" icon="code" href="/advanced/variable-mapping/examples">
+    Worked mappings, run end to end
+  </Card>
+  <Card title="Map Step" icon="arrow-right-arrow-left" href="/flows/steps/map">
+    The step whose entire job is a mapping
+  </Card>
+</CardGroup>

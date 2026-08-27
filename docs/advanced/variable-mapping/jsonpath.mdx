@@ -1,0 +1,273 @@
+---
+title: 'JSONPath'
+description: 'Every selector and filter the mapping engine supports, with its real output'
+icon: 'brackets-curly'
+---
+
+# JSONPath
+
+The mapping engine is [jsonpath-plus](https://github.com/JSONPath-Plus/JSONPath) running in an embedded JavaScript runtime. This page lists what that build actually supports. Every result below was produced by running the expression through the engine the flow uses.
+
+Unless a section says otherwise, the examples run against this data:
+
+```json
+{
+  "trigger": { "amount": 1500 },
+  "fetch_customer": { "name": "Alice Smith", "email": "alice@example.com", "tier": "premium" },
+  "fetch_order": {
+    "address": { "city": "Leeds", "contact": { "email": "ops@example.com" } },
+    "items": [
+      { "product": "Widget",    "price": 149.99, "qty": 1, "active": true,  "tags": ["a", "b"] },
+      { "product": "Gadget",    "price": 150.00, "qty": 3, "active": false, "tags": ["c"] },
+      { "product": "Doohickey", "price": 9.99,   "qty": 2, "active": true,  "tags": [] }
+    ]
+  }
+}
+```
+
+<Warning>
+**An expression must start with `$.`** — those two characters are what marks a string as a path. `$['fetch_customer']['name']`, `$[0]` and a bare `$` all start with `$` but not `$.`, so they are copied through as literal text and never resolved. Write `$.fetch_customer['name']` instead: bracket notation is fine anywhere after the opening `$.`.
+</Warning>
+
+---
+
+## Selectors
+
+| Expression | Result |
+|---|---|
+| `$.fetch_customer.name` | `"Alice Smith"` |
+| `$.fetch_order.address.city` | `"Leeds"` |
+| `$.fetch_order.items[0].product` | `"Widget"` |
+| `$.fetch_order.items[0,2].product` | `["Widget", "Doohickey"]` |
+| `$.fetch_order.items[*].product` | `["Widget", "Gadget", "Doohickey"]` |
+| `$.fetch_order.items.*.product` | `["Widget", "Gadget", "Doohickey"]` |
+| `$.fetch_order.items[*].tags[*]` | `["a", "b", "c"]` |
+| `$.fetch_order.items.length` | `3` |
+| `$.` | the whole data object |
+
+### Bracket notation
+
+Needed whenever a key is not a plain identifier — spaces, dots, hyphens, or a numeric key.
+
+| Expression | Result |
+|---|---|
+| `$.data['first name']` | `"x"` |
+| `$.data['a.b']` | `"x"` |
+| `$.data['property-name']` | `"x"` |
+| `$.data['123']` | `"x"` |
+
+### Slices
+
+| Expression | Result |
+|---|---|
+| `$.fetch_order.items[0:2].product` | `["Widget", "Gadget"]` |
+| `$.fetch_order.items[1:].product` | `["Gadget", "Doohickey"]` |
+| `$.fetch_order.items[::2].product` | `["Widget", "Doohickey"]` |
+| `$.fetch_order.items[-2:].product` | `["Gadget", "Doohickey"]` |
+| `$.fetch_order.items[-1:].product` | `"Doohickey"` |
+
+<Warning>
+**A bare negative index does not work.** `$.fetch_order.items[-1]` returns `[]`, not the last item. Only the *slice* form counts from the end, so the last element is `[-1:]` — and because a one-element slice is a single hit, it returns the value itself rather than a one-item array.
+
+The index-free alternative is a script index: `$.fetch_order.items[(@.length-1)].product` returns `"Doohickey"`.
+</Warning>
+
+### Recursive descent
+
+`..` searches every level below the point it appears.
+
+| Expression | Result |
+|---|---|
+| `$..email` | `["alice@example.com", "ops@example.com"]` |
+| `$..price` | `[149.99, 150, 9.99]` |
+| `$.fetch_order..email` | `"ops@example.com"` |
+| `$..items[?(@.price>100)].product` | `["Widget", "Gadget"]` |
+
+### Parent and property operators
+
+| Expression | Returns |
+|---|---|
+| `$.fetch_order.items[?(@.qty>2)]^` | the parent of each match — here the whole `items` array |
+| `$.fetch_customer~` | `"fetch_customer"` — the matched key's *name* rather than its value |
+
+---
+
+## Filters
+
+A filter is `[?( … )]`. The body is a JavaScript expression evaluated once per candidate, with `@` bound to the candidate.
+
+| Expression | Result |
+|---|---|
+| `$.fetch_order.items[?(@.price>100)].product` | `["Widget", "Gadget"]` |
+| `$.fetch_order.items[?(@.qty>2)].product` | `"Gadget"` |
+| `$.fetch_order.items[?(@.price>9999)].product` | `[]` |
+| `$.fetch_order.items[?(@.active===true)].product` | `["Widget", "Doohickey"]` |
+| `$.fetch_order.items[?(@.active==true)].product` | `["Widget", "Doohickey"]` |
+| `$.fetch_order.items[?(@.qty!=1)].product` | `["Gadget", "Doohickey"]` |
+| `$.fetch_order.items[?(!@.active)].product` | `"Gadget"` |
+| `$.fetch_order.items[?(@.active===true && @.price>100)].product` | `"Widget"` |
+| `$.fetch_order.items[?(@.price>=50 && @.price<=150)].product` | `["Widget", "Gadget"]` |
+| `$.fetch_order.items[?(@.qty*@.price>400)].product` | `"Gadget"` |
+| `$.fetch_order.items[?(@.tags.length>0)].product` | `["Widget", "Gadget"]` |
+| `$.fetch_order.items[?(@.tags[0]==='a')].product` | `"Widget"` |
+
+Ordinary JavaScript methods on the candidate's own values work:
+
+| Expression | Result |
+|---|---|
+| `[?(@.product.startsWith('G'))]` | `"Gadget"` |
+| `[?(@.product.includes('adg'))]` | `"Gadget"` |
+| `[?(@.product.toLowerCase()==='widget')]` | `"Widget"` |
+| `[?(@.product.match(/^W/))]` | `"Widget"` |
+| `[?(@.tags.indexOf('a')>-1)]` | `"Widget"` |
+| `[?(typeof @ === 'string')]` | the string members of an array |
+
+A filter may contain another filter:
+
+```
+$.users[?(@.orders[?(@.total>1000)])]
+```
+
+selects users with at least one order over 1000.
+
+### Context variables
+
+| Variable | Meaning | Verified example |
+|---|---|---|
+| `@` | the candidate itself | `[?(typeof @ === 'string')]` |
+| `@root` | the whole data object | `$.products[?(@.categoryId===@root.trigger.selected_category)]` |
+| `@parent` | the candidate's parent object | `$.categories..products[?(@parent.tier==='premium')]` |
+| `@property` | the candidate's key or array index | `$.items[?(@property!==0)]` → drops the first element |
+| `@parentProperty` | the parent's key | `$.data..[?(@parentProperty!=='hidden')]` |
+| `@path` | the JSONPath string to the candidate | `$.store.book[?(@path!=="$['store']['book'][0]")]` |
+
+<Warning>
+**Use `@root`, not `$`, to reach outside the candidate.** `$` is not defined inside a filter body — `[?(@.id===$.trigger.id)]` fails the step with `$ is not defined`.
+</Warning>
+
+---
+
+## What does not work
+
+Each of these fails the step outright. The error text below is what the engine returns.
+
+### `|` anywhere in the path
+
+`|` is the concatenation delimiter and is consumed before the string ever reaches JSONPath, so a path containing one is split into fragments and each fragment is parsed separately.
+
+```
+$.users[?(@.role==='admin' || @.role==='moderator')]
+→ Unexpected "?" at character 0
+```
+
+**There is no way to express OR in a filter.** Restructure as two mappings, or move the logic into an [Eval step](/flows/steps/eval). The same restriction means a literal `|` cannot appear in a mapped string at all.
+
+### Unquoted string literals
+
+A bare word in a comparison is parsed as a variable name.
+
+```
+$.users[?(@.role===admin)]
+→ admin is not defined
+```
+
+Quote it: `[?(@.role==='admin')]`.
+
+### A single `=`
+
+```
+$.users[?(@.status='active')]
+→ Invalid left-hand side in assignment
+```
+
+Use `===` or `==`.
+
+### Type selectors
+
+`@string()`, `@number()`, `@integer()`, `@boolean()`, `@array()`, `@object()`, `@null()`, `@scalar()` and `@undefined()` all fail to parse in this build.
+
+```
+$.data[?(@string())]
+→ Unexpected "@" at character 1
+```
+
+Use `typeof @ === 'string'`, or `Array.isArray` in an Eval step.
+
+### Aggregation functions
+
+`@min()`, `@max()`, `@avg()`, `@sum()` and `.max()` do not exist.
+
+```
+$.products[?(@.price===@min(@..price))]
+→ Expected expression after === at character 13
+```
+
+Aggregate in an [Eval step](/flows/steps/eval).
+
+### `[*]` inside a filter body
+
+```
+$.agents[?(@.expertise[*]==='api')]
+→ Unexpected "*" at character 15
+```
+
+Use `@.expertise.indexOf('api')>-1`.
+
+### A bare `@` on its own
+
+`@` must be followed by a property, or wrapped in `typeof`.
+
+```
+$.products[?(@)]        → Unexpected "@" at character 0
+$.data[?(@==='text')]   → Unexpected "@" at character 0
+```
+
+### Host globals
+
+`String`, `Number`, `Object` and friends are not in scope inside a filter body.
+
+```
+$.users[?(String(@property).indexOf('0')>-1)]
+→ String is not defined
+```
+
+<Warning>
+**A filter that reads a property missing from *any* candidate fails the whole step**, rather than skipping that candidate. If one row in a list has no `address`, then `[?(@.address.city==='Boston')]` errors with `Cannot read properties of undefined (reading 'city')` and the run ends. Guard it: `[?(@.address && @.address.city==='Boston')]`.
+</Warning>
+
+---
+
+## Errors you will see
+
+There is no separate validation pass. An unresolvable mapping fails the step with `failed to resolve jPath` and the message from the engine. The messages come from JSONPath and its expression parser, so they read like JavaScript errors:
+
+| Message | Cause |
+|---|---|
+| `Unexpected "?" at character 0` | a `\|` inside the path split the filter apart |
+| `Unexpected "@" at character 1` | a type selector such as `@string()` |
+| `Unexpected "*" at character N` | `[*]` inside a filter body |
+| `<word> is not defined` | an unquoted string literal, or `$` used inside a filter |
+| `Invalid left-hand side in assignment` | `=` where `===` was meant |
+| `Cannot read properties of undefined (reading '<key>')` | a filter reached through a property one candidate does not have |
+| `Expected expression after === at character N` | an aggregation function such as `@min()` |
+
+A path that simply *matches nothing* is not an error — see [the two failure modes](/advanced/variable-mapping/overview#the-two-failure-modes).
+
+---
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Concatenation" icon="text" href="/advanced/variable-mapping/concatenation">
+    Building strings with `|`
+  </Card>
+  <Card title="Examples" icon="code" href="/advanced/variable-mapping/examples">
+    Worked mappings, run end to end
+  </Card>
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    Where logic JSONPath cannot express belongs
+  </Card>
+  <Card title="Overview" icon="book" href="/advanced/variable-mapping/overview">
+    Data sources, path shapes, failure modes
+  </Card>
+</CardGroup>
