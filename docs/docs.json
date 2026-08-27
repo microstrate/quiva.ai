@@ -76,6 +76,17 @@
             ]
           },
           {
+            "group": "Collaboration",
+            "pages": [
+              "collaboration/overview",
+              "collaboration/collaborative-sessions",
+              "collaboration/at-mention-guide",
+              "collaboration/shared-with-me-section",
+              "collaboration/unread-badges-notifications",
+              "collaboration/team-best-practices"
+            ]
+          },
+          {
             "group": "Flows",
             "pages": [
               "flows/overview",
@@ -170,13 +181,9 @@
                 "icon": "arrow-right-arrow-left",
                 "pages": [
                   "advanced/variable-mapping/overview",
-                  "advanced/variable-mapping/basic-syntax",
-                  "advanced/variable-mapping/jsonpath-features",
-                  "advanced/variable-mapping/pipe-operator",
-                  "advanced/variable-mapping/filters-and-expressions",
-                  "advanced/variable-mapping/advanced-techniques",
-                  "advanced/variable-mapping/examples",
-                  "advanced/variable-mapping/reference"
+                  "advanced/variable-mapping/jsonpath",
+                  "advanced/variable-mapping/concatenation",
+                  "advanced/variable-mapping/examples"
                 ]
               },
               {
@@ -187,10 +194,7 @@
                   "advanced/rules/getting-started",
                   "advanced/rules/core-concepts",
                   "advanced/rules/operations-reference",
-                  "advanced/rules/common-patterns",
-                  "advanced/rules/examples",
-                  "advanced/rules/advanced-techniques",
-                  "advanced/rules/technical-reference"
+                  "advanced/rules/common-patterns"
                 ]
               }
             ]
@@ -250,7 +254,6 @@
           {
             "group": "Change Log",
             "pages": [
-              "changelog/latest-release",
               "changelog/product-updates"
             ]
           }
@@ -299,5 +302,59 @@
     "socials": {
       "linkedin": "https://linkedin.com/company/quivaworks"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/advanced/variable-mapping",
+      "destination": "/advanced/variable-mapping/overview"
+    },
+    {
+      "source": "/advanced/variable-mapping/basic-syntax",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/variable-mapping/jsonpath-features",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/variable-mapping/pipe-operator",
+      "destination": "/advanced/variable-mapping/concatenation"
+    },
+    {
+      "source": "/advanced/variable-mapping/filters-and-expressions",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/variable-mapping/advanced-techniques",
+      "destination": "/advanced/variable-mapping/examples"
+    },
+    {
+      "source": "/advanced/variable-mapping/reference",
+      "destination": "/advanced/variable-mapping/jsonpath"
+    },
+    {
+      "source": "/advanced/rules/examples",
+      "destination": "/advanced/rules/common-patterns"
+    },
+    {
+      "source": "/advanced/rules/advanced-techniques",
+      "destination": "/advanced/rules/common-patterns"
+    },
+    {
+      "source": "/advanced/rules/technical-reference",
+      "destination": "/advanced/rules/core-concepts"
+    },
+    {
+      "source": "/advanced/steps",
+      "destination": "/flows/steps/overview"
+    },
+    {
+      "source": "/advanced/steps/overview",
+      "destination": "/flows/steps/overview"
+    },
+    {
+      "source": "/changelog/latest-release",
+      "destination": "/changelog/product-updates"
+    }
+  ]
 }
