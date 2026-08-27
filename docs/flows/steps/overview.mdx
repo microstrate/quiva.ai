@@ -1,319 +1,132 @@
 ---
 title: 'Flow Steps Overview'
-description: 'Build intelligent workflows with agents, logic, and integrations'
+description: 'What the step types are, how a run moves between them, and where step data lives'
 icon: 'list-check'
 ---
 
 # Flow Steps
 
-Flow steps are the building blocks of your workflows. After a trigger activates your flow, steps execute in sequence to accomplish your business logic. Each step performs a specific function—from running AI agents to transforming data to making decisions.
+A flow is a graph of steps. A trigger starts a run; the runner then works through the graph, resolving each step's payload against the data collected so far and storing the step's result under its step ID.
 
-<Info>
-**Agent-Centric Design**: QuivaWorks flows are designed to be agent-first. Start with an AI agent, attach tools (connectors) to it, and add supporting steps as needed. This approach maximizes the intelligence and autonomy of your workflows.
-</Info>
-
----
-
-## Step Types
-
-<CardGroup cols={3}>
-  <Card title="Agents" icon="robot" href="/flows/steps/agents">
-    Run AI agents with tools and context
-  </Card>
-  
-  <Card title="Condition" icon="code-branch" href="/flows/steps/condition">
-    Branch flows with if/then/else logic
-  </Card>
-  
-  <Card title="HTTP Request" icon="globe" href="/flows/steps/http-request">
-    Call external APIs and services
-  </Card>
-  
-  <Card title="Map" icon="arrow-right-arrow-left" href="/flows/steps/map">
-    Transform and iterate over data
-  </Card>
-  
-  <Card title="Rules" icon="gavel" href="/flows/steps/rules">
-    Apply business rules and calculations
-  </Card>
-  
-  <Card title="Human in the Loop" icon="user-check" href="/flows/steps/human-in-the-loop">
-    Add manual approval steps
-  </Card>
-  
-  <Card title="Delay" icon="clock" href="/flows/steps/delay">
-    Pause workflow execution
-  </Card>
-  
-  <Card title="Eval" icon="code" href="/flows/steps/eval">
-    Execute custom JavaScript
-  </Card>
-  
-  <Card title="Functions" icon="function" href="/flows/steps/functions">
-    Use utility functions
-  </Card>
-</CardGroup>
+<Warning>
+**Steps do not run in sequence.** The runner is a concurrent graph executor. Every step with no incoming edge starts at once, and a step starts as soon as all of its predecessors have finished — so independent branches run in parallel. This is also why one failure stops everything: the first error cancels the run, and any step still in flight is abandoned.
+</Warning>
 
 ---
 
-## How Steps Work
+## The step types
 
-Steps execute sequentially after your trigger fires. Each step:
+| Step | What it does |
+|---|---|
+| [Assistant](/flows/steps/agents) | Runs a saved assistant and stores its reply |
+| [Condition](/flows/steps/condition) | Decides which step or steps run next |
+| [Map](/flows/steps/map) | Reshapes data into a new object using JSONPath |
+| [Eval](/flows/steps/eval) | Runs a small piece of JavaScript |
+| [Rules](/flows/steps/rules) | Derives values from a rule set |
+| [HTTP Request](/flows/steps/http-request) | Calls an external API |
+| [Integration](/flows/steps/api-integrations) | Calls one action on a connected integration |
+| [Function](/flows/steps/functions) | Runs one of the platform's built-in functions |
+| [Nested flow](/flows/steps/nested-flows) | Runs another flow |
+| [Checkpoint](/flows/steps/human-in-the-loop) | Pauses the run for a person to action |
+| [Delay](/flows/steps/delay) | Waits a fixed number of milliseconds |
 
-1. **Receives input** from the trigger or previous steps
-2. **Performs its function** (run agent, make decision, transform data, etc.)
-3. **Outputs results** that subsequent steps can use
-4. **Passes control** to the next step
+Several more node types exist and are dispatched by the runner but have no page of their own yet: **Error** (ends the run with a status code and message), **Schedule** (schedules another flow to run later), **Task**, **Verify Challenge**, **Quiva Endpoint** and **Static**.
 
-<CodeGroup>
-```text Flow Example
-Trigger: HTTP POST received
-↓
-Step 1: Agent analyzes request
-↓
-Step 2: Condition checks agent decision
-↓ (if approved)
-Step 3: HTTP Request sends to CRM
-↓
-Step 4: Map formats response
-↓
-Return: Success message
-```
-
-```text Agent-Centric Example
-Trigger: New customer inquiry
-↓
-Step 1: Agent (with tools)
-  - Searches knowledge base
-  - Checks order history
-  - Accesses product catalog
-  - Makes decision
-↓
-Step 2: Condition on agent decision
-↓ (if escalate)
-Step 3: Human in the Loop approval
-↓ (if approved)
-Step 4: Agent sends response
-```
-</CodeGroup>
+Triggers are documented separately — see [Triggers](/flows/triggers/overview).
 
 ---
 
-## The Agent-Centric Approach
+## What a step can read
 
-**Start with agents, not automation.**
+Before a step runs, its payload is resolved: every string beginning with `$.` is replaced by the value that JSONPath selects. The data it selects from has these top-level keys and nothing else:
 
-Traditional workflow tools force you to map out every step explicitly. QuivaWorks is different—**you delegate work to intelligent agents** and let them figure out the details.
+| Key | Contents |
+|---|---|
+| `trigger` | The payload that started the run |
+| `static` | The flow's Static data, itself resolved at the start of the run |
+| `context` | Context variables passed in on the run request |
+| `env` | `auth_token`, `run_id` and `headers` for this run |
+| *step ID* | The result of a step that has already finished |
 
-### Traditional Approach (Step-by-Step)
-```text
-1. Receive customer question
-2. Search knowledge base
-3. If found: Format answer
-4. If not found: Search help docs
-5. If found: Format answer
-6. If not found: Create support ticket
-7. Send response
 ```
-*Problem: Breaks when anything unexpected happens*
-
-### Agent-Centric Approach
-```text
-1. Receive customer question
-2. Agent (with tools):
-   - Knowledge base connector
-   - Help docs connector
-   - Ticketing system connector
-   → Agent decides best approach
-3. Send response
+$.trigger.customer.email
+$.GET_ORDER.data.total
+$.env.run_id
 ```
-*Benefit: Agent adapts to any scenario*
 
-<Tip>
-**Best Practice**: Let agents handle complexity. Only add additional steps (Conditions, Maps, HTTP Requests) when you need:
-- Explicit branching logic that you control
-- Data transformation before/after agents
-- Direct API calls without agent interpretation
-- Business rules that must be enforced
-</Tip>
+<Warning>
+There is no `${…}` syntax, no `secrets` key, and no filter or pipe grammar. `|` inside a string is a **join**: `"Order |$.GET_ORDER.data.id| received"` builds one string out of literal text and resolved values. That is the whole of it.
+</Warning>
+
+A result is stored flat under the step's ID. There is no `.output` or `.result` wrapper — although an assistant's own reply happens to live at `$.STEP_ID.result`, because that is a field of the response it returns.
 
 ---
 
-## Common Step Patterns
+## What runs next
 
-<AccordionGroup>
-  <Accordion title="Agent → Condition → Action" icon="robot">
-    Let agent make decision, branch based on outcome, take action.
-    
-    ```text
-    Agent analyzes customer request
-    ↓
-    Condition: If agent.decision = "refund"
-    ↓ (true)
-    HTTP Request: Process refund
-    ```
-    
-    **Use when**: Agent provides intelligence, but you need explicit control over outcomes.
-  </Accordion>
+**A Condition step's outcome names the step IDs to run.** Everything else follows from that:
 
-  <Accordion title="Map → Agent → Map" icon="arrows-rotate">
-    Transform data before agent, process with agent, format after.
-    
-    ```text
-    Map: Extract relevant fields
-    ↓
-    Agent: Analyze and respond
-    ↓
-    Map: Format for external system
-    ```
-    
-    **Use when**: Agent needs clean input or output needs specific structure.
-  </Accordion>
+- An outcome may name one step, or several — several start at the same time.
+- Two reserved outcomes end the run: `RESOLVE_SUCCESS` finishes it successfully, `RESOLVE_ERROR` fails it.
+- An outcome naming a step that is not in the flow fails the run with `next step not found`.
+- **An edge drawn from a Condition to a step that no outcome names is decoration.** Edges are used only to work out when a step's predecessors are all done; a branch the condition did not choose is skipped.
 
-  <Accordion title="Rules → Agent" icon="gavel">
-    Evaluate business rules first, then let agent handle complexity.
-    
-    ```text
-    Rules: Check eligibility criteria
-    ↓
-    Condition: If eligible
-    ↓ (true)
-    Agent: Process application
-    ```
-    
-    **Use when**: Hard requirements must be met before agent processes.
-  </Accordion>
+For every other step type, the edges are the routing: when a step finishes, each step it points at runs once all of *its* predecessors have finished.
 
-  <Accordion title="Agent → Human in Loop → Agent" icon="user-check">
-    Agent proposes, human approves, agent executes.
-    
-    ```text
-    Agent: Analyze request and propose solution
-    ↓
-    Human in Loop: Review and approve
-    ↓
-    Agent: Execute approved solution
-    ```
-    
-    **Use when**: High-stakes decisions need human oversight.
-  </Accordion>
-
-  <Accordion title="HTTP → Map → Agent" icon="globe">
-    Fetch external data, transform it, let agent process.
-    
-    ```text
-    HTTP Request: Get customer data from CRM
-    ↓
-    Map: Extract relevant fields
-    ↓
-    Agent: Personalize response using data
-    ```
-    
-    **Use when**: Agent needs context from external systems.
-  </Accordion>
-
-  <Accordion title="Delay → Agent" icon="clock">
-    Wait for time-based conditions, then process with agent.
-    
-    ```text
-    Delay: Wait 24 hours
-    ↓
-    Agent: Follow up on unanswered inquiry
-    ```
-    
-    **Use when**: Time-based workflows or retry logic.
-  </Accordion>
-</AccordionGroup>
+<Note>
+A Condition step stores no result. `$.my_condition` holds nothing, because the runner returns before writing the result for that node type.
+</Note>
 
 ---
 
-## Step Best Practices
+## When a step fails
 
-<CardGroup cols={2}>
-  <Card title="Start Simple" icon="seedling">
-    Begin with one agent. Add steps only when needed. The simpler your flow, the easier to maintain.
-  </Card>
-  
-  <Card title="Let Agents Decide" icon="brain">
-    Don't hard-code logic that agents can figure out. Use Conditions only for business-critical branching.
-  </Card>
-  
-  <Card title="Name Steps Clearly" icon="tag">
-    Use descriptive names: "Analyze Customer Request" not "Agent 1". Makes flows self-documenting.
-  </Card>
-  
-  <Card title="Test as You Build" icon="flask">
-    Test each step before adding the next. Catch issues early, iterate quickly.
-  </Card>
-  
-  <Card title="Handle Errors" icon="shield-exclamation">
-    Add error handling for critical steps. Use Conditions to route failures appropriately.
-  </Card>
-  
-  <Card title="Use Variables" icon="brackets-curly">
-    Reference previous step outputs with variables. Keep data flowing smoothly.
-  </Card>
-</CardGroup>
+There is no per-step error branch. The first step to error records the failure, marks the run `error` and cancels it — no downstream step runs, and the failed step leaves no result for anything to inspect.
+
+Two settings soften this, both under **Advanced Settings** on the steps that support them:
+
+| Setting | Effect |
+|---|---|
+| `attempts` | Total attempts, not retries. Capped at 5. |
+| `backoff_ms` | A **constant** wait between attempts. There is no exponential backoff. |
+| `ignore_response_codes` | Response codes that must not be treated as a failure |
+| `timeout` | Per-step timeout in milliseconds |
+| `flat_map` | Flattens the step's result to dotted keys before storing it |
+
+To end a run deliberately, use a Condition outcome of `RESOLVE_ERROR`, or an **Error** step, which sets a status code and message.
 
 ---
 
-## When to Use Each Step
+## Step IDs
 
-| Step Type | Use When | Don't Use When |
-|-----------|----------|----------------|
-| **Agents** | Need intelligence, decision-making, or tool usage | Simple data transformation |
-| **Condition** | Need explicit branching you control | Agent can decide the path |
-| **HTTP Request** | Calling external APIs directly | Agent should interpret API data |
-| **Map** | Transforming data structure or iterating arrays | Agent can handle transformation |
-| **Rules** | Complex business calculations or eligibility checks | Simple if/then (use Condition) |
-| **Human in Loop** | High-stakes decisions need approval | Low-risk automated processes |
-| **Delay** | Time-based workflows or retry logic | Immediate execution needed |
-| **Eval** | Custom JavaScript logic not available elsewhere | Standard operations (use Functions) |
-| **Functions** | Common utilities (date, string, array operations) | Complex logic (use Eval or Agent) |
+A step ID must start with a letter or underscore and may then contain letters, digits, underscores and colons. IDs must be unique within a flow, and four are reserved and cannot be used: `trigger`, `static`, `RESOLVE_SUCCESS` and `RESOLVE_ERROR`.
+
+Every step must have a payload, even an empty one. Function and nested-flow steps must additionally name a subject.
 
 ---
 
-## Step Variables
+## Draft and published
 
-Every step outputs data you can reference in subsequent steps. Use the variable syntax to access step outputs:
-
-```
-${step_name.output.field}
-```
-
-**Examples:**
-```
-${agent_1.response}          // Agent's text response
-${condition_1.result}        // Condition's boolean result
-${http_1.body.data}          // HTTP response body data
-${map_1.output}              // Map's transformed output
-${rules_1.discount.outcome}  // Rules engine outcome
-```
-
-<Info>
-Learn more about variable syntax in [Variable Mapping](/advanced/variable-mapping/overview)
-</Info>
+Editing a flow changes its **draft**. Save keeps your work; **Publish** is what makes the change take effect for live runs. Testing in the editor runs the draft, so a flow that behaves correctly under test can still be running its old published version in production until you publish.
 
 ---
 
 ## Next Steps
 
-Ready to build your flow? Start with the most important step:
-
 <CardGroup cols={2}>
-  <Card title="Agents" icon="robot" href="/flows/steps/agents">
-    Configure AI agents with tools and context
+  <Card title="Triggers" icon="bolt" href="/flows/triggers/overview">
+    What can start a run
   </Card>
-  
-  <Card title="Condition" icon="code-branch" href="/flows/steps/condition">
-    Add branching logic to your flows
-  </Card>
-  
-  <Card title="All Step Types" icon="list" href="#step-types">
-    Explore all available step types
-  </Card>
-  
+
   <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
-    Pass data between steps
+    JSONPath reference for every step payload
+  </Card>
+
+  <Card title="Condition Step" icon="code-branch" href="/flows/steps/condition">
+    How routing is actually decided
+  </Card>
+
+  <Card title="Built-in Functions" icon="function" href="/flows/functions/overview">
+    The function catalogue
   </Card>
 </CardGroup>

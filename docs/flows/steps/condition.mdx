@@ -1,787 +1,198 @@
 ---
 title: 'Condition'
-description: 'Branch your flow with conditional logic using the rules engine'
+description: 'Decide which step or steps run next'
 icon: 'code-branch'
 ---
 
 # Condition Step
 
-The Condition step adds branching logic to your flows by evaluating conditions using the **rules engine**. Based on the conditions you define, the flow routes to different next steps—or terminates with success or error.
-
-<Info>
-**How Conditions Work**: The Condition step uses the same rules engine as the Rules step, but instead of calculating values, it routes the flow based on which condition matches first. Conditions are checked **top-to-bottom** until one matches.
-</Info>
-
----
-
-## How It Works
-
-The Condition step evaluates conditions in sequence and routes to the outcome of the first matching condition:
-
-<CodeGroup>
-```text Simple Branch
-Previous Step
-↓
-Condition: Is amount > 1000?
-↓ (true)           ↓ (false)
-High Value Step    Standard Step
-```
-
-```text Multiple Conditions
-Agent: Analyze request
-↓
-Condition Step
-├─ If decision == "approve" → Approval Step
-├─ If decision == "reject" → Rejection Step  
-├─ If decision == "escalate" → Human Review Step
-└─ Default → Error Handler Step
-```
-
-```text Terminate Flow
-Validation Check
-↓
-Condition Step
-├─ If valid → Continue Flow
-└─ If invalid → RESOLVE_ERROR
-```
-</CodeGroup>
-
----
-
-## Configuration
-
-### Facts
-
-Just like the Rules step, you define **facts** that will be evaluated by the conditions. Facts are populated using [variable mapping](/advanced/variable-mapping/overview) from previous steps:
-
-```json
-{
-  "orderTotal": "$.checkout_step.total",
-  "customerTier": "$.customer_lookup.tier",
-  "agentDecision": "$.support_agent.output.decision",
-  "confidence": "$.support_agent.output.confidence"
-}
-```
-
-<Note>
-Fact keys don't need the `.value` suffix in the Condition step—the system handles this automatically.
-</Note>
-
-### Conditions Array
-
-Conditions are evaluated **top-to-bottom**. The first matching condition's outcome is used:
-
-```json
-{
-  "conditions": [
-    {
-      "condition": {
-        "operator": "and",
-        "input": [
-          {"operator": ">", "input": ["@fact:orderTotal", 10000]},
-          {"operator": "=", "input": ["@fact:customerTier", "enterprise"]}
-        ]
-      },
-      "outcome": "enterprise_handler_step_id"
-    },
-    {
-      "condition": {
-        "operator": ">",
-        "input": ["@fact:orderTotal", 1000]
-      },
-      "outcome": "business_handler_step_id"
-    },
-    {
-      "outcome": "standard_handler_step_id"
-    }
-  ]
-}
-```
+A Condition step is the only thing in a flow that chooses a branch. Its payload is a ladder of rule cells; the first cell whose condition is true wins, and that cell's **outcome** names the step IDs to run next.
 
 <Warning>
-**Order matters!** Place most specific conditions first, more general conditions last. The first matching condition wins.
+**The outcome is the routing, not the arrows.** An edge drawn from a Condition to a step that no outcome names is decoration — it is never followed. An outcome naming a step that is not in the flow fails the run with `next step not found`.
 </Warning>
 
-### Special Outcomes
+---
 
-Instead of routing to another step, you can terminate the flow:
+## The payload
 
-- **`"RESOLVE_SUCCESS"`** - End the flow successfully
-- **`"RESOLVE_ERROR"`** - End the flow with an error
+The payload is a JSON **array of rule cells**, and nothing wraps it:
 
 ```json
-{
-  "conditions": [
-    {
-      "condition": {
-        "operator": "=",
-        "input": ["@fact:validationStatus", "valid"]
-      },
-      "outcome": "processing_step_id"
-    },
-    {
-      "outcome": "RESOLVE_ERROR"
-    }
-  ]
-}
+[
+  { "condition": { "operator": ">=", "input": ["$.SCORE.data.value", 80] }, "outcome": "NOTIFY_OWNER" },
+  { "condition": { "operator": ">=", "input": ["$.SCORE.data.value", 50] }, "outcome": "REVIEW" },
+  { "outcome": "ARCHIVE" }
+]
+```
+
+Cells are tried top to bottom. A cell with **no** `condition` always matches, so a final bare `{"outcome": …}` is the `else`. If no cell matches, the step fails with `failed to determine next steps`.
+
+<ParamField path="condition.operator" type="string" required>
+The comparison to run. Must be one of the engine's operator names — see [the operator reference](/advanced/rules/operations-reference).
+</ParamField>
+
+<ParamField path="condition.input" type="array" required>
+The operands. `input[0]` is the value being tested, `input[1]` is what it is tested against. An operand may itself be another `{operator, input}` object, which is how `and` / `or` / `not` are built.
+</ParamField>
+
+<ParamField path="outcome" type="string | string[]" required>
+The step ID to run next, or an array of step IDs. **Several IDs start at the same time.**
+</ParamField>
+
+<Note>
+`outcomeMessage` is accepted but has no effect on a Condition step — the runner reads only the outcome.
+</Note>
+
+---
+
+## Where the values come from
+
+**A Condition step has no facts.** The rules engine is called with an empty fact set, so `@fact:` references and `{"operator": "fact", …}` resolve to nothing and the cell silently never matches.
+
+Values come in through JSONPath instead. The whole payload is resolved before the engine sees it, so a `$.` string anywhere in `input` is replaced by the value it selects:
+
+```json
+{ "operator": ">=", "input": ["$.SCORE.data.value", 80] }
+```
+
+With `$.SCORE.data.value` equal to `92`, the engine receives `{"operator": ">=", "input": [92, 80]}` and the cell matches.
+
+<Warning>
+**A path that matches nothing resolves to an empty array, not `null`.** `"$.SCORE.data.missing"` becomes `[]`, and `[] >= 80` is false — so the branch quietly falls through to the next cell rather than erroring. Test the path in the previous step's output before relying on it.
+</Warning>
+
+---
+
+## Ending a run
+
+Two reserved outcomes are not step IDs:
+
+| Outcome | Effect |
+|---|---|
+| `RESOLVE_SUCCESS` | Ends the run, marked successful |
+| `RESOLVE_ERROR` | Ends the run with `flow terminated with error` |
+
+```json
+[
+  { "condition": { "operator": "notEmpty", "input": ["$.GET_ITEMS.data"] }, "outcome": "PROCESS_ITEMS" },
+  { "outcome": "RESOLVE_SUCCESS" }
+]
 ```
 
 ---
 
-## Condition Syntax
+## Worked examples
 
-Conditions use the same **operator-based syntax** as the Rules step. See the [Rules Operations Reference](/advanced/rules/operations-reference) for all available operators.
+Each of these was run through the rules engine the step uses; the outcome shown is what it returned.
 
-### Basic Comparisons
-
-```json
-// Equality
-{
-  "operator": "=",
-  "input": ["@fact:status", "approved"]
-}
-
-// Inequality
-{
-  "operator": "!=",
-  "input": ["@fact:status", "pending"]
-}
-
-// Greater than
-{
-  "operator": ">",
-  "input": ["@fact:amount", 1000]
-}
-
-// Less than or equal
-{
-  "operator": "<=",
-  "input": ["@fact:score", 100]
-}
-```
-
-### Logical Operators
+### Fan out to two steps
 
 ```json
-// AND - All conditions must be true
-{
-  "operator": "and",
-  "input": [
-    {"operator": ">", "input": ["@fact:amount", 1000]},
-    {"operator": "=", "input": ["@fact:tier", "gold"]}
-  ]
-}
-
-// OR - At least one condition must be true
-{
-  "operator": "or",
-  "input": [
-    {"operator": "=", "input": ["@fact:status", "urgent"]},
-    {"operator": "=", "input": ["@fact:priority", "high"]}
-  ]
-}
-
-// NOT - Invert condition
-{
-  "operator": "not",
-  "input": [
-    {"operator": "=", "input": ["@fact:approved", true]}
-  ]
-}
+[
+  { "condition": { "operator": ">=", "input": ["$.SCORE.data.value", 80] },
+    "outcome": ["NOTIFY_OWNER", "WRITE_LOG"] },
+  { "outcome": "ARCHIVE" }
+]
 ```
 
-### Null Checks
+With the score at 92 the outcome is `["NOTIFY_OWNER", "WRITE_LOG"]`, and both steps start together.
+
+### Combine two tests
+
+`and`, `or` and `not` take nested `{operator, input}` objects as their operands:
 
 ```json
-// Check if value exists
-{
-  "operator": "notEmpty",
-  "input": ["@fact:email"]
-}
-
-// Check if value is empty/null
-{
-  "operator": "isEmpty",
-  "input": ["@fact:optionalField"]
-}
+[
+  { "condition": { "operator": "or", "input": [
+      { "operator": "=", "input": ["$.CLASSIFY.result", "urgent"] },
+      { "operator": ">", "input": ["$.CLASSIFY.wait_days", 5] }
+    ] },
+    "outcome": "ESCALATE" },
+  { "outcome": "RESOLVE_SUCCESS" }
+]
 ```
 
-### String Operations
+### Match on text
 
 ```json
-// Contains substring
-{
-  "operator": "includes",
-  "input": ["@fact:message", "refund"]
-}
-
-// Starts with
-{
-  "operator": "startsWith",
-  "input": ["@fact:email", "admin@"]
-}
-
-// Ends with
-{
-  "operator": "endsWith",
-  "input": ["@fact:filename", ".pdf"]
-}
-
-// Case-insensitive comparison
-{
-  "operator": "=",
-  "input": [
-    {"operator": "toLower", "input": ["@fact:category"]},
-    "support"
-  ]
-}
+[
+  { "condition": { "operator": "stringContains", "input": ["$.trigger.subject", "refund"] },
+    "outcome": "BILLING" },
+  { "outcome": "GENERAL" }
+]
 ```
 
-### Array Operations
+### Range test
+
+`between` takes the bounds as a **nested pair**, not as two more operands:
 
 ```json
-// Check if array contains value
-{
-  "operator": "in",
-  "input": ["@fact:selectedTag", "@fact:availableTags"]
-}
-
-// Check array length
-{
-  "operator": ">",
-  "input": [
-    {"operator": "size", "input": ["@fact:items"]},
-    0
-  ]
-}
+{ "operator": "between", "input": ["$.ORDER.data.total", [100, 500]] }
 ```
+
+Written flat as `["$.ORDER.data.total", 100, 500]` it returns `false` for every value.
 
 ---
 
-## Common Patterns
+## The failure that gives no error
 
-<AccordionGroup>
-  <Accordion title="Agent Decision Routing" icon="robot">
-    Route based on agent's structured output decision
-    
-    **Facts**:
-    ```json
-    {
-      "decision": "$.support_agent.output.decision",
-      "confidence": "$.support_agent.output.confidence"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": "=",
-          "input": ["@fact:decision", "approve"]
-        },
-        "outcome": "approval_flow_step"
-      },
-      {
-        "condition": {
-          "operator": "=",
-          "input": ["@fact:decision", "reject"]
-        },
-        "outcome": "rejection_flow_step"
-      },
-      {
-        "condition": {
-          "operator": "=",
-          "input": ["@fact:decision", "escalate"]
-        },
-        "outcome": "human_review_step"
-      },
-      {
-        "outcome": "error_handler_step"
-      }
-    ]
-    ```
-  </Accordion>
+<Warning>
+**An operator the engine does not have produces no error and no value.** The engine records an internal warning that is never returned, the cell resolves to nothing, and the ladder carries on to the next cell — so the branch simply never fires and nothing in the run log says why.
 
-  <Accordion title="Threshold-Based Routing" icon="gauge-high">
-    Route based on numeric thresholds
-    
-    **Facts**:
-    ```json
-    {
-      "orderTotal": "$.order.total"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": ">=",
-          "input": ["@fact:orderTotal", 10000]
-        },
-        "outcome": "enterprise_sales_step"
-      },
-      {
-        "condition": {
-          "operator": ">=",
-          "input": ["@fact:orderTotal", 1000]
-        },
-        "outcome": "business_sales_step"
-      },
-      {
-        "condition": {
-          "operator": ">=",
-          "input": ["@fact:orderTotal", 0]
-        },
-        "outcome": "self_service_step"
-      },
-      {
-        "outcome": "RESOLVE_ERROR"
-      }
-    ]
-    ```
-  </Accordion>
+Two names in the editor's own operator dropdown are affected: **`boolean`** and **`string-contains`** are not implemented. Use `stringContain` / `stringContains` for the latter; there is no `boolean` operator.
 
-  <Accordion title="Multi-Factor Validation" icon="shield-check">
-    Check multiple criteria before proceeding
-    
-    **Facts**:
-    ```json
-    {
-      "email": "$.form.email",
-      "age": "$.form.age",
-      "termsAccepted": "$.form.terms_accepted"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": "and",
-          "input": [
-            {"operator": "notEmpty", "input": ["@fact:email"]},
-            {"operator": "includes", "input": ["@fact:email", "@"]},
-            {"operator": ">=", "input": ["@fact:age", 18]},
-            {"operator": "=", "input": ["@fact:termsAccepted", true]}
-          ]
-        },
-        "outcome": "validated_processing_step"
-      },
-      {
-        "outcome": "validation_failed_step"
-      }
-    ]
-    ```
-  </Accordion>
+The same silence covers operator names people reasonably expect and the engine does not have, among them `includes`, `startsWith`, `endsWith`, `toLower`, `trim`, `size` and `isEmpty`.
+</Warning>
 
-  <Accordion title="Status-Based Routing" icon="traffic-light">
-    Route based on status or category
-    
-    **Facts**:
-    ```json
-    {
-      "customerStatus": "$.customer.status",
-      "customerTier": "$.customer.tier"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": "=",
-          "input": ["@fact:customerStatus", "new"]
-        },
-        "outcome": "new_customer_flow_step"
-      },
-      {
-        "condition": {
-          "operator": "=",
-          "input": ["@fact:customerTier", "vip"]
-        },
-        "outcome": "vip_flow_step"
-      },
-      {
-        "condition": {
-          "operator": "=",
-          "input": ["@fact:customerStatus", "returning"]
-        },
-        "outcome": "returning_customer_flow_step"
-      },
-      {
-        "outcome": "standard_flow_step"
-      }
-    ]
-    ```
-  </Accordion>
+If a Condition step **errors** rather than mis-routing, it is almost always one of two things:
 
-  <Accordion title="Confidence-Based Routing" icon="chart-line">
-    Route based on AI confidence scores
-    
-    **Facts**:
-    ```json
-    {
-      "confidence": "$.agent.output.confidence",
-      "decision": "$.agent.output.decision"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": ">=",
-          "input": ["@fact:confidence", 0.9]
-        },
-        "outcome": "auto_approve_step"
-      },
-      {
-        "condition": {
-          "operator": ">=",
-          "input": ["@fact:confidence", 0.6]
-        },
-        "outcome": "manager_review_step"
-      },
-      {
-        "condition": {
-          "operator": "<",
-          "input": ["@fact:confidence", 0.6]
-        },
-        "outcome": "senior_review_step"
-      },
-      {
-        "outcome": "RESOLVE_ERROR"
-      }
-    ]
-    ```
-  </Accordion>
-
-  <Accordion title="Error Handling & Validation" icon="triangle-exclamation">
-    Validate data and route errors appropriately
-    
-    **Facts**:
-    ```json
-    {
-      "apiStatus": "$.http_request.status",
-      "hasData": "$.http_request.data"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": "and",
-          "input": [
-            {"operator": "=", "input": ["@fact:apiStatus", 200]},
-            {"operator": "notEmpty", "input": ["@fact:hasData"]}
-          ]
-        },
-        "outcome": "success_processing_step"
-      },
-      {
-        "condition": {
-          "operator": "and",
-          "input": [
-            {"operator": ">=", "input": ["@fact:apiStatus", 400]},
-            {"operator": "<", "input": ["@fact:apiStatus", 500]}
-          ]
-        },
-        "outcome": "client_error_handler_step"
-      },
-      {
-        "condition": {
-          "operator": ">=",
-          "input": ["@fact:apiStatus", 500]
-        },
-        "outcome": "server_error_handler_step"
-      },
-      {
-        "outcome": "RESOLVE_ERROR"
-      }
-    ]
-    ```
-  </Accordion>
-
-  <Accordion title="Data Completeness Check" icon="list-check">
-    Verify required fields exist before processing
-    
-    **Facts**:
-    ```json
-    {
-      "name": "$.form.name",
-      "email": "$.form.email",
-      "phone": "$.form.phone",
-      "address": "$.form.address"
-    }
-    ```
-    
-    **Conditions**:
-    ```json
-    [
-      {
-        "condition": {
-          "operator": "and",
-          "input": [
-            {"operator": "notEmpty", "input": ["@fact:name"]},
-            {"operator": "notEmpty", "input": ["@fact:email"]},
-            {"operator": "notEmpty", "input": ["@fact:phone"]},
-            {"operator": "notEmpty", "input": ["@fact:address"]}
-          ]
-        },
-        "outcome": "complete_data_processing_step"
-      },
-      {
-        "outcome": "missing_fields_error_step"
-      }
-    ]
-    ```
-  </Accordion>
-</AccordionGroup>
+| Error | Cause |
+|---|---|
+| `failed to determine next steps` | No cell matched, the payload is empty, or the only cell uses an operator that does not exist. A newly inserted cell starts with an empty operator and hits this. |
+| `value has to be a string or an array of strings` | The winning cell's `outcome` is not a step ID — an object or a number, usually from an `if`/`then`/`else` shape that the engine passed through as a literal. |
 
 ---
 
-## Best Practices
+## The Conditions editor
 
-<CardGroup cols={2}>
-  <Card title="Always Have Default" icon="arrows-split-up-and-left">
-    Always include a final condition with no condition expression (just `{"outcome": "..."}`) to handle unexpected values.
-  </Card>
-  
-  <Card title="Order Matters" icon="arrow-down-1-9">
-    Conditions are evaluated top-to-bottom. Put most specific conditions first, most general last.
-  </Card>
-  
-  <Card title="Use Agent Output Schemas" icon="table">
-    When routing based on agent decisions, use output schemas for clean, predictable conditions.
-  </Card>
-  
-  <Card title="Test All Branches" icon="vial">
-    Test each condition path with appropriate test data to ensure all outcomes work correctly.
-  </Card>
-  
-  <Card title="Keep It Simple" icon="minimize">
-    For very complex logic, consider using a Rules step to calculate intermediate values, then use a Condition step for routing.
-  </Card>
-  
-  <Card title="Document Branches" icon="message-lines">
-    Use clear, descriptive names for outcome steps so the flow is easy to understand.
-  </Card>
-</CardGroup>
+The Condition step has two views, switched at the top of the payload pane:
+
+| View | Use |
+|---|---|
+| **Code Editor** | The rule-cell array as raw JSON |
+| **Conditions** | One collapsible card per cell, labelled IF / ELSE IF / ELSE |
+
+In the Conditions view, each cell has an **Input** field (which takes a `$.` path), an **Operator** dropdown, a **Value** editor, and an **Outcome** multi-select listing the steps this condition connects to. Both views edit the same array — switching between them loses nothing.
 
 ---
 
-## When to Use Conditions vs. Rules
+## The step's own result
 
-| Use Condition When | Use Rules When |
-|-------------------|----------------|
-| Need to **route** flow to different steps | Need to **calculate** values |
-| Binary or multi-way branching | Complex calculations or transformations |
-| Flow termination needed | Data reshaping needed |
-| Decision → Action mapping | Multiple derived values needed |
+A Condition step **stores nothing**. `$.my_condition` holds no value, because the runner hands off to the chosen branches instead of recording a result. If a later step needs the decision itself, compute it in an [Eval](/flows/steps/eval) or [Rules](/flows/steps/rules) step and branch on that step's output.
 
-**Example**:
-
-**Use Condition for**: "If approved, go to approval step. If rejected, go to rejection step."
-
-**Use Rules for**: "Calculate discount percentage based on order total, customer tier, and region."
-
-Often you'll use **Rules step → Condition step** together:
-1. Rules step calculates complex values
-2. Condition step routes based on those calculated values
-
----
-
-## Complete Example
-
-Here's a complete example showing Facts, Conditions, and routing:
-
-**Scenario**: Route customer support requests based on agent analysis
-
-**Step Configuration**:
-
-```json
-{
-  "facts": {
-    "requestType": "$.support_agent.output.type",
-    "priority": "$.support_agent.output.priority",
-    "confidence": "$.support_agent.output.confidence",
-    "requiresHuman": "$.support_agent.output.requires_human"
-  },
-  "conditions": [
-    {
-      "condition": {
-        "operator": "=",
-        "input": ["@fact:requiresHuman", true]
-      },
-      "outcome": "human_review_step_id"
-    },
-    {
-      "condition": {
-        "operator": "and",
-        "input": [
-          {"operator": "=", "input": ["@fact:requestType", "refund"]},
-          {"operator": ">=", "input": ["@fact:confidence", 0.8]}
-        ]
-      },
-      "outcome": "refund_processing_step_id"
-    },
-    {
-      "condition": {
-        "operator": "and",
-        "input": [
-          {"operator": "=", "input": ["@fact:requestType", "technical"]},
-          {"operator": ">=", "input": ["@fact:confidence", 0.8]}
-        ]
-      },
-      "outcome": "technical_support_step_id"
-    },
-    {
-      "condition": {
-        "operator": "=",
-        "input": ["@fact:priority", "urgent"]
-      },
-      "outcome": "urgent_escalation_step_id"
-    },
-    {
-      "condition": {
-        "operator": "<",
-        "input": ["@fact:confidence", 0.6]
-      },
-      "outcome": "low_confidence_review_step_id"
-    },
-    {
-      "outcome": "standard_support_step_id"
-    }
-  ]
-}
-```
-
-**Flow Routing**:
-1. If agent says human required → Human review
-2. If refund with high confidence → Auto-process refund
-3. If technical with high confidence → Technical support flow
-4. If marked urgent → Urgent escalation
-5. If low confidence → Manual review
-6. Default → Standard support queue
-
----
-
-## Troubleshooting
-
-<AccordionGroup>
-  <Accordion title="Flow fails at condition step" icon="circle-exclamation">
-    **Possible causes**:
-    - No conditions matched and no default outcome
-    - Fact reference is incorrect
-    - Data type mismatch
-    - Variable mapping failed
-    
-    **Solutions**:
-    - Always add a default condition with no condition expression
-    - Verify fact keys match your facts object
-    - Check data types (comparing string to number won't match)
-    - Verify previous step output contains expected data
-    - Add logging steps before condition to inspect values
-  </Accordion>
-
-  <Accordion title="Wrong branch taken" icon="turn-down">
-    **Possible causes**:
-    - Condition order wrong (earlier condition matched first)
-    - Logical operator error (AND vs. OR)
-    - Data type mismatch
-    - Operator precedence unexpected
-    
-    **Solutions**:
-    - Reorder conditions (most specific first)
-    - Verify logical operators are correct
-    - Check data types match (use type conversion if needed)
-    - Test each condition individually
-    - Add logging to see which condition matched
-  </Accordion>
-
-  <Accordion title="Condition always false" icon="ban">
-    **Possible causes**:
-    - Fact doesn't exist or is null
-    - Variable mapping returned unexpected format
-    - Case sensitivity issue
-    - Whitespace in data
-    
-    **Solutions**:
-    - Check previous step output structure
-    - Add null checks using `notEmpty` operator
-    - Use `toLower` for case-insensitive comparison
-    - Use `trim` operator to remove whitespace
-    - Verify variable mapping path is correct
-  </Accordion>
-
-  <Accordion title="Can't access nested properties" icon="folder-tree">
-    **Possible causes**:
-    - Variable mapping didn't extract nested value
-    - Fact contains full object instead of specific property
-    
-    **Solutions**:
-    - Use JSONPath in variable mapping to extract specific property: `$.step.output.nested.property`
-    - If fact contains object, use `jPath` operator in condition to access nested value
-    - Consider using Map step before Condition to flatten data
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Tips for Better Conditions
-
-<Steps>
-  <Step title="Map facts carefully">
-    Use variable mapping to extract exactly the values you need. Make facts simple values when possible.
-  </Step>
-  
-  <Step title="Start simple">
-    Begin with basic conditions. Add complexity only when needed.
-  </Step>
-  
-  <Step title="Use structured agent output">
-    Define output schemas on agents for clean, predictable routing decisions.
-  </Step>
-  
-  <Step title="Test all paths">
-    Test each branch with appropriate test data to verify routing works correctly.
-  </Step>
-  
-  <Step title="Handle null values">
-    Always check for null/empty before comparing values using `notEmpty` or `isEmpty`.
-  </Step>
-  
-  <Step title="Consider Rules + Condition">
-    For complex logic, use Rules step to calculate, then Condition step to route based on results.
-  </Step>
-</Steps>
+<Note>
+Editing a flow changes its **draft**. **Publish** to make a routing change take effect.
+</Note>
 
 ---
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Rules Step" icon="gavel" href="/flows/steps/rules">
-    Learn about the Rules step for complex calculations
+  <Card title="Operator Reference" icon="table-list" href="/advanced/rules/operations-reference">
+    Every operator the engine has
   </Card>
-  
-  <Card title="Variable Mapping" icon="brackets-curly" href="/advanced/variable-mapping/overview">
-    Master variable mapping to populate facts
+
+  <Card title="Rules Step" icon="scale-balanced" href="/flows/steps/rules">
+    Derive values instead of routing on them
   </Card>
-  
-  <Card title="Rules Operations" icon="list-check" href="/advanced/rules/operations-reference">
-    Complete reference for all available operators
+
+  <Card title="Eval Step" icon="code" href="/flows/steps/eval">
+    Logic a rule cell cannot express
   </Card>
-  
-  <Card title="Human in the Loop" icon="user-check" href="/flows/steps/human-in-the-loop">
-    Add manual approval to branches
+
+  <Card title="Flow Steps Overview" icon="list-check" href="/flows/steps/overview">
+    How the runner decides what runs
   </Card>
 </CardGroup>
