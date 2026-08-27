@@ -108,7 +108,7 @@ turns the step's result into `{"invoice": "inv_7"}`, so downstream steps read `$
 | `timeout` | How long to wait for the sub-flow, in milliseconds |
 | `attempts` | Total attempts, capped at 5 |
 | `backoff_ms` | A constant wait between attempts |
-| `ignore_response_codes` | Status codes from the sub-flow that must not be treated as a failure |
+| `ignore_response_codes` | Sub-flow status codes that must not trigger a retry. It does **not** stop them failing the step. |
 | `flat_map` | Flatten the result to dotted keys before storing it |
 
 A sub-flow that fails returns a non-200, which fails the step — and a failed step ends the parent run.

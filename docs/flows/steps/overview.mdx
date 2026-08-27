@@ -89,7 +89,7 @@ Two settings soften this, both under **Advanced Settings** on the steps that sup
 |---|---|
 | `attempts` | Total attempts, not retries. Capped at 5. |
 | `backoff_ms` | A **constant** wait between attempts. There is no exponential backoff. |
-| `ignore_response_codes` | Response codes that must not be treated as a failure |
+| `ignore_response_codes` | Response codes that must not trigger a retry. It does **not** stop them failing the step. |
 | `timeout` | Per-step timeout in milliseconds |
 | `flat_map` | Flattens the step's result to dotted keys before storing it |
 

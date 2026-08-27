@@ -150,10 +150,17 @@ A **constant** wait before each retry. There is no exponential backoff and no mu
 </ParamField>
 
 <ParamField path="options.ignore_response_codes" type="integer[]">
-Status codes that must **not** be treated as a failure. This is the inverse of a retry-on list: a code named here stops the retry loop and lets the run continue.
+Status codes that must not trigger a **retry**. The name is misleading: a code listed here is still an error.
 </ParamField>
 
-So the way to tolerate an expected 404 is `"ignore_response_codes": [404]`. Note that the step still records the error rather than a result, so nothing downstream can read the response.
+<Warning>
+`ignore_response_codes` does not let the run continue. It is read only when deciding whether to
+retry — a listed code skips the retry loop, and the step then fails exactly as it would have
+anyway, ending the run. There is no setting that tolerates a 4xx or 5xx from this step.
+
+To handle an expected 404, put the call in a nested flow whose own error path returns a value the
+parent can read, or use an Eval step to make the request yourself.
+</Warning>
 
 <ParamField path="options.flat_map" type="boolean">
 Flattens the response into dotted keys before storing it, turning `$.STEP.data.id` into the key `data.id`.
