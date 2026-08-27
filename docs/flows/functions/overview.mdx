@@ -128,10 +128,12 @@ Test for it explicitly with a [Condition step](/flows/steps/condition) on `$.STE
 Three things do end the run:
 
 - The function throws and the runtime cannot catch it.
-- The invocation returns a status code other than 200.
+- The invocation itself fails — the function could not be reached, or did not run.
 - The call exceeds its timeout — 20 seconds unless you set one in **Advanced Settings**.
 
-There is no per-step error branch. The first step that errors cancels the whole run — see [Best practices](/flows/best-practices).
+An inner `status_code` of 409 or 404 in the body is *not* one of these. The invocation succeeded; the step succeeded; only the operation did not.
+
+There is no per-step error branch. The first step that errors cancels the whole run — see [Building Reliable Flows](/flows/best-practices).
 
 ---
 
@@ -146,7 +148,7 @@ There is no per-step error branch. The first step that errors cancels the whole 
     Writing the `$.` expressions in a payload
   </Card>
 
-  <Card title="Best Practices" icon="star" href="/flows/best-practices">
+  <Card title="Building Reliable Flows" icon="shield-check" href="/flows/best-practices">
     Retries, timeouts and what a part-completed run leaves behind
   </Card>
 
