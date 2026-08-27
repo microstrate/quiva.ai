@@ -84,9 +84,13 @@ If the assistant has an output schema, `result` is an object and you can read in
 
 ## Sessions and context
 
-All assistant steps in one run share a single session, so a second assistant step sees what the first one said. The session ID is the flow run's, or a fresh one if the run has none.
+If the run was started with a session — a chat-driven flow, for instance — every assistant step in it invokes into that same session, so a second assistant sees what the first one said. **A run with no session gives each assistant step a session of its own**, and they share no history.
 
-Context variables passed in on the run request are forwarded to the assistant. **Do not also set `context` in the step's payload** — the run's context variables are what reach the assistant, and combining the two is not supported.
+Context variables passed in on the run request are forwarded to the assistant automatically.
+
+<Warning>
+Do not set `context` in the step's own payload. The run's context variables are what reach the assistant, and a step that carries its own `context` object in a run that also has context variables fails the run.
+</Warning>
 
 ---
 
