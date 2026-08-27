@@ -61,6 +61,10 @@ A record is validated against its record set's schema when it is created and eve
 **Field formats are not checked.** Marking a field as an email or a date changes how it is labelled and rendered, not what is accepted — `not-an-email` will save into a field marked as an email. If a value genuinely has to follow a shape, give the field a **pattern**. Patterns are enforced, both in the browser and on save.
 </Warning>
 
+**A field the form hid is not required.** A record set's form can hide a question with a [rule](/forms/form-rules), and a question nobody could see must not block the save. The form therefore tells the server which fields its rules hid, as a `hidden_fields` array of dotted refs on the create, update and upsert bodies, and `required` is relaxed for exactly those refs.
+
+Nothing else is relaxed: types, patterns, choices and additional-property rules all still apply, and a ref naming nothing in the schema relaxes nothing. A caller writing to a record set directly gets the ordinary behaviour unless it sends the array itself.
+
 ### Changing a schema
 
 <Warning>
@@ -211,9 +215,6 @@ So an enquiry arriving with an email address is filed against the contact that a
 
 **Deleting a contact's tasks.** Every task filed against one contact can be removed in a single operation, naming either the contact key or the identity that derives it. Resolving an identity for a delete writes nothing — erasing someone must never create them.
 
-<Warning>
-**Task actions rewrite the task's status.** Adding or updating any task action recomputes the parent task's status from its checklist: none done becomes `to_do`, some done becomes `in_progress`, all done becomes `completed`. Chat actions are open-ended and are excluded from the count.
-
-Those three ids are written as they are, and they are not checked against the Space's own status list. In a Space whose statuses use different ids, a task can end up in a status the Space does not define — stored, but matching no filter and rendering as raw text. If you use form or document checklists, give the Space statuses with those three ids.
-</Warning>
-</content>
+<Note>
+**Task actions move the task.** Completing, adding or removing a task action recomputes the parent task's status from its checklist. The status it lands on is resolved through the Space's own **To do** / **In progress** / **Done** roles, and a status the Space does not have is never written. Chat actions are open-ended and are excluded from the count. See [Task actions](/spaces/task-actions#actions-move-the-task).
+</Note>

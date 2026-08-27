@@ -123,7 +123,7 @@ The [Functions reference](/flows/functions/overview) covers each one's full para
 
 ## Response Map
 
-A Function step is one of only two step types whose **Response Map** is applied at run time (the other is a [nested flow](/flows/steps/nested-flows)). It is a JSONPath mapping resolved against the function's result, and what it produces replaces the result under the step ID:
+The **Response Map** is a JSONPath mapping resolved against the function's result, and what it produces replaces the result under the step ID:
 
 ```json
 { "stage": "$.value.stage" }
@@ -135,7 +135,7 @@ Leave it empty and the function's own result is stored unchanged.
 
 ## Failure and retries
 
-A function that errors fails the step, and a failed step ends the run. **Advanced Settings** offers the usual controls — `timeout` (honoured on this step type), `attempts` (total, capped at 5), `backoff_ms` (a constant wait), `ignore_response_codes` and `flat_map`.
+A function that errors fails the step, and a failed step ends the run. **Advanced Settings** offers the usual controls — `timeout`, `attempts` (total, capped at 5), `backoff_ms` (a constant wait), `ignore_response_codes` and `flat_map`.
 
 <Warning>
 A Function step must name a function. Saving a flow with one that does not is rejected with `a subject is required for the function`.

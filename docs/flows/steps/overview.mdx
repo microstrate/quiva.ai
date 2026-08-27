@@ -46,6 +46,7 @@ Before a step runs, its payload is resolved: every string beginning with `$.` is
 | `static` | The flow's Static data, itself resolved at the start of the run |
 | `context` | Context variables passed in on the run request |
 | `env` | `auth_token`, `run_id` and `headers` for this run |
+| `resume` | On a run that was resumed, the message that resumed it. Absent otherwise. |
 | *step ID* | The result of a step that has already finished |
 
 ```
@@ -59,6 +60,20 @@ There is no `${…}` syntax, no `secrets` key, and no filter or pipe grammar. `|
 </Warning>
 
 A result is stored flat under the step's ID. There is no `.output` or `.result` wrapper — although an assistant's own reply happens to live at `$.STEP_ID.result`, because that is a field of the response it returns.
+
+---
+
+## Response Map
+
+Most step types can reshape their own result before it is stored, using a **Response Map** — a JSONPath mapping resolved against the result the step produced:
+
+```json
+{ "id": "$.data.id", "state": "$.data.status" }
+```
+
+The step then stores exactly that, so downstream steps read `$.MY_STEP.id` rather than digging through the original shape. Leave it empty and the result is stored unchanged.
+
+It is offered, and applied, on **HTTP Request**, **Integration**, **Function**, **Nested flow**, **Rules**, **Task**, **Verify Challenge** and **Quiva Endpoint** steps. A **Condition** step stores no result at all, so it has none.
 
 ---
 

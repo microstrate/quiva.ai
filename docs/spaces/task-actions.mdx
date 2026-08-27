@@ -143,13 +143,35 @@ counting one would leave every task permanently short of complete. Chat actions 
 the progress figure everywhere it appears.
 </Note>
 
-<Warning>
-When a task has countable actions, changing one of them recalculates the task's status: none done
-sets it to `to_do`, some done sets `in_progress`, and all done sets `completed`. These three status
-ids are fixed — they are **not** looked up against the Space's own configured statuses. If your
-Space uses different status ids, a task driven by its actions will land on a status the board does
-not have a column for. Include statuses with these ids in any Space where actions drive the work.
-</Warning>
+## Actions move the task
+
+Completing a countable action — or adding or removing one — recomputes the task's status, so a task
+driven by its checklist keeps up with it without anyone dragging a card.
+
+Which status it moves to is resolved through the Space's own **status roles**, never a fixed id:
+
+| Actions done | Moves to | If the Space names no status for that role |
+|---|---|---|
+| None | The status with the **To do** role | The Space's default status |
+| Some | The status with the **In progress** role | The status is left alone |
+| All | The status with the **Done** role | The first status marked *complete*; failing that, left alone |
+
+The last two rows leave the status alone rather than falling back to the default. Dragging a task
+that is part-way through — or finished — back to the start of the board would be worse than leaving
+it where someone put it.
+
+<Note>
+**A status the Space does not have is never written.** Whichever branch applies, the resolved id is
+checked against the Space's own status list first, so a task driven by its actions can only ever
+land in a column the board actually has.
+</Note>
+
+Set the three roles on **Edit Space → Tasks → Statuses**, under *Say which of these statuses each
+automated step means*. Each is a dropdown over that Space's own statuses, and each can be left
+**Not set** — in which case the fallback in the table above applies. Roles belong to the Space, so
+two Spaces can name completely different statuses for the same role. See
+[Escalations](/spaces/escalations#why-these-statuses-carry-no-role) for why a Space might
+deliberately name none.
 
 ## Removing an action
 

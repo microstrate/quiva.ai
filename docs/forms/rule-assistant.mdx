@@ -90,7 +90,8 @@ A condition the summary cannot phrase comes out looking like a function call —
 `contains(notes, "urgent")`. Arithmetic and list operators read this way legitimately (`+(a, b)`),
 so it is a reason to look rather than proof of a fault. But if a *comparison* comes out that way,
 the operator is almost certainly one that
-[does not exist](/forms/form-rules#when-a-rule-silently-hides-a-field).
+[does not exist](/forms/form-rules#the-operators-that-work) — in which case the rule card will say
+so in red.
 </Note>
 
 ---
@@ -115,9 +116,9 @@ in the Raw tab has no effect.
 <Warning>
 **The assistant can produce an operator the engine does not have.** It is a language model writing
 JsonLogic, and JsonLogic dialects elsewhere include `contains`, `startsWith` and `matches`, which
-this engine does not. A rule using one evaluates to nothing, and a **Visible** rule that evaluates to
-nothing hides the field permanently and silently. Check the generated condition against
-[the operator list](/forms/form-rules#the-operators-that-work), and preview the form before saving.
+this engine does not. The rule card flags one when it sees it — a red note naming the operator, above
+the description — and the rule is then ignored when the form runs rather than obeyed. Read that note
+before saving, and preview the form to confirm the rule you meant to write is actually firing.
 </Warning>
 
 <AccordionGroup>

@@ -86,9 +86,11 @@ $.my_checkpoint.approved
 $.my_checkpoint.note
 ```
 
-<Warning>
-**Resuming replaces `$.trigger`.** The message sent to continue the run becomes the run's trigger, so any step after the Checkpoint that reads `$.trigger.…` gets the resume payload, not the payload that originally started the flow. Copy anything you still need out of `$.trigger` into a [Map step](/flows/steps/map) before the Checkpoint.
-</Warning>
+The same message is also available on its own, at `$.resume`, to any step after the Checkpoint. `$.trigger` is untouched by the resume and still holds the payload that started the run.
+
+<Note>
+`$.resume` exists only on a run that was resumed, and it is set whether the run was continued from a pause or retried after an error. On a run that has never been resumed, reading it gives `[]`.
+</Note>
 
 A Condition step after the Checkpoint can then route on it:
 

@@ -88,9 +88,7 @@ If the run was started with a session — a chat-driven flow, for instance — e
 
 Context variables passed in on the run request are forwarded to the assistant automatically.
 
-<Warning>
-Do not set `context` in the step's own payload. The run's context variables are what reach the assistant, and a step that carries its own `context` object in a run that also has context variables fails the run.
-</Warning>
+A step may also declare a `context` object of its own. The two sets are merged, and the step's own entries win on a clash — so use one to set a value for a single assistant without changing it for the rest of the run.
 
 ---
 

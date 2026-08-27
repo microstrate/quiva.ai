@@ -178,14 +178,13 @@ warning appear, or to change what it says.
 | Card | Border, Shadow, Rounded corners |
 | Collapsible card | Border, Shadow, Rounded corners, Note, Text (its header) |
 
-<Warning>
-**Neither card kind offers a Visible rule, and that is deliberate.** Hiding a section by hiding the
-card around it leaves the answers inside it in the record and still subject to schema validation.
-To make a section conditional, put the rule on the **row** that contains the card — and keep the
-conditional fields in ordinary rows rather than inside the card. The full explanation, with what
-goes wrong, is in
+<Note>
+**Neither card kind offers a Visible rule in the editor.** To make a section conditional, put the
+rule on the **row** that contains the card. A card that carries one anyway — written by hand, or
+inherited from an older form — now behaves properly: hiding it clears the fields inside it and
+their required-ness with them. See
 [what conditional visibility does and does not clear](/forms/form-rules#what-conditional-visibility-does-and-does-not-clear).
-</Warning>
+</Note>
 
 ### Shared value sets
 

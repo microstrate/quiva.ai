@@ -54,9 +54,9 @@ Request timeout in milliseconds.
 
 Every value is JSONPath-resolved before the call, so any of them may be pulled from an earlier step.
 
-<Warning>
-The **Timeout** field under Advanced Settings does not apply to an HTTP step — set `timeout` in the payload instead. (It does work on Function and nested-flow steps.)
-</Warning>
+<Note>
+There are two places to set a timeout and the payload's own `timeout` wins. The **Timeout** field under Advanced Settings applies only when the payload does not carry one, so set whichever suits you — but not both, expecting the smaller to hold.
+</Note>
 
 ---
 

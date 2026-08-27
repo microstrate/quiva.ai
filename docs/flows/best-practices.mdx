@@ -38,12 +38,12 @@ Open **Monitoring**, select the run, and three controls appear depending on its 
 |---|---|---|
 | **Retry** | status is `error` | Resumes **from the step that errored**, with the original trigger and the flow configuration as it was when the error happened. Steps that already succeeded are not repeated. |
 | **Continue** | status is `paused` | Resumes a [Checkpoint](/flows/steps/human-in-the-loop) from where it paused. You can supply a message, which becomes the paused step's result. |
-| **Rerun** | status is `error` or `paused` | Opens the trigger for editing and runs again. |
+| **Rerun** | status is `error` or `paused` | Opens the trigger for editing and starts a **fresh run** — a new run id, from the first step, on the flow's current published configuration. It lands as its own row in Monitoring rather than replacing the one you started from. |
 
 **Retry** is possible because the failure is captured with everything needed to carry on: the results of every completed step, and the remainder of the graph from the failed step onward. It is the right control after a transient failure — an API that was down, a timeout, a bad credential you have since fixed.
 
 <Note>
-If you have **changed the flow** since it failed, do not rely on these controls to pick the change up. Retry deliberately replays the configuration version the run started with. Publish the fix and trigger the flow again.
+If you have **changed the flow** since it failed, Retry will not pick the change up — it deliberately replays the configuration version the run started with. Publish the fix and use **Rerun**, which starts again on the current configuration.
 </Note>
 
 ---
@@ -88,9 +88,9 @@ Make repeated work harmless rather than trying to prevent it:
 
 ## Timeouts
 
-A Function step and a nested-flow step time out after **20 seconds** unless you set `timeout`. An HTTP Request step has no timeout of its own until you set one — a slow endpoint will hold the run open.
+A Function step and a nested-flow step time out after **20 seconds** unless you set `timeout`. An HTTP Request step falls back to **30 seconds**, and takes its bound from the payload's own `timeout` if that carries one, otherwise from `timeout` under Advanced Settings.
 
-Set `timeout` on anything that leaves the platform. A step with no bound is the usual cause of a run that neither finishes nor fails.
+`timeout` is a millisecond count everywhere it appears. Set it on anything that leaves the platform and is slower than the default.
 
 ---
 
@@ -102,7 +102,7 @@ Three things go wrong quietly. All three leave the run in status `success`.
 
 **A JSONPath expression that matches nothing.** It resolves to `[]`, not `null` and not an error. A field name typo therefore produces an empty array that flows on downstream. Test with `Array.isArray(x) && x.length === 0`, not for a missing key.
 
-**A misspelled rules operator.** The [rules engine](/advanced/rules/overview) drops the fact entirely and produces no error, no warning and no value. The flow continues with the fact simply absent, which usually shows up much later as a condition taking the wrong branch. Copy operator names rather than typing them.
+**A rule that produces nothing.** A misspelled operator is now caught before the step runs and fails it outright, naming the operator. Several other mistakes are not: a calculation that produces `NaN`, a condition ladder where no cell matches and there is no default, and an outcome of `null` all drop the fact from the result with no error. The flow continues with the fact simply absent, which usually shows up much later as a condition taking the wrong branch. See [when a rule produces nothing](/advanced/rules/core-concepts#when-a-rule-produces-nothing).
 
 ---
 
@@ -141,7 +141,7 @@ Put `SECRET::<name>::` anywhere in a node's configuration and the platform subst
 | Attempts per step | 5, whatever you configure |
 | Backoff | Constant, no exponential growth |
 | Default timeout, Function and nested-flow steps | 20 seconds |
-| Default timeout, HTTP Request step | None until you set one |
+| Default timeout, HTTP Request step | 30 seconds |
 | Messages folded by `aggregate-stream-items` | 1,000 |
 | Default page size, `list-kv-bucket-items` | 100 |
 | Default page size, `list-object-keys` | 500 |

@@ -9,7 +9,7 @@ month rather than by version. Where a change landed gradually over several weeks
 dated to the month it became generally available rather than to a single commit.
 </Note>
 
-<Update label="August 2026" description="Client Portal, task actions, form flows, and Abbie's name" tags={["Spaces", "Forms", "Client Portal", "Abbie"]}>
+<Update label="August 2026" description="Client Portal, task actions, form flows, Abbie's name, and a round of flow and form corrections" tags={["Spaces", "Forms", "Client Portal", "Abbie", "Flows", "Rules"]}>
 
 ## Client Portal
 
@@ -52,6 +52,92 @@ piece of work be broken into smaller tracked pieces underneath it.
   Subtasks, time tracking and the rest of what's on a task.
 </Card>
 
+## Query strings and path parameters reach a flow
+
+A call to a webhook or HTTP Request trigger no longer loses everything outside the JSON body. Query
+parameters arrive as `x-param-query-<name>` and path parameters as `x-param-<name>`, both readable
+from `$.env.headers`, and the request method arrives as `x-method`. A request with no body at all is
+now a legitimate trigger rather than an error.
+
+Those endpoints also answer properly when something goes wrong. A body that is not valid JSON comes
+back as **400** with a JSON error naming the parse failure, instead of **200** with a bare error
+string; a flow that does not answer in time is a **504**, and one that answers with nothing is a
+**502**.
+
+<CardGroup cols={2}>
+  <Card title="HTTP Request trigger" icon="globe" href="/flows/triggers/http-request">
+    Reading query and path parameters, and the error responses.
+  </Card>
+  <Card title="Webhook trigger" icon="webhook" href="/flows/triggers/webhook">
+    The same, on a generated URL.
+  </Card>
+</CardGroup>
+
+## Task actions move the task
+
+Completing a task's actions now moves the task itself, and it does so through statuses the Space
+owns rather than three fixed ids. Give a status the **To do**, **In progress** or **Done** role on
+**Edit Space → Tasks → Statuses** and the checklist drives the board. A status a Space does not have
+is never written, and a finished task is never dragged back to the start.
+
+<Card title="Task actions" icon="circle-check" href="/spaces/task-actions#actions-move-the-task">
+  The three roles, and what happens when one is not set.
+</Card>
+
+## A form rule that cannot run no longer hides its field
+
+A **Visible** rule built on an operator the form engine does not have used to resolve to nothing,
+which counted as *no* — so the field it guarded disappeared for everybody, permanently and with no
+warning. Such a rule is now ignored instead: the field stays visible, and **Required**, **Disabled**
+and **Readonly** keep whatever their settings gave them. The rule card flags the unsupported
+operator while you are writing it.
+
+A required field inside a hidden card, row or repeater no longer blocks submission either. A
+question nobody could see is pruned before validation, and the record is saved without it.
+
+<Card title="Form rules" icon="code-branch" href="/forms/form-rules#when-a-rule-cannot-be-evaluated">
+  What a rule does when it cannot be evaluated, and the operators that exist.
+</Card>
+
+## A misnamed rule operator now says so
+
+The rules engine used to drop a fact whose operator it did not recognise, with no error anywhere — a
+typo looked exactly like a condition that did not match. A Rules step or a Condition step now fails
+before it runs and names the rule and the operator. Several other ways a rule can produce nothing
+are still silent, and the reference now separates the two.
+
+The Condition step's operator list has been reconciled with the engine as well: two names that were
+offered but never worked are gone, and ten the engine has always supported are now on the list. A
+new condition cell starts on a working operator rather than an empty one.
+
+<Card title="When a rule produces nothing" icon="triangle-exclamation" href="/advanced/rules/core-concepts#when-a-rule-produces-nothing">
+  What is caught, and what still is not.
+</Card>
+
+## Corrections across flows
+
+- **`h` in a schedule interval means hours.** It was being read as minutes, so `2h` repeated every
+  two minutes. Anything written as `120m` to work around it can go back to `2h`.
+- **Two schedule triggers on one flow may share a name.** They no longer collapse into one at
+  publish.
+- **A nested flow accepts a single object.** Only an array worked before; an object now starts one
+  run and returns it without a `results` wrapper.
+- **A step's Response Map is applied** on every step type whose editor offers it, not only Function
+  and nested-flow steps.
+- **A per-step `timeout` works** on HTTP Request and Verify Challenge steps, where it was previously
+  read as a fraction of a millisecond and had no effect.
+- **A paused run keeps `$.trigger`.** The message that resumed it now has its own place, `$.resume`,
+  instead of overwriting the payload that started the run.
+- **An assistant step may carry its own `context`.** It is merged with the run's context variables,
+  with the step's own entries winning.
+- **`dateDiff` measures spelled-out units.** `"days"`, `"months"`, `"minutes"` and the rest now work
+  alongside the single letters, and `"ms"` has been added.
+- **Rerun starts a fresh run.** In Monitoring it now begins from the first step on the flow's current
+  published version, with your edited trigger, and appears as its own row. Retry and Continue still
+  resume, as intended.
+- **A secured webhook can be created from the dialogue.** The Create Webhook dialogue now issues an
+  API key, and the trigger node carries a Public URL toggle and a Security section of its own.
+
 </Update>
 
 ---
@@ -82,7 +168,7 @@ you, rather than built by hand.
 
 <CardGroup cols={2}>
   <Card title="Form rules" icon="code-branch" href="/forms/form-rules">
-    The operators that work, and the ones that silently don't.
+    The operators that work, and what happens when a rule cannot be run.
   </Card>
   <Card title="The rule assistant" icon="wand-magic-sparkles" href="/forms/rule-assistant">
     Describing a rule and having it drafted for you.

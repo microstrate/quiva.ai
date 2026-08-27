@@ -1,6 +1,6 @@
 ---
 title: "Form rules"
-description: "Conditional visibility, conditional requirement and computed values on a form — the operators that actually work, and the traps that make a rule fail silently"
+description: "Conditional visibility, conditional requirement and computed values on a form — the operators that actually work, and what happens when a rule cannot be run"
 icon: "code-branch"
 ---
 
@@ -88,8 +88,8 @@ there when you want to write or adjust the JSON directly.
 
 ## The operators that work
 
-This is the complete set. Anything not on this list does not exist, and using it
-[silently hides the field](#when-a-rule-silently-hides-a-field).
+This is the complete set. Anything not on this list does not exist, and a rule
+using it is [ignored when the form runs](#when-a-rule-cannot-be-evaluated).
 
 <AccordionGroup>
   <Accordion title="Comparing" icon="equals">
@@ -151,10 +151,19 @@ This is the complete set. Anything not on this list does not exist, and using it
 </AccordionGroup>
 
 <Warning>
-**There is no `contains`, `startsWith`, `endsWith`, `matches`, `regex`, `includes`, `isEmpty`,
-`eq`, `gt` or `toLowerCase`.** They are all plausible and all absent. For *contains text* use `in`
-with the text first. For *matches a pattern*, put a pattern on the field's schema instead —
-validation can enforce it, a rule cannot test it.
+**The plausible names that are not there.** Every one of these was tried against the engine that
+ships in the product, and every one is absent:
+
+`includes` · `startsWith` · `endsWith` · `contains` · `count` · `size` · `sum` · `avg` ·
+`toLowerCase` · `toUpperCase` · `trim` · `split` · `join` · `match` · `regex` · `now` · `date` ·
+`dateDiff` · `abs` · `round` · `floor` · `ceil` · `number` · `string` · `typeof` · `isEmpty` ·
+`notEmpty` · `between` · `log`
+
+For *contains text* use `in` with the text first. For *is blank* use `!!`. For *between* use the
+three-operand range form of `<=`. For *matches a pattern*, put a pattern on the field's schema
+instead — validation can enforce it, a rule cannot test it. There is no string-case, rounding or
+date arithmetic available to a form rule at all; compute those in a [flow](/flows/overview) and write
+the answer back.
 </Warning>
 
 <Note>
@@ -206,24 +215,32 @@ membership.
 
 ---
 
-## When a rule silently hides a field
+## When a rule cannot be evaluated
 
-<Warning>
-This is the single most common way a form quietly loses a question, so it is worth reading twice.
+A condition the engine cannot run — an operator that does not exist, a malformed expression — has
+**no opinion**, and the rule is skipped entirely:
 
-A condition the engine cannot evaluate — an operator that does not exist, a malformed expression —
-does not raise an error. It produces nothing, nothing counts as *no*, and a **Visible** rule
-resolving to *no* means **the field never appears, for anybody, ever**. There is no message on the
-form, nothing in the editor, and no complaint on save.
+| Property | What happens |
+|---|---|
+| **Visible** | The element stays **visible**. A broken rule cannot hide a question. |
+| **Required**, **Disabled**, **Readonly** | The field keeps whatever its schema and its own settings gave it. |
+| **Value** | Nothing is computed and the answer is left alone. |
 
 ```json
 { "equals": [ { "var": "request_type" }, "equipment" ] }
 ```
 
-`equals` is not an operator. That field is now invisible permanently.
-</Warning>
+`equals` is not an operator, so that rule does nothing at all — the field it guards behaves as if
+the rule were not there. That is deliberate: a question showing when it should not is a nuisance, a
+question that has silently vanished is a lost answer.
 
-Two habits make this a non-issue:
+The rule card says so while you are writing it. A rule naming an operator the engine does not have
+carries a red note above the description, listing the offending names:
+
+> This rule uses an operator the form engine does not support: `equals`. It will be ignored when the
+> form runs.
+
+Two habits still worth keeping:
 
 <Steps>
   <Step title="Check the summary line on the rule card">
@@ -233,8 +250,8 @@ Two habits make this a non-issue:
     read that way legitimately, so it is a prompt to look, not a verdict.
   </Step>
   <Step title="Preview the form both ways">
-    Switch to **Preview** and answer the driving question each way. A field that never appears in
-    either state has a broken condition, whatever the rule card says.
+    Switch to **Preview** and answer the driving question each way. A field that appears in **both**
+    states has a condition that is not doing its job — either broken, or always true.
   </Step>
 </Steps>
 
@@ -256,40 +273,25 @@ before saving**. That is the point of conditional forms: an answer given under o
 hidden when the branch changed does not survive onto the record, and does not block submission by
 being required.
 
-That clearing follows the **rows**. A field is cleared when it sits — at any depth of rows — under
-something hidden.
+The clearing follows every container that removes a field from view — a row, a **Card**, a
+**Collapsable card**, a **Repeater**, and the field's own rule. A field is cleared when it sits, at
+any depth, under something hidden.
 
-<Warning>
-**A Repeater or a Card breaks the chain.** Put a conditional field inside either one and it
-disappears from the screen but stays in the record:
+**Required-ness follows visibility, on both sides.** A hidden field's answer is pruned and its
+schema `required` is skipped, and the form tells the server which refs its rules hid so the save is
+not rejected either. A question nobody could see never blocks a submission.
 
-- the answers already typed into it are saved anyway;
-- if the **schema** marks it required, submission is blocked by an error attached to a field nobody
-  can see;
-- the person filling the form is told to fix highlighted fields that are not on the page.
-
-This is true wherever the rule sits — on the card, on the repeater, or on a row above them.
-</Warning>
-
-The fix is to keep conditional fields in **ordinary rows** and put the rule on the row:
-
-<CardGroup cols={2}>
-  <Card title="Does what you expect" icon="circle-check">
-    A row with a **Visible** rule, containing plain fields — or more rows containing plain fields.
-    Everything under it is cleared when the row is hidden.
-  </Card>
-  <Card title="Does not clear" icon="triangle-exclamation">
-    A field inside a Card, or inside a Repeater, that is hidden by a rule anywhere above it. It
-    vanishes from view and is kept in the record.
-  </Card>
-</CardGroup>
-
-An object placed as a whole group *is* handled properly: hiding it clears every member underneath
-it. So is a list bound to an ordinary Chips or List control.
+| Placed as | Hiding it clears |
+|---|---|
+| A field in a row, at any depth | That field |
+| An object placed as a whole group | The group and every member under it |
+| A field inside a Card or Collapsable card | That field |
+| A Repeater | The whole list. Individual item fields cannot be pruned separately — an item's rules render against that item |
 
 <Note>
-Cards are still fine for grouping — put the card **inside** the conditional row and keep the fields
-in rows within it, and you get the visual treatment without the clearing problem.
+This applies to the rules the **form** evaluates. Writing to a record through the API is unaffected:
+a required field is still required unless the caller names it in `hidden_fields`. See
+[Records](/spaces/records).
 </Note>
 
 ---

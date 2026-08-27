@@ -101,9 +101,10 @@ today's date — but for anything but a fact read the object form is clearer.
 <Warning>
 Any string starting with `@` is treated as an operator call, **wherever it
 appears** — including inside an operator's `input`. `"@someone"` is read as the
-operator `someone`, which does not exist, so the rule silently produces nothing.
-This catches regular expressions in particular: `"@(.+)$"` never reaches `regex`.
-Rewrite it as `"[@](.+)$"`, or build the literal with `stringTemplate`.
+operator `someone`, which does not exist, so the step fails with
+`unknown operator "someone"`. This catches regular expressions in particular:
+`"@(.+)$"` never reaches `regex`. Rewrite it as `"[@](.+)$"`, or build the literal
+with `stringTemplate`.
 </Warning>
 
 ### 3. Rule cell
@@ -148,12 +149,13 @@ A final cell with no `condition` is the default.
 With `orderTotal.value` of `650` this returns `0.1`.
 
 Leave off the default cell and a value that matches nothing produces no fact at
-all rather than a fallback. That is usually a bug — write the default.
+all rather than a fallback — silently. That is usually a bug, and it is one of
+the failures nothing warns you about, so write the default.
 
 <Warning>
 An array is **always** read as a ladder of rule cells. A plain array literal such
 as `["a", "b"]` is not a list — the engine tries to read each element as a rule
-cell, finds no outcome, and drops the key. To produce a list, use
+cell, finds no outcome, and drops the key, silently. To produce a list, use
 `generateArray` or `concat-array`.
 </Warning>
 
@@ -228,33 +230,60 @@ not fail — it picks an order and returns whatever falls out. Given
 
 ## When a rule produces nothing
 
-This is the most important behaviour on this page.
+This is the most important behaviour on this page. A rule can fail in two very
+different ways, and the difference decides how you find it.
 
-**A rule that produces nothing is dropped from the output with no error, no
-warning and no log line. The flow carries on with the fact missing.**
+### What fails the step
 
-The engine does keep an internal list of warnings — "Operator "arrayLenght" is
-not supported!" and the like — but nothing ever reads it. It is not returned, not
-logged, and not shown in the flow's run history.
+Before a [Rules step](/flows/steps/rules) or a [Condition step](/flows/steps/condition)
+runs, the whole rules payload is checked against the engine's operator list. A
+rule that names something the engine does not have never executes — the step
+fails, and the message names the rule and the operator:
 
-Six things cause a key to disappear:
+```
+invalid rules: rule "discountRate.value" ([0].condition): unknown operator "arrayLength"
+```
+
+| Caught | Example |
+|---|---|
+| An operator name that is not in the registry | `"operator": "arrayLength"` — a typo is caught the same way |
+| The same, in `@` shorthand | `"@someone:x"`, and any string starting with `@` whose first segment is not an operator |
+| An operator slot in an `expression` param list | `["@fact:a", "plus", "@fact:b"]` |
+| An empty operator | `"operator": ""` |
+| A `condition` that is not an `{operator, input}` object | `"condition": true`, `"condition": "yes"` |
+
+The check walks nested operands too, so an unknown operator buried inside another
+operator's `input` is found. Up to twenty problems are reported at once,
+separated by `;`. A cell with **no** `condition` key at all is untouched by this —
+that is the default cell, and it is meant to have none.
+
+### What still disappears silently
+
+Everything else. **A rule that resolves to nothing is dropped from the output
+with no error, no warning and no log line, and the flow carries on with the fact
+missing.**
 
 | Cause | Example |
 |---|---|
-| An operator name that is not in the registry | `"operator": "arrayLength"` — a typo behaves identically |
 | A result of `undefined` | `regex` with no capture group; `map` with no match and no default |
 | A result of `NaN` or `Infinity` | `*` with a `null` input; `/` by zero; `min` over a bracketed array |
 | A rule cell whose condition is falsy, with no default cell | a ladder that matches nothing |
 | An outcome of `null` | a literal `null` |
 | An outcome equal to the fact of the same name already supplied | a rule that computes `3` for a key whose fact is already `3` |
 
-A rule that throws is caught and produces the same silence.
+A rule that throws — `jsonParse` on text that is not JSON, say — is caught and
+produces the same silence.
+
+The engine also keeps an internal list of warnings, and nothing ever reads it. It
+is not returned, not logged, and not shown in the flow's run history, so these
+causes give you nothing to search for.
 
 Two consequences worth planning around:
 
-- **A misspelled operator looks exactly like a condition that did not match.** If
-  a fact is missing from a step's output, check the operator name against the
-  [operations reference](/advanced/rules/operations-reference) first.
+- **The remaining silent failures all look alike.** A missing key does not tell
+  you whether the condition was false, the maths produced `NaN`, or the outcome
+  happened to equal its own fact. Narrow it by feeding the rule known facts in a
+  test run and watching which keys appear.
 - **Downstream steps see an absent key, not an error.** A variable mapping
   pointing at it resolves to an empty array, and the flow continues with a hole
   in its data. Give rules that must always produce a value a default cell, or a

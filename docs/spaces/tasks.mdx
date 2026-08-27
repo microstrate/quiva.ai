@@ -49,7 +49,7 @@ cog in its header to open **Edit Space**, then go to the **Tasks** menu — it h
 ### Statuses
 
 A status has a name, a colour, an order, a visibility toggle that controls whether it appears as a
-board column, and a **Complete** flag.
+board column, a **Complete** flag, and optionally a **role**.
 
 A new Space starts with six statuses:
 
@@ -69,6 +69,12 @@ Rename them, recolour them, reorder them, add your own, or remove the ones you d
 the like) are treated as closed and will no longer trigger any further actions such as recurring
 events or overdue checks. This is what the flag is for — it is not just a colour.
 </Warning>
+
+A **role** gives a status a machine-readable meaning — *To do*, *In progress* or *Done* — so
+automation can move a task by what a stage means rather than by an id. The three dropdowns under
+the status list are where you set them, and
+[task actions](/spaces/task-actions#actions-move-the-task) are what read them. Leave them unset and
+nothing changes; a status never needs a role to be used by hand.
 
 ### Priorities
 

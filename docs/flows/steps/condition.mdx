@@ -48,7 +48,7 @@ The step ID to run next, or an array of step IDs. **Several IDs start at the sam
 
 ## Where the values come from
 
-**A Condition step has no facts.** The rules engine is called with an empty fact set, so `@fact:` references and `{"operator": "fact", …}` resolve to nothing and the cell silently never matches.
+**A Condition step has no facts.** The rules engine is called with an empty fact set, so `@fact:` references and `{"operator": "fact", …}` resolve to nothing and the cell never matches. This is not caught in advance — `fact` is a real operator, it simply has nothing to read.
 
 Values come in through JSONPath instead. The whole payload is resolved before the engine sees it, so a `$.` string anywhere in `input` is replaced by the value it selects:
 
@@ -135,22 +135,27 @@ Written flat as `["$.ORDER.data.total", 100, 500]` it returns `false` for every 
 
 ---
 
-## The failure that gives no error
+## When a Condition step fails
 
-<Warning>
-**An operator the engine does not have produces no error and no value.** The engine records an internal warning that is never returned, the cell resolves to nothing, and the ladder carries on to the next cell — so the branch simply never fires and nothing in the run log says why.
+The whole ladder is checked against the engine's operator list before any of it runs, so a name the engine does not have fails the step outright rather than quietly skipping the cell. The message names the cell and the operator:
 
-Two names in the editor's own operator dropdown are affected: **`boolean`** and **`string-contains`** are not implemented. Use `stringContain` / `stringContains` for the latter; there is no `boolean` operator.
+```
+invalid rules: rule "ROUTE_TICKET" ([0].condition): unknown operator "startsWith"
+```
 
-The same silence covers operator names people reasonably expect and the engine does not have, among them `includes`, `startsWith`, `endsWith`, `toLower`, `trim`, `size` and `isEmpty`.
-</Warning>
+That covers operator names people reasonably expect and the engine does not have — `includes`, `startsWith`, `endsWith`, `toLower`, `trim`, `size`, `isEmpty` — as well as an empty operator and a `condition` that is not an `{operator, input}` object at all. Up to twenty problems are reported at once, separated by `;`.
 
-If a Condition step **errors** rather than mis-routing, it is almost always one of two things:
+The other errors a Condition step produces:
 
 | Error | Cause |
 |---|---|
-| `failed to determine next steps` | No cell matched, the payload is empty, or the only cell uses an operator that does not exist. A newly inserted cell starts with an empty operator and hits this. |
+| `failed to determine next steps` | No cell matched and there is no final cell without a `condition`, or the payload is empty. |
 | `value has to be a string or an array of strings` | The winning cell's `outcome` is not a step ID — an object or a number, usually from an `if`/`then`/`else` shape that the engine passed through as a literal. |
+| `next step not found` | The outcome names a step ID that is not in the flow. |
+
+<Warning>
+Not every mistake is caught this way. A cell whose operands make the comparison meaningless — a path that resolved to `[]`, a calculation that produced `NaN` — is a cell that simply does not match, and the ladder moves on to the next one. That is why a final cell with no `condition` is worth having on every Condition step: without it, the same situation ends the run with `failed to determine next steps`.
+</Warning>
 
 ---
 
@@ -164,6 +169,8 @@ The Condition step has two views, switched at the top of the payload pane:
 | **Conditions** | One collapsible card per cell, labelled IF / ELSE IF / ELSE |
 
 In the Conditions view, each cell has an **Input** field (which takes a `$.` path), an **Operator** dropdown, a **Value** editor, and an **Outcome** multi-select listing the steps this condition connects to. Both views edit the same array — switching between them loses nothing.
+
+A new cell starts at `=`, so a cell you have added but not finished still resolves. The dropdown lists what the engine actually implements, including the transformations and maths operators — `jsonStringify`, `regex`, `sort`, `sortString`, `generateArray`, `log`, `baseLog`, `e` and `now`. Anything the dropdown does not offer can still be typed in the **Code Editor** view; see [the operator reference](/advanced/rules/operations-reference) for the full set.
 
 ---
 

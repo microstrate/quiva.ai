@@ -368,9 +368,9 @@ The operators are terser and keep the work in one step; the functions handle big
 - `jPath` takes `[data, path]` and returns an **array**, so `{"operator": "jPath", "input": [{"a": {"b": 7}}, "$.a.b"]}` produces `[7]`, not `7`.
 - `stringTemplate` numbers its placeholders from one and writes them `{{1}}`, `{{2}}` — it is not Handlebars. `{"operator": "stringTemplate", "input": ["Hello {{1}} and {{2}}", "Sam", "Dana"]}` produces `"Hello Sam and Dana"`.
 
-<Warning>
-**A misspelled operator name produces no error and no value.** The rules engine drops the fact entirely and the flow carries on without it. There is no such silent failure with functions — a function name is chosen from a list, not typed.
-</Warning>
+<Note>
+A misspelled operator name fails a Rules step outright and says so; a function name is chosen from a list, so it cannot be misspelled at all. Where the two genuinely differ is everything else — a rule that produces nothing is [dropped silently](/advanced/rules/core-concepts#when-a-rule-produces-nothing), while a function that fails returns an error object you can branch on.
+</Note>
 
 ---
 

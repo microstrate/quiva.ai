@@ -7,11 +7,11 @@ This is the complete operator registry. Every example on this page was run throu
 engine and the result shown beside it is the engine's own output.
 
 <Warning>
-**If an operator is not on this page, it does not exist.** The engine does not
-reject an unknown operator name — it records an internal warning that nothing
-ever reads, produces no value, and drops the fact from the output. The flow
-carries on with the fact missing. See [Silent
-drops](/advanced/rules/core-concepts#when-a-rule-produces-nothing).
+**If an operator is not on this page, it does not exist.** A rule naming one is
+rejected before the step runs, and the step fails with the rule and the operator
+named — `unknown operator "arrayLength"`. That is the one rules mistake you are
+told about; several others are still silent. See [when a rule produces
+nothing](/advanced/rules/core-concepts#when-a-rule-produces-nothing).
 </Warning>
 
 ## Rules that apply to every operator
@@ -504,8 +504,9 @@ Result: `"4471"`. `["order-4471", "order-\\d+"]` — no capture group — drops 
 fact.
 
 <Warning>
-A pattern beginning with `@` is read as a fact reference before `regex` ever sees
-it, so `"@(.+)$"` silently drops the rule. Write it as `"[@](.+)$"`.
+A pattern beginning with `@` is read as a dynamic value before `regex` ever sees
+it, so `"@(.+)$"` fails the step with `unknown operator "(.+)$"`. Write it as
+`"[@](.+)$"`.
 </Warning>
 
 ### `split`
@@ -732,9 +733,20 @@ Durations are written as a number followed by a **single case-sensitive letter**
 | `m` | minutes |
 | `s` | seconds |
 
-`"1M"` is one month and `"1m"` is one minute. Spelled-out units such as
-`"months"` are silently ignored in `addDate` and `subtractDate`, and drop the
-fact in `dateDiff`.
+`"1M"` is one month and `"1m"` is one minute.
+
+The three date operators read spelled-out units differently, so it is worth
+knowing which one you are in:
+
+- **`dateDiff` accepts them properly.** `"days"`, `"months"`, `"minutes"` and the
+  rest all work, singular or plural, alongside the letters. `"ms"` is also
+  accepted, for milliseconds.
+- **`addDate` and `subtractDate` do not.** They scan the string for a digit
+  followed by one of the seven letters and ignore the rest, so `"2days"` is two
+  days by accident and `"2months"` is **two minutes** — the scan stops at the `m`.
+  Write `"2M"`, or capitalise it as `"2Months"`. A form the scan does not match
+  at all, `"2 days"` or `"2fortnights"`, is skipped and the date comes back
+  unchanged, with no error.
 
 ### `today`
 
@@ -792,14 +804,18 @@ Result: `"2026-02-01T00:00:00.000Z"`
 ### `dateDiff`
 
 Inputs are `[start, end]` or `[start, end, unit]`, with the unit defaulting to
-`"d"`. Returns `end - start`, so an end before the start is negative. An
-unrecognised unit drops the fact.
+`"d"`. Returns `end - start`, so an end before the start is negative.
+
+The unit may be one of the seven letters, `"ms"`, or a spelled-out name — `"day"`,
+`"days"`, `"month"`, `"months"`, `"minute"`, `"minutes"` and so on. An
+unrecognised unit drops the fact, silently.
 
 ```json
 { "operator": "dateDiff", "input": ["2026-01-01", "2026-03-01", "d"] }
 ```
 
-Result: `59`
+Result: `59`. The same call with `"months"` returns `2`, and with `"ms"` returns
+`5097600000`.
 
 ### `dateFormat`
 
@@ -975,7 +991,8 @@ anything other than reading a fact the object form is clearer.
 ## Names that are not operators
 
 Every name below appears in older versions of this documentation or reads like a
-plausible operator. None of them exists. Each one silently drops its fact.
+plausible operator. None of them exists, and each one fails the step it appears
+in rather than producing a wrong answer.
 
 | Not an operator | Use instead |
 |---|---|

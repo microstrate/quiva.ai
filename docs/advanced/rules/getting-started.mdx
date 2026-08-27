@@ -147,10 +147,10 @@ If you would rather avoid the brackets, name your rules without dots.
 
 <AccordionGroup>
   <Accordion title="A missing result instead of an error" icon="triangle-exclamation">
-    A rule with an operator name the engine does not recognise produces nothing —
-    no error, no warning, no log line. The key is simply absent from the output.
-    A typo and a condition that did not match look identical. If a fact is
-    missing, check the operator name first. See
+    An operator name the engine does not recognise fails the step and says which
+    rule and which operator. Several other mistakes give you nothing at all: a
+    ladder that matches nothing, a calculation that produces `NaN`, an outcome of
+    `null`. The key is simply absent from the output. See
     [when a rule produces nothing](/advanced/rules/core-concepts#when-a-rule-produces-nothing).
   </Accordion>
   <Accordion title="Forgetting the @fact: prefix" icon="at">
@@ -164,7 +164,8 @@ If you would rather avoid the brackets, name your rules without dots.
   </Accordion>
   <Accordion title="A ladder with no default cell" icon="list-ol">
     If none of the conditions matches and there is no final cell without a
-    `condition`, the rule produces no fact at all rather than a fallback value.
+    `condition`, the rule produces no fact at all rather than a fallback value,
+    and nothing warns you.
   </Accordion>
   <Accordion title="Passing between two separate bounds" icon="arrows-left-right">
     `between` takes its bounds as a nested array: `[value, [low, high]]`. Written

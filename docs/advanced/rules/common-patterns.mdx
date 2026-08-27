@@ -46,7 +46,8 @@ bands in order and finish with a cell that has no condition.
 
 `between` takes its bounds as a **nested array**. Written flat as
 `[value, 500, 999.99]` it returns `false` for everything, silently — which in a
-ladder means the band is never reached.
+ladder means the band is never reached. Nothing catches this: the operator name
+is real, so only the answer is wrong.
 
 ## Validation with one message
 
@@ -64,7 +65,8 @@ you want them reported.
 
 ```json
 {
-  "emailValid.value": { "operator": "stringContains", "input": ["@fact:email.value", "@"] },
+  "emailDomain.value": { "operator": "regex", "input": ["@fact:email.value", "[@](.+)$"] },
+  "emailValid.value": { "operator": "notEmpty", "input": "@fact:emailDomain.value" },
   "nameProvided.value": { "operator": "notEmpty", "input": "@fact:fullName.value" },
   "formValid.value": { "operator": "and", "input": ["@fact:emailValid.value", "@fact:nameProvided.value"] },
   "validationMessage.value": [
@@ -85,6 +87,13 @@ you want them reported.
   "validationMessage.value": "Enter a valid email address."
 }
 ```
+
+Testing for the `@` takes a `regex` rather than the obvious
+`{"operator": "stringContains", "input": ["@fact:email.value", "@"]}`. A bare
+`"@"` is a dynamic value with an empty operator name, so that rule fails the step
+outright — see [dynamic value
+shorthand](/advanced/rules/core-concepts#2-dynamic-value-shorthand). Bracketing
+it as `"[@]"` is the way past that anywhere an `@` has to be a literal.
 
 Note how `not` is given its input unwrapped — `"input": "@fact:nameProvided.value"`
 rather than `["@fact:nameProvided.value"]`. `not` is the one operator that does
@@ -554,8 +563,8 @@ With `email.value` of `"sam@example.com"`: `"example.com"` and `true`.
 
 <Warning>
 The pattern is written `"[@](.+)$"` rather than `"@(.+)$"` on purpose. A string
-beginning with `@` is parsed as a fact reference before `regex` sees it, and the
-rule silently produces nothing.
+beginning with `@` is parsed as a dynamic value before `regex` sees it, and the
+step fails with `unknown operator "(.+)$"`.
 </Warning>
 
 For initials and other joins with no separator, use `stringTemplate` rather than

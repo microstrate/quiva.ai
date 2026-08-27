@@ -70,11 +70,11 @@ These six are fixed. They cannot be added to, renamed, reordered or removed.
 
 ### Why these statuses carry no role
 
-In a Space you build, a status can be given a **role** — a stable meaning like "this is the intake stage" or "this is the won stage" — so automation can address a stage by what it *is* rather than by an id someone might later rename. The built-in Leads Space uses roles for exactly that reason.
+In a Space you build, a status can be given a **role** — a stable meaning like "this is the intake stage" or "this is the done stage" — so automation can address a stage by what it *is* rather than by an id someone might later rename. The built-in Leads Space uses roles for exactly that reason, and a Space you build sets its own on [Edit Space → Tasks → Statuses](/spaces/task-actions#actions-move-the-task).
 
 Escalations deliberately has none, and that is a decision rather than an omission:
 
-- The two waiting stages have no honest role. Neither is intake, working, won or lost.
+- The two waiting stages have no honest role. Neither is intake, working, won, lost, to do or done.
 - **Resolved is not "won".** Forcing it into that shape would give a wrong answer to anything asking which stage means success.
 - These six ids never change, and everything writing to this Space names them directly. Where the ids are already stable, "no role" is a better answer than a misleading one.
 

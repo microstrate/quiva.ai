@@ -90,9 +90,7 @@ $.CREATE_ISSUE.status
 $.CREATE_ISSUE.data.id
 ```
 
-<Warning>
-The **Response Map** tab is present in this step's editor but is not applied to an integration step at run time — only Function and nested-flow steps have their response mapped. Reshape the result in a following [Map step](/flows/steps/map) instead.
-</Warning>
+The **Response Map** tab reshapes that result before it is stored. It is a JSONPath mapping resolved against the result above, so `{ "issue": "$.data.id" }` turns the step's result into `{"issue": "…"}` and downstream steps read `$.CREATE_ISSUE.issue`. Leave it empty and the result is stored unchanged.
 
 ---
 

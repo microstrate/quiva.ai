@@ -18,7 +18,7 @@ The schedule editor has six fields and nothing else.
 
 | Field | Required | What it does |
 |---|---|---|
-| **Name** | Yes | Identifies the schedule. See [Naming](#naming-matters-more-than-it-looks) — it is part of the schedule's identity. |
+| **Name** | Yes | Labels the schedule in the editor. See [Naming](#naming). |
 | **Description** | No | Notes for you. |
 | **Trigger On** | Yes | Date and time of the **first** run. |
 | **Trigger Every** | No | Repeat interval. Leave it empty to run once and stop. |
@@ -32,16 +32,13 @@ A whole number followed by one unit:
 | Unit | Meaning |
 |---|---|
 | `m` | minutes |
+| `h` | hours |
 | `d` | days |
 | `w` | weeks |
 | `M` | months — always **30 days** |
 | `y` / `Y` | years — always **365 days** |
 
-`45m`, `1d`, `2w`, `3M`, `1y`. Anything else is rejected.
-
-<Warning>
-**Avoid the `h` unit.** The editor's own help text offers `h → hours`, but the interval is currently parsed as **minutes** — `2h` repeats every two minutes, not every two hours. Write `120m` if you want two hours, or use `1d` and above.
-</Warning>
+`45m`, `2h`, `1d`, `2w`, `3M`, `1y`. Anything else is rejected — a decimal (`1.5h`), a negative, a bare unit and a compound (`1h30m`) are all refused.
 
 <Note>
 `M` and `y` are fixed durations, not calendar arithmetic. `1M` is 30 days regardless of the month, and `1y` is 365 days, so a yearly schedule drifts a day every leap year.
@@ -89,13 +86,11 @@ There is no **Enabled** toggle to switch a schedule off, and deleting the node w
 
 ---
 
-## Naming matters more than it looks
+## Naming
 
-A schedule's identity is the account, the published flow, and a hash of the trigger's **Name**.
+A schedule's identity is the account, the published flow, and the trigger **node** it came from — so two schedule triggers on the same flow may share a **Name** and both still fire.
 
-<Warning>
-**Two schedule triggers on the same flow with the same Name collapse into one.** The second silently replaces the first at publish, with no error and no warning. If a flow carries more than one schedule, give each a distinct name.
-</Warning>
+The Name is still worth setting properly. It is what identifies the schedule in the editor, and it is the only label you have when a flow carries several.
 
 ---
 
@@ -167,20 +162,12 @@ With **Plain text**, `$.trigger` is the whole string and there are no sub-paths.
     Almost always because the flow has not been published since the trigger was added. **Save** does not create a schedule; **Publish** does.
   </Accordion>
 
-  <Accordion title="It runs far more often than I asked">
-    Check the unit. `2h` currently repeats every two minutes. Use `120m`.
-  </Accordion>
-
   <Accordion title="A change to the time did nothing">
     Publish the flow. Schedules are rebuilt from the published version at publish time and at no other point.
   </Accordion>
 
   <Accordion title="I deleted the trigger but it is still running">
     Publish the flow. The unschedule happens during publish.
-  </Accordion>
-
-  <Accordion title="Only one of my two schedules fires">
-    Give them different **Name** values. Same name on the same flow means one schedule.
   </Accordion>
 
   <Accordion title="Runs are piling up on top of each other">

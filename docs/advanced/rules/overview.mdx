@@ -105,10 +105,10 @@ it reference it by name, and the engine works out that they must run after it.
 ## What to know before you build one
 
 <CardGroup cols={2}>
-  <Card title="A broken rule is silent" icon="triangle-exclamation" href="/advanced/rules/core-concepts#when-a-rule-produces-nothing">
-    A misspelled operator produces no error and no value — the fact is simply
-    absent from the output and the flow carries on. This is the single most
-    common way a Rules step goes wrong.
+  <Card title="Some failures are silent" icon="triangle-exclamation" href="/advanced/rules/core-concepts#when-a-rule-produces-nothing">
+    A misspelled operator fails the step and names itself. A ladder that matches
+    nothing, a calculation that produces `NaN` and an outcome of `null` do not —
+    the fact is simply absent and the flow carries on.
   </Card>
   <Card title="Dots in rule names need brackets" icon="link" href="/advanced/rules/core-concepts#reading-the-output-in-later-steps">
     A rule named `finalPrice.value` is read downstream as

@@ -56,13 +56,19 @@ curl -X POST "https://<your-gateway-host>/orders/intake" \
 
 The authentication header is `x-api-key`. There is no query-string form. Keys issued from a trigger panel are *restricted* keys — they carry an `msr-` prefix and are valid for that one endpoint and method only.
 
-<Warning>
-**The body must be valid JSON.** A body that fails to parse currently returns **200 OK** with a plain-text parse error as the body rather than a 4xx. A client that only inspects the status code will treat a rejected call as a success. An internal failure reaching the flow behaves the same way — 200 with a bare error string.
-</Warning>
+**A body that is present must be valid JSON.** One that fails to parse is rejected with **400** and a JSON error body:
 
-<Warning>
-**Query parameters and path parameters are not delivered to the flow.** `?status=paid` is dropped, and it is not recoverable from `$.env.headers` either. Everything the flow needs must be in the JSON body.
-</Warning>
+```json
+{
+  "error": "invalid_request_body",
+  "message": "Request body must be valid JSON",
+  "details": { "resource": "…", "reason": "unexpected end of JSON input" }
+}
+```
+
+Every other failure at the endpoint is statused the same way — **400** for a body that cannot be read, **500** for an internal encoding failure, **504** when the flow does not answer inside the mapping's timeout, and **502** when it answers with nothing. Form-encoded (`application/x-www-form-urlencoded`) and multipart bodies are not JSON and are rejected as such.
+
+**An empty body is allowed.** A request with no body at all starts the run with `$.trigger` set to `null` — useful when everything the flow needs is in the path or the query string.
 
 ---
 
@@ -105,6 +111,23 @@ $.env.headers.user-agent
 ```
 
 `$.env.auth_token` holds the bearer token the call carried, and `$.env.run_id` the run's tracking ID.
+
+### Query and path parameters
+
+The query string and the path's own parameters arrive as headers, alongside the ones the caller sent:
+
+| Source | Read it at |
+|---|---|
+| `?status=paid` | `$.env.headers['x-param-query-status']` |
+| An `{id}` segment in the URL Path | `$.env.headers['x-param-id']` |
+| The request method | `$.env.headers['x-method']` |
+| The path the call arrived on | `$.env.headers['x-url']` |
+
+Values are strings. A parameter repeated in the query string — `?tag=a&tag=b` — arrives as one comma-joined value, `"a,b"`; split it in a [Map](/flows/steps/map) or [Eval](/flows/steps/eval) step if you need the parts. A parameter that was not sent is absent, and reading an absent path resolves to `[]`.
+
+The header takes the parameter's name exactly as written, so a `{order_id}` segment lands at `x-param-order_id`.
+
+`x-method` is always `POST` for a trigger created from the flow editor, because the mapping is created for that one method. It becomes useful only if you point a second mapping with a different **Method** at the same flow from **Resources → Gateways**.
 
 <Warning>
 A path that matches nothing resolves to an empty array, not `null`. `$.trigger.missing` becomes `[]`.
@@ -172,8 +195,8 @@ To exercise a draft, use the flow editor's **Test** control, which runs the draf
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="200 OK but the flow never ran">
-    The body was not valid JSON. Read the response body — it will contain the parse error.
+  <Accordion title="400 invalid_request_body">
+    The body is not valid JSON. `details.reason` carries the parser's own message. Send no body at all if you have nothing to send — that is accepted.
   </Accordion>
 
   <Accordion title="401 or 403">
@@ -185,7 +208,11 @@ To exercise a draft, use the flow editor's **Test** control, which runs the draf
   </Accordion>
 
   <Accordion title="A query parameter is not arriving">
-    It never will. Move it into the JSON body.
+    It is not on `$.trigger` — it is on `$.env.headers['x-param-query-<name>']`. Check the name's case: the header is built from the parameter exactly as the caller spelled it.
+  </Accordion>
+
+  <Accordion title="502 flow_no_response or 504 flow_invocation_timeout">
+    504 means the flow did not finish inside the mapping's **Timeout**; raise it or switch to `Asynchronous`. 502 means the run produced no reply at all — look for the run in **Monitoring**.
   </Accordion>
 
   <Accordion title="A browser call is blocked by CORS">

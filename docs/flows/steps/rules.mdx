@@ -118,15 +118,25 @@ produces both `shipping.defaultValue` and `shipping.value` set to `0`. Supply `s
 
 ---
 
-## The failure that gives no error
+## When a value does not appear
 
-<Warning>
-**An operator the engine does not have produces no error and no value — the fact is simply missing from the output.** The engine records a warning internally and never returns it, so a typo in an operator name looks identical to a rule that legitimately produced nothing: the run continues, the key is absent, and every step downstream reads an empty array where it expected a number.
+Two different things can be wrong, and they announce themselves very differently.
 
-This is the single most important thing to know about this step. When a value is missing, check the operator name against the [reference](/advanced/rules/operations-reference) first.
-</Warning>
+**An operator the engine does not have fails the step**, before any rule runs. The message names the rule and the operator:
 
-The **Rules** tab in the editor validates the payload against a schema as you type, which catches a malformed rule but not a plausible-looking operator that does not exist.
+```
+invalid rules: rule "discount.value" ([0].condition): unknown operator "greaterThan2"
+```
+
+The same check catches an empty operator, a `condition` that is not an `{operator, input}` object, and any string starting with `@` whose first segment is not an operator name — which is why an `@` you meant as a literal has to be written `[@]`.
+
+**Everything else is silent.** A ladder where no cell matched and there is no default, a calculation that produced `NaN` or `Infinity`, an outcome of `null`, an outcome that happens to equal the fact of the same name you supplied — each drops its key from the result with no error and no warning. The run continues, the key is absent, and every step downstream reads an empty array where it expected a number.
+
+<Tip>
+Give any rule that must always produce a value a final cell with no `condition`, or a `.defaultValue` sibling. That converts the whole silent family into a value you can see.
+</Tip>
+
+The **Rules** tab in the editor also validates the payload against a schema as you type, which catches a malformed rule while you are writing it.
 
 ---
 
@@ -139,7 +149,7 @@ The **Rules** tab in the editor validates the payload against a schema as you ty
 | To reshape data you already hold | [Map](/flows/steps/map) |
 | Arithmetic or list work that needs real logic | [Eval](/flows/steps/eval) |
 
-Rules earns its place when the logic is a policy someone non-technical needs to read and change. For anything that would be one line of JavaScript, Eval is shorter and fails loudly.
+Rules earns its place when the logic is a policy someone non-technical needs to read and change. For anything that would be one line of JavaScript, Eval is shorter and fails loudly on every mistake, not just a misnamed operator.
 
 <Note>
 Editing a flow changes its **draft**. **Publish** to make a rule change take effect.

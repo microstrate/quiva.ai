@@ -13,8 +13,8 @@ Underneath, it is a gateway mapping pointed at your flow — the same machinery 
 | | Webhook | HTTP Request |
 |---|---|---|
 | Path | Generated: `/webhook/<collection>/<flow>` | You type it |
-| Public by default | Yes | No |
-| Editable settings | API key only | Public URL, timeout, requests/second, invocation type, allowed hosts |
+| Public by default | Yes, unless you issue a key | No |
+| Editable settings | Public URL, API key | Public URL, API key, timeout, requests/second, invocation type, allowed hosts |
 
 <Tip>
 If you want to choose the path, keep the endpoint authenticated, or set a timeout, use the [HTTP Request trigger](/flows/triggers/http-request) instead. Everything on this page applies to it too.
@@ -24,7 +24,9 @@ If you want to choose the path, keep the endpoint authenticated, or set a timeou
 
 ## Creating one
 
-Add a **Webhook** trigger from the **Add Node** panel. A **Create Webhook** dialogue opens showing the URL that will be created, a **Public** / **Secure** pill, and — if your account has more than one gateway — a gateway to pick. Press **Create**.
+Add a **Webhook** trigger from the **Add Node** panel. A **Create Webhook** dialogue opens showing the URL that will be created, a **Public** / **Secure** pill, a **Security** section for issuing an API key, and — if your account has more than one gateway — a gateway to pick. Press **Create**.
+
+The pill reports the state rather than setting it: issue a key and it reads **Secure**. See [Security](#security).
 
 The URL is fixed. It is built from your flow's own identifiers and there is nothing to type.
 
@@ -46,7 +48,7 @@ Do not construct the URL by hand. Open the webhook trigger node and copy the **F
 
 ## Calling it
 
-**POST only**, with a JSON body. The method is not configurable on the trigger.
+**POST only**, with a JSON body or none at all. The method is not configurable on the trigger.
 
 ```bash
 curl -X POST "https://<your-gateway-host>/webhook/<collection-id>/<flow-id>" \
@@ -65,39 +67,26 @@ curl -X POST "https://<your-gateway-host>/webhook/<collection-id>/<flow-id>" \
 
 The header is `x-api-key`. There is no query-string form. Keys issued from a trigger panel are *restricted* keys — they carry an `msr-` prefix and are valid for that one endpoint and method only.
 
-<Warning>
-**The body must be valid JSON.** A body that fails to parse currently comes back as **200 OK** carrying a plain-text parse error, not a 4xx. A sender that only checks the status code will believe the call succeeded. Form-encoded (`application/x-www-form-urlencoded`) and multipart bodies fail this way, so a service that cannot send JSON cannot drive a webhook trigger.
-</Warning>
+**A body that is present must be valid JSON**, and one that is not comes back as **400** with a JSON error body naming the parse failure. Form-encoded (`application/x-www-form-urlencoded`) and multipart bodies are refused on the same grounds, so a service that cannot send JSON cannot drive a webhook trigger.
 
-<Warning>
-**Query parameters are dropped.** A sender that puts information in the query string loses it — it does not reach `$.trigger` and is not recoverable from `$.env.headers`.
-</Warning>
+An **empty** body is fine, though: a POST carrying nothing starts the run with `$.trigger` set to `null`.
+
+Query parameters do reach the flow — not on `$.trigger`, but as headers. See [Query parameters](#query-parameters) below.
 
 ---
 
 ## Security
 
-A webhook is created **public** — anyone who knows the URL can run your flow. (The exception: if an API key named after this webhook's path already exists on the account, it is created secure.) The trigger panel says so:
+A webhook with no key is **public** — anyone who knows the URL can run your flow. Both the create dialogue and the trigger node let you fix that.
 
-> This webhook is public and insecure. We recommend deleting it and creating a secured webhook instead.
+**At creation.** The **Create Webhook** dialogue has a **Security** section. Set **Expiry (days)** (365 by default) and press **Generate API Key**; the webhook is then created secured rather than public. The key is shown once, in that dialogue, and cannot be retrieved after it closes — copy it before pressing Create. If a key for this webhook's name already exists on the account, the dialogue surfaces that one instead and the webhook is created secured against it.
 
-The **Create Webhook** dialogue has no control to change this — the pill is a label, not a switch.
-
-To close a webhook off, turn off **Public URL** on its gateway mapping under **Resources → Gateways**. The trigger node's **Security** section then appears, and from there:
-
-<Steps>
-  <Step title="Set an expiry">
-    **Expiry (days)** defaults to 365.
-  </Step>
-  <Step title="Generate API Key">
-    Copy the key immediately — it is shown once, and it is scoped to this endpoint alone.
-  </Step>
-</Steps>
+**Afterwards.** Open the webhook trigger node. It carries a **Public URL** toggle and a **Security** section that is always present, whichever state the webhook is in. Generating a key there also clears **Public URL**, since a key on a public endpoint protects nothing. Press **Save** — the toggle lives on the gateway mapping, not on the node, and Save writes both.
 
 There is no regenerate. Rotating means deleting the key and generating a new one, which invalidates the old one at once.
 
 <Tip>
-An [HTTP Request trigger](/flows/triggers/http-request) is authenticated from the start and exposes the **Public URL** toggle on the node itself. If the endpoint should be private, that is the easier path.
+An [HTTP Request trigger](/flows/triggers/http-request) starts authenticated rather than public. If the endpoint should be private, that is the safer default to begin from.
 </Tip>
 
 <Warning>
@@ -136,6 +125,26 @@ $.env.headers["content-type"]
 <Warning>
 There is no `$.trigger.headers`, no `$.trigger.webhook_id` and no `$.trigger.received_at`. Nothing about the request is added to the payload — if you need the delivery time, take it from a header the sender set, or generate one in a step.
 </Warning>
+
+### Query parameters
+
+Anything in the query string arrives as a header named after it:
+
+```
+https://<your-gateway-host>/webhook/<collection-id>/<flow-id>?source=crm&tag=a&tag=b
+```
+
+| Expression | Resolves to |
+|---|---|
+| `$.env.headers['x-param-query-source']` | `"crm"` |
+| `$.env.headers['x-param-query-tag']` | `"a,b"` |
+| `$.env.headers['x-method']` | `"POST"` |
+
+A repeated parameter is comma-joined into one value. A parameter that was not sent is absent, and reading it resolves to `[]`.
+
+<Tip>
+A sender you do not control — a service that appends its own tracking parameters, say — is best read this way and copied onto a value of your own in a [Map step](/flows/steps/map) before anything branches on it.
+</Tip>
 
 ---
 
@@ -177,8 +186,8 @@ This differs from most other triggers, which bind to whichever version was open 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="The sender reports 200 but the flow never ran">
-    Almost always a body that is not valid JSON. Parse failures return 200 with a plain-text error in the body — read the body, not the status code.
+  <Accordion title="The sender reports 400 invalid_request_body">
+    The body is not valid JSON. `details.reason` in the response carries the parser's own message. A sender that posts form-encoded data hits this every time.
   </Accordion>
 
   <Accordion title="401 or 403">
