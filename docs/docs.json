@@ -24,7 +24,32 @@
               "get-started/plans-and-pricing"
             ]
           },
-
+          {
+            "group": "Spaces",
+            "icon": "folder-tree",
+            "pages": [
+              "spaces/spaces",
+              "spaces/tasks",
+              "spaces/task-actions",
+              "spaces/records",
+              "spaces/file-management",
+              "spaces/scheduling",
+              "spaces/escalations",
+              "spaces/client-portal"
+            ]
+          },
+          {
+            "group": "Forms",
+            "icon": "clipboard-list",
+            "pages": [
+              "forms/overview",
+              "forms/building-a-form",
+              "forms/elements",
+              "forms/form-rules",
+              "forms/rule-assistant",
+              "forms/form-flows"
+            ]
+          },
           {
             "group": "Assistants",
             "pages": [
@@ -100,7 +125,6 @@
               "flows/best-practices"
             ]
           },
-
           {
             "group": "Account Management",
             "pages": [
@@ -137,7 +161,6 @@
               }
             ]
           },
-
           {
             "group": "Advanced",
             "pages": [
@@ -226,7 +249,10 @@
         "groups": [
           {
             "group": "Change Log",
-            "pages": ["changelog/latest-release", "changelog/product-updates"]
+            "pages": [
+              "changelog/latest-release",
+              "changelog/product-updates"
+            ]
           }
         ]
       }
