@@ -1004,12 +1004,3 @@ in rather than producing a wrong answer.
 | `gte`, `lte` | `>=`, `<=` |
 | `array` | a plain JSON array in the input |
 | `add`, `subtract`, `multiply`, `divide` | `+`, `-`, `*`, `/` — only the symbols are registered |
-
-<Note>
-The flow editor's JSON panel validates the rules payload against a list of 34
-operators, which is far narrower than the registry on this page. It will
-underline `jPath`, `map`, `max`, `min`, `sort`, `concat`, `substring`, `regex`,
-`arrayContains`, `<=`, `generateArray` and others as unrecognised. These are
-editor warnings only — they do not block saving, and the engine runs all of them.
-The registry on this page is the authority.
-</Note>
