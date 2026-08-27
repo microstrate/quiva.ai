@@ -1,54 +1,29 @@
 ---
 title: "Overview"
-description: "Evaluate business logic, calculate values, and make decisions using declarative rules"
+description: "Calculate values and make decisions in a flow with declarative rules"
 ---
 
-## What is the Rules Step?
+## What the Rules step does
 
-The Rules step evaluates business logic using a declarative rule engine. Instead of writing code, you define **facts** (your data) and **rules** (how to process it), and the engine automatically calculates outcomes.
+The Rules step derives new values from data your flow already has. You give it
+**facts** — a flat object of inputs — and **rules** — an object saying what to
+calculate from them. It works out the order to evaluate in and returns a flat
+object of results for the rest of the flow to use.
 
-<Card title="Think of it as..." icon="lightbulb">
-  A spreadsheet formula system on steroids - where you define rules once and they automatically evaluate based on your data, handling complex logic like nested conditions, array processing, and dynamic calculations.
-</Card>
+It is closest in spirit to a set of spreadsheet formulas: each rule names the
+value it produces, and rules that depend on one another sort themselves out.
 
-## When to Use the Rules Step
+Use it when the logic is a calculation or a decision made from values you already
+have — pricing and discount bands, eligibility checks, validating a submission,
+scoring, working out a due date, or picking a label. Reach for the
+[Eval step](/flows/steps/eval) instead when you need real code, and for the
+[Condition step](/flows/steps/condition) when the outcome is which branch of the
+flow runs next.
 
-<CardGroup cols={2}>
-  <Card title="Pricing & Discounts" icon="tags">
-    Calculate dynamic pricing, volume discounts, promotional offers
-  </Card>
-  <Card title="Eligibility Checks" icon="user-check">
-    Determine qualifications, access levels, approval workflows
-  </Card>
-  <Card title="Data Validation" icon="shield-check">
-    Enforce business constraints, validate forms, check data quality
-  </Card>
-  <Card title="Conditional Routing" icon="arrow-right-arrow-left">
-    Route tickets, prioritize tasks, assign based on criteria
-  </Card>
-</CardGroup>
+## A first example
 
-## How It Works
+**Facts**
 
-The Rules step takes two inputs:
-
-<Steps>
-  <Step title="Facts">
-    A flat JSON object containing your data. Keys are what you reference with `@fact:`, values are either static data or [variable mapping](/advanced/variable-mapping/overview) expressions like `"$.previous_step.property"`
-  </Step>
-  <Step title="Rules">
-    A JSON object defining the logic - what to calculate or decide based on the facts
-  </Step>
-  <Step title="Outcomes">
-    The Rules step evaluates all rules and returns a flat object with outcomes for each rule
-  </Step>
-</Steps>
-
-### Quick Example
-
-Here's a simple rule that calculates if an order qualifies for free shipping:
-
-**Facts (Input Data):**
 ```json
 {
   "orderTotal.value": 75,
@@ -56,260 +31,119 @@ Here's a simple rule that calculates if an order qualifies for free shipping:
 }
 ```
 
-**Rules (Logic):**
+**Rules**
+
 ```json
 {
   "qualifiesForFreeShipping.value": {
     "operator": "or",
     "input": [
-      {
-        "operator": ">=",
-        "input": ["@fact:orderTotal.value", 50]
-      },
-      {
-        "operator": "=",
-        "input": ["@fact:isPremiumMember.value", true]
-      }
+      { "operator": ">=", "input": ["@fact:orderTotal.value", 50] },
+      { "operator": "=", "input": ["@fact:isPremiumMember.value", true] }
     ]
   }
 }
 ```
 
-**Output:**
+**Output**
+
 ```json
 {
   "qualifiesForFreeShipping.value": true
 }
 ```
 
-## Key Capabilities
+Three things are worth noticing. Rules read facts by name with `@fact:`. Operators
+nest — the `or` takes two comparisons as its inputs. And the key on the left is
+just a name you chose; it becomes a fact that later rules can read.
 
-<AccordionGroup>
-  <Accordion title="Mathematical Operations" icon="calculator">
-    Perform calculations with add, subtract, multiply, divide, round, and advanced math functions
-  </Accordion>
-  
-  <Accordion title="Conditional Logic" icon="code-branch">
-    Build complex if-then-else logic with comparison operators and boolean operations
-  </Accordion>
-  
-  <Accordion title="String Manipulation" icon="text">
-    Concatenate, format, search, and transform text data
-  </Accordion>
-  
-  <Accordion title="Array Processing" icon="list">
-    Filter, sort, sum, and transform arrays of data with wildcard support
-  </Accordion>
-  
-  <Accordion title="Date Operations" icon="calendar">
-    Calculate date differences, add/subtract time periods, format dates
-  </Accordion>
-  
-  <Accordion title="Lookups & Mapping" icon="table">
-    Map values, perform lookups, create dynamic option lists
-  </Accordion>
-  
-  <Accordion title="Dynamic Visibility" icon="eye">
-    Control form field visibility based on other values
-  </Accordion>
-  
-  <Accordion title="Validation Rules" icon="shield-check">
-    Enforce business constraints and data quality requirements
-  </Accordion>
-</AccordionGroup>
+## A worked example
 
-## Real-World Example: E-commerce Pricing
+A discount band, the discount it implies, and the resulting price.
 
-Here's how an online store uses Rules to calculate dynamic pricing with discounts:
+**Facts**
 
-<CodeGroup>
-```json Facts
-{
-  "cartItems.value": [
-    { "price": 29.99, "quantity": 2 },
-    { "price": 49.99, "quantity": 1 }
-  ],
-  "customerTier.value": "gold"
-}
+```json
+{ "orderTotal.value": 650 }
 ```
 
-```json Rules
+**Rules**
+
+```json
 {
-  "prices.value": {
-    "operator": "jPath",
-    "input": ["@fact:cartItems.value", "$[*].price"]
-  },
-  "orderTotal.value": {
-    "operator": "+",
-    "input": "@fact:prices.value"
-  },
-  "tierDiscount.value": {
-    "operator": "map",
-    "input": [
-      "@fact:customerTier.value",
-      {
-        "bronze": 0,
-        "silver": 0.05,
-        "gold": 0.10,
-        "platinum": 0.15
-      }
-    ]
-  },
-  "volumeDiscount.value": [
-    {
-      "condition": {
-        "operator": ">=",
-        "input": ["@fact:orderTotal.value", 100]
-      },
-      "outcome": 0.05
-    },
-    {
-      "outcome": 0
-    }
+  "discountRate.value": [
+    { "condition": { "operator": ">=", "input": ["@fact:orderTotal.value", 1000] }, "outcome": 0.15 },
+    { "condition": { "operator": "between", "input": ["@fact:orderTotal.value", [500, 999.99]] }, "outcome": 0.1 },
+    { "condition": { "operator": "between", "input": ["@fact:orderTotal.value", [200, 499.99]] }, "outcome": 0.05 },
+    { "outcome": 0 }
   ],
-  "totalDiscount.value": {
-    "operator": "max",
-    "input": [
-      "@fact:tierDiscount.value",
-      "@fact:volumeDiscount.value"
-    ]
-  },
   "discountAmount.value": {
     "operator": "*",
-    "input": [
-      "@fact:orderTotal.value",
-      "@fact:totalDiscount.value"
-    ]
+    "input": ["@fact:orderTotal.value", "@fact:discountRate.value"]
   },
-  "finalPrice.value": {
+  "payable.value": {
     "operator": "-",
-    "input": [
-      "@fact:orderTotal.value",
-      "@fact:discountAmount.value"
-    ]
+    "input": ["@fact:orderTotal.value", "@fact:discountAmount.value"]
   }
 }
 ```
 
-```json Output
+**Output**
+
+```json
 {
-  "orderTotal.value": 109.97,
-  "tierDiscount.value": 0.10,
-  "volumeDiscount.value": 0.05,
-  "totalDiscount.value": 0.10,
-  "discountAmount.value": 10.997,
-  "finalPrice.value": 98.973
-}
-```
-</CodeGroup>
-
-<Note>
-  This example calculates cart total using `jPath` to extract prices from the array, applies the better of tier discount or volume discount, and computes the final price. Notice how rules reference each other using `@fact:ruleName.property` - the `.value` suffix is just part of the unique rule name. Learn more about [variable mapping](/advanced/variable-mapping/overview) to see how to pull data from previous steps.
-</Note>
-
-## Rule Formats
-
-Rules can be written in two formats:
-
-### Simple Format
-Direct calculation without conditions:
-```json
-"ruleName.value": {
-  "operator": "operatorName",
-  "input": [param1, param2]
+  "discountRate.value": 0.1,
+  "discountAmount.value": 65,
+  "payable.value": 585
 }
 ```
 
-### Conditional Format
-Array of condition/outcome pairs, evaluated top to bottom:
-```json
-"ruleName.value": [
-  {
-    "condition": {
-      "operator": "operatorName",
-      "input": [...]
-    },
-    "outcome": value
-  },
-  {
-    "outcome": defaultValue
-  }
-]
-```
+`discountRate.value` is an if/else ladder: cells are tried in order and the first
+matching condition wins, with the last cell as the default. The two rules below
+it reference it by name, and the engine works out that they must run after it.
 
-## Common Use Cases
+## What to know before you build one
 
 <CardGroup cols={2}>
-  <Card title="E-commerce" icon="cart-shopping">
-    Dynamic pricing, shipping calculations, inventory checks, promotional eligibility
+  <Card title="A broken rule is silent" icon="triangle-exclamation" href="/advanced/rules/core-concepts#when-a-rule-produces-nothing">
+    A misspelled operator produces no error and no value — the fact is simply
+    absent from the output and the flow carries on. This is the single most
+    common way a Rules step goes wrong.
   </Card>
-  
-  <Card title="CRM & Sales" icon="user-tie">
-    Lead scoring, qualification criteria, territory assignment, commission calculations
+  <Card title="Dots in rule names need brackets" icon="link" href="/advanced/rules/core-concepts#reading-the-output-in-later-steps">
+    A rule named `finalPrice.value` is read downstream as
+    `$.rules_1['finalPrice.value']`. The dotted form resolves to nothing.
   </Card>
-  
-  <Card title="Customer Support" icon="headset">
-    Ticket routing, priority scoring, SLA calculations, escalation rules
+  <Card title="The operator list is fixed" icon="list-check" href="/advanced/rules/operations-reference">
+    The engine has 96 registered operator names — many of them aliases of each
+    other — plus `fact`. Anything outside that list does not exist, however
+    reasonable it sounds.
   </Card>
-  
-  <Card title="Marketing" icon="bullhorn">
-    Campaign eligibility, audience segmentation, A/B test assignment, personalization rules
-  </Card>
-  
-  <Card title="Financial Services" icon="dollar-sign">
-    Transaction validation, risk scoring, approval workflows, fee calculations
-  </Card>
-  
-  <Card title="Healthcare" icon="heart-pulse">
-    Patient eligibility, risk assessment, appointment scheduling, treatment pathways
+  <Card title="Publish before testing" icon="rocket" href="/flows/overview">
+    Editing a flow changes its draft. A running flow keeps using the published
+    version until you publish again.
   </Card>
 </CardGroup>
 
-## What's Next?
+## Where to go next
 
-<CardGroup cols={2}>
-  <Card title="Getting Started" icon="rocket" href="/advanced/rules/getting-started">
-    Build your first rule in 5 minutes with a step-by-step tutorial
+<CardGroup cols={3}>
+  <Card title="Getting Started" icon="play" href="/advanced/rules/getting-started">
+    Build and test a rule end to end.
   </Card>
   <Card title="Core Concepts" icon="book" href="/advanced/rules/core-concepts">
-    Deep dive into facts, rules, operators, and how data flows through the system
+    The rule shapes, evaluation order, defaults, wildcards and failure modes.
   </Card>
   <Card title="Operations Reference" icon="list-check" href="/advanced/rules/operations-reference">
-    Complete list of all available operators organized by category
+    Every operator, with an executed example.
   </Card>
-  <Card title="Rule Patterns" icon="puzzle-piece" href="/advanced/rules/common-patterns">
-    Common patterns and best practices with copy-paste examples
+  <Card title="Common Patterns" icon="puzzle-piece" href="/advanced/rules/common-patterns">
+    Worked solutions to the problems that come up repeatedly.
   </Card>
-  <Card title="Examples Library" icon="code" href="/advanced/rules/examples">
-    Real-world use cases with complete facts and rules
+  <Card title="Variable Mapping" icon="arrow-right-arrow-left" href="/advanced/variable-mapping/overview">
+    How `$.` expressions pull facts in from earlier steps.
   </Card>
-  <Card title="Technical Reference" icon="brackets-curly" href="/advanced/rules/technical-reference">
-    Input/output schemas and advanced technical details
+  <Card title="Rules Step" icon="gear" href="/flows/steps/rules">
+    Configuring the step in the flow editor.
   </Card>
 </CardGroup>
-
-## Quick Tips
-
-<Tip>
-  **Start Simple:** Begin with basic calculations and comparisons before building complex multi-condition logic
-</Tip>
-
-<Tip>
-  **Test Often:** Use the Flow tester to test your rules with different input values
-</Tip>
-
-<Tip>
-  **Reference Outputs:** Rules can reference the outcomes of other rules using `@fact:ruleName.property` - the property name (like `.value`) is just part of the unique rule name
-</Tip>
-
-<Tip>
-  **Multiple Outcomes:** You can create multiple calculations from the same data by using different property names: `orderTotal.value`, `orderTotal.formatted`, `orderTotal.withTax`
-</Tip>
-
-<Warning>
-  **Outcome Order Matters:** Within a single rule, outcomes are evaluated top to bottom - the first matching condition wins. However, the order of rules within your rules object doesn't matter; rules can reference each other's outcomes regardless of position.
-</Warning>
-
-<Info>
-**Need Help?** Visit our [Help Center](https://quiva.ai/help-center/) or join the [Community](https://quiva.ai/community) for support.
-</Info>

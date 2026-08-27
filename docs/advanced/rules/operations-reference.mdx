@@ -1,1871 +1,998 @@
 ---
 title: "Operations Reference"
-description: "Complete reference for all available operators in the Rules engine"
+description: "Every operator the Rules engine has, with its aliases, its inputs, and an executed example"
 ---
 
-## Overview
+This is the complete operator registry. Every example on this page was run through the
+engine and the result shown beside it is the engine's own output.
 
-This reference documents all available operators in the Rules engine, organized by category. Each operator includes syntax, parameters, and practical examples.
+<Warning>
+**If an operator is not on this page, it does not exist.** The engine does not
+reject an unknown operator name — it records an internal warning that nothing
+ever reads, produces no value, and drops the fact from the output. The flow
+carries on with the fact missing. See [Silent
+drops](/advanced/rules/core-concepts#when-a-rule-produces-nothing).
+</Warning>
 
-<Tip>
-  **Quick search tip:** Use `Ctrl+F` (or `Cmd+F` on Mac) to search for specific
-  operators on this page.
-</Tip>
+## Rules that apply to every operator
 
----
+**Inputs are resolved first.** By the time an operator runs, every `@fact:`
+reference and every nested `{"operator": …, "input": …}` inside its `input` has
+already been evaluated to a plain value. Nothing is lazy and nothing
+short-circuits.
 
-## Math Operations
+**A non-array `input` is wrapped.** `"input": 4.2` reaches the operator as
+`[4.2]`. The one exception is `not`, which receives its input unwrapped.
 
-Perform arithmetic calculations and number formatting.
+**Three results drop the fact.** `undefined`, `NaN` and `Infinity` all cause the
+key to be omitted from the output entirely. So does an outcome that is `null`,
+and so does an outcome equal to the fact of the same name that was already
+supplied as input.
 
-### Basic Arithmetic
+**Aliases are exact synonyms.** They resolve to the same function; there is no
+behavioural difference between `>=`, `greaterThanInclusive` and
+`greaterThanOrEqual`.
 
-<AccordionGroup>
-  <Accordion title="+ Addition" icon="plus">
-    Add two or more numbers together.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "+",
-      "input": [number1, number2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "total.value": {
-        "operator": "+",
-        "input": [10, 20, 30]
-      }
-    }
-    // Result: 60
-    ```
-  </Accordion>
-  
-  <Accordion title="- Subtraction" icon="minus">
-    Subtract the second number from the first.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "-",
-      "input": [number1, number2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "discount.value": {
-        "operator": "-",
-        "input": ["@fact:price.value", 10]
-      }
-    }
-    // If price is 50, result: 40
-    ```
-  </Accordion>
-  
-  <Accordion title="* Multiplication" icon="xmark">
-    Multiply two or more numbers.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "*",
-      "input": [number1, number2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "lineTotal.value": {
-        "operator": "*",
-        "input": ["@fact:price.value", "@fact:quantity.value"]
-      }
-    }
-    // If price=25, quantity=4, result: 100
-    ```
-  </Accordion>
-  
-  <Accordion title="/ Division" icon="divide">
-    Divide the first number by the second.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "/",
-      "input": [number1, number2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "averagePrice.value": {
-        "operator": "/",
-        "input": ["@fact:totalPrice.value", "@fact:itemCount.value"]
-      }
-    }
-    // If totalPrice=100, itemCount=4, result: 25
-    ```
-  </Accordion>
-  
-  <Accordion title="^ Exponentiation" icon="superscript">
-    Raise the first number to the power of the second.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "^",
-      "input": [base, exponent]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "squared.value": {
-        "operator": "^",
-        "input": ["@fact:number.value", 2]
-      }
-    }
-    // If number=5, result: 25
-    ```
-  </Accordion>
-  
-  <Accordion title="% Remainder" icon="percent">
-    Get the remainder after division.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "%",
-      "input": [number1, number2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isEven.value": {
-        "operator": "=",
-        "input": [
-          {
-            "operator": "%",
-            "input": ["@fact:number.value", 2]
-          },
-          0
-        ]
-      }
-    }
-    // Checks if number is even
-    ```
-  </Accordion>
-</AccordionGroup>
+### How numbers are parsed
 
-### Rounding & Formatting
+Arithmetic and comparison operators put every input through the same parser
+before using it. It is narrower than JavaScript's:
 
-<AccordionGroup>
-  <Accordion title="round - Round to nearest integer" icon="circle-half-stroke">
-    Round a number to the nearest whole number.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "round",
-      "input": [number]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "rounded.value": {
-        "operator": "round",
-        "input": [3.7]
-      }
-    }
-    // Result: 4
-    ```
-  </Accordion>
-  
-  <Accordion title="ceil - Round up" icon="arrow-up">
-    Round up to the nearest integer.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "ceil",
-      "input": [number]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "roundedUp.value": {
-        "operator": "ceil",
-        "input": [3.2]
-      }
-    }
-    // Result: 4
-    ```
-  </Accordion>
-  
-  <Accordion title="floor - Round down" icon="arrow-down">
-    Round down to the nearest integer.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "floor",
-      "input": [number]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "roundedDown.value": {
-        "operator": "floor",
-        "input": [3.9]
-      }
-    }
-    // Result: 3
-    ```
-  </Accordion>
-  
-  <Accordion title="trunc - Truncate decimal" icon="scissors">
-    Remove decimal part, keeping only the integer.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "trunc",
-      "input": [number]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "truncated.value": {
-        "operator": "trunc",
-        "input": [3.9]
-      }
-    }
-    // Result: 3
-    ```
-  </Accordion>
-  
-  <Accordion title="toFixed - Format decimal places" icon="hashtag">
-    Format a number to a specific number of decimal places.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "toFixed",
-      "input": [number, decimalPlaces]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "formatted.value": {
-        "operator": "toFixed",
-        "input": [3.14159, 2]
-      }
-    }
-    // Result: "3.14"
-    ```
-  </Accordion>
-  
-  <Accordion title="numberFormat - Locale formatting" icon="globe">
-    Format a number according to locale settings.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "numberFormat",
-      "input": [number, decimalPlaces]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "displayPrice.value": {
-        "operator": "numberFormat",
-        "input": ["@fact:price.value", 2]
-      }
-    }
-    // If price=1234.5, result: "1,234.50"
-    ```
-  </Accordion>
-</AccordionGroup>
+| Input | Parses to |
+|---|---|
+| `12.5` | `12.5` |
+| `"12.5"` | `12.5` |
+| `" 12 "` | `12` |
+| `"1,234"` | `1234` — one comma is stripped |
+| `"1,234,567"` | `NaN` — only the **first** comma and the **first** space are stripped |
+| `true`, `null`, `[]`, `{}` | `NaN` |
 
-### Advanced Math
-
-<AccordionGroup>
-  <Accordion title="min - Minimum value" icon="down-long">
-    Find the smallest value from a list of numbers.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "min",
-      "input": [number1, number2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "lowestPrice.value": {
-        "operator": "min",
-        "input": [29.99, 19.99, 39.99]
-      }
-    }
-    // Result: 19.99
-    ```
-  </Accordion>
-  
-  <Accordion title="max - Maximum value" icon="up-long">
-    Find the largest value from a list of numbers.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "max",
-      "input": [number1, number2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "bestDiscount.value": {
-        "operator": "max",
-        "input": ["@fact:memberDiscount.value", "@fact:volumeDiscount.value"]
-      }
-    }
-    // Returns the better discount
-    ```
-  </Accordion>
-  
-  <Accordion title="log - Natural logarithm" icon="square-root-variable">
-    Calculate the natural logarithm (base e).
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "log",
-      "input": [number]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "logarithm.value": {
-        "operator": "log",
-        "input": [10]
-      }
-    }
-    // Result: ~2.303
-    ```
-  </Accordion>
-  
-  <Accordion title="baseLog - Logarithm with custom base" icon="square-root-variable">
-    Calculate logarithm with a specified base.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "baseLog",
-      "input": [number, base]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "log2.value": {
-        "operator": "baseLog",
-        "input": [8, 2]
-      }
-    }
-    // Result: 3 (because 2^3 = 8)
-    ```
-  </Accordion>
-  
-  <Accordion title="e - Euler's number" icon="infinity">
-    Returns Euler's number (approximately 2.718).
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "e",
-      "input": []
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "eulerNumber.value": {
-        "operator": "e",
-        "input": []
-      }
-    }
-    // Result: 2.718281828459045
-    ```
-  </Accordion>
-</AccordionGroup>
-
-### Big Number Operations
-
-For high-precision calculations that avoid floating-point errors.
-
-<AccordionGroup>
-  <Accordion title="addBig - High-precision addition" icon="plus">
-    Add numbers with arbitrary precision.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "addBig",
-      "input": [number1, number2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "preciseTotal.value": {
-        "operator": "addBig",
-        "input": ["0.1", "0.2"]
-      }
-    }
-    // Result: "0.3" (exact, not 0.30000000000000004)
-    ```
-  </Accordion>
-  
-  <Accordion title="subtractBig - High-precision subtraction" icon="minus">
-    Subtract numbers with arbitrary precision.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "subtractBig",
-      "input": [number1, number2]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="multiplyBig - High-precision multiplication" icon="xmark">
-    Multiply numbers with arbitrary precision.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "multiplyBig",
-      "input": [number1, number2]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="divideBig - High-precision division" icon="divide">
-    Divide numbers with arbitrary precision.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "divideBig",
-      "input": [number1, number2]
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
+`NaN` behaves differently per operator: `+` discards the offending value and
+carries on, while `*` propagates it and the whole fact is dropped.
 
 ---
 
-## Comparison Operations
+## Arithmetic
 
-Compare values to make decisions.
+### `+`
 
-<AccordionGroup>
-  <Accordion title="= - Equal" icon="equals">
-    Check if two values are equal.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "=",
-      "input": [value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isActive.value": {
-        "operator": "=",
-        "input": ["@fact:status.value", "active"]
-      }
-    }
-    // Returns true if status is "active"
-    ```
-  </Accordion>
-  
-  <Accordion title="!= - Not equal" icon="not-equal">
-    Check if two values are not equal.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "!=",
-      "input": [value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "needsReview.value": {
-        "operator": "!=",
-        "input": ["@fact:status.value", "approved"]
-      }
-    }
-    // Returns true if status is not "approved"
-    ```
-  </Accordion>
-  
-  <Accordion title="> - Greater than" icon="greater-than">
-    Check if first value is greater than second.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": ">",
-      "input": [value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isPremium.value": {
-        "operator": ">",
-        "input": ["@fact:orderTotal.value", 100]
-      }
-    }
-    // Returns true if order total exceeds $100
-    ```
-  </Accordion>
-  
-  <Accordion title=">= - Greater than or equal" icon="greater-than-equal">
-    Check if first value is greater than or equal to second.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": ">=",
-      "input": [value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "qualifies.value": {
-        "operator": ">=",
-        "input": ["@fact:age.value", 18]
-      }
-    }
-    // Returns true if age is 18 or older
-    ```
-  </Accordion>
-  
-  <Accordion title="< - Less than" icon="less-than">
-    Check if first value is less than second.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "<",
-      "input": [value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "needsMoreInventory.value": {
-        "operator": "<",
-        "input": ["@fact:stock.value", 10]
-      }
-    }
-    // Returns true if stock is below 10
-    ```
-  </Accordion>
-  
-  <Accordion title="<= - Less than or equal" icon="less-than-equal">
-    Check if first value is less than or equal to second.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "<=",
-      "input": [value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isBudget.value": {
-        "operator": "<=",
-        "input": ["@fact:price.value", 50]
-      }
-    }
-    // Returns true if price is $50 or less
-    ```
-  </Accordion>
-  
-  <Accordion title="between - Value in range" icon="arrows-left-right">
-    Check if a value falls within a range.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "between",
-      "input": [value, min, max, inclusivity]
-    }
-    ```
-    
-    **Parameters:**
-    - `value` - The value to check
-    - `min` - Minimum value
-    - `max` - Maximum value
-    - `inclusivity` (optional) - One of:
-      - `"INCLUSIVE"` (default) - Both boundaries included
-      - `"EXCLUSIVE"` - Both boundaries excluded
-      - `"INCLUSIVE_LEFT"` - Only left boundary included
-      - `"EXCLUSIVE_LEFT"` - Only left boundary excluded
-      - `"INCLUSIVE_RIGHT"` - Only right boundary included
-      - `"EXCLUSIVE_RIGHT"` - Only right boundary excluded
-    
-    **Examples:**
-    ```json
-    {
-      "isMiddleAge.value": {
-        "operator": "between",
-        "input": ["@fact:age.value", 30, 50, "INCLUSIVE"]
-      }
-    }
-    // Returns true if age is between 30 and 50 (both inclusive)
-    ```
-    
-    ```json
-    {
-      "inRange.value": {
-        "operator": "between",
-        "input": ["@fact:price.value", 100, 200, "EXCLUSIVE_LEFT"]
-      }
-    }
-    // Returns true if 100 < price <= 200
-    ```
-  </Accordion>
-  
-  <Accordion title="notBetween - Value outside range" icon="arrows-left-right">
-    Check if a value falls outside a range.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "notBetween",
-      "input": [value, min, max]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "needsSpecialHandling.value": {
-        "operator": "notBetween",
-        "input": ["@fact:temperature.value", 32, 100]
-      }
-    }
-    // Returns true if temperature is below 32 or above 100
-    ```
-  </Accordion>
-</AccordionGroup>
+Sums its inputs. Nested arrays are flattened first. Values that do not parse as
+numbers are discarded rather than poisoning the sum, so a missing fact
+contributes nothing instead of breaking the rule.
+
+```json
+{ "operator": "+", "input": [10, 5, "2"] }
+```
+
+Result: `17`. With `[10, "abc"]` the result is `10`, not an error.
+
+To sum a fact that is already an array, pass it as the whole input:
+
+```json
+{ "operator": "+", "input": "@fact:quantities.value" }
+```
+
+With `quantities.value` of `[1, 2, 3]` the result is `6`.
+
+### `-`
+
+Subtracts each subsequent input from the first. A single input is negated.
+
+```json
+{ "operator": "-", "input": [10, 3, 2] }
+```
+
+Result: `5`. `{"input": [10]}` gives `-10`.
+
+### `*`
+
+Multiplies its inputs. **Needs at least two**, otherwise it returns `NaN` and the
+fact is dropped. Nested arrays are flattened and everything is multiplied into a
+single scalar — it is *not* element-wise.
+
+```json
+{ "operator": "*", "input": [4, 5] }
+```
+
+Result: `20`. `[[10, 20], [2, 3]]` gives `1200`, not `[20, 60]`. A `null` input
+makes the whole result `NaN`, so the fact disappears.
+
+### `/`
+
+Divides the first input by the second. Division by zero returns `NaN`, dropping
+the fact.
+
+```json
+{ "operator": "/", "input": [10, 4] }
+```
+
+Result: `2.5`
+
+### `%`
+
+*Aliases: `mod`*
+
+Remainder of the first input divided by the second.
+
+```json
+{ "operator": "%", "input": [10, 3] }
+```
+
+Result: `1`
+
+### `power`
+
+*Aliases: `pow`, `^`*
+
+First input raised to the second.
+
+```json
+{ "operator": "power", "input": [2, 10] }
+```
+
+Result: `1024`
+
+### `ceil`
+
+Rounds up to the nearest integer. Uses only the first input.
+
+```json
+{ "operator": "ceil", "input": [4.2] }
+```
+
+Result: `5`
+
+### `floor`
+
+Rounds down to the nearest integer.
+
+```json
+{ "operator": "floor", "input": [4.8] }
+```
+
+Result: `4`
+
+### `round`
+
+Rounds to the nearest integer, halves going up.
+
+```json
+{ "operator": "round", "input": [4.5] }
+```
+
+Result: `5`
+
+There is no "round to N decimal places" operator. Use
+[`numberFormat`](#numberformat) if you want a formatted string, or multiply,
+round and divide if you want a number.
+
+### `trunc`
+
+Discards the fractional part without rounding.
+
+```json
+{ "operator": "trunc", "input": [-4.8] }
+```
+
+Result: `-4`
+
+### `e`
+
+Euler's number. Ignores its input, but `input` must still be present — use `[]`.
+
+```json
+{ "operator": "e", "input": [] }
+```
+
+Result: `2.718281828459045`
+
+### `log`
+
+Natural logarithm of the first input.
+
+```json
+{ "operator": "log", "input": [10] }
+```
+
+Result: `2.302585092994046`
+
+### `baseLog`
+
+Logarithm of the **second** input in the base given by the **first**. The order
+reads backwards from how it is usually written.
+
+```json
+{ "operator": "baseLog", "input": [2, 8] }
+```
+
+Result: `3` — this is log base 2 of 8.
+
+### `min`
+
+Smallest of its inputs. Anything that does not parse as a number is dropped
+first; if nothing is left the result is `NaN` and the fact disappears.
+
+```json
+{ "operator": "min", "input": [5, 3, 9] }
+```
+
+Result: `3`
+
+`min` and `max` do **not** flatten. `{"input": [[5, 3, 9]]}` sees one array,
+parses it as `NaN`, and drops the fact. To take the minimum of an array fact,
+pass the fact as the whole input: `{"operator": "min", "input": "@fact:xs"}`.
+
+### `max`
+
+Largest of its inputs, with the same rules as `min`.
+
+```json
+{ "operator": "max", "input": [5, 3, 9] }
+```
+
+Result: `9`
 
 ---
 
-## Logic Operations
+## Comparison
 
-Combine conditions with boolean logic.
+Each of these takes exactly two inputs: the value, then what to compare it
+against. The four ordering operators parse both sides as numbers; `=` and `!=`
+use loose equality, so `5` and `"5"` are equal and `true` and `1` are equal.
 
-<AccordionGroup>
-  <Accordion title="and - Logical AND" icon="circle-check">
-    Check if all conditions are true.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "and",
-      "input": [condition1, condition2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "eligible.value": {
-        "operator": "and",
-        "input": [
-          {
-            "operator": ">=",
-            "input": ["@fact:age.value", 18]
-          },
-          {
-            "operator": "=",
-            "input": ["@fact:hasLicense.value", true]
-          }
-        ]
-      }
-    }
-    // True only if age >= 18 AND hasLicense is true
-    ```
-  </Accordion>
-  
-  <Accordion title="or - Logical OR" icon="circle">
-    Check if any condition is true.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "or",
-      "input": [condition1, condition2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "freeShipping.value": {
-        "operator": "or",
-        "input": [
-          {
-            "operator": ">=",
-            "input": ["@fact:orderTotal.value", 50]
-          },
-          {
-            "operator": "=",
-            "input": ["@fact:isPremium.value", true]
-          }
-        ]
-      }
-    }
-    // True if order >= $50 OR customer is premium
-    ```
-  </Accordion>
-  
-  <Accordion title="not - Logical NOT" icon="ban">
-    Invert a boolean value or an array of boolean values.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "not",
-      "input": [condition]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isInactive.value": {
-        "operator": "not",
-        "input": ["@fact:isActive.value"]
-      }
-    }
-    // Returns opposite of isActive
+### `=`
 
-    {
-      "isInactive.value": {
-        "operator": "not",
-        "input": [
-            "@fact:isActive.value",
-            "@fact:isInactive.value"
-        ]
-      }
-    }
-    // Returns opposite of isActive and the opposite of isInactive as an array
-    ```
+*Aliases: `equal`, `equals`*
 
-  </Accordion>
-  
-  <Accordion title="empty - Check if empty" icon="square">
-    Check if a value is empty, null, or undefined.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "empty",
-      "input": [value]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "needsInput.value": {
-        "operator": "empty",
-        "input": ["@fact:userInput.value"]
-      }
-    }
-    // True if userInput is empty, null, or undefined
-    ```
-  </Accordion>
-  
-  <Accordion title="notEmpty - Check if not empty" icon="square-check">
-    Check if a value has content.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "notEmpty",
-      "input": [value]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "hasEmail.value": {
-        "operator": "notEmpty",
-        "input": ["@fact:email.value"]
-      }
-    }
-    // True if email has a value
-    ```
-  </Accordion>
-</AccordionGroup>
+```json
+{ "operator": "=", "input": [5, "5"] }
+```
+
+Result: `true`
+
+### `!=`
+
+*Aliases: `<>`, `notEqual`, `notEquals`*
+
+```json
+{ "operator": "!=", "input": [5, 6] }
+```
+
+Result: `true`
+
+### `>`
+
+*Aliases: `greaterThan`*
+
+```json
+{ "operator": ">", "input": [10, 5] }
+```
+
+Result: `true`
+
+### `>=`
+
+*Aliases: `greaterThanInclusive`, `greaterThanOrEqual`*
+
+```json
+{ "operator": ">=", "input": [10, 10] }
+```
+
+Result: `true`
+
+### `<`
+
+*Aliases: `lessThan`*
+
+```json
+{ "operator": "<", "input": [3, 5] }
+```
+
+Result: `true`
+
+### `<=`
+
+*Aliases: `lessThanInclusive`, `lessThanOrEqual`*
+
+```json
+{ "operator": "<=", "input": [5, 5] }
+```
+
+Result: `true`
+
+### `between`
+
+Takes `[value, [low, high]]` — the bounds are a **nested array**, not two extra
+inputs. An optional third input picks which ends are inclusive.
+
+<Warning>
+`{"input": [40, 30, 50]}` does not fail. The engine sees `30` where it expects a
+two-element array and returns `false` for every value you ever pass it. The
+bounds must be bracketed.
+</Warning>
+
+```json
+{ "operator": "between", "input": [40, [30, 50]] }
+```
+
+Result: `true`. The flat form `[40, 30, 50]` returns `false`.
+
+| Third input | Meaning |
+|---|---|
+| omitted, or `"INCLUSIVE"` | `low <= value <= high` |
+| `"EXCLUSIVE"` | `low < value < high` |
+| `"INCLUSIVE_LEFT"` or `"EXCLUSIVE_RIGHT"` | `low <= value < high` |
+| `"EXCLUSIVE_LEFT"` or `"INCLUSIVE_RIGHT"` | `low < value <= high` |
+
+### `notBetween`
+
+Same argument shape, negated. It also returns `false` when the bounds are not a
+two-element array.
+
+```json
+{ "operator": "notBetween", "input": [60, [30, 50]] }
+```
+
+Result: `true`
 
 ---
 
-## String Operations
+## Membership
 
-Manipulate and search text.
+### `inArray`
 
-<AccordionGroup>
-  <Accordion title="concat - Concatenate strings" icon="link">
-    Join multiple strings together. A space is included after the join automatically
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "concat",
-      "input": [string1, string2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "fullName.value": {
-        "operator": "concat",
-        "input": ["@fact:firstName.value", "@fact:lastName.value"]
-      }
-    }
-    // If firstName="John", lastName="Smith", result: "John Smith"
-    ```
-  </Accordion>
-  
-  <Accordion title="join - Join with comma" icon="list">
-    Join values with commas.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "join",
-      "input": [arrayOrValues]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "tags.value": {
-        "operator": "join",
-        "input": [["red", "large", "sale"]]
-      }
-    }
-    // Result: "red,large,sale"
-    ```
-  </Accordion>
-  
-  <Accordion title="substring - Extract substring" icon="scissors">
-    Extract part of a string.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "substring",
-      "input": [string, start, length]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "firstThree.value": {
-        "operator": "substring",
-        "input": ["@fact:code.value", 0, 3]
-      }
-    }
-    // If code="ABC123", result: "ABC"
-    ```
-  </Accordion>
-  
-  <Accordion title="stringTemplate - Format template" icon="brackets-curly">
-    Replace placeholders in a template string.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "stringTemplate",
-      "input": ["template with {{1}}, {{2}}", value1, value2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "message.value": {
-        "operator": "stringTemplate",
-        "input": [
-          "Hello {{1}}, your order #{{2}} is ready!",
-          "@fact:customerName.value",
-          "@fact:orderNumber.value"
-        ]
-      }
-    }
-    // Result: "Hello John, your order #12345 is ready!"
-    ```
-  </Accordion>
-  
-  <Accordion title="split - Split string into array" icon="scissors">
-    Split a string into an array using a delimiter.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "split",
-      "input": [string, delimiter]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "parts.value": {
-        "operator": "split",
-        "input": ["@fact:csvLine.value", ","]
-      }
-    }
-    // If csvLine="red,blue,green", result: ["red", "blue", "green"]
-    ```
-  </Accordion>
+*Aliases: `in`*
 
-  <Accordion title="startsWith - Check prefix" icon="arrow-right">
-    Check if string starts with a specific prefix.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "startsWith",
-      "input": [string, prefix]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isHttps.value": {
-        "operator": "startsWith",
-        "input": ["@fact:url.value", "https://"]
-      }
-    }
-    // True if URL starts with "https://"
-    ```
-  </Accordion>
-  
-  <Accordion title="endsWith - Check suffix" icon="arrow-left">
-    Check if string ends with a specific suffix.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "endsWith",
-      "input": [string, suffix]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isImage.value": {
-        "operator": "endsWith",
-        "input": ["@fact:filename.value", ".jpg"]
-      }
-    }
-    // True if filename ends with ".jpg"
-    ```
-  </Accordion>
-  
-  <Accordion title="stringContains - Check if contains" icon="magnifying-glass">
-    Check if string contains a substring.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "stringContains",
-      "input": [string, substring]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "hasKeyword.value": {
-        "operator": "stringContains",
-        "input": ["@fact:description.value", "urgent"]
-      }
-    }
-    // True if description contains "urgent"
-    ```
-  </Accordion>
-  
-  <Accordion title="stringNotContains - Check if doesn't contain" icon="magnifying-glass">
-    Check if string does not contain a substring.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "stringNotContains",
-      "input": [string, substring]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isClean.value": {
-        "operator": "stringNotContains",
-        "input": ["@fact:comment.value", "spam"]
-      }
-    }
-    // True if comment doesn't contain "spam"
-    ```
-  </Accordion>
+True when the first input appears in the array given as the second. Comparison is
+loose, so `"5"` matches `5`. If the second input is not an array the result is
+`false`.
 
-  <Accordion title="regex - Pattern matching and extraction" icon="magnifying-glass">
-    Extract text using regular expression patterns. Returns the first captured group or the entire match if no groups are defined.
+```json
+{ "operator": "inArray", "input": ["b", ["a", "b"]] }
+```
 
-    **Syntax:**
-    ```json    
-    {
-      "operator": "regex",
-      "input": [string, pattern]
-    }
-    ```
+Result: `true`
 
-    **Parameters:**
-    - `string` - The text to search
-    - `pattern` - Regular expression pattern (use `\\` to escape backslashes in JSON)
+### `notInArray`
 
-    **Examples:**
+*Aliases: `notIn`*
 
-    Extract year from date:
-    ```json 
-    {
-        "year.value": {
-        "operator": "regex",
-        "input": ["02/03/2012", "(\\d{4})$"]
-        }
-    }
-    // Result: "2012"
-    ```
+```json
+{ "operator": "notInArray", "input": ["c", ["a", "b"]] }
+```
 
-    Extract email domain:
-    ```json 
-    {
-        "domain.value": {
-        "operator": "regex",
-        "input": ["user@example.com", "@(.+)$"]
-        }
-    }
-    // Result: "example.com"
-    ```
+Result: `true`
 
-    Extract phone area code:
-    ```json 
-    {
-        "areaCode.value": {
-        "operator": "regex",
-        "input": ["(555) 123-4567", "\\((\\d{3})\\)"]
-        }
-    }
-    // Result: "555"
-    ```
+### `hasOptions`
 
-    Validate and extract:
-    ```json 
-    {
-        "isValidEmail.value": {
-        "operator": "regex",
-        "input": ["@fact:email.value", "^[\\w.-]+@[\\w.-]+\\.\\w+$"]
-        }
-    }
-    // Returns the email if valid, null if invalid
-    ```
-    **Common patterns:**
+*Aliases: `options-in`, `optionsIn`*
 
-    - `\\d` - Any digit (0-9)
-    - `\\w` - Any word character (a-z, A-Z, 0-9, \_)
-    - `\\s` - Any whitespace
-    - `.` - Any character
-    - `+` - One or more
-    - `*` - Zero or more
-    - `^` - Start of string
-    - `$` - End of string
-    - `()` - Capture group
+Set membership for **strings only**. The first input is a string, or a
+comma-separated string, or an array of strings; the second is the option or
+options to look for. A third input of `"AND"` requires all of them; the default
+is `"OR"`, meaning any.
 
-    **Note:** Remember to escape backslashes in JSON strings (use `\\d` not `\d`)
+```json
+{ "operator": "hasOptions", "input": ["a,b", ["b", "c"]] }
+```
 
-  </Accordion>
+Result: `true`. With numbers — `[[1, 2], ["1"]]` — the result is `false`, because
+the fact is not an array of strings.
 
-</AccordionGroup>
+### `arrayContains`
+
+*Aliases: `contain`, `contains`, `arrayContain`*
+
+The reverse of `inArray`: the **first** input is the array, the second is what to
+look for. If the second input is itself an array, every element must be present
+unless a third input of `"OR"` is given. A first input that is not an array
+returns `false`.
+
+```json
+{ "operator": "arrayContains", "input": [["a", "b"], ["a", "z"], "OR"] }
+```
+
+Result: `true`. Without the `"OR"` it is `false`.
+
+### `arrayNotContains`
+
+*Aliases: `notContain`, `notContains`, `arrayNotContain`*
+
+True when none of the sought values is present. With an array of values and the
+default `"AND"`, every one of them must be absent.
+
+```json
+{ "operator": "arrayNotContains", "input": [["a", "b"], "z"] }
+```
+
+Result: `true`
+
+### `stringContains`
+
+*Aliases: `stringContain`*
+
+Substring test. The first input must be a string — a number returns `false`, it
+is not coerced. An array as the second input means all substrings must be
+present, or any of them with a third input of `"OR"`.
+
+```json
+{ "operator": "stringContains", "input": ["hello world", "world"] }
+```
+
+Result: `true`
+
+### `stringNotContains`
+
+*Aliases: `stringNotContain`*
+
+```json
+{ "operator": "stringNotContains", "input": ["hello", "zzz"] }
+```
+
+Result: `true`. Note that a non-string first input returns `false` here too, so
+this is not the strict negation of `stringContains`.
 
 ---
 
-## Array Operations
+## Strings
 
-Work with lists and collections.
+### `substring`
 
-<AccordionGroup>
-  <Accordion title="arrayContains - Check if array contains value" icon="list-check">
-    Check if an array includes a specific value.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "arrayContains",
-      "input": [array, value]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "hasRed.value": {
-        "operator": "arrayContains",
-        "input": ["@fact:colors.value", "red"]
-      }
-    }
-    // True if colors array contains "red"
-    ```
-  </Accordion>
-  
-  <Accordion title="arrayNotContains - Check if array doesn't contain value" icon="list">
-    Check if an array does not include a specific value.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "arrayNotContains",
-      "input": [array, value]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="inArray - Check if value in array" icon="circle-check">
-    Check if a value exists in an array (same as arrayContains, different parameter order).
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "inArray",
-      "input": [value, array]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isValidStatus.value": {
-        "operator": "inArray",
-        "input": ["@fact:status.value", ["pending", "approved", "shipped"]]
-      }
-    }
-    // True if status is one of the valid values
-    ```
-  </Accordion>
-  
-  <Accordion title="notInArray - Check if value not in array" icon="circle">
-    Check if a value does not exist in an array.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "notInArray",
-      "input": [value, array]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="concatArray - Combine arrays" icon="layer-group">
-    Merge multiple arrays into one.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "concatArray",
-      "input": [array1, array2, ...]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "allItems.value": {
-        "operator": "concatArray",
-        "input": ["@fact:cartItems.value", "@fact:wishlistItems.value"]
-      }
-    }
-    // Combines cart and wishlist into single array
-    ```
-  </Accordion>
-  
-  <Accordion title="generateArray - Create array from conditions" icon="wand-magic-sparkles">
-    Create an array from condition/value pairs, including only items where condition is true.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "generateArray",
-      "input": [
-        [condition1, value1],
-        [condition2, value2],
-        ...
-      ]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "selectedFeatures.value": {
-        "operator": "generateArray",
-        "input": [
-          [{"operator": "=", "input": ["@fact:hasCamera.value", true]}, "Camera"],
-          [{"operator": "=", "input": ["@fact:hasGPS.value", true]}, "GPS"],
-          [{"operator": "=", "input": ["@fact:hasBluetooth.value", true]}, "Bluetooth"]
-        ]
-      }
-    }
-    // Returns array like ["Camera", "GPS"] for selected features
-    ```
-  </Accordion>
-  
-  <Accordion title="sort - Sort numbers and strings" icon="arrow-down-1-9">
-    Sort an array of numbers in ascending order or sort an array of strings in alphabetical order
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "sort",
-      "input": [array]
-    }
-    ```
-    
-    **Example:** Sort numbers
-    ```json
-    {
-      "sortedPrices.value": {
-        "operator": "sort",
-        "input": [[49.99, 19.99, 29.99]]
-      }
-    }
-    // Result: [19.99, 29.99, 49.99]
-    ```
-    **Example:** Sort strings
-    ```json
-    {
-      "sortedNames.value": {
-        "operator": "sort",
-        "input": [["Charlie", "Alice", "Bob"]]
-      }
-    }
-    // Result: ["Alice", "Bob", "Charlie"]
-    ```
-  </Accordion>
-  
-  <Accordion title="arrayFilter - Filter with boolean mask" icon="filter">
-    Filter an array using a boolean mask array.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "arrayFilter",
-      "input": [array, booleanMaskArray]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "activeItems.value": {
-        "operator": "arrayFilter",
-        "input": [
-          "@fact:items.value",
-          "@fact:items.value/*/isActive"
-        ]
-      }
-    }
-    // Keeps only items where isActive is true
-    ```
-  </Accordion>
-</AccordionGroup>
+Takes `[text, start]` or `[text, start, end]`. The third input is an **end
+index**, not a length. Negative indices count from the end. A non-string first
+input gives `""`.
+
+```json
+{ "operator": "substring", "input": ["ABC123", 2, 3] }
+```
+
+Result: `"C"`. `["ABC123", 2]` gives `"C123"`, and `["ABC123", -3]` gives `"123"`.
+
+### `concat`
+
+Joins every input with a **single space**. There is no separator argument.
+
+```json
+{ "operator": "concat", "input": ["Hello", "Sam"] }
+```
+
+Result: `"Hello Sam"`
+
+### `join`
+
+Joins every input with a **comma**, discarding empty and null values first. There
+is no separator argument.
+
+```json
+{ "operator": "join", "input": ["a", "", null, "c"] }
+```
+
+Result: `"a,c"`
+
+To join with something other than a comma, use [`jPath`](#jpath) with its third
+input.
+
+### `stringTemplate`
+
+First input is the template; the rest fill numbered placeholders `{{1}}`,
+`{{2}}` and so on, in order. A placeholder with no matching value is replaced
+with an empty string. Values are stringified, so an object becomes
+`[object Object]`.
+
+```json
+{
+  "operator": "stringTemplate",
+  "input": ["Hi {{1}}, you have {{2}} tasks", "Sam", 3]
+}
+```
+
+Result: `"Hi Sam, you have 3 tasks"`
+
+A placeholder may repeat: `["{{1}}-{{1}}", "x"]` gives `"x-x"`.
+
+### `regex`
+
+Matches the second input, as a regular expression, against the first and returns
+**the first capture group**. A pattern with no capture group, or no match at all,
+returns nothing and the fact is dropped. Escape backslashes for JSON.
+
+```json
+{ "operator": "regex", "input": ["order-4471", "order-(\\d+)"] }
+```
+
+Result: `"4471"`. `["order-4471", "order-\\d+"]` — no capture group — drops the
+fact.
+
+<Warning>
+A pattern beginning with `@` is read as a fact reference before `regex` ever sees
+it, so `"@(.+)$"` silently drops the rule. Write it as `"[@](.+)$"`.
+</Warning>
+
+### `split`
+
+Splits a string into an array. Second input is the separator, defaulting to a
+comma. A non-string or empty first input drops the fact.
+
+```json
+{ "operator": "split", "input": ["a|b|c", "|"] }
+```
+
+Result: `["a", "b", "c"]`
 
 ---
 
-## Set Operations
+## JSON and JSONPath
 
-Perform mathematical set operations on arrays.
+### `jPath`
 
-<AccordionGroup>
-  <Accordion title="isSubset - Check if subset" icon="circle-nodes">
-    Check if first array is a subset of second array.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "isSubset",
-      "input": [subset, superset]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "hasRequiredSkills.value": {
-        "operator": "isSubset",
-        "input": [
-          ["JavaScript", "React"],
-          "@fact:candidateSkills.value"
-        ]
-      }
-    }
-    // True if candidate has all required skills
-    ```
-  </Accordion>
-  
-  <Accordion title="isNotSubset - Check if not subset" icon="circle-nodes">
-    Check if first array is not a subset of second array.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "isNotSubset",
-      "input": [subset, superset]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="setUnion - Union of sets" icon="object-group">
-    Combine two arrays, removing duplicates.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "setUnion",
-      "input": [array1, array2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "allTags.value": {
-        "operator": "setUnion",
-        "input": [
-          ["red", "blue"],
-          ["blue", "green"]
-        ]
-      }
-    }
-    // Result: ["red", "blue", "green"]
-    ```
-  </Accordion>
-  
-  <Accordion title="setIntersection - Intersection of sets" icon="circle-half-stroke">
-    Find common elements between two arrays.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "setIntersection",
-      "input": [array1, array2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "commonSkills.value": {
-        "operator": "setIntersection",
-        "input": [
-          "@fact:requiredSkills.value",
-          "@fact:candidateSkills.value"
-        ]
-      }
-    }
-    // Returns skills that appear in both arrays
-    ```
-  </Accordion>
-  
-  <Accordion title="setDifference - Difference of sets" icon="minus">
-    Find elements in first array that are not in second array.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "setDifference",
-      "input": [array1, array2]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "missingSkills.value": {
-        "operator": "setDifference",
-        "input": [
-          "@fact:requiredSkills.value",
-          "@fact:candidateSkills.value"
-        ]
-      }
-    }
-    // Returns required skills the candidate doesn't have
-    ```
-  </Accordion>
-</AccordionGroup>
+*Aliases: `jsonPath`*
+
+Runs a JSONPath query over the first input, which may be an object, an array, or
+a JSON string. Returns an array of matches. An optional third input joins the
+matches into a string instead.
+
+```json
+{
+  "operator": "jPath",
+  "input": ["@fact:lines.value", "$[*].price"]
+}
+```
+
+With `lines.value` of `[{"price": 12.5}, {"price": 40}]` the result is
+`[12.5, 40]`.
+
+Filter expressions work:
+
+```json
+{ "operator": "jPath", "input": ["@fact:lines.value", "$[?(@.qty>2)]"] }
+```
+
+The third input is the only way to join with something other than a comma or a
+space:
+
+```json
+{ "operator": "jPath", "input": ["@fact:tags.value", "$[*]", ", "] }
+```
+
+With `tags.value` of `["billing", "urgent"]` the result is `"billing, urgent"`.
+
+`$.length` gives you a count, which the engine has no dedicated operator for:
+
+```json
+{
+  "operator": "+",
+  "input": { "operator": "jPath", "input": ["@fact:tags.value", "$.length"] }
+}
+```
+
+Result: `2`. The `jPath` alone returns `[2]`; the `+` reduces it to a scalar.
+
+### `jsonParse`
+
+Parses the first input as JSON. Invalid JSON drops the fact.
+
+```json
+{ "operator": "jsonParse", "input": ["{\"a\":1}"] }
+```
+
+Result: `{"a": 1}`
+
+### `jsonStringify`
+
+Serialises the first input.
+
+```json
+{ "operator": "jsonStringify", "input": [{ "a": 1 }] }
+```
+
+Result: `"{\"a\":1}"`
 
 ---
 
-## Lookup & Mapping
+## Arrays and lookups
 
-Map values and check membership.
+### `map`
 
-<AccordionGroup>
-  <Accordion title="map / lookup - Key-value mapping" icon="table">
-    Map a key to a value using a lookup object, with optional default.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "map",
-      "input": [key, lookupObject, defaultValue]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "stateTax.value": {
-        "operator": "map",
-        "input": [
-          "@fact:state.value",
-          {
-            "CA": 0.0725,
-            "NY": 0.08,
-            "TX": 0.0625
-          },
-          0.05
-        ]
-      }
-    }
-    // Returns tax rate for state, or 0.05 if not found
-    ```
-  </Accordion>
-  
-  <Accordion title="inOptions / options-in - Check if value in options" icon="list-check">
-    Check if a value exists in an options list.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "inOptions",
-      "input": [value, optionsArray]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "isValidSize.value": {
-        "operator": "inOptions",
-        "input": [
-          "@fact:selectedSize.value",
-          ["S", "M", "L", "XL"]
-        ]
-      }
-    }
-    // True if selected size is valid
-    ```
-  </Accordion>
-  
-  <Accordion title="in - General membership check" icon="circle-check">
-    Check if value exists in array or object keys.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "in",
-      "input": [value, arrayOrObject]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="notIn - General non-membership check" icon="circle">
-    Check if value doesn't exist in array or object keys.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "notIn",
-      "input": [value, arrayOrObject]
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
+*Aliases: `lookup`*
 
----
+A lookup table. Takes `[key, table]` with an optional `[key, table, fallback]`.
+The table may contain a `"$default"` key. Without either a match, a `$default`
+or a fallback, the fact is dropped.
 
-## Date Operations
+```json
+{
+  "operator": "map",
+  "input": ["@fact:region.value", { "uk": 0.2, "de": 0.19, "$default": 0 }]
+}
+```
 
-Work with dates and times.
+With `region.value` of `"fr"` the result is `0`.
 
-<AccordionGroup>
-  <Accordion title="today - Current date" icon="calendar">
-    Get today's date (without time).
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "today",
-      "input": []
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "currentDate.value": {
-        "operator": "today",
-        "input": []
-      }
-    }
-    // Returns today's date
-    ```
-  </Accordion>
-  
-  <Accordion title="now - Current datetime" icon="clock">
-    Get current date and time.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "now",
-      "input": []
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="timeNow - Current timestamp" icon="stopwatch">
-    Get current Unix timestamp.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "timeNow",
-      "input": []
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="addDate - Add time period" icon="plus">
-    Add days, months, or years to a date.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "addDate",
-      "input": [date, amount, unit]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "dueDate.value": {
-        "operator": "addDate",
-        "input": ["@fact:orderDate.value", 30, "days"]
-      }
-    }
-    // Adds 30 days to order date
-    ```
-  </Accordion>
-  
-  <Accordion title="subtractDate - Subtract time period" icon="minus">
-    Subtract days, months, or years from a date.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "subtractDate",
-      "input": [date, amount, unit]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="dateDiff - Calculate date difference" icon="calendar-days">
-    Calculate difference between two dates.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "dateDiff",
-      "input": [date1, date2, unit]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "daysOverdue.value": {
-        "operator": "dateDiff",
-        "input": [
-          {"operator": "now", "input": []},
-          "@fact:dueDate.value",
-          "days"
-        ]
-      }
-    }
-    // Returns number of days between now and due date
-    ```
-  </Accordion>
-  
-  <Accordion title="dateFormat - Format date" icon="calendar-check">
-    Format a date as a string.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "dateFormat",
-      "input": [date, format]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "displayDate.value": {
-        "operator": "dateFormat",
-        "input": ["@fact:orderDate.value", "YYYY-MM-DD"]
-      }
-    }
-    // Formats date as "2025-10-09"
-    ```
-  </Accordion>
-  
-  <Accordion title="toISO - Convert to ISO format" icon="calendar">
-    Convert date to ISO 8601 string.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "toISO",
-      "input": [date]
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
+An **array** key walks the table one level per element, which gives you nested
+lookups:
+
+```json
+{
+  "operator": "lookup",
+  "input": [["uk", "standard"], { "uk": { "standard": 0.2, "reduced": 0.05 } }, 0]
+}
+```
+
+Result: `0.2`
+
+### `sort`
+
+Sorts an array. Inputs are `[array]`, `[array, direction]`,
+`[array, direction, path]` or `[array, direction, path, parseAsNumber]`.
+Direction is `"asc"` unless it is `"desc"` or `"descending"`. A non-array first
+input drops the fact.
+
+```json
+{ "operator": "sort", "input": [[{ "n": 2 }, { "n": 1 }], "asc", "$.n"] }
+```
+
+Result: `[{"n": 1}, {"n": 2}]`
+
+Sorting is string-wise unless you pass `true` as the fourth input:
+`[["10", "9"], "asc", "", true]` gives `["9", "10"]`, where without it you would
+get `["10", "9"]`.
+
+### `sortString`
+
+Sorts a delimited string and rejoins it. Inputs are
+`[text, direction, delimiter, parseAsNumber]`; the delimiter defaults to a comma.
+A non-string first input drops the fact.
+
+```json
+{ "operator": "sortString", "input": ["c|a|b", "desc", "|"] }
+```
+
+Result: `"c|b|a"`
+
+### `generateArray`
+
+*Aliases: `generate-array`, `array.generate`*
+
+Builds an array by walking its inputs. A plain input is appended as-is. An input
+that is itself a three-element array is read as `[test, whenTrue, whenFalse]`,
+and whichever branch is chosen is appended — flattened one level, so a branch may
+contribute several elements. Undefined values are removed. If nothing survives,
+the fact is dropped.
+
+```json
+{
+  "operator": "generateArray",
+  "input": [[true, "yes", "no"], [false, "yes", "no"], "always"]
+}
+```
+
+Result: `["yes", "no", "always"]`
+
+This is how you build a conditional list — a set of tags or reasons that depend
+on other facts — without a filter operator.
+
+### `concat-array`
+
+Concatenates arrays. Non-array inputs are ignored rather than appended. Note the
+hyphen: `concatArray` is not a registered name.
+
+```json
+{ "operator": "concat-array", "input": [[1, 2], [3]] }
+```
+
+Result: `[1, 2, 3]`
+
+### `empty`
+
+True when the input is `undefined`, `null`, `""`, an empty array or an empty
+object. Given several inputs, all of them must be empty.
+
+```json
+{ "operator": "empty", "input": "@fact:openIssues.value" }
+```
+
+With `openIssues.value` of `[]` the result is `true`.
+
+### `notEmpty`
+
+*Aliases: `not-empty`*
+
+The negation of `empty`.
+
+```json
+{ "operator": "notEmpty", "input": ["x"] }
+```
+
+Result: `true`
+
+<Note>
+There is no length, count, filter or reduce operator. For a count, use `jPath`
+with `$.length` as shown above. For a conditional list, use `generateArray`. For
+per-element arithmetic, use [wildcard fact
+keys](/advanced/rules/core-concepts#wildcard-fact-keys) — arithmetic operators
+flatten arrays into a single scalar and are never element-wise.
+</Note>
 
 ---
 
-## JSON Operations
+## Dates
 
-Parse and query JSON data.
+Every date operator returns an ISO 8601 string with an offset, except `timeNow`
+which returns a number and `dateDiff` which returns a number.
 
-<AccordionGroup>
-  <Accordion title="jsonParse - Parse JSON string" icon="code">
-    Convert JSON string to object.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "jsonParse",
-      "input": [jsonString]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "parsedData.value": {
-        "operator": "jsonParse",
-        "input": ["@fact:jsonString.value"]
-      }
-    }
-    // Converts '{"name":"John"}' to object
-    ```
-  </Accordion>
-  
-  <Accordion title="jsonStringify - Convert to JSON string" icon="brackets-curly">
-    Convert object to JSON string.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "jsonStringify",
-      "input": [object]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "jsonOutput.value": {
-        "operator": "jsonStringify",
-        "input": ["@fact:dataObject.value"]
-      }
-    }
-    // Converts object to JSON string
-    ```
-  </Accordion>
-  
-  <Accordion title="jPath - JSONPath query" icon="magnifying-glass">
-    Query JSON data using JSONPath syntax.
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "jPath",
-      "input": [data, path, delimiter]
-    }
-    ```
-    
-    **Example:**
-    ```json
-    {
-      "firstItemName.value": {
-        "operator": "jPath",
-        "input": [
-          "@fact:cartItems.value",
-          "$.0.name"
-        ]
-      }
-    }
-    // Extracts name from first item
-    ```
-    
-    **With delimiter for joining results:**
-    ```json
-    {
-      "allNames.value": {
-        "operator": "jPath",
-        "input": [
-          "@fact:items.value",
-          "$[*].name",
-          ", "
-        ]
-      }
-    }
-    // Returns "Item1, Item2, Item3"
-    ```
-  </Accordion>
-</AccordionGroup>
+Durations are written as a number followed by a **single case-sensitive letter**:
 
----
+| Letter | Unit |
+|---|---|
+| `y` | years |
+| `M` | months |
+| `w` | weeks |
+| `d` | days |
+| `h` | hours |
+| `m` | minutes |
+| `s` | seconds |
 
-## System Operations
+`"1M"` is one month and `"1m"` is one minute. Spelled-out units such as
+`"months"` are silently ignored in `addDate` and `subtractDate`, and drop the
+fact in `dateDiff`.
 
-Special system-level operations.
+### `today`
 
-<AccordionGroup>
-  <Accordion title="fact - Reference another fact" icon="link">
-    Explicitly reference a fact (usually `@fact:` syntax is used instead).
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "fact",
-      "input": [factName]
-    }
-    ```
-  </Accordion>
-  
-  <Accordion title="expression - Evaluate expression" icon="calculator">
-    Evaluate a mathematical expression (advanced use).
-    
-    **Syntax:**
-    ```json
-    {
-      "operator": "expression",
-      "input": [expressionString]
-    }
-    ```
-  </Accordion>
-</AccordionGroup>
+Start of the current day. Ignores its input.
+
+```json
+{ "operator": "today", "input": [] }
+```
+
+Result: `"2026-08-27T00:00:00.000+01:00"`
+
+### `now`
+
+The current instant.
+
+```json
+{ "operator": "now", "input": [] }
+```
+
+Result: `"2026-08-27T17:18:50.239+01:00"`
+
+### `timeNow`
+
+The current instant as milliseconds since the epoch.
+
+```json
+{ "operator": "timeNow", "input": [] }
+```
+
+Result: `1787847530246`
+
+### `addDate`
+
+First input is a date; any input containing a duration is applied to it. Several
+durations may be given and they are applied in order.
+
+```json
+{ "operator": "addDate", "input": ["2026-01-01", "1y", "2M", "3d"] }
+```
+
+Result: `"2027-03-04T00:00:00.000Z"`
+
+Month arithmetic clamps: `["2026-01-31", "1M"]` gives `"2026-02-28T00:00:00.000Z"`.
+
+### `subtractDate`
+
+The same, subtracting.
+
+```json
+{ "operator": "subtractDate", "input": ["2026-03-01", "1M"] }
+```
+
+Result: `"2026-02-01T00:00:00.000Z"`
+
+### `dateDiff`
+
+Inputs are `[start, end]` or `[start, end, unit]`, with the unit defaulting to
+`"d"`. Returns `end - start`, so an end before the start is negative. An
+unrecognised unit drops the fact.
+
+```json
+{ "operator": "dateDiff", "input": ["2026-01-01", "2026-03-01", "d"] }
+```
+
+Result: `59`
+
+### `dateFormat`
+
+Inputs are `[value, pattern]` or `[value, pattern, timezone]`. The pattern uses
+`date-fns` tokens. The third input is `"ORIGINAL"` (the default, keeping the
+offset the value carried), `"UTC"`, `"LOCAL"`, or a **number** — a UTC offset in
+hours.
+
+```json
+{ "operator": "dateFormat", "input": ["2026-08-27T10:00:00Z", "dd/MM/yyyy"] }
+```
+
+Result: `"27/08/2026"`
+
+```json
+{
+  "operator": "dateFormat",
+  "input": ["2026-08-27T23:30:00Z", "yyyy-MM-dd HH:mm", 10]
+}
+```
+
+Result: `"2026-08-28 09:30"`
+
+### `toISO`
+
+Converts milliseconds since the epoch to a UTC ISO string. With no input it
+returns the current instant.
+
+```json
+{ "operator": "toISO", "input": [1787000000000] }
+```
+
+Result: `"2026-08-17T20:53:20.000Z"`
 
 ---
 
-## What's Next?
+## Logic
 
-<CardGroup cols={2}>
-  <Card
-    title="Rule Patterns"
-    icon="puzzle-piece"
-    href="/advanced/rules/common-patterns"
-  >
-    Learn common patterns for using these operators effectively
-  </Card>
-  <Card title="Examples Library" icon="code" href="/advanced/rules/examples">
-    See real-world examples using multiple operators together
-  </Card>
-  <Card title="Core Concepts" icon="book" href="/advanced/rules/core-concepts">
-    Understand how operators fit into the bigger picture
-  </Card>
-  <Card
-    title="Getting Started"
-    icon="rocket"
-    href="/advanced/rules/getting-started"
-  >
-    Build your first rule with step-by-step guidance
-  </Card>
-</CardGroup>
+`and`, `or` and `not` coerce with JavaScript truthiness. `0`, `""`, `null` and
+`undefined` are false; an **empty array or empty object is true**. Use
+[`empty`](#empty) rather than `not` when you mean "has no items".
 
-<Info>
-  **Need Help?** Visit our [Help Center](https://quiva.ai/help-center/) or
-  join the [Community](https://quiva.ai/community) for support.
-</Info>
+### `and`
+
+*Aliases: `&`, `&&`*
+
+True when every input is truthy. It does not short-circuit — every input was
+already evaluated before `and` ran.
+
+```json
+{
+  "operator": "and",
+  "input": ["@fact:tenureOk.value", "@fact:planOk.value"]
+}
+```
+
+Result: `true` when both are.
+
+### `or`
+
+*Aliases: `|`, `||`*
+
+True when any input is truthy.
+
+```json
+{ "operator": "or", "input": [false, true] }
+```
+
+Result: `true`
+
+### `not`
+
+*Aliases: `!`*
+
+The one operator whose input is **not** wrapped in an array. Given a scalar it
+returns a boolean; given an array it returns an array of booleans, which is
+almost never what a condition wants.
+
+```json
+{ "operator": "not", "input": "@fact:emailValid.value" }
+```
+
+With `emailValid.value` of `true` the result is `false`. Written as
+`"input": [true]` it returns `[false]` — an array, which is truthy.
+
+---
+
+## Composing
+
+### `expression`
+
+*Aliases: `exp`*
+
+Evaluates an infix array: operand, operator name, operand, operator name, and so
+on. **Evaluation is strictly left to right with no operator precedence.** Nest an
+array to force a different order.
+
+```json
+{ "operator": "expression", "input": [10, "+", 5, "*", 2] }
+```
+
+Result: `30` — `(10 + 5) * 2`, not `20`.
+
+```json
+{ "operator": "expression", "input": [[10, "+", 5], "*", 2] }
+```
+
+Result: `30`, this time explicitly.
+
+The operator names are looked up in a slightly narrower table than the main
+registry: `expression`, `exp`, `not`, `!`, `generateArray`, `sort`, `sortString`,
+`split`, `empty`, `notEmpty`, `concat-array` and `numberFormat` cannot appear as
+infix operators. An unrecognised name drops the fact.
+
+A string is not an expression. `["10 + 5"]` returns the string `"10 + 5"`
+unchanged, and an array of one or two elements always returns its first element.
+
+---
+
+## Numbers
+
+### `numberFormat`
+
+Formats a number for display. Inputs are `[value]`, `[value, digits]` or
+`[value, digits, locale]`. `digits` fixes both the minimum and maximum fraction
+digits and must be a number. The locale defaults to `en-AU`. Returns a **string**;
+a value that is not numeric drops the fact.
+
+```json
+{ "operator": "numberFormat", "input": [1234567.891, 2] }
+```
+
+Result: `"1,234,567.89"`. With `"de-DE"` as the third input:
+`"1.234.567,89"`.
+
+---
+
+## Reading facts
+
+### `fact`
+
+Reads a fact by name. This is the operator behind the `"@fact:name"` shorthand,
+and the two forms are identical.
+
+```json
+{ "operator": "fact", "input": "someKey" }
+```
+
+With an **array** input it returns an array of the values, skipping any that are
+missing:
+
+```json
+{ "operator": "fact", "input": ["a.value", "b.value"] }
+```
+
+With `a.value` of `1` and `b.value` of `2` the result is `[1, 2]`.
+
+A fact that does not exist resolves to nothing. Inside `+` that is harmless — it
+is discarded and the sum continues — but inside `*` it drops the whole fact.
+
+<Note>
+`fact` is the only operator the engine special-cases, and the only one whose name
+may appear in the `"@name:input"` shorthand and be worth using. Any registered
+operator works in that shorthand — `"@today:"` returns today's date — but for
+anything other than reading a fact the object form is clearer.
+</Note>
+
+---
+
+## Names that are not operators
+
+Every name below appears in older versions of this documentation or reads like a
+plausible operator. None of them exists. Each one silently drops its fact.
+
+| Not an operator | Use instead |
+|---|---|
+| `arrayLength`, `stringLength`, `count` | `jPath` with `$.length` |
+| `arrayFilter`, `filter` | `jPath` with a filter expression, or `generateArray` |
+| `concatArray` | `concat-array` |
+| `inOptions` | `hasOptions` |
+| `startsWith`, `endsWith` | `regex`, or `substring` with `=` |
+| `isSubset`, `isNotSubset` | `arrayContains` with an array and the default `"AND"` |
+| `setUnion`, `setIntersection`, `setDifference` | nothing — the engine has no set operations |
+| `addBig`, `subtractBig`, `multiplyBig`, `divideBig`, `toFixed` | `+`, `-`, `*`, `/`, `numberFormat` |
+| `gte`, `lte` | `>=`, `<=` |
+| `array` | a plain JSON array in the input |
+| `add`, `subtract`, `multiply`, `divide` | `+`, `-`, `*`, `/` — only the symbols are registered |
+
+<Note>
+The flow editor's JSON panel validates the rules payload against a list of 34
+operators, which is far narrower than the registry on this page. It will
+underline `jPath`, `map`, `max`, `min`, `sort`, `concat`, `substring`, `regex`,
+`arrayContains`, `<=`, `generateArray` and others as unrecognised. These are
+editor warnings only — they do not block saving, and the engine runs all of them.
+The registry on this page is the authority.
+</Note>

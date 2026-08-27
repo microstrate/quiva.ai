@@ -1,520 +1,438 @@
 ---
 title: "Core Concepts"
-description: "Deep dive into facts, rules, operators, and how the Rules work"
+description: "Facts, the five rule shapes, evaluation order, and the failure mode that produces no error"
 ---
 
-## Understanding Facts
+## The payload
 
-Facts are the input data for your rules - a flat key-value object where keys are unique identifiers and values are the data to evaluate.
-
-### Fact Structure
+A Rules step takes one JSON object with three keys:
 
 ```json
 {
-  "factKey": "value or variable mapping expression"
+  "rules": { "…": "…" },
+  "facts": { "…": "…" },
+  "context": { "timezone": 10 }
 }
 ```
 
-<CardGroup cols={2}>
-  <Card title="Static Facts" icon="hashtag">
-    Hard-coded values that don't change
-  </Card>
-  <Card title="Dynamic Facts" icon="link">
-    Values pulled from previous steps using variable mapping
-  </Card>
-</CardGroup>
+`facts` is the input data. `rules` says how to derive new values from it. `context`
+carries settings for the run — currently only `timezone`. Only `rules` is
+required.
 
-### Static Facts
+## Facts
 
-Static facts have hard-coded values:
+Facts are a flat object. Keys are plain strings; the engine never treats a dot in
+a key as a path, so `"orderTotal.value"` is one key, not a nested object.
 
 ```json
 {
-  "minAge.value": 18,
-  "shippingThreshold.value": 50,
-  "defaultTier.value": "bronze",
-  "isActive.value": true
+  "orderTotal.value": 650,
+  "region.value": "uk",
+  "lines.value": [{ "sku": "A", "price": 12.5, "qty": 2 }]
 }
 ```
 
-### Dynamic Facts with Variable Mapping
-
-Most facts in real flows pull data from previous steps using [variable mapping](/advanced/variable-mapping/overview):
+In a flow you normally map facts in from earlier steps with
+[variable mapping](/advanced/variable-mapping/overview):
 
 ```json
 {
-  "orderTotal.value": "$.NODE_ID.checkout.total", // from previous step
-  "customerEmail.value": "$.trigger.email" // from trigger event
+  "orderTotal.value": "$.checkout_step.total",
+  "region.value": "$.customer_lookup.region"
 }
 ```
 
-<Note>
-When the Rules step executes, all variable mapping expressions are resolved first, converting your facts into actual values before any rules are evaluated. Learn more about [variable mapping](/advanced/variable-mapping/overview)
-</Note>
+Those `$.` expressions are resolved before the rules run.
 
-### Fact Naming Conventions
+Rules read facts by name with the `@fact:` prefix. A rule's own output becomes a
+fact for the rules that depend on it, so `@fact:` is also how one rule reads
+another.
 
-Fact keys can be any valid JSON key, but we recommend using descriptive names with a property suffix:
+```json
+{ "operator": ">=", "input": ["@fact:orderTotal.value", 500] }
+```
+
+## The five rule shapes
+
+Every entry in `rules` is keyed by the fact it produces. Its value is one of five
+things, and the engine decides which by inspecting the value's structure.
+
+### 1. Dynamic value
+
+An object with `operator` and `input`. The most common shape.
 
 ```json
 {
-  "orderTotal.value": 150,
-  "orderTotal.formatted": "$150.00",
-  "orderTotal.withTax": 165,
-  "customer.firstName": "John",
-  "customer.lastName": "Smith"
+  "payable.value": {
+    "operator": "-",
+    "input": ["@fact:orderTotal.value", "@fact:discount.value"]
+  }
 }
 ```
 
-<Tip>
-**Why use property suffixes?** Using consistent suffixes like `.value` makes your rules more readable and allows you to create multiple related calculations from the same base concept.
-</Tip>
+Inputs nest without limit — an `input` element may itself be a dynamic value:
 
-### Referencing Facts in Rules
+```json
+{
+  "total.value": {
+    "operator": "*",
+    "input": [{ "operator": "+", "input": [1, 2] }, 10]
+  }
+}
+```
 
-Reference facts in your rules using the `@fact:` prefix followed by the exact fact key:
+Result: `30`.
+
+If `input` is not an array, the engine wraps it in one before the operator runs.
+`"input": "@fact:quantities.value"` is therefore how you feed an array fact to
+`+`, `min` or `max` as a whole.
+
+### 2. Dynamic value shorthand
+
+A string beginning with `@` is parsed as `"@operator:input"`.
+
+```json
+{ "copy.value": "@fact:original.value" }
+```
+
+Almost every use is `@fact:`. Any registered operator works — `"@today:"` returns
+today's date — but for anything but a fact read the object form is clearer.
+
+<Warning>
+Any string starting with `@` is treated as an operator call, **wherever it
+appears** — including inside an operator's `input`. `"@someone"` is read as the
+operator `someone`, which does not exist, so the rule silently produces nothing.
+This catches regular expressions in particular: `"@(.+)$"` never reaches `regex`.
+Rewrite it as `"[@](.+)$"`, or build the literal with `stringTemplate`.
+</Warning>
+
+### 3. Rule cell
+
+An object with an `outcome`, and optionally a `condition` and an
+`outcomeMessage`. When the condition resolves truthy, the outcome is produced.
+When it does not, the rule produces nothing at all — the key is absent from the
+output.
 
 ```json
 {
   "discount.value": {
-    "operator": "*",
-    "input": ["@fact:orderTotal.value", 0.10]
+    "condition": { "operator": ">=", "input": ["@fact:orderTotal.value", 100] },
+    "outcome": 0.1,
+    "outcomeMessage": "Volume discount applied"
   }
 }
 ```
 
-## Understanding Rules
+Both `outcome` and `outcomeMessage` may themselves be dynamic values.
 
-Rules define the logic for calculating outcomes based on your facts. Rules are structured as key-value pairs where the key is the rule name and the value defines how to calculate it.
+`outcomeMessage` is **not visible to the rest of your flow.** The engine returns
+it alongside the outcome, but the flow runner keeps only the outcome. Treat it as
+a note for someone reading the run, not as data.
 
-### Simple Rule Format
+### 4. Array of rule cells — the if/else ladder
 
-Use simple format for direct calculations without conditions:
-
-```json
-{
-  "ruleName.property": {
-    "operator": "operatorName",
-    "input": [param1, param2, ...]
-  }
-}
-```
-
-**Example - Calculate total:**
-```json
-{
-  "total.value": {
-    "operator": "+",
-    "input": ["@fact:subtotal.value", "@fact:tax.value"]
-  }
-}
-```
-
-### Conditional Rule Format
-
-Use conditional format when the outcome depends on conditions - an array of condition/outcome pairs evaluated top to bottom:
+Cells are tried in order and the first one whose condition resolves truthy wins.
+A final cell with no `condition` is the default.
 
 ```json
 {
-  "ruleName.property": [
-    {
-      "condition": {
-        "operator": "operatorName",
-        "input": [...]
-      },
-      "outcome": "value if condition is true"
-    },
-    {
-      "condition": {
-        "operator": "operatorName",
-        "input": [...]
-      },
-      "outcome": "value if condition is true"
-    },
-    {
-      "outcome": "default value"
-    }
+  "discountRate.value": [
+    { "condition": { "operator": ">=", "input": ["@fact:orderTotal.value", 1000] }, "outcome": 0.15 },
+    { "condition": { "operator": "between", "input": ["@fact:orderTotal.value", [500, 999.99]] }, "outcome": 0.1 },
+    { "condition": { "operator": "between", "input": ["@fact:orderTotal.value", [200, 499.99]] }, "outcome": 0.05 },
+    { "outcome": 0 }
   ]
 }
 ```
 
-**Example - Tiered discount:**
+With `orderTotal.value` of `650` this returns `0.1`.
+
+Leave off the default cell and a value that matches nothing produces no fact at
+all rather than a fallback. That is usually a bug — write the default.
+
+<Warning>
+An array is **always** read as a ladder of rule cells. A plain array literal such
+as `["a", "b"]` is not a list — the engine tries to read each element as a rule
+cell, finds no outcome, and drops the key. To produce a list, use
+`generateArray` or `concat-array`.
+</Warning>
+
+### 5. Bare literal
+
+Anything else becomes the outcome unchanged.
+
+```json
+{ "channel.value": "email", "retries.value": 3 }
+```
+
+This is also why a stray key in the rules object turns into output. A `_comment`
+key is not ignored — it becomes a fact called `_comment` in the step's result.
+
+## The `.value` and `.defaultValue` convention
+
+Naming rules `something.value` is a convention, but `.defaultValue` is not — the
+engine special-cases it.
+
+**Before evaluation, for every rule key ending `.defaultValue`, the engine looks
+for the matching `.value` key. If neither a fact nor a rule supplies one, it
+creates a rule `"<name>.value": "@fact:<name>.defaultValue"`.** So a default
+flows through automatically:
+
+```json
+{ "rules": { "slaHours.defaultValue": 24 }, "facts": {} }
+```
+
+Output:
+
+```json
+{ "slaHours.defaultValue": 24, "slaHours.value": 24 }
+```
+
+A fact wins over the default, and so does an explicit `.value` rule.
+
+<Warning>
+The fallback is wired up by the *presence* of a `.value` rule, not by whether it
+produces anything. If you write a `.value` ladder with no default cell and none
+of its conditions match, you get **no** `.value` at all — the `.defaultValue`
+does not step in. Reference it explicitly in the ladder's final cell if you want
+both:
+
 ```json
 {
-  "discount.value": [
-    {
-      "condition": {
-        "operator": ">=",
-        "input": ["@fact:orderTotal.value", 200]
-      },
-      "outcome": 0.15
-    },
-    {
-      "condition": {
-        "operator": "between",
-        "input": ["@fact:orderTotal.value", 100, 199]
-      },
-      "outcome": 0.10
-    },
-    {
-      "outcome": 0
-    }
+  "priority.defaultValue": "normal",
+  "priority.value": [
+    { "condition": { "operator": "=", "input": ["@fact:severity.value", "high"] }, "outcome": "urgent" },
+    { "outcome": "@fact:priority.defaultValue" }
   ]
+}
+```
+</Warning>
+
+## Evaluation order
+
+You do not order rules yourself. The engine reads the `@fact:` references out of
+every rule, builds a dependency graph, and evaluates in an order that satisfies
+it. Rules with no relationship to each other are independent, and the order of
+keys in your JSON does not matter.
+
+A rule that references **itself** reads the incoming fact, not its own result, so
+`{"n": {"operator": "+", "input": ["@fact:n", 1]}}` with a fact `n` of `10`
+produces `11`.
+
+<Warning>
+There is no cycle detection. If two rules reference each other the engine does
+not fail — it picks an order and returns whatever falls out. Given
+`a.value = b.value + 10` and `b.value = a.value + 20` with no facts, it returns
+`a.value: 10` and `b.value: 30`. Nothing tells you the answer is meaningless.
+</Warning>
+
+## When a rule produces nothing
+
+This is the most important behaviour on this page.
+
+**A rule that produces nothing is dropped from the output with no error, no
+warning and no log line. The flow carries on with the fact missing.**
+
+The engine does keep an internal list of warnings — "Operator "arrayLenght" is
+not supported!" and the like — but nothing ever reads it. It is not returned, not
+logged, and not shown in the flow's run history.
+
+Six things cause a key to disappear:
+
+| Cause | Example |
+|---|---|
+| An operator name that is not in the registry | `"operator": "arrayLength"` — a typo behaves identically |
+| A result of `undefined` | `regex` with no capture group; `map` with no match and no default |
+| A result of `NaN` or `Infinity` | `*` with a `null` input; `/` by zero; `min` over a bracketed array |
+| A rule cell whose condition is falsy, with no default cell | a ladder that matches nothing |
+| An outcome of `null` | a literal `null` |
+| An outcome equal to the fact of the same name already supplied | a rule that computes `3` for a key whose fact is already `3` |
+
+A rule that throws is caught and produces the same silence.
+
+Two consequences worth planning around:
+
+- **A misspelled operator looks exactly like a condition that did not match.** If
+  a fact is missing from a step's output, check the operator name against the
+  [operations reference](/advanced/rules/operations-reference) first.
+- **Downstream steps see an absent key, not an error.** A variable mapping
+  pointing at it resolves to an empty array, and the flow continues with a hole
+  in its data. Give rules that must always produce a value a default cell, or a
+  `.defaultValue` sibling.
+
+## Reading the output in later steps
+
+The step emits a flat object of `{ruleName: outcome}`. The wrapper the engine
+returns internally is stripped, so there is no `.outcome` to address:
+
+```json
+{
+  "qualifiesForDiscount.value": true,
+  "discountAmount.value": 12,
+  "finalPrice.value": 108
 }
 ```
 
 <Warning>
-**Conditions are evaluated top to bottom:** The first matching condition wins and its outcome is returned. Always put more specific conditions before general ones, and include a default outcome without a condition at the end.
+**A rule name containing a dot needs bracket notation downstream.** Variable
+mapping is JSONPath, which reads `.` as a path separator. If your rules step is
+called `rules_1`:
+
+| Expression | Resolves to |
+|---|---|
+| `$.rules_1['finalPrice.value']` | `108` |
+| `$.rules_1.finalPrice.value` | `[]` — no match |
+
+The whole `.value` convention depends on this. If you would rather not think
+about it, name your rules without dots — `finalPrice` reads as
+`$.rules_1.finalPrice`.
 </Warning>
 
-### Nested Operations
+## Wildcard fact keys
 
-You can nest operations within the `input` array to create complex calculations:
+Fact keys of the form `parent/index/child` can be addressed with `/*/` in place
+of the index. The engine expands the wildcard against the **value of the parent
+key**, which must be an array or a comma-separated string, and it looks at both
+`parent` and `parent.value`.
+
+Given these facts:
 
 ```json
 {
-  "finalPrice.value": {
-    "operator": "-",
-    "input": [
-      "@fact:orderTotal.value",
-      {
-        "operator": "*",
-        "input": [
-          "@fact:orderTotal.value",
-          "@fact:discountRate.value"
-        ]
-      }
-    ]
-  }
+  "lines": "A,B",
+  "lines/A/price": 12.5,
+  "lines/A/qty": 2,
+  "lines/B/price": 40,
+  "lines/B/qty": 1
 }
 ```
 
-This calculates: `orderTotal - (orderTotal * discountRate)`
+a wildcard reference collects every match into an array before the operator sees
+it:
 
-### Rules Referencing Rules
+```json
+{ "itemCount.value": { "operator": "+", "input": "@fact:lines/*/qty" } }
+```
 
-Rules can reference the outcomes of other rules using `@fact:ruleName`:
+Result: `3`.
+
+A wildcard may also appear in a **rule key**, in which case the rule is expanded
+into one rule per parent value. This is the only way to do element-wise
+arithmetic — the arithmetic operators flatten arrays into a single scalar and
+never work element by element.
 
 ```json
 {
-  "subtotal.value": {
-    "operator": "+",
-    "input": [
-        "@fact:item1.value",
-        "@fact:item2.value"
-    ]
-  },
-  "tax.value": {
+  "lines/*/total": {
     "operator": "*",
-    "input": ["@fact:subtotal.value", 0.08]
+    "input": ["@fact:lines/*/price", "@fact:lines/*/qty"]
   },
-  "total.value": {
-    "operator": "+",
-    "input": ["@fact:subtotal.value", "@fact:tax.value"]
+  "orderTotal.value": { "operator": "+", "input": "@fact:lines/*/total" }
+}
+```
+
+Output:
+
+```json
+{
+  "lines/A/total": 25,
+  "lines/B/total": 40,
+  "orderTotal.value": 65
+}
+```
+
+Note that the expanded keys — `lines/A/total` — are what appear in the output, and
+that a wildcard rule feeds a wildcard aggregate in the same step.
+
+Wildcards nest to five levels. The **outermost** level is `/*/` and each level
+further in gains a star — `/**/`, then `/***/`, and so on. Each level's parent
+list is the key up to that point:
+
+```json
+{
+  "facts": {
+    "team": "north,south",
+    "team/north/member": "ana",
+    "team/north/member/ana/hours": 10,
+    "team/north/member/ana/rate": 2,
+    "team/south/member": "bo,cy",
+    "team/south/member/bo/hours": 5,
+    "team/south/member/bo/rate": 1,
+    "team/south/member/cy/hours": 7,
+    "team/south/member/cy/rate": 3
+  },
+  "rules": {
+    "team/*/member/**/cost": {
+      "operator": "*",
+      "input": ["@fact:team/*/member/**/hours", "@fact:team/*/member/**/rate"]
+    },
+    "totalCost.value": { "operator": "+", "input": "@fact:team/*/member/**/cost" }
   }
 }
 ```
 
-<Tip>
-**Rule order doesn't matter!** The Rules engine automatically determines the correct evaluation order based on dependencies. You can define rules in any sequence.
-</Tip>
-
-## Operators
-
-Operators are the functions that manipulate your data. The Rules engine includes operators for math, comparisons, logic, strings, arrays, dates, and more.
-
-### Operator Categories
-
-<AccordionGroup>
-  <Accordion title="Math Operations" icon="calculator">
-    **Basic:** `+`, `-`, `*`, `/`, `^`, `%`  
-    **Rounding:** `round`, `ceil`, `floor`, `trunc`, `toFixed`  
-    **Advanced:** `min`, `max`, `log`, `baseLog`, `numberFormat`  
-    **Big Numbers:** `addBig`, `subtractBig`, `multiplyBig`, `divideBig`
-  </Accordion>
-  
-  <Accordion title="Comparison Operations" icon="equals">
-    **Equality:** `=` (equal), `!=` (notEqual)  
-    **Magnitude:** `>`, `>=`, `<`, `<=`  
-    **Range:** `between`, `notBetween`
-  </Accordion>
-  
-  <Accordion title="Logic Operations" icon="diagram-project">
-    **Boolean:** `and`, `or`, `not`  
-    **Existence:** `empty`, `notEmpty`
-  </Accordion>
-  
-  <Accordion title="String Operations" icon="text">
-    **Manipulation:** `concat`, `join`, `substring`, `split`  
-    **Formatting:** `stringTemplate`, `numberFormat`  
-    **Searching:** `startsWith`, `endsWith`, `stringContains`, `stringNotContains`
-  </Accordion>
-  
-  <Accordion title="Array Operations" icon="list">
-    **Creation:** `generateArray`, `concatArray`  
-    **Searching:** `arrayContains`, `arrayNotContains`, `inArray`, `notInArray`  
-    **Transformation:** `sort`, `sortString`, `arrayFilter`  
-    **Processing:** Use wildcards like `@fact:items.value/*/price`
-  </Accordion>
-  
-  <Accordion title="Date Operations" icon="calendar">
-    **Current:** `today`, `now`, `timeNow`  
-    **Calculation:** `addDate`, `subtractDate`, `dateDiff`  
-    **Formatting:** `dateFormat`, `toISO`
-  </Accordion>
-  
-  <Accordion title="Lookup & Mapping" icon="table">
-    **Key-Value:** `map` / `lookup`  
-    **Membership:** `inOptions` / `options-in`, `in`, `notIn`  
-    **Sets:** `isSubset`, `isNotSubset`, `setUnion`, `setIntersection`, `setDifference`
-  </Accordion>
-  
-  <Accordion title="JSON Operations" icon="brackets-curly">
-    **Parsing:** `jsonParse`, `jsonStringify`  
-    **Querying:** `jPath` for JSONPath queries like `$.items[0].name`
-  </Accordion>
-</AccordionGroup>
-
-<Card title="Full Operations Reference" icon="book" href="/advanced/rules/operations-reference">
-  See the complete operations reference with syntax, parameters, and examples for every operator
-</Card>
-
-## Array Processing with JSONPath
-
-The Rules engine supports processing arrays using JSONPath queries via the `jPath` operator.
-
-<Card title="Learn more about JSONPath" icon="book" href="/advanced/variable-mapping/overview">
-  Learn about variable mapping with JSONPath and other data transformations using jPath references and queries
-</Card>
-
-### JSONPath Syntax
-
-Use `jPath` to extract values from literal array objects:
+Output:
 
 ```json
 {
-  "operator": "jPath",
-  "input": [arrayData, jsonPathQuery]
+  "team/north/member/ana/cost": 20,
+  "team/south/member/bo/cost": 5,
+  "team/south/member/cy/cost": 21,
+  "totalCost.value": 46
 }
 ```
 
-### Example: Extract Array Values
+If the parent key is missing the wildcard expands to nothing, which for `+` means
+`0` and for most other operators means the fact is dropped.
 
-Extract prices from a cart items array:
+Wildcards suit data that arrives already flattened. If you have an ordinary array
+of objects, [`jPath`](/advanced/rules/operations-reference#jpath) is simpler.
+
+## Time zones
+
+`context.timezone` is a **number** — a UTC offset in hours. It is threaded into
+`today`, `now`, `addDate` and `subtractDate`.
 
 ```json
-{
-  "cartItems.value": [
-    { "name": "Widget", "price": 29.99, "quantity": 2 },
-    { "name": "Gadget", "price": 49.99, "quantity": 1 }
-  ]
-}
+{ "rules": { "startOfDay.value": "@today:" }, "context": { "timezone": 10 } }
 ```
 
-**Rules:**
-```json
-{
-  "prices.value": {
-    "operator": "jPath",
-    "input": ["@fact:cartItems.value", "$[*].price"]
-  },
-  "totalPrice.value": {
-    "operator": "+",
-    "input": "@fact:prices.value"
-  }
-}
-```
+Result: `"2026-08-28T00:00:00.000+10:00"`.
 
-**Output:**
-```json
-{
-  "prices.value": [29.99, 49.99],
-  "totalPrice.value": 79.98
-}
-```
+Named zones do not work. `"Australia/Sydney"`, and the strings `"UTC"` and
+`"LOCAL"`, are all ignored, and the server's own offset is used instead. Only
+`dateFormat` accepts `"UTC"` and `"LOCAL"`, and it takes them as its own third
+input rather than from `context`.
 
-### Example: Element-by-Element Operations
+## Things that look like they should work and do not
 
-Calculate line totals by multiplying price × quantity for each item:
+**json-rules-engine syntax.** The engine bundle contains a copy of
+`json-rules-engine`, but it is never called. Rules written with `all`, `any`,
+`conditions` or `event` keys do nothing — they are read as a bare literal and
+returned unchanged, or dropped.
+
+**`{ "if": …, "then": …, "else": … }`.** There is no such shape. Use the array
+ladder.
+
+**`@fact:` inside a literal outcome.** References are only resolved in a dynamic
+value. An outcome that is a plain object or array is returned exactly as written:
 
 ```json
-{
-  "prices.value": {
-    "operator": "jPath",
-    "input": ["@fact:cartItems.value", "$[*].price"]
-  },
-  "quantities.value": {
-    "operator": "jPath",
-    "input": ["@fact:cartItems.value", "$[*].quantity"]
-  },
-  "lineTotals.value": {
-    "operator": "*",
-    "input": ["@fact:prices.value", "@fact:quantities.value"]
-  }
-}
+{ "bonus.value": { "outcome": { "amount": "@fact:award.value" } } }
 ```
 
-**Output:**
-```json
-{
-  "prices.value": [29.99, 49.99],
-  "quantities.value": [2, 1],
-  "lineTotals.value": [59.98, 49.99]
-}
-```
+produces the literal string `"@fact:award.value"` as the `amount`. Build objects
+with `jsonParse` over a `stringTemplate`, or emit the parts as separate facts.
 
-<Note>
-When both inputs to a math operator are arrays of the same length, they're processed element-by-element: `prices[0] * quantities[0]`, `prices[1] * quantities[1]`, etc.
-</Note>
+**Rule cells nested inside an operator's `input`.** Only dynamic values are
+resolved inside an input. A `{condition, outcome}` object placed in an input
+survives as a raw object, and an arithmetic operator then parses it as `NaN`.
+Compute the branch as its own rule and reference it with `@fact:`.
 
-### Common JSONPath Patterns
+**Short-circuiting.** `and` and `or` receive inputs that have already been fully
+evaluated. Putting the cheapest test first changes nothing.
 
-| Pattern | Description | Example |
-|---------|-------------|---------|
-| `$[*]` | All array elements | Get entire array |
-| `$[*].propertyName` | Property from all elements | `$[*].price` |
-| `$.0` or `$[0]` | First element | Get first item |
-| `$[-1]` | Last element | Get last item |
-| `$[0:3]` | Array slice | First 3 items |
-
-### Alternative: Wildcard Syntax
-
-<Accordion title="Wildcard Syntax for Flattened Data (Advanced)" icon="asterisk">
-Rules also support a wildcard syntax (`@fact:items/*/property`) for working with flattened key-value structures. This is an advanced feature most users won't need.
-
-**Flattened structure:**
-```json
-{
-  "cartItems": "Widget,Gadget,Tool",
-  "cartItems/Widget/price": 29.99,
-  "cartItems/Widget/quantity": 2,
-  "cartItems/Gadget/price": 49.99,
-  "cartItems/Gadget/quantity": 1
-}
-```
-
-**Using wildcard:**
-```json
-{
-  "totalQuantity.value": {
-    "operator": "+",
-    "input": "@fact:cartItems/*/quantity"
-  }
-}
-```
-
-Most users should use literal arrays with `jPath` queries instead, as shown in the primary examples above.
-</Accordion>
-
-## Data Flow & Evaluation
-
-Understanding how the Rules engine processes your facts and rules:
-
-<Steps>
-  <Step title="Variable Mapping Resolution">
-    All facts with variable mapping expressions are resolved first, pulling data from previous steps in your flow
-  </Step>
-  
-  <Step title="Dependency Analysis">
-    The engine analyzes which rules depend on which facts and other rules
-  </Step>
-  
-  <Step title="Evaluation Order">
-    Rules are evaluated in dependency order - a rule that references another rule's outcome waits for that rule to complete first
-  </Step>
-  
-  <Step title="Condition Evaluation">
-    For conditional rules, conditions are checked top to bottom, and the first matching condition's outcome is returned
-  </Step>
-  
-  <Step title="Output Generation">
-    All rule outcomes are collected into a flat object matching your rule names
-  </Step>
-</Steps>
-
-### Example Flow
-
-```json
-// Facts (after variable mapping resolution)
-{
-  "price.value": 100,
-  "quantity.value": 3
-}
-
-// Rules
-{
-  "subtotal.value": {
-    "operator": "*",
-    "input": ["@fact:price.value", "@fact:quantity.value"]
-  },
-  "tax.value": {
-    "operator": "*",
-    "input": ["@fact:subtotal.value", 0.08]
-  },
-  "total.value": {
-    "operator": "+",
-    "input": ["@fact:subtotal.value", "@fact:tax.value"]
-  }
-}
-
-// Evaluation order (automatic)
-// 1. subtotal.value = 100 * 3 = 300
-// 2. tax.value = 300 * 0.08 = 24
-// 3. total.value = 300 + 24 = 324
-
-// Output
-{
-  "subtotal.value": 300,
-  "tax.value": 24,
-  "total.value": 324
-}
-```
-
-## Best Practices
-
-<CardGroup cols={2}>
-  <Card title="Use Descriptive Names" icon="tag">
-    Name facts and rules clearly: `customerAge.value` not `ca`
-  </Card>
-  
-  <Card title="Be Consistent" icon="check">
-    Use the same property suffixes throughout: always `.value`, not mixing `.value` and `.val`
-  </Card>
-  
-  <Card title="Keep Rules Simple" icon="minimize">
-    Break complex logic into multiple small rules rather than one giant rule
-  </Card>
-  
-  <Card title="Add Comments" icon="comment">
-    Use descriptive rule names as self-documentation: `qualifiesForPremiumDiscount` explains itself
-  </Card>
-  
-  <Card title="Test Incrementally" icon="flask">
-    Add rules one at a time and test each in the Flow Debugger
-  </Card>
-  
-  <Card title="Provide Defaults" icon="shield">
-    Always include a default outcome in conditional rules to handle unexpected cases
-  </Card>
-</CardGroup>
-
-## What's Next?
-
-<CardGroup cols={2}>
-  <Card title="Operations Reference" icon="list-check" href="/advanced/rules/operations-reference">
-    Complete reference for all available operators with syntax and examples
-  </Card>
-  <Card title="Rule Patterns" icon="puzzle-piece" href="/advanced/rules/common-patterns">
-    Common patterns and best practices for real-world scenarios
-  </Card>
-  <Card title="Examples Library" icon="code" href="/advanced/rules/examples">
-    Complete working examples for e-commerce, CRM, support, and more
-  </Card>
-  <Card title="Variable Mapping" icon="arrows-left-right" href="/advanced/variable-mapping/overview">
-    Learn how to map data from previous steps into your facts
-  </Card>
-</CardGroup>
-
-<Info>
-**Need Help?** Visit our [Help Center](https://quiva.ai/help-center/) or join the [Community](https://quiva.ai/community) for support.
-</Info>
+**Counting, filtering and set operations.** The engine has no length, filter,
+reduce, union or intersection operator. See the [operations
+reference](/advanced/rules/operations-reference#names-that-are-not-operators) for
+what to use instead.

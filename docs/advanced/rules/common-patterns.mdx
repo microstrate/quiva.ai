@@ -1,911 +1,593 @@
 ---
 title: "Common Patterns"
-description: "Proven patterns and best practices for common business logic scenarios"
+description: "Worked, executed solutions to the problems that come up repeatedly in Rules steps"
 ---
 
-## Overview
+Every pattern below was run through the engine. The facts, the rules and the
+output are the real ones — copy them, change the names, and they will behave the
+same way.
 
-This guide shows you battle-tested patterns for solving common business logic problems with Rules. Each pattern includes complete, copy-paste ready code and explains when to use it.
+## Banded rates
 
-<Tip>
-**Copy and adapt:** These patterns are designed to be copied and modified for your specific use case. Change the fact names, values, and logic to match your needs.
-</Tip>
+The commonest shape: pick a rate from a band, apply it, report the result. The
+ladder is tried top to bottom and the first matching condition wins, so put the
+bands in order and finish with a cell that has no condition.
 
----
+**Facts**
 
-## Tiered Calculations
-
-Apply different values based on thresholds - perfect for pricing, discounts, shipping rates, or service levels.
-
-### Pattern: Volume Discount
-
-Apply progressively larger discounts based on order size.
-
-<CodeGroup>
-```json Facts
-{
-  "orderTotal.value": 250
-}
+```json
+{ "orderTotal.value": 650 }
 ```
 
-```json Rules
+**Rules**
+
+```json
 {
   "discountRate.value": [
-    {
-      "condition": {
-        "operator": ">=",
-        "input": ["@fact:orderTotal.value", 200]
-      },
-      "outcome": 0.15
-    },
-    {
-      "condition": {
-        "operator": "between",
-        "input": ["@fact:orderTotal.value", 100, 200, "INCLUSIVE_LEFT"]
-      },
-      "outcome": 0.10
-    },
-    {
-      "condition": {
-        "operator": "between",
-        "input": ["@fact:orderTotal.value", 50, 100, "INCLUSIVE_LEFT"]
-      },
-      "outcome": 0.05
-    },
-    {
-      "outcome": 0
-    }
+    { "condition": { "operator": ">=", "input": ["@fact:orderTotal.value", 1000] }, "outcome": 0.15 },
+    { "condition": { "operator": "between", "input": ["@fact:orderTotal.value", [500, 999.99]] }, "outcome": 0.1 },
+    { "condition": { "operator": "between", "input": ["@fact:orderTotal.value", [200, 499.99]] }, "outcome": 0.05 },
+    { "outcome": 0 }
   ],
-  "discountAmount.value": {
-    "operator": "*",
-    "input": ["@fact:orderTotal.value", "@fact:discountRate.value"]
-  },
-  "finalPrice.value": {
-    "operator": "-",
-    "input": ["@fact:orderTotal.value", "@fact:discountAmount.value"]
-  }
+  "discountAmount.value": { "operator": "*", "input": ["@fact:orderTotal.value", "@fact:discountRate.value"] },
+  "payable.value": { "operator": "-", "input": ["@fact:orderTotal.value", "@fact:discountAmount.value"] }
 }
 ```
 
-```json Output
-{
-  "discountRate.value": 0.15,
-  "discountAmount.value": 37.5,
-  "finalPrice.value": 212.5
-}
-```
-</CodeGroup>
-
-<Note>
-**Key principle:** Order conditions from most specific (highest threshold) to least specific. Using `between` with `INCLUSIVE_LEFT` ensures exact values like \$100 or \$200 get the correct tier without ambiguity.
-</Note>
-
-**Use this pattern for:**
-- Volume discounts
-- Shipping rates by weight/distance
-- Service level pricing (Basic/Pro/Enterprise)
-- Progressive tax rates
-- Priority levels based on value
-
-### Pattern: Customer Tier Benefits
-
-Map customer tiers to different benefit levels.
+**Output**
 
 ```json
 {
-  "tierDiscount.value": {
-    "operator": "map",
-    "input": [
-      "@fact:customerTier.value",
-      {
-        "bronze": 0.05,
-        "silver": 0.10,
-        "gold": 0.15,
-        "platinum": 0.20
-      },
-      0
-    ]
-  },
-  "freeShipping.value": {
-    "operator": "inArray",
-    "input": [
-      "@fact:customerTier.value",
-      ["gold", "platinum"]
-    ]
-  },
-  "prioritySupport.value": {
-    "operator": "=",
-    "input": ["@fact:customerTier.value", "platinum"]
-  }
+  "discountRate.value": 0.1,
+  "discountAmount.value": 65,
+  "payable.value": 585
 }
 ```
 
-**Use this pattern for:**
-- Membership benefits
-- Access levels
-- Feature flags by plan
-- Support priority
+`between` takes its bounds as a **nested array**. Written flat as
+`[value, 500, 999.99]` it returns `false` for everything, silently — which in a
+ladder means the band is never reached.
 
----
+## Validation with one message
 
-## Validation Rules
+Test each requirement as its own rule, combine them, and use a second ladder to
+pick the message. Ordering the message ladder puts the requirements in the order
+you want them reported.
 
-Check if data meets business requirements and provide clear feedback.
+**Facts**
 
-### Pattern: Required Field Validation
+```json
+{ "email.value": "sam.example.com", "fullName.value": "Sam Okonkwo" }
+```
 
-Ensure critical fields are completed.
+**Rules**
 
 ```json
 {
-  "hasEmail.value": {
-    "operator": "notEmpty",
-    "input": ["@fact:email.value"]
-  },
-  "hasPhone.value": {
-    "operator": "notEmpty",
-    "input": ["@fact:phone.value"]
-  },
-  "hasAddress.value": {
-    "operator": "and",
-    "input": [
-      {"operator": "notEmpty", "input": ["@fact:street.value"]},
-      {"operator": "notEmpty", "input": ["@fact:city.value"]},
-      {"operator": "notEmpty", "input": ["@fact:zipCode.value"]}
-    ]
-  },
-  "isValid.value": {
-    "operator": "and",
-    "input": [
-      "@fact:hasEmail.value",
-      "@fact:hasPhone.value",
-      "@fact:hasAddress.value"
-    ]
-  }
-}
-```
-
-**Use this pattern for:**
-- Form validation
-- Data quality checks
-- Required fields enforcement
-- Pre-submission verification
-
-### Pattern: Range Validation
-
-Check if values fall within acceptable ranges.
-
-```json
-{
-  "quantityValid.value": {
-    "operator": "between",
-    "input": ["@fact:quantity.value", 1, 100]
-  },
-  "priceValid.value": {
-    "operator": "and",
-    "input": [
-      {"operator": ">", "input": ["@fact:price.value", 0]},
-      {"operator": "<=", "input": ["@fact:price.value", 10000]}
-    ]
-  },
-  "ageValid.value": {
-    "operator": "between",
-    "input": ["@fact:age.value", 18, 120]
-  },
-  "allValid.value": {
-    "operator": "and",
-    "input": [
-      "@fact:quantityValid.value",
-      "@fact:priceValid.value",
-      "@fact:ageValid.value"
-    ]
-  }
-}
-```
-
-**Use this pattern for:**
-- Numeric range validation
-- Age verification
-- Date range checks
-- Inventory limits
-
-### Pattern: Validation with Error Messages
-
-Provide specific error messages for failed validations.
-
-```json
-{
-  "emailValid.value": {
-    "operator": "stringContains",
-    "input": ["@fact:email.value", "@"]
-  },
-  "passwordValid.value": {
-    "operator": ">=",
-    "input": [
-      {"operator": "stringLength", "input": ["@fact:password.value"]},
-      8
-    ]
-  },
-  "errors.value": {
-    "operator": "generateArray",
-    "input": [
-      [
-        {"operator": "not", "input": ["@fact:emailValid.value"]},
-        "Email must contain @"
-      ],
-      [
-        {"operator": "not", "input": ["@fact:passwordValid.value"]},
-        "Password must be at least 8 characters"
-      ]
-    ]
-  },
-  "isValid.value": {
-    "operator": "=",
-    "input": [
-      {"operator": "arrayLength", "input": ["@fact:errors.value"]},
-      0
-    ]
-  }
-}
-```
-
-**Use this pattern for:**
-- User-friendly validation feedback
-- Multi-field validation
-- Form error messages
-- API request validation
-
----
-
-## Lookup Tables & Mappings
-
-Map keys to values using lookup objects - perfect for state taxes, shipping zones, or category mappings.
-
-### Pattern: State Tax Lookup
-
-Map states to their tax rates with a default fallback.
-
-```json
-{
-  "taxRate.value": {
-    "operator": "map",
-    "input": [
-      "@fact:state.value",
-      {
-        "CA": 0.0725,
-        "NY": 0.08,
-        "TX": 0.0625,
-        "FL": 0.06,
-        "WA": 0.065,
-        "IL": 0.0625
-      },
-      0.05
-    ]
-  },
-  "taxAmount.value": {
-    "operator": "*",
-    "input": ["@fact:subtotal.value", "@fact:taxRate.value"]
-  },
-  "total.value": {
-    "operator": "+",
-    "input": ["@fact:subtotal.value", "@fact:taxAmount.value"]
-  }
-}
-```
-
-**Use this pattern for:**
-- Tax rates by location
-- Shipping costs by zone
-- Commission rates by region
-- Currency conversion rates
-
-### Pattern: Category-Based Rules
-
-Apply different rules based on product category.
-
-```json
-{
-  "shippingCost.value": {
-    "operator": "map",
-    "input": [
-      "@fact:category.value",
-      {
-        "electronics": 15.99,
-        "clothing": 7.99,
-        "books": 4.99,
-        "furniture": 49.99
-      },
-      9.99
-    ]
-  },
-  "returnWindow.value": {
-    "operator": "map",
-    "input": [
-      "@fact:category.value",
-      {
-        "electronics": 30,
-        "clothing": 60,
-        "books": 30,
-        "furniture": 14
-      },
-      30
-    ]
-  },
-  "requiresSignature.value": {
-    "operator": "inArray",
-    "input": [
-      "@fact:category.value",
-      ["electronics", "jewelry", "furniture"]
-    ]
-  }
-}
-```
-
-**Use this pattern for:**
-- Category-specific policies
-- Product type rules
-- Department-specific logic
-- Industry-specific calculations
-
----
-
-## Array Processing
-
-Process lists of items with aggregations, filtering, and transformations using JSONPath queries.
-
-### Pattern: Cart Total Calculation
-
-Sum prices and quantities across cart items using jPath to query literal arrays.
-
-<CodeGroup>
-```json Facts
-{
-  "cartItems.value": [
-    { "name": "Widget", "price": 29.99, "quantity": 2 },
-    { "name": "Gadget", "price": 49.99, "quantity": 1 },
-    { "name": "Tool", "price": 19.99, "quantity": 3 }
+  "emailValid.value": { "operator": "stringContains", "input": ["@fact:email.value", "@"] },
+  "nameProvided.value": { "operator": "notEmpty", "input": "@fact:fullName.value" },
+  "formValid.value": { "operator": "and", "input": ["@fact:emailValid.value", "@fact:nameProvided.value"] },
+  "validationMessage.value": [
+    { "condition": { "operator": "not", "input": "@fact:nameProvided.value" }, "outcome": "Enter your full name." },
+    { "condition": { "operator": "not", "input": "@fact:emailValid.value" }, "outcome": "Enter a valid email address." },
+    { "outcome": "Looks good." }
   ]
 }
 ```
 
-```json Rules
-{
-  "prices.value": {
-    "operator": "jPath",
-    "input": ["@fact:cartItems.value", "$[*].price"]
-  },
-  "quantities.value": {
-    "operator": "jPath",
-    "input": ["@fact:cartItems.value", "$[*].quantity"]
-  },
-  "itemTotals.value": {
-    "operator": "*",
-    "input": ["@fact:prices.value", "@fact:quantities.value"]
-  },
-  "subtotal.value": {
-    "operator": "+",
-    "input": "@fact:itemTotals.value"
-  },
-  "itemCount.value": {
-    "operator": "+",
-    "input": "@fact:quantities.value"
-  }
-}
-```
-
-```json Output
-{
-  "prices.value": [29.99, 49.99, 19.99],
-  "quantities.value": [2, 1, 3],
-  "itemTotals.value": [59.98, 49.99, 59.97],
-  "subtotal.value": 169.94,
-  "itemCount.value": 6
-}
-```
-</CodeGroup>
-
-<Tip>
-**Working with arrays:** Use the `jPath` operator to extract values from literal array objects. The `$[*].propertyName` syntax extracts that property from each array element. When both inputs are arrays of the same length, math operators process them element-by-element.
-</Tip>
-
-<Note>
-**Alternative syntax:** Rules also support a wildcard syntax (`@fact:items/*/property`) for flattened key-value structures, but most users will work with literal JSON arrays as shown in this example.
-</Note>
-
-**Use this pattern for:**
-- Shopping cart totals
-- Invoice line items
-- Batch processing
-- Aggregate calculations
-
-### Pattern: Array Filtering and Selection
-
-Filter arrays based on conditions.
+**Output**
 
 ```json
 {
-  "inStock.value": {
-    "operator": "jPath",
-    "input": ["@fact:items.value", "$[*].inStock"]
-  },
-  "quantities.value": {
-    "operator": "jPath",
-    "input": ["@fact:items.value", "$[*].quantity"]
-  },
-  "hasQuantity.value": {
-    "operator": ">=",
-    "input": ["@fact:quantities.value", 1]
-  },
-  "filterMask.value": {
-    "operator": "and",
-    "input": ["@fact:hasQuantity.value", "@fact:inStock.value"]
-  },
-  "eligibleItems.value": {
-    "operator": "arrayFilter",
-    "input": ["@fact:items.value", "@fact:filterMask.value"]
-  },
-  "eligiblePrices.value": {
-    "operator": "jPath",
-    "input": ["@fact:eligibleItems.value", "$[*].price"]
-  },
-  "eligibleTotal.value": {
-    "operator": "+",
-    "input": "@fact:eligiblePrices.value"
-  }
+  "emailValid.value": false,
+  "nameProvided.value": true,
+  "formValid.value": false,
+  "validationMessage.value": "Enter a valid email address."
 }
 ```
 
-**Use this pattern for:**
-- Filtering by criteria
-- Available items only
-- Conditional selections
-- Qualified subset processing
+Note how `not` is given its input unwrapped — `"input": "@fact:nameProvided.value"`
+rather than `["@fact:nameProvided.value"]`. `not` is the one operator that does
+not wrap a scalar input, and given an array it returns an array of booleans,
+which is always truthy.
 
-### Pattern: Array Aggregations
+## Every reason, not just the first
 
-Calculate statistics from arrays.
+When you want the full list rather than the first match, use `generateArray`.
+Each input is `[test, valueWhenTrue]`; the tests that fail contribute nothing.
+
+**Facts**
 
 ```json
-{
-  "orderAmounts.value": {
-    "operator": "jPath",
-    "input": ["@fact:orders.value", "$[*].amount"]
-  },
-  "totalRevenue.value": {
-    "operator": "+",
-    "input": "@fact:orderAmounts.value"
-  },
-  "orderCount.value": {
-    "operator": "jPath",
-    "input": ["@fact:orders.value", "$[*]"]
-  },
-  "averageOrderValue.value": {
-    "operator": "/",
-    "input": [
-      "@fact:totalRevenue.value",
-      {
-        "operator": "arrayLength",
-        "input": ["@fact:orderCount.value"]
-      }
-    ]
-  },
-  "maxOrder.value": {
-    "operator": "max",
-    "input": "@fact:orderAmounts.value"
-  },
-  "minOrder.value": {
-    "operator": "min",
-    "input": "@fact:orderAmounts.value"
-  }
-}
+{ "score.value": 540, "monthsActive.value": 9, "openIssues.value": ["INC-2"] }
 ```
 
-**Use this pattern for:**
-- Analytics calculations
-- Summary statistics
-- Dashboard metrics
-- Report generation
-
----
-
-## Multi-Condition Logic
-
-Combine multiple conditions to make complex decisions.
-
-### Pattern: Eligibility Checks
-
-Determine if someone qualifies based on multiple criteria.
+**Rules**
 
 ```json
 {
-  "meetsAge.value": {
-    "operator": ">=",
-    "input": ["@fact:age.value", 18]
-  },
-  "meetsIncome.value": {
-    "operator": ">=",
-    "input": ["@fact:annualIncome.value", 30000]
-  },
-  "hasCreditHistory.value": {
-    "operator": ">=",
-    "input": ["@fact:creditScore.value", 600]
-  },
-  "isEligible.value": {
-    "operator": "and",
-    "input": [
-      "@fact:meetsAge.value",
-      "@fact:meetsIncome.value",
-      "@fact:hasCreditHistory.value"
-    ]
-  },
-  "eligibilityReasons.value": {
+  "declineReasons.value": {
     "operator": "generateArray",
     "input": [
-      [
-        {"operator": "not", "input": ["@fact:meetsAge.value"]},
-        "Must be 18 or older"
-      ],
-      [
-        {"operator": "not", "input": ["@fact:meetsIncome.value"]},
-        "Minimum income requirement not met"
-      ],
-      [
-        {"operator": "not", "input": ["@fact:hasCreditHistory.value"]},
-        "Credit score below minimum"
-      ]
+      [{ "operator": "<", "input": ["@fact:score.value", 600] }, "Score below threshold"],
+      [{ "operator": "<", "input": ["@fact:monthsActive.value", 6] }, "Account too new"],
+      [{ "operator": "notEmpty", "input": "@fact:openIssues.value" }, "Open issues outstanding"]
     ]
-  }
+  },
+  "declined.value": { "operator": "notEmpty", "input": "@fact:declineReasons.value" },
+  "reasonText.value": { "operator": "join", "input": "@fact:declineReasons.value" }
 }
 ```
 
-**Use this pattern for:**
-- Loan qualification
-- Program eligibility
-- Access control
-- Application approval
-
-### Pattern: Priority Scoring
-
-Calculate priority scores based on multiple weighted factors.
+**Output**
 
 ```json
 {
-  "urgencyScore.value": {
+  "declineReasons.value": ["Score below threshold", "Open issues outstanding"],
+  "declined.value": true,
+  "reasonText.value": "Score below threshold,Open issues outstanding"
+}
+```
+
+<Note>
+When no test passes, `generateArray` produces nothing and `declineReasons.value`
+is **absent** from the output rather than an empty array. `notEmpty` still
+returns `false`, so `declined.value` is correct — but a downstream step reading
+the list must cope with the key not being there.
+</Note>
+
+## Scoring
+
+Points from independent rules, summed, then banded. Keeping each contribution as
+its own rule makes the total explainable when someone asks why a record scored
+what it did.
+
+**Facts**
+
+```json
+{ "monthsActive.value": 18, "plan.value": "team", "weeklySessions.value": 25 }
+```
+
+**Rules**
+
+```json
+{
+  "tenurePoints.value": [
+    { "condition": { "operator": ">=", "input": ["@fact:monthsActive.value", 24] }, "outcome": 30 },
+    { "condition": { "operator": ">=", "input": ["@fact:monthsActive.value", 12] }, "outcome": 20 },
+    { "outcome": 5 }
+  ],
+  "planPoints.value": {
     "operator": "map",
-    "input": [
-      "@fact:urgency.value",
-      {"low": 1, "medium": 3, "high": 5, "critical": 10},
-      1
-    ]
+    "input": ["@fact:plan.value", { "business": 40, "team": 25, "starter": 10, "$default": 0 }]
   },
-  "impactScore.value": {
-    "operator": "map",
-    "input": [
-      "@fact:impact.value",
-      {"individual": 1, "team": 3, "department": 5, "company": 10},
-      1
-    ]
-  },
-  "customerTierScore.value": {
-    "operator": "map",
-    "input": [
-      "@fact:customerTier.value",
-      {"bronze": 1, "silver": 2, "gold": 3, "platinum": 5},
-      1
-    ]
-  },
-  "totalScore.value": {
+  "usagePoints.value": [
+    { "condition": { "operator": ">", "input": ["@fact:weeklySessions.value", 20] }, "outcome": 30 },
+    { "outcome": 0 }
+  ],
+  "score.value": {
     "operator": "+",
-    "input": [
-      {"operator": "*", "input": ["@fact:urgencyScore.value", 2]},
-      {"operator": "*", "input": ["@fact:impactScore.value", 1.5]},
-      "@fact:customerTierScore.value"
-    ]
+    "input": ["@fact:tenurePoints.value", "@fact:planPoints.value", "@fact:usagePoints.value"]
   },
-  "priority.value": [
-    {
-      "condition": {"operator": ">=", "input": ["@fact:totalScore.value", 30]},
-      "outcome": "P1"
-    },
-    {
-      "condition": {
-        "operator": "between",
-        "input": ["@fact:totalScore.value", 20, 30, "INCLUSIVE_LEFT"]
-      },
-      "outcome": "P2"
-    },
-    {
-      "condition": {
-        "operator": "between",
-        "input": ["@fact:totalScore.value", 10, 20, "INCLUSIVE_LEFT"]
-      },
-      "outcome": "P3"
-    },
-    {
-      "outcome": "P4"
-    }
+  "band.value": [
+    { "condition": { "operator": ">=", "input": ["@fact:score.value", 70] }, "outcome": "high" },
+    { "condition": { "operator": ">=", "input": ["@fact:score.value", 40] }, "outcome": "medium" },
+    { "outcome": "low" }
   ]
 }
 ```
 
-**Use this pattern for:**
-- Ticket prioritization
-- Lead scoring
-- Risk assessment
-- Resource allocation
-
----
-
-## String Formatting & Templates
-
-Format data for display or generate dynamic messages.
-
-### Pattern: Dynamic Message Generation
-
-Create personalized messages with data substitution.
+**Output**
 
 ```json
 {
-  "welcomeMessage.value": {
-    "operator": "stringTemplate",
-    "input": [
-      "Welcome back, {{1}}! You have {{2}} new messages and {{3}} pending tasks.",
-      "@fact:firstName.value",
-      "@fact:messageCount.value",
-      "@fact:taskCount.value"
-    ]
-  },
-  "orderConfirmation.value": {
-    "operator": "stringTemplate",
-    "input": [
-      "Order #{{1}} confirmed! {{2}} items totaling {{3}} will ship to {{4}}.",
-      "@fact:orderNumber.value",
-      "@fact:itemCount.value",
-      {"operator": "numberFormat", "input": ["@fact:total.value", 2]},
-      "@fact:shippingCity.value"
-    ]
-  }
+  "tenurePoints.value": 20,
+  "planPoints.value": 25,
+  "usagePoints.value": 30,
+  "score.value": 75,
+  "band.value": "high"
 }
 ```
 
-**Use this pattern for:**
-- Email templates
-- Notification messages
-- Dynamic content
-- User communications
+<Warning>
+You cannot inline the ladders into the `+`. A `{condition, outcome}` object
+placed inside an operator's `input` is not resolved — it survives as a raw
+object, `+` parses it as `NaN` and discards it, and the total comes out as `0`
+with no complaint. Each branch must be its own rule.
+</Warning>
 
-### Pattern: Name Formatting
+## Lookup tables
 
-Combine name parts in various formats.
-
-```json
-{
-  "fullName.value": {
-    "operator": "concat",
-    "input": ["@fact:firstName.value", " ", "@fact:lastName.value"]
-  },
-  "formalName.value": {
-    "operator": "concat",
-    "input": ["@fact:lastName.value", ", ", "@fact:firstName.value"]
-  },
-  "displayName.value": {
-    "operator": "concat",
-    "input": [
-      "@fact:firstName.value",
-      " ",
-      {"operator": "substring", "input": ["@fact:lastName.value", 0, 1]},
-      "."
-    ]
-  },
-  "initials.value": {
-    "operator": "concat",
-    "input": [
-      {"operator": "substring", "input": ["@fact:firstName.value", 0, 1]},
-      {"operator": "substring", "input": ["@fact:lastName.value", 0, 1]}
-    ]
-  }
-}
-```
-
-**Use this pattern for:**
-- Name display variations
-- User profiles
-- Report headers
-- Contact lists
-
----
-
-## Date & Time Calculations
-
-Work with dates for deadlines, aging, and scheduling.
-
-### Pattern: Due Date Calculation
-
-Calculate deadlines based on creation date and urgency.
+`map` turns a table into a rule. `$default` catches everything unlisted; without
+it, and without a third input, a miss drops the fact entirely.
 
 ```json
 {
-  "daysToComplete.value": {
+  "regionRate.value": {
     "operator": "map",
-    "input": [
-      "@fact:priority.value",
-      {"critical": 1, "high": 3, "medium": 7, "low": 14},
-      7
-    ]
-  },
-  "dueDate.value": {
-    "operator": "addDate",
-    "input": [
-      "@fact:createdDate.value",
-      "@fact:daysToComplete.value",
-      "days"
-    ]
-  },
-  "formattedDueDate.value": {
-    "operator": "dateFormat",
-    "input": ["@fact:dueDate.value", "YYYY-MM-DD"]
+    "input": ["@fact:region.value", { "uk": 0.2, "de": 0.19, "$default": 0 }]
   }
 }
 ```
 
-**Use this pattern for:**
-- SLA calculations
-- Payment terms
-- Project deadlines
-- Expiration dates
+With `region.value` of `"fr"` the result is `0`.
 
-### Pattern: Age & Overdue Calculations
-
-Determine how old something is or if it's overdue.
+An **array** key walks the table one level per element, which gives you a
+two-dimensional lookup:
 
 ```json
 {
-  "ageInDays.value": {
+  "rate.value": {
+    "operator": "lookup",
+    "input": [["uk", "standard"], { "uk": { "standard": 0.2, "reduced": 0.05 } }, 0]
+  }
+}
+```
+
+Result: `0.2`.
+
+## Multi-condition eligibility
+
+Name each test, then combine. This costs nothing at runtime — `and` receives
+inputs that were all evaluated anyway — and it means the step's output shows you
+which test failed.
+
+**Facts**
+
+```json
+{ "monthsActive.value": 9, "plan.value": "team", "openIssues.value": [] }
+```
+
+**Rules**
+
+```json
+{
+  "tenureOk.value": { "operator": ">=", "input": ["@fact:monthsActive.value", 6] },
+  "planOk.value": { "operator": "inArray", "input": ["@fact:plan.value", ["team", "business"]] },
+  "noOpenIssues.value": { "operator": "empty", "input": "@fact:openIssues.value" },
+  "eligible.value": {
+    "operator": "and",
+    "input": ["@fact:tenureOk.value", "@fact:planOk.value", "@fact:noOpenIssues.value"]
+  }
+}
+```
+
+**Output**
+
+```json
+{
+  "tenureOk.value": true,
+  "planOk.value": true,
+  "noOpenIssues.value": true,
+  "eligible.value": true
+}
+```
+
+Use `empty` rather than `not` for "has no items": an empty array is truthy, so
+`not` on one returns `false`.
+
+## Working with an array of objects
+
+`jPath` pulls values out of an array fact. It returns an array, which arithmetic
+operators accept directly.
+
+**Facts**
+
+```json
+{
+  "lines.value": [
+    { "sku": "A", "price": 12.5, "qty": 2 },
+    { "sku": "B", "price": 40, "qty": 1 }
+  ]
+}
+```
+
+**Rules**
+
+```json
+{
+  "unitPrices.value": { "operator": "jPath", "input": ["@fact:lines.value", "$[*].price"] },
+  "quantities.value": { "operator": "jPath", "input": ["@fact:lines.value", "$[*].qty"] },
+  "itemCount.value": { "operator": "+", "input": "@fact:quantities.value" },
+  "highestPrice.value": { "operator": "max", "input": "@fact:unitPrices.value" }
+}
+```
+
+**Output**
+
+```json
+{
+  "unitPrices.value": [12.5, 40],
+  "quantities.value": [2, 1],
+  "itemCount.value": 3,
+  "highestPrice.value": 40
+}
+```
+
+<Warning>
+**Arithmetic is never element-wise.** Multiplying `unitPrices.value` by
+`quantities.value` does not give you line totals — `*` flattens both arrays and
+multiplies everything into a single scalar, `1200` in this case. There is no
+operator that pairs two arrays. Use the wildcard pattern below, or compute the
+totals before the flow reaches the Rules step.
+</Warning>
+
+Note also that `min` and `max` do not flatten. `"input": "@fact:unitPrices.value"`
+works; `"input": ["@fact:unitPrices.value"]` sees one array, cannot parse it as a
+number, and drops the fact.
+
+## Counting
+
+There is no length operator. `jPath` with `$.length` returns a one-element array,
+and `+` reduces it to a number.
+
+```json
+{
+  "tagCount.value": {
+    "operator": "+",
+    "input": { "operator": "jPath", "input": ["@fact:tags.value", "$.length"] }
+  },
+  "manyTags.value": { "operator": ">=", "input": ["@fact:tagCount.value", 3] }
+}
+```
+
+With `tags.value` of `["billing", "urgent", "vip"]`: `3` and `true`.
+
+## Per-element arithmetic with wildcard keys
+
+When you genuinely need a calculation per item, flatten the data into keys of the
+form `parent/index/child` and use a wildcard in the **rule key**. The engine
+expands it into one rule per entry in the parent list.
+
+**Facts**
+
+```json
+{
+  "lines": "A,B",
+  "lines/A/price": 12.5,
+  "lines/A/qty": 2,
+  "lines/B/price": 40,
+  "lines/B/qty": 1
+}
+```
+
+**Rules**
+
+```json
+{
+  "lines/*/total": { "operator": "*", "input": ["@fact:lines/*/price", "@fact:lines/*/qty"] },
+  "orderTotal.value": { "operator": "+", "input": "@fact:lines/*/total" }
+}
+```
+
+**Output**
+
+```json
+{
+  "lines/A/total": 25,
+  "lines/B/total": 40,
+  "orderTotal.value": 65
+}
+```
+
+The parent list may be a comma-separated string as above, or an array. See
+[wildcard fact keys](/advanced/rules/core-concepts#wildcard-fact-keys) for
+nesting.
+
+## Building a message
+
+`stringTemplate` fills numbered placeholders in order. Inputs may be nested
+operators, so formatting happens inline.
+
+**Facts**
+
+```json
+{
+  "firstName.value": "Sam",
+  "plan.value": "team",
+  "renewalDate.value": "2026-11-04T00:00:00Z"
+}
+```
+
+**Rules**
+
+```json
+{
+  "summary.value": {
+    "operator": "stringTemplate",
+    "input": [
+      "{{1}}, your {{2}} plan renews on {{3}}.",
+      "@fact:firstName.value",
+      "@fact:plan.value",
+      { "operator": "dateFormat", "input": ["@fact:renewalDate.value", "dd MMM yyyy"] }
+    ]
+  }
+}
+```
+
+**Output**
+
+```json
+{ "summary.value": "Sam, your team plan renews on 04 Nov 2026." }
+```
+
+`concat` joins with a single space and `join` with a comma, neither of which is
+configurable — `stringTemplate` is the only operator that gives you control over
+the text between the parts.
+
+## Dates
+
+Durations are a number and a single case-sensitive letter: `y`, `M`, `w`, `d`,
+`h`, `m`, `s`. `1M` is a month and `1m` is a minute. Spelled-out units are
+ignored.
+
+**Facts**
+
+```json
+{ "receivedAt.value": "2026-08-14T09:00:00Z" }
+```
+
+**Rules**
+
+```json
+{
+  "dueDate.value": { "operator": "addDate", "input": ["@fact:receivedAt.value", "5d"] },
+  "ageDays.value": {
     "operator": "dateDiff",
-    "input": [
-      {"operator": "now", "input": []},
-      "@fact:createdDate.value",
-      "days"
-    ]
+    "input": ["@fact:receivedAt.value", { "operator": "today", "input": [] }, "d"]
   },
-  "isOverdue.value": {
-    "operator": ">",
-    "input": [
-      {"operator": "now", "input": []},
-      "@fact:dueDate.value"
-    ]
-  },
-  "daysOverdue.value": [
+  "overdue.value": { "operator": ">", "input": ["@fact:ageDays.value", 5] }
+}
+```
+
+**Output**, run on 27 August 2026:
+
+```json
+{
+  "dueDate.value": "2026-08-19T09:00:00.000Z",
+  "ageDays.value": 12,
+  "overdue.value": true
+}
+```
+
+`dateDiff` returns `end - start`, so the order of the first two inputs decides
+the sign.
+
+## Guarding a calculation
+
+Division by zero returns `NaN`, which drops the fact — so a rule that looks
+harmless can leave a hole in the output. Guard it with a ladder.
+
+**Facts**
+
+```json
+{ "total.value": 250, "count.value": 0 }
+```
+
+**Rules**
+
+```json
+{
+  "average.value": [
     {
-      "condition": "@fact:isOverdue.value",
-      "outcome": {
-        "operator": "dateDiff",
-        "input": [
-          {"operator": "now", "input": []},
-          "@fact:dueDate.value",
-          "days"
-        ]
-      }
+      "condition": { "operator": ">", "input": ["@fact:count.value", 0] },
+      "outcome": { "operator": "/", "input": ["@fact:total.value", "@fact:count.value"] }
     },
-    {
-      "outcome": 0
-    }
+    { "outcome": 0 }
   ]
 }
 ```
 
-**Use this pattern for:**
-- Overdue tracking
-- Aging reports
-- Time-based alerts
-- Compliance monitoring
+**Output**
 
----
+```json
+{ "average.value": 0 }
+```
 
-## Conditional Calculations
+The same applies to `*`: a `null` or missing input makes the whole result `NaN`.
+`+` is the exception — it discards values it cannot parse and carries on.
 
-Perform different calculations based on conditions.
+## Clamping
 
-### Pattern: Conditional Fees
-
-Apply fees only when certain conditions are met.
+`min` caps a value and `max` floors it. Read them as "no more than" and "no less
+than".
 
 ```json
 {
-  "rushFee.value": [
-    {
-      "condition": {
-        "operator": "=",
-        "input": ["@fact:isRush.value", true]
-      },
-      "outcome": 25
-    },
-    {
-      "outcome": 0
-    }
-  ],
-  "oversizeFee.value": [
-    {
-      "condition": {
-        "operator": ">",
-        "input": ["@fact:weight.value", 50]
-      },
-      "outcome": {
-        "operator": "*",
-        "input": [
-          {"operator": "-", "input": ["@fact:weight.value", 50]},
-          2
-        ]
-      }
-    },
-    {
-      "outcome": 0
-    }
-  ],
-  "totalFees.value": {
-    "operator": "+",
+  "raw.value": { "operator": "*", "input": ["@fact:base.value", 1.5] },
+  "capped.value": { "operator": "min", "input": ["@fact:raw.value", 500] },
+  "floored.value": { "operator": "max", "input": ["@fact:capped.value", 100] }
+}
+```
+
+With `base.value` of `420`: `630`, then `500`, then `500`.
+
+## Defaults
+
+A rule key ending `.defaultValue` automatically supplies the matching `.value`
+when nothing else does.
+
+```json
+{ "slaHours.defaultValue": 24 }
+```
+
+**Output**
+
+```json
+{ "slaHours.defaultValue": 24, "slaHours.value": 24 }
+```
+
+A fact wins over the default, and so does an explicit `.value` rule.
+
+<Warning>
+The fallback is disabled by the *presence* of a `.value` rule, not by whether
+that rule produces anything. A ladder with no default cell that matches nothing
+leaves you with no `.value` at all. Reference the default explicitly if you want
+both:
+
+```json
+{
+  "priority.defaultValue": "normal",
+  "priority.value": [
+    { "condition": { "operator": "=", "input": ["@fact:severity.value", "high"] }, "outcome": "urgent" },
+    { "outcome": "@fact:priority.defaultValue" }
+  ]
+}
+```
+
+With `severity.value` of `"low"` this returns `"normal"`.
+</Warning>
+
+## Extracting from text
+
+`regex` returns the **first capture group**. A pattern with no capture group
+returns nothing.
+
+```json
+{
+  "domain.value": { "operator": "regex", "input": ["@fact:email.value", "[@](.+)$"] },
+  "isInternal.value": { "operator": "=", "input": ["@fact:domain.value", "example.com"] }
+}
+```
+
+With `email.value` of `"sam@example.com"`: `"example.com"` and `true`.
+
+<Warning>
+The pattern is written `"[@](.+)$"` rather than `"@(.+)$"` on purpose. A string
+beginning with `@` is parsed as a fact reference before `regex` sees it, and the
+rule silently produces nothing.
+</Warning>
+
+For initials and other joins with no separator, use `stringTemplate` rather than
+`concat`, which always inserts a space:
+
+```json
+{
+  "initials.value": {
+    "operator": "stringTemplate",
     "input": [
-      "@fact:baseFee.value",
-      "@fact:rushFee.value",
-      "@fact:oversizeFee.value"
+      "{{1}}{{2}}",
+      { "operator": "substring", "input": ["@fact:firstName.value", 0, 1] },
+      { "operator": "substring", "input": ["@fact:lastName.value", 0, 1] }
     ]
   }
 }
 ```
 
-**Use this pattern for:**
-- Conditional charges
-- Dynamic pricing
-- Fee calculations
-- Surcharge logic
+With `"Sam"` and `"Okonkwo"`: `"SO"`. `substring`'s third input is an **end
+index**, not a length.
 
----
+## Habits worth keeping
 
-## Best Practices
-
-<CardGroup cols={2}>
-  <Card title="Keep It Simple" icon="minimize">
-    Break complex logic into multiple small rules rather than one giant nested rule
-  </Card>
-  
-  <Card title="Use Descriptive Names" icon="tag">
-    Name rules clearly so their purpose is obvious: `qualifiesForFreeShipping` not `rule1`
-  </Card>
-  
-  <Card title="Provide Defaults" icon="shield">
-    Always include a default outcome in conditional rules to handle edge cases
-  </Card>
-  
-  <Card title="Test Incrementally" icon="flask">
-    Add one rule at a time and test it before adding the next
-  </Card>
-  
-  <Card title="Document Complex Logic" icon="comment">
-    For complex rules, add comments or use descriptive intermediate rule names
-  </Card>
-  
-  <Card title="Reuse Calculations" icon="recycle">
-    Calculate values once and reference them multiple times rather than recalculating
-  </Card>
-</CardGroup>
-
-## What's Next?
-
-<CardGroup cols={2}>
-  <Card title="Examples Library" icon="code" href="/advanced/rules/examples">
-    See complete real-world examples using these patterns
-  </Card>
-  <Card title="Operations Reference" icon="list-check" href="/advanced/rules/operations-reference">
-    Detailed reference for all available operators
-  </Card>
-  <Card title="Core Concepts" icon="book" href="/advanced/rules/core-concepts">
-    Understand the fundamentals of how Rules work
-  </Card>
-  <Card title="Getting Started" icon="rocket" href="/advanced/rules/getting-started">
-    Build your first rule with step-by-step guidance
-  </Card>
-</CardGroup>
-
-<Info>
-**Need Help?** Visit our [Help Center](https://quiva.ai/help-center/) or join the [Community](https://quiva.ai/community) for support.
-</Info>
+- **Name every intermediate step.** The engine works out the order, so splitting
+  a calculation across several rules costs nothing and makes the output
+  self-explaining when something is wrong.
+- **Always write the default cell.** A ladder that matches nothing produces no
+  fact, and a missing fact is indistinguishable from a broken one.
+- **Check the operator name against the
+  [reference](/advanced/rules/operations-reference) before debugging anything
+  else.** An operator that does not exist produces no error.
+- **Avoid dots in rule names** unless you are ready to write
+  `$.rules_1['name.value']` downstream.
+- **Do not reorder rules for speed.** Nothing short-circuits; every input is
+  evaluated before the operator that uses it runs.
