@@ -735,18 +735,15 @@ Durations are written as a number followed by a **single case-sensitive letter**
 
 `"1M"` is one month and `"1m"` is one minute.
 
-The three date operators read spelled-out units differently, so it is worth
-knowing which one you are in:
+All three date operators accept spelled-out units as well as the letters:
+`"days"`, `"months"`, `"minutes"` and the rest, singular or plural, in any case.
+`dateDiff` also takes `"ms"` for milliseconds.
 
-- **`dateDiff` accepts them properly.** `"days"`, `"months"`, `"minutes"` and the
-  rest all work, singular or plural, alongside the letters. `"ms"` is also
-  accepted, for milliseconds.
-- **`addDate` and `subtractDate` do not.** They scan the string for a digit
-  followed by one of the seven letters and ignore the rest, so `"2days"` is two
-  days by accident and `"2months"` is **two minutes** — the scan stops at the `m`.
-  Write `"2M"`, or capitalise it as `"2Months"`. A form the scan does not match
-  at all, `"2 days"` or `"2fortnights"`, is skipped and the date comes back
-  unchanged, with no error.
+<Warning>
+A unit none of them recognises — `"2fortnights"`, or `"2 days"` with a space — is
+skipped silently. `addDate` and `subtractDate` return the date unchanged and
+`dateDiff` drops the fact, in both cases with no error. Check the spelling.
+</Warning>
 
 ### `today`
 
