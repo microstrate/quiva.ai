@@ -38,11 +38,9 @@ When enabling MFA, you'll receive a set of recovery codes:
 
 Control how users interact with your account:
 
-1. Navigate to **Account Settings → Security → Session Management**
-2. Configure:
-   - **Session Timeout**: Automatically log users out after a period of inactivity (15 minutes to 7 days)
-   - **Maximum Sessions**: Limit the number of concurrent sessions per user (1-10)
-   - **Session Device Tracking**: Enable to monitor which devices are accessing your account
+Go to **Settings → Sessions** to see the sessions currently signed in to your
+account. You can revoke any one of them, or revoke every session except the one
+you are using.
 
 ## API Security
 
@@ -119,17 +117,11 @@ If you've forgotten your password, QuivaWorks provides a secure recovery process
 - Implement corporate network controls like VPNs when accessing from untrusted networks
 - Consider setting up dedicated admin workstations for highest-privilege users
 
-### Monitoring and Auditing
+### Monitoring
 
-QuivaWorks provides comprehensive security monitoring tools (Enterprise only):
-
-1. Navigate to **Account Settings → Security → Audit Logs**
-2. Monitor:
-   - Login attempts (successful and failed)
-   - Permission changes
-   - Resource creation and deletion
-   - Configuration modifications
-   - API key usage
+Go to **Settings → Sessions** to review which sessions are signed in to your
+account, and **Settings → API keys** to review which keys exist and when each
+was last rotated.
 
 Set up alerts for suspicious activities:
 
@@ -156,25 +148,19 @@ Set up alerts for suspicious activities:
 If you believe your account has been compromised, take these immediate steps in sequence:
 
 1. **Immediate Containment Actions**
-   - Navigate to **Account Settings → Security → Emergency Actions**
-   - Click "Terminate All Sessions" to force all users (including attackers) to log out
-   - Click "Restrict API Access" to temporarily suspend all API keys
-   - Click "Lock Account" to prevent new logins while you investigate
+   - Go to **Settings → Sessions** and revoke every session except the one you are using — this signs out anyone else holding a live session
+   - Go to **Settings → API keys** and delete any key you cannot account for
+   - Go to **Settings → Password and authentication** and change your password
 
 2. **Change Critical Credentials**
    - Immediately change your password (use a complex, unique password)
    - Reset MFA if you believe it has been compromised
    - Revoke and regenerate all API keys
-   - If using SSO, alert your identity provider to reset your credentials there as well
 
 3. **Investigate the Breach**
-   - Navigate to **Account Settings → Security → Audit Logs**
-   - Look for:
-     - Unfamiliar IP addresses or locations
-     - Unusual login times
-     - Unexpected permission changes
-     - Suspicious resource creation or deletion
-     - API calls from unknown sources
+   - Review **Settings → Sessions** for sessions you do not recognise
+   - Review **Settings → API keys** for keys you did not create
+   - Review **Users** for accounts or role changes you did not make
    - Document everything for later analysis
 
 4. **Assess and Mitigate Damage**
@@ -186,14 +172,10 @@ If you believe your account has been compromised, take these immediate steps in 
 
 5. **Re-secure Your Account**
    - Enable MFA if it wasn't already active
-   - Implement IP restrictions if possible
-   - Reduce session timeout lengths
    - Review all user access and remove unnecessary permissions
-   - Consider implementing SSO with stricter controls
 
 6. **Report the Incident**
-   - Contact QuivaWorks security team at [support@quiva.ai](mailto:support@quiva.ai)
-   - Call the emergency response line at the number provided in your account portal
+   - Contact the QuivaWorks security team at [support@quiva.ai](mailto:support@quiva.ai)
    - Provide all collected evidence and timeline of events
    - Follow guidance from the security team for further actions
 
@@ -208,29 +190,23 @@ If you believe your account has been compromised, take these immediate steps in 
 
 ### Emergency Support
 
-For urgent security assistance:
-
-1. Navigate to **Account Settings → Security → Emergency Actions**
-2. Click "Contact Support" for priority handling
-3. Select "Security Incident" from the dropdown menu
-4. Provide brief details about the suspected compromise
-
-Report security incidents to [support@quiva.ai](mailto:support@quiva.ai) or call the emergency response line at the number provided in your account portal.
+For urgent security assistance, email
+[support@quiva.ai](mailto:support@quiva.ai) with "Security Incident" in the
+subject line and brief details of the suspected compromise.
 
 ## Security Compliance
 
 QuivaWorks maintains the following certifications and compliance standards:
 
-- SOC 2 Type II (In Progress)
 - ISO 27001
 - GDPR Compliance
-- HIPAA Compliance (Enterprise Plan only)
-- PCI DSS (Stripe our our payment provider of choice)
+- SOC 2 Type II (in progress)
+- Card payments are handled by a PCI DSS compliant payment provider
 
-View detailed compliance information:
+Protected health information may be processed — contact us first so the right
+arrangements are in place.
 
-1. Navigate to **Account Settings → Security → Compliance**
-2. Request compliance documentation for your specific needs
+To request compliance documentation, contact [support@quiva.ai](mailto:support@quiva.ai).
 
 ## Additional Security Features
 
