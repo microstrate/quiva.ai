@@ -1,326 +1,102 @@
 ---
 title: "Collaboration"
-description: "Work together with your team on AI-powered tasks in real-time"
+description: "Share a conversation with your team, choose who can reply, and change or revoke access at any time"
 icon: "handshake"
 ---
 
-Welcome to collaborative assistant sessions! QuivaWorks now enables seamless teamwork on AI-powered tasks in real-time. Share sessions, get live updates, and stay informed with intelligent notifications.
+A conversation starts private to you. When you want other people in it, you share it — either with named people, or with everyone in the account. You decide who can reply and who can only read, and you can change or withdraw either at any time.
 
-<Tip>
-All existing assistant sessions remain fully functional. The new collaboration features are opt-in—start sharing whenever you're ready by typing `@`.
-</Tip>
+## Sharing a conversation
 
-## Key Features at a Glance
+Open the conversation and use the **Share this conversation** control at the top of it, or pick **Share…** from the conversation's menu in the sidebar. Either opens the **Share conversation** panel, where all access to that conversation is managed. It is owner-only.
 
-- **Shared Sessions** — Invite team members to collaborate on assistant conversations in real-time
-- **@Mentions** — Use `@` to quickly add team members to sessions
-- **Smart Notifications** — Get instant alerts when teammates complete tasks or reply
-- **Unread Badges** — Never miss updates with automatic count tracking
-- **Shared With Me** — View all sessions shared with you, organized by participant
-- **Redesigned Chat** — New interface with voice input, emoji support, and better formatting
+### General access
 
-## Getting Started with Collaboration
+Three options, one of which is always in effect:
 
-### Share Your First Session
+| Option | What it means |
+|---|---|
+| **Only me** | Nobody else can open this conversation. |
+| **Specific people** | Only the people listed below. |
+| **Everyone in the account** | Anyone in your account can read the whole conversation. |
 
-Sharing a session with your team is simple:
+Switching to **Everyone in the account** asks you to confirm, and tells you the whole conversation becomes readable — including everything already said. You can undo it at any time.
 
-1. **Open an assistant session** — Start working on something with an assistant
-2. **Click the `@` icon** in the chat prompt (or type `@`)
-3. **Select team members** — Choose who you want to add
-4. **Choose notification type** — Notify just your team, or include the AI in the mention
-5. **Press Enter** — They're added instantly and notified
+Switching to **Only me** also removes access for everyone you've shared it with, and says how many people that is before it does.
 
-<Frame>
-  <img 
-    src="/images/release-v1.2.0/sharing.gif" 
-    alt="Collaborative features and @mentions in action"
-  />
-</Frame>
+### Adding someone
 
-### What Happens When You Share
+Use the **Add someone** picker and set **as** to the access level before you pick the person — choosing the person is what sends the invite.
 
-Once you add team members:
-- ✅ **Instant access** — They can see the full conversation immediately
-- ✅ **Real-time updates** — They see every new message and result as it happens
-- ✅ **Notifications** — They get alerted about the shared session
-- ✅ **Equal participation** — Everyone can ask follow-up questions and contribute
-- ✅ **Unread tracking** — Badges show what's new
+- **Editor** — can reply in the conversation
+- **Read-only** — can follow the conversation but not reply
 
-## The @Mention System
+<Info>
+Anyone mentioned in a message is added here too, as an Editor.
+</Info>
 
-### How @Mentions Work
+### Changing and removing access
 
-Use `@` to invite team members:
-```
-@Sarah – can you review this approach?
-```
+Every person on the list has their own access-level dropdown and a **Remove** button. Sharing is reversible: change someone from Editor to Read-only, remove one person, or switch general access back to **Only me** to revoke everyone at once.
 
-<Frame>
-  <img 
-    src="/images/release-v1.2.0/chat-prompt.gif" 
-    alt="New functions in the chat prompt box"
-  />
-</Frame>
+<Note>
+If the panel says "Couldn't load who's invited. This isn't a confirmed empty list.", the list failed to load — it does not mean nobody has access. Retry before assuming the conversation is private.
+</Note>
 
-### AI vs. Team Notifications
+### Copy link
 
-When you @mention, choose your intent:
+The panel shows the conversation's link and a **Copy link** button. The link doesn't grant access on its own — while general access is **Only me**, the panel warns that only you can open it, and you need to share with specific people or the whole account first.
 
-| **Scenario** | **Use** | **Example** |
-|---|---|---|
-| Want team input | @mention team members only | `@Sarah, @Mike – thoughts on this?` |
-| Want AI action | type like normal | `summarize this` |
-| Regular chat | Don't use @mentions | Just type normally |
+## Finding shared conversations
 
-**Tip:** The system knows what the @ means in messages so may send a friendly welcome to anyone invited into the session.
+The conversation sidebar splits your conversations into three tabs:
 
-### @Mention Best Practices
+- **Personal** — your own conversations
+- **Team** — conversations shared with everyone in the account
+- **Shared** — conversations other people have shared with you
 
-✅ **Do:**
-- Be specific about what you need
-- Include context in your mention
-- Only mention relevant people
-- Use for important items that need attention
+## @mentions
 
-❌ **Don't:**
-- Mention everyone in the workspace
-- Mention people for casual chat
-- Use @mentions excessively
-- Mention people who are inactive
+Type `@` in a message to bring a teammate in. They're added to the conversation as an **Editor** and appear on the share panel's list, where their access can be changed or removed like anyone else's.
 
-## Shared With Me Section
+Keep mentions purposeful: say what you need from the person, and give them enough context to act without reading the whole thread.
 
-### Finding Sessions Shared With You
-
-A new **"Shared With Me"** section in your sidebar shows all collaborative sessions:
-
-<Frame>
-  <img 
-    src="/images/release-v1.2.0/sidebar.gif" 
-    alt="Redesigned sidebar experience"
-  />
-</Frame>
-
-Sessions are automatically organized by:
-- **Who shared them** — Grouped by teammate or team name
-- **Assistant type** — Which assistant is being used
-- **Activity time** — Most recent updates appear first
-- **Unread status** — Badges show what's new
-
-### What You Can Do in Shared Sessions
-
-✅ **Full access:**
-- View the complete conversation history
-- Ask the assistant follow-up questions
-- See real-time results and updates
-- Contribute ideas and feedback
-- Reply to teammates
-
-❌ **Limitations:**
-- Can't remove other members
-- Can't delete the session
-
-## Unread Badges & Smart Notifications
-
-### Never Miss Important Updates
-
-Unread badges automatically track what's new:
+## Frequently asked questions
 
 <AccordionGroup>
-  <Accordion title="How Badges Work">
-    - Badges show counts (1-9+) of unread messages
-    - They appear next to shared sessions and groups
-    - Tabs also show unread indicators
-    - Badges clear automatically when you view new content
+  <Accordion title="Can I undo sharing a conversation?">
+    Yes. Remove one person with the **Remove** button next to their name, or switch general access to **Only me** to revoke everyone at once.
   </Accordion>
-  <Accordion title="What Triggers Notifications">
-    - Team members reply in shared sessions
-    - AI completes a task in a non-active session
-    - New session is shared with you
-    - Notifications include sound and visual alerts
+  <Accordion title="Can someone I share with reply?">
+    Only if you gave them **Editor**. **Read-only** people can follow the conversation but not reply.
+  </Accordion>
+  <Accordion title="Who can manage access?">
+    The conversation's owner. The share panel is owner-only.
+  </Accordion>
+  <Accordion title="Can I share with someone outside my account?">
+    No. The picker offers the users in your account, so anyone you share with has to be a user there first.
+  </Accordion>
+  <Accordion title="Does a shared conversation cost more?">
+    Credits are consumed by the account, not by the person who happens to be typing, and are pooled monthly across the whole account. See [Plans & Pricing](/get-started/plans-and-pricing#credits).
+  </Accordion>
+  <Accordion title="Will I be emailed when something happens?">
+    Not for Abbie notifications — the notification settings say email isn't available for them yet. You get them in the app; open **Settings** from the user menu and go to **Notifications** to choose which ones.
   </Accordion>
 </AccordionGroup>
 
-### Real-Time Activity Updates
-
-All session members see updates simultaneously:
-- When the assistant completes a task, everyone is notified
-- Unread counts automatically update
-- No need to refresh — everything appears in real-time
-- Session activity is visible to all collaborators
-
-## Common Workflows
-
-### Brainstorming with Your Team
-
-1. Start a session with an assistant
-2. Ask an initial question
-3. @mention relevant teammates
-4. All members contribute ideas in real-time
-5. The AI helps synthesize and expand ideas
-
-**Best for:** Creative ideation, problem-solving
-
-### Code Review with AI
-
-1. Share your code with the assistant
-2. Ask for a review
-3. @mention senior developers
-4. Each reviewer sees the AI's analysis
-5. Collect all feedback in one place
-
-**Best for:** Quality assurance, code improvements
-
-### Delegated Analysis
-
-1. Create a session with the AI
-2. Ask for analysis or reporting
-3. @mention decision-makers
-4. They see results as they're generated
-5. They can request changes without context switching
-
-**Best for:** Reports, data analysis, research
-
-### Team Knowledge Capture
-
-1. Experts collaborate with the AI on a topic
-2. @mention team members who need to learn
-3. The AI generates training materials in real-time
-4. Teammates ask clarifying questions
-5. Full conversation becomes a knowledge resource
-
-**Best for:** Documentation, training, knowledge base
-
-## Assistant Improvements in v1.2.0
-
-Your assistants are now smarter and more efficient:
-
-<AccordionGroup>
-  <Accordion title="Improved Mobile Experience">
-    Plan selection now works flawlessly on mobile devices. The interface adapts to smaller screens, making AI-powered work accessible on the go.
-  </Accordion>
-  <Accordion title="Better Tool Execution">
-    Assistants execute complex API requests with greater reliability. Special numeric formats are handled correctly, and request processing is improved.
-  </Accordion>
-  <Accordion title="Optimized Performance">
-    Your assistants now default to fast, efficient processing modes without sacrificing quality. Sub-agents operate with optimized settings for quicker responses.
-  </Accordion>
-  <Accordion title="Improved Context Understanding">
-    Assistants better understand and apply context from tools and shared knowledge, leading to more relevant and accurate responses across your workflows.
-  </Accordion>
-</AccordionGroup>
-
-## Additional Improvements
-
-<AccordionGroup>
-  <Accordion title="Dark Mode Refinements">
-    Updated color schemes throughout the interface for better dark mode support and reduced eye strain during extended use.
-  </Accordion>
-  <Accordion title="Performance Optimizations">
-    Improved tab switching and session loading for a snappier, more responsive experience with multiple conversations.
-  </Accordion>
-  <Accordion title="Message Display">
-    Enhanced rendering with better formatting support, improved planning visualization, and cleaner message layout.
-  </Accordion>
-  <Accordion title="Notification System">
-    New notification audio and visual indicators alert you when team members update shared sessions or complete important tasks.
-  </Accordion>
-  <Accordion title="Email Trigger Enhancements">
-    Email-triggered workflows now handle file attachments more reliably, preserving file information for better knowledge management.
-  </Accordion>
-</AccordionGroup>
-
-## Next Steps
-
-Ready to collaborate? Here's how to get started:
+## Next steps
 
 <CardGroup cols={2}>
-  <Card 
-    title="Start a Shared Session" 
-    icon="people-arrows"
-  >
-    Open any assistant session and use @ to invite your first teammate
+  <Card title="Roles and permissions" icon="user-shield" href="/essentials/users/roles-permissions">
+    What each role in your account can do
   </Card>
-  <Card 
-    title="Explore Your Sidebar" 
-    icon="inbox"
-  >
-    Check out the new Shared With Me section to see sessions with your team
+  <Card title="Invite your team" icon="user-plus" href="/essentials/users/user-management">
+    Add users and assign roles
   </Card>
-  <Card 
-    title="Join Community" 
-    icon="users"
-    href="https://quivaworks.slack.com"
-  >
-    Connect with other users and share collaboration tips
+  <Card title="Community" icon="users" href="https://quiva.ai/community">
+    Connect with other users
   </Card>
-  <Card 
-    title="Get Support" 
-    icon="envelope"
-    href="mailto:hello@quiva.ai"
-  >
-    Questions? Reach out to our support team
+  <Card title="Help Centre" icon="life-ring" href="https://quiva.ai/help-center/">
+    Questions and troubleshooting
   </Card>
 </CardGroup>
-
----
-
-## Collaboration Tips & Tricks
-
-### Keep Sessions Organized
-
-- **Be descriptive** — Name sessions clearly (e.g., "Q3 Budget Review – Finance Team")
-- **Keep it focused** — One topic per session
-- **Ideal size** — 2-5 people for best collaboration
-
-### Maximize Notifications
-
-- **Review badges regularly** — Don't let updates pile up
-- **Check Shared With Me** — Browse sessions once per hour instead
-
-### Respect Team Dynamics
-
-- **Be clear about intent** — Explain why you're @mentioning someone
-- **Provide context** — Don't assume people have background info
-- **Respect async work** — Allow time for responses, don't expect immediate replies
-- **Document decisions** — Summarize what you decided in the session
-
-### When Collaboration Works Best
-
-✅ Quick decisions  
-✅ Complex problems needing multiple perspectives  
-✅ Code reviews and quality checks  
-✅ Real-time brainstorming  
-✅ Project planning and kickoffs  
-
----
-
-## Frequently Asked Questions
-
-<AccordionGroup>
-  <Accordion title="Can I undo sharing a session?">
-    No. Removing people from a shared session isn't supported at this time. If you need this, please let us know!
-  </Accordion>
-  <Accordion title="What happens if I don't have QuivaWorks open">
-    Currently you will not get notifications if you don't have QuivaWorks open in your browser. When you log back in, you will see all your unread notifications.
-  </Accordion>
-  <Accordion title="Can I see who viewed my message?">
-    The system tracks whether team members have seen new messages, which is shown through unread badges. Specific read receipts per message aren't currently available.
-  </Accordion>
-  <Accordion title="Do shared sessions count toward my message limit?">
-    Yes, all messages in shared sessions count toward your plan limits. Collaborate efficiently to maximize your usage!
-  </Accordion>
-  <Accordion title="Can I share a session with someone outside my workspace?">
-    Not currently. Team members must be active users in your QuivaWorks workspace to be @mentioned and added to sessions.
-  </Accordion>
-  <Accordion title="What's the maximum number of people in a shared session?">
-    There's no hard limit, but we recommend 2-5 people for the best collaborative experience. Larger groups may want to split into separate sessions with summaries shared afterwards.
-  </Accordion>
-</AccordionGroup>
-
----
-
-<Callout type="info">
-**Ready to collaborate?** Open an assistant session, click `@`, and invite your first teammate today. The future of AI-powered teamwork starts here.
-</Callout>

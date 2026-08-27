@@ -1,800 +1,177 @@
 ---
 title: "Billing & Subscriptions"
-description: "Manage your plan, payment methods, invoices, and subscription settings"
+description: "Plans, credits, top-ups, and where to find invoices and payment methods"
 icon: "credit-card"
 ---
 
-# Billing & Subscriptions
+QuivaWorks bills per account, not per person. A plan buys a monthly credit allowance and a set of storage and meeting allowances that everyone in the account shares. Payments are processed by Stripe.
 
-Manage your QuivaWorks subscription, payment methods, and billing information. All billing is securely processed through Stripe.
+## Where billing lives
 
-## Current Plan & Usage
+Open **Billing & Plans** in the sidebar — it sits under **More**. Only the **root**, **admin** and **billing** roles can see it.
 
-View your current plan and resource usage:
+It has three entries:
 
-1. Navigate to **Account Management → Billing and Plans**
-2. See your current plan details including:
-   - Plan name and per-user pricing
-   - Number of active users
-   - Billing cycle (monthly or annual)
-   - Next billing date
-   - Current usage vs. limits
-
-<Info>
-Your usage is tracked in real-time. Monitor your consumption to avoid hitting plan limits.
-</Info>
-
-### Understanding Your Limits
-
-<CardGroup cols={2}>
-  <Card title="Credits" icon="coins">
-    AI operations consumed per request
-    
-    Refreshes monthly, purchase additional credits anytime
-    
-    [What are credits? →](/get-started/plans-and-pricing#credits)
+<CardGroup cols={3}>
+  <Card title="Subscription Plan" icon="bell">
+    Your current plan, **Change Plan**, and the card on file.
   </Card>
-  
-  <Card title="Storage" icon="database">
-    Total data stored per user for agents, flows, and history
-    
-    Scales with your team size
+
+  <Card title="Plan & Balance" icon="bars-progress">
+    Credit balance, usage, top-ups, and the credit usage log.
   </Card>
-  
-  <Card title="Users" icon="users">
-    Number of active users in your account
-    
-    Free plan: Max 3 users
-    Paid plans: Unlimited users
-  </Card>
-  
-  <Card title="Message Retention" icon="clock">
-    How long conversation history is preserved
-    
-    Free: 30 days | Pro: 1 year | Team: Unlimited
-  </Card>
-  
-  <Card title="Concurrent Executions" icon="layer-group">
-    How many operations can run simultaneously
-    
-    [About concurrency →](/get-started/plans-and-pricing#concurrent-executions-rate-limits)
-  </Card>
-  
-  <Card title="Rate Limits" icon="gauge">
-    Requests per minute your account can process
-    
-    Scales with plan tier
+
+  <Card title="Billing" icon="arrow-up-right-from-square">
+    Not a page — it opens the **Stripe customer portal in a new tab**.
   </Card>
 </CardGroup>
 
-## Changing Plans
-
-### Upgrading Your Plan
-
-Upgrade at any time for immediate access to higher limits:
-
-<Steps>
-  <Step title="Navigate to Billing">
-    Go to **Account Management → Billing and Plans**
-  </Step>
-  
-  <Step title="Choose New Plan">
-    Click "Upgrade" or "Change Plan"
-  </Step>
-  
-  <Step title="Select Plan">
-    Choose from Pro, Team, or Enterprise
-    
-    [Compare plans →](/get-started/plans-and-pricing)
-  </Step>
-  
-  <Step title="Confirm Billing">
-    Review the prorated charge and confirm
-  </Step>
-</Steps>
-
-**What happens when you upgrade:**
-- New limits apply immediately
-- You're charged a prorated amount for the current billing period
-- Your billing cycle remains the same
-- All existing resources and data are preserved
-- All users gain access to new plan features
-
-### Downgrading Your Plan
-
-Downgrades take effect at the end of your current billing period:
-
-<Steps>
-  <Step title="Navigate to Billing">
-    Go to **Account Management → Billing and Plans**
-  </Step>
-  
-  <Step title="Select Lower Plan">
-    Choose a plan with lower limits
-  </Step>
-  
-  <Step title="Review Changes">
-    Check what happens if you exceed new limits
-  </Step>
-  
-  <Step title="Schedule Downgrade">
-    Confirm - change happens at next billing cycle
-  </Step>
-</Steps>
-
-**What happens when you downgrade:**
-- Change takes effect at the end of your current billing period
-- You keep your current plan limits until then
-- No partial refunds for the current period
-- If over new limits, some functionality may be restricted
-
-<Warning>
-**Before downgrading:** Ensure your current usage fits within the new plan limits. If you have more than 3 users, you cannot downgrade to the Free plan until you reduce your user count.
-</Warning>
-
-### Switching Between Monthly and Annual
-
-Save 20% by switching to annual billing:
-
-**Monthly to Annual:**
-- Switch takes effect immediately
-- You're charged for the full year upfront based on current user count
-- 20% discount applied automatically
-- Billing cycle changes to annual
-
-**Example savings with 10 users:**
-- Pro Monthly: $19/user × 10 users = $190/month × 12 = $2,280/year
-- Pro Annual: $15/user × 10 users = $150/month × 12 = $1,800/year
-- **Save $480/year (20%)**
-
-**Annual to Monthly:**
-- Change takes effect at the end of your annual period
-- No refunds for remaining months
-- Monthly billing begins after annual period ends
-
-## Payment Methods
-
-### Adding or Updating Payment Methods
-
-<Steps>
-  <Step title="Navigate to Billing">
-    Go to **Account Management → Billing and Plans**
-  </Step>
-  
-  <Step title="Manage Payment Methods">
-    Click "Payment Methods" or "Update Card"
-  </Step>
-  
-  <Step title="Enter Details">
-    Provide card information securely through Stripe
-  </Step>
-  
-  <Step title="Save">
-    Confirm and save your payment method
-  </Step>
-</Steps>
-
 <Info>
-All payment information is securely processed and stored by Stripe. QuivaWorks never stores your complete card details.
+Invoices, payment methods, tax details, cancellation and downgrade all live in the Stripe portal. There is no in-app billing history, payment-method form, tax form or cancel button.
 </Info>
 
-### Accepted Payment Methods
+## Plans
 
-- Credit cards (Visa, Mastercard, American Express)
-- Debit cards
-- Additional methods may be available based on your region
+The catalogue is **Free**, **Pro** and **Team**.
 
-**Enterprise customers** can arrange custom payment terms including:
-- Wire transfers
-- Purchase orders
-- Custom invoicing
+| | Free | Pro | Team |
+|---|---|---|---|
+| Price | $0 | **$399 / month** | **$1,199 / month** |
+| Seats | 2 | Unlimited | Unlimited |
+| Included credits per month | 1,500 | 20,000 | 90,000 |
+| Buy credit top-ups | No | Yes | Yes |
+| Storage ceiling | 100 GB | 2,000 GB | 8,000 GB |
+| Meeting recording hours | 5 | 20 | 60 |
+| Meeting transcript hours | 5 | 20 | 60 |
+| Conversation-history retention ceiling | 45 days | 90 days | 365 days |
 
-[Contact sales for Enterprise billing →](/contact)
+<Note>
+There is no per-user or per-seat rate. Paid plans are a flat monthly price with unlimited seats, so adding or removing people does not change what you pay.
+</Note>
 
-## Invoices & Billing History
+The retention ceiling is the longest you can set **Account → Data Retention** yourself. [Set your retention period →](/essentials/account/account-settings#data-retention)
 
-### Viewing Invoices
+### What counts as a seat
 
-Access all past invoices:
+`Seats` counts **non-client** users. Clients sign in passwordlessly and consume no seat. **Suspended users do not occupy a seat** either, so suspending someone frees their seat without deleting them.
 
-1. Navigate to **Account Management → Billing and Plans**
-2. Click "Billing History"
-3. Click on the invoice you want to download and choose your download method
+Every other role — admin, developer, monitor, billing and collaborator — occupies a seat alongside root.
 
-Each invoice includes:
-- Invoice date and number
-- Plan tier and billing period
-- Number of users and per-user rate
-- Itemized charges (base plan, overages, add-ons)
-- Total amount charged
+## Credits
 
-### Downloading Invoices
+Credits are granted **per account, per month** and reset at renewal. Buying a top-up adds credits that **never expire**; purchased credits are spent last, after the month's included allowance.
+
+The Free plan cannot buy top-ups — upgrading is the path.
+
+### Top-up packs
+
+Pro and Team are offered the same ladder:
+
+| Pack | Credits | Price |
+|---|---|---|
+| Small | 2,500 | $35 |
+| Medium | 5,000 | $65 |
+| Large | 10,000 | $120 |
+| Bulk | 25,000 | $290 |
+
+Buy a pack from **Plan & Balance → Buy credits**. The same section carries **Auto top-up** and a **Warn me at** threshold so you are not surprised by an empty balance.
+
+### Tracking what you spend
+
+**Plan & Balance** shows your Available, Included and Purchased balance, credits used this month, and a **Credit usage log** with a row per model call:
+
+**Model · Date · User · Input Credits · Output Credits · Total Credits · Session ID**
+
+You can **Refresh** it, **Export CSV**, or have the export emailed to you.
+
+## Bring your own key
+
+You can supply your own provider key for **Anthropic**, **OpenAI** or **Gemini**, or point at a custom endpoint. Keys are set per account.
+
+<Warning>
+Bringing your own key removes the token cost from a call. It does not make the call free — the platform component is still charged in credits.
+</Warning>
+
+## Changing your plan
 
 <Steps>
-  <Step title="Access Billing History">
-    Go to the Billing and Plans section, click on the "Billing" menu item and you will be redirected to a Stripe page to manage your subscription.
+  <Step title="Open Subscription Plan">
+    Open **Billing & Plans** in the sidebar, then **Subscription Plan**.
   </Step>
-  
-  <Step title="Select Invoice">
-    Click on the invoice you need
+
+  <Step title="Change Plan">
+    Click **Change Plan** and pick the plan you want.
   </Step>
-  
-  <Step title="Download PDF">
-    Click "Download invoice" or "Download receipt" to save to your device
+
+  <Step title="Confirm">
+    Complete checkout. Your new allowances apply to the account, not to individual users.
   </Step>
 </Steps>
 
+<Warning>
+Downgrading to Free caps the account at **2 seats**. If you have more than two non-client users, remove or suspend people until you are within the cap before the downgrade takes effect.
+</Warning>
+
+To cancel a subscription entirely, use the **Billing** entry and manage it in the Stripe portal.
+
 <Tip>
-Need invoices sent to multiple email addresses? Contact support to add additional billing contacts.
+Closing the account is a different action, and it also cancels the subscription. See [Closing your account →](/essentials/account/closing-account)
 </Tip>
 
-## Understanding Your Bill
+## Invoices, cards and tax details
 
-### Billing Cycles
+All of these are in the Stripe customer portal:
 
-<Tabs>
-  <Tab title="Monthly Billing">
-    **Pricing:**
-    - Pro: $19/user/month
-    - Team: $39/user/month
-    
-    **Details:**
-    - Charged on the same day each month
-    - Based on your signup or upgrade date
-    - Usage resets on billing date
-    - User count determines total monthly charge
-    - Example: Signed up Jan 15 with 10 users → billed on 15th of each month for current user count
-  </Tab>
-  
-  <Tab title="Annual Billing (Save 20%)">
-    **Pricing:**
-    - Pro: $15/user/month ($180/user/year)
-    - Team: $31/user/month ($372/user/year)
-    
-    **Details:**
-    - Charged once per year upfront
-    - Save 20% compared to monthly billing
-    - Billed based on current user count
-    - User additions/removals prorated throughout the year
-    - Example: Signed up Jan 15 with 10 users → next charge Jan 15 next year
-  </Tab>
-</Tabs>
+1. Open **Billing & Plans** in the sidebar.
+2. Click **Billing**. A new tab opens on the Stripe portal.
+3. From there you can download invoices and receipts, update or replace your card, and enter tax details.
 
-### Per-User Pricing
+<Info>
+Card details are handled entirely by Stripe. QuivaWorks never stores your full card number.
+</Info>
 
-Your bill is calculated based on the number of active users in your account:
+## Who receives billing email
 
-**How it works:**
-- Each user has their own allocation of credits and storage
-- Total bill = (number of users) × (per-user rate)
-- Add users anytime - charges are prorated
-- Remove users anytime - credits applied at next billing
+Billing email goes to the **root user plus everyone holding the admin or billing role**. Suspended users and unaccepted invitations are skipped.
 
-**Example (Pro Plan, Monthly):**
-- 5 users × $19/user = $95/month
-- Add 3 users mid-cycle → prorated charge for remaining days
-- Total at next billing: 8 users × $19/user = $152/month
+Adding a billing contact is therefore a role assignment, not a support request — give the person the **billing** role and they will start receiving billing mail and gain access to **Billing & Plans**. [About roles →](/essentials/users/roles-permissions)
 
-**Free Plan:**
-- Maximum 3 users
-- No per-user charges
-- 500 credits shared across all users
-
-### Prorated Charges
-
-When you make changes mid-cycle, charges are prorated:
-
-**How it works:**
-1. Credit for unused time on old plan/user count
-2. Charge for remaining time on new plan/user count
-3. Net difference is charged immediately
-
-**Example - Plan Upgrade:**
-- Current: Pro plan with 5 users ($19/user = $95/month)
-- Upgrade on day 15 of 30-day cycle to Team plan
-- New rate: $39/user × 5 users = $195/month
-- Prorated charge ≈ $50 (half the difference for remaining days)
-
-**Example - Adding Users:**
-- Current: Pro plan with 10 users ($19/user = $190/month)
-- Add 5 users on day 10 of 30-day cycle
-- Prorated charge for 5 users for 20 remaining days ≈ $63
-- Next full billing: 15 users × $19/user = $285/month
-
-### What You're Charged For
-
-Your bill includes:
+## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Base Plan Price" icon="tag">
-    Per-user subscription fee for your chosen plan:
-    
-    **Monthly:**
-    - Pro: $19/user/month
-    - Team: $39/user/month
-    
-    **Annual (20% off):**
-    - Pro: $15/user/month ($180/user/year)
-    - Team: $31/user/month ($372/user/year)
-    
-    Free plan is always $0 (max 3 users).
-    
-    Your total monthly charge = (number of active users) × (per-user rate)
+  <Accordion title="A payment failed">
+    Open **Billing & Plans → Billing** to reach the Stripe portal and update the card. Common causes are an expired card, insufficient funds, or a billing address that does not match the card.
   </Accordion>
-  
-  <Accordion title="Additional Credits" icon="coins">
-    **On Pro & Team Plans:**
-    
-    Each user receives included credits monthly:
-    - Pro: 1,000 credits/user/month
-    - Team: 1,500 credits/user/month
-    
-    Purchase additional credits anytime:
-    - Pro: $8 per 1,000 credits
-    - Team: $7 per 1,000 credits
-    
-    Purchased credits never expire and roll over to the next month.
-    
-    **On Free Plan:**
-    - 500 credits total per account (shared across all users)
-    - Cannot purchase additional credits
-    - Must upgrade to continue when depleted
-    
-    [What are credits? →](/get-started/plans-and-pricing#credits)
+
+  <Accordion title="I can't see Billing & Plans">
+    The entry is visible to the root, admin and billing roles only. Ask an admin to give you the **billing** role.
   </Accordion>
-  
-  <Accordion title="Storage Overage Charges" icon="database">
-    **On Paid Plans only:**
-    
-    Each user receives included storage:
-    - Pro: 5GB/user
-    - Team: 25GB/user
-    
-    If you exceed your per-user allocation:
-    - Overage charges: **$1 per GB per month per user**
-    
-    **On Free Plan:**
-    - 1GB total account storage
-    - No overage charges available
-    - Must upgrade to continue when limit is reached
+
+  <Accordion title="A charge I didn't expect">
+    Check whether a credit top-up was bought, or the plan was changed, during the period. **Plan & Balance → Credit usage log** shows every model call with the user who made it, and the invoice itself is in the Stripe portal.
   </Accordion>
-  
-  <Accordion title="Premium Marketplace Items" icon="store">
-    Any paid agents, flows, or integrations from the marketplace
-    
-    Charges vary by item and are added to your monthly bill
-    
-    All paid plans include premium marketplace access.
-  </Accordion>
-  
-  <Accordion title="Enterprise Add-ons" icon="puzzle-piece">
-    Custom features available on Enterprise plans:
-    - Additional data processing regions
-    - White-label branding
-    - Custom SLAs
-    - Dedicated support
-    - On-premise deployment
-    
-    Pricing varies based on requirements.
+
+  <Accordion title="Invoices need different company details">
+    Update **Company/Entity name**, **Address** and **Country** in **Account → Details**, and your tax details in the Stripe portal. [Account details →](/essentials/account/account-settings)
   </Accordion>
 </AccordionGroup>
 
-## Understanding Plan Limits
-
-### What Happens When You Exceed Limits
-
-Different limits have different behaviors:
-
-<Tabs>
-  <Tab title="Credits Exceeded">
-    **On Free Plan:**
-    - You must upgrade to continue using AI features
-    - 500 credits shared across all users (max 3)
-    
-    **On Paid Plans:**
-    - Each user gets monthly credits (Pro: 1,000/user, Team: 1,500/user)
-    - Purchase additional credits at discounted rates
-    - Purchased credits never expire and roll over
-    - Or upgrade to Team for more included credits and lower purchase price
-    
-    No workflows are queued for credit limits - you must purchase credits or upgrade to continue.
-  </Tab>
-  
-  <Tab title="Storage Exceeded">
-    **On Free Plan:**
-    - 1GB total account storage
-    - You must upgrade to continue adding data
-    
-    **On Paid Plans:**
-    - Storage scales per user (Pro: 5GB/user, Team: 25GB/user)
-    - Overage charges apply: **$1 per GB per month per user**
-    - Or upgrade to a higher plan for more storage per user
-  </Tab>
-  
-  <Tab title="User Limit Exceeded">
-    **On Free Plan:**
-    - Maximum 3 users allowed
-    - Cannot add additional users without upgrading
-    
-    **On Paid Plans:**
-    - Unlimited users
-    - Billing automatically adjusts based on user count
-    - Each additional user increases monthly bill by per-user rate
-  </Tab>
-  
-  <Tab title="Concurrent Executions Exceeded">
-    **All Plans:**
-    
-    **Request/Response Workflows:**
-    - Return a 429 rate limit error
-    - Retry after a brief delay
-    
-    **Async Workflows:**
-    - Automatically queued
-    - Processed when capacity becomes available
-    
-    **Concurrency Limits:**
-    - Free: 2 concurrent executions
-    - Pro: 20 concurrent executions
-    - Team: 50 concurrent executions
-    - Enterprise: Custom
-    
-    **Solution:**
-    Upgrade to a plan with higher concurrency for peak workloads.
-    
-    No overage charges for concurrency limits.
-  </Tab>
-  
-  <Tab title="Rate Limits Exceeded">
-    **Requests per Minute:**
-    - Free: 10 requests/minute
-    - Pro: 100 requests/minute
-    - Team: 300 requests/minute
-    - Enterprise: Custom
-    
-    **When exceeded:**
-    - Requests return 429 rate limit error
-    - Implement exponential backoff in your integrations
-    - Or upgrade for higher throughput
-    
-    No overage charges for rate limits.
-  </Tab>
-</Tabs>
-
-<Info>
-Monitor your usage in the billing dashboard to avoid unexpected charges or service interruptions.
-</Info>
-
-## Managing Users
-
-### Adding Users
-
-<Steps>
-  <Step title="Navigate to User Management">
-    Go to **Account Management → Users**
-  </Step>
-  
-  <Step title="Invite User">
-    Click "Invite User" and enter email address
-  </Step>
-  
-  <Step title="Assign Role">
-    Choose appropriate role and permissions
-  </Step>
-  
-  <Step title="Send Invitation">
-    User receives email invitation to join
-  </Step>
-</Steps>
-
-**Billing Impact:**
-- **Free Plan:** Can add up to 3 users total (no additional charge)
-- **Paid Plans:** Each additional user increases your bill by the per-user rate
-- Prorated charges apply for mid-cycle additions
-
-**Example (Pro Plan, Monthly):**
-- Current: 10 users × $19/user = $190/month
-- Add 2 users mid-cycle → prorated charge for remaining days
-- Next billing: 12 users × $19/user = $228/month
-
-### Removing Users
-
-<Steps>
-  <Step title="Navigate to User Management">
-    Go to **Account Management → Users**
-  </Step>
-  
-  <Step title="Select User">
-    Find the user you want to remove
-  </Step>
-  
-  <Step title="Remove User">
-    Click "Remove" or "Deactivate"
-  </Step>
-  
-  <Step title="Confirm">
-    Confirm the removal
-  </Step>
-</Steps>
-
-**Billing Impact:**
-- Credits are applied at your next billing cycle
-- No immediate refund for mid-cycle removals
-- Next billing reflects reduced user count
-
-## Managing Subscriptions
-
-### Cancelling Your Subscription
-
-<Warning>
-Cancelling converts your account to the Free plan at the end of your billing period. Your data is retained but access may be limited based on Free plan limits (max 3 users, 500 total credits, 1GB storage).
-</Warning>
-
-To cancel your subscription:
-
-<Steps>
-  <Step title="Navigate to Billing">
-    Go to **Account Management → Billing and Plans**
-  </Step>
-  
-  <Step title="Cancel Subscription">
-    Click "Cancel Subscription" or "Downgrade to Free"
-  </Step>
-  
-  <Step title="Confirm">
-    Review what happens and confirm cancellation
-  </Step>
-</Steps>
-
-**What happens:**
-- Subscription continues until end of current billing period
-- No further charges after current period
-- Account converts to Free plan with these limits:
-  - Maximum 3 users (remove additional users before cancellation takes effect)
-  - 500 credits total per account
-  - 1GB account storage
-  - 30 days message retention
-  - 2 concurrent executions
-  - 10 requests/minute
-- Resources exceeding Free limits may be restricted
-- Data is retained (not deleted)
-
-<Tip>
-Want to fully delete your account instead? See our [Closing Account guide →](/essentials/account/closing-account)
-</Tip>
-
-### Reactivating a Cancelled Subscription
-
-Reactivate at any time:
-
-1. Navigate to **Account Management → Billing and Plans**
-2. Click "Upgrade" or "Reactivate"
-3. Select your plan (Pro or Team)
-4. Choose monthly or annual billing
-5. Enter payment information
-6. Subscription reactivates immediately
-
-## Billing Troubleshooting
-
-<AccordionGroup>
-  <Accordion title="Payment failed">
-    **Common causes:**
-    - Insufficient funds
-    - Expired card
-    - Card issuer declined
-    - Incorrect billing address
-    
-    **Solutions:**
-    - Update payment method
-    - Contact your card issuer
-    - Verify billing address matches card
-    - Try a different payment method
-  </Accordion>
-  
-  <Accordion title="Unexpected charge">
-    **Check these items:**
-    - Did you add users mid-cycle? (prorated charges)
-    - Did you upgrade mid-cycle? (prorated charges)
-    - Annual renewal? (charged once per year)
-    - Storage overage charges?
-    - Additional credit purchases?
-    - Premium marketplace items purchased?
-    - Team member made changes?
-    
-    **Review your invoice:**
-    - All charges are itemized by user count and usage
-    - Check billing history for details
-    
-    **If still unclear:**
-    Contact support with invoice number for clarification
-  </Accordion>
-  
-  <Accordion title="Understanding overage charges">
-    **How overages work:**
-    - Only on paid plans (Pro, Team)
-    - Charged only for what you use beyond your plan
-    - Storage: $1/GB/month per user beyond included storage
-    
-    **Credits:**
-    - Not considered "overage"
-    - Purchase additional credits at your plan's rate as needed
-    - Pro: $8/1,000 credits
-    - Team: $7/1,000 credits
-    
-    **Avoiding storage overages:**
-    - Monitor usage in billing dashboard
-    - Set up usage alerts
-    - Upgrade to a plan with higher per-user storage
-    - Remove unused data or users
-    
-    **On Free plan:**
-    - No overage charges
-    - Must upgrade when limits reached
-  </Accordion>
-  
-  <Accordion title="Per-user billing questions">
-    **How is my bill calculated?**
-    - Total bill = (number of active users) × (per-user rate)
-    - Each user gets their own allocation of credits and storage
-    
-    **What counts as an active user?**
-    - Any user with access to your account
-    - Includes all roles (Root, Admin, Billing, Developer, Monitor)
-    - Free plan: Maximum 3 users
-    - Paid plans: Unlimited users
-    
-    **How do user changes affect billing?**
-    - Adding users: Prorated charge for remainder of billing period
-    - Removing users: Credit applied at next billing cycle
-    - All changes reflected in next invoice
-  </Accordion>
-  
-  <Accordion title="Can't access billing">
-    **Required role:**
-    - Root, Admin, or Billing role needed
-    - Developers and Monitors can't access billing
-    
-    **Solution:**
-    Ask an Admin to grant you Billing role or make changes for you
-    
-    [About roles →](/essentials/users/roles-permissions)
-  </Accordion>
-  
-  <Accordion title="Want to change billing email">
-    The billing email is tied to your account's root email.
-    
-    To change it:
-    1. Root user updates email in account settings
-    2. Or contact support to add additional billing contacts
-    
-    [Change root email →](/essentials/account/account-settings#changing-root-email)
-  </Accordion>
-  
-  <Accordion title="Need invoice with different details">
-    **For updated company info:**
-    - Update details in **Account Management → Account**
-    - Changes apply to future invoices only
-    
-    **For past invoice corrections:**
-    - Contact support with specific requirements
-    - May be possible depending on request
-  </Accordion>
-</AccordionGroup>
-
-## Enterprise Billing
-
-Enterprise plans start at $100/user/month and offer custom billing options:
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Custom Terms" icon="file-contract">
-    Flexible payment terms and schedules
-  </Card>
-  
-  <Card title="Purchase Orders" icon="file-invoice">
-    PO-based purchasing available
-  </Card>
-  
-  <Card title="Wire Transfers" icon="building-columns">
-    Direct bank transfers accepted
-  </Card>
-  
-  <Card title="Annual Contracts" icon="calendar-days">
-    Commit to annual with custom pricing
-  </Card>
-  
-  <Card title="Volume Discounts" icon="percent">
-    Savings for larger teams and longer commitments
-  </Card>
-  
-  <Card title="Custom Resources" icon="sliders">
-    Tailored allocations for users, credits, storage, and compute
-  </Card>
-</CardGroup>
-
-[Contact sales for Enterprise →](/contact)
-
-## Tax & Compliance
-
-### Tax Collection
-
-Taxes are automatically calculated based on:
-- Your billing address
-- Applicable regional tax laws (VAT, GST, sales tax)
-- Your tax identification number (if provided)
-
-**To add tax ID:**
-1. Navigate to **Account Management → Billing and Plans**
-2. Click "Tax Information"
-3. Enter your VAT/tax ID number
-4. Save changes
-
-### Regional Compliance
-
-- **EU Customers:** VAT charged based on country
-- **US Customers:** Sales tax varies by state
-- **Other Regions:** Local tax laws apply
-
-<Info>
-Invoices automatically include all applicable tax information for your records.
-</Info>
-
-## Plan Comparison Quick Reference
-
-| Plan | Monthly | Annual (20% off) | Max Users | Credits/User | Storage/User | Retention |
-|------|---------|------------------|-----------|--------------|--------------|-----------|
-| **Free** | $0 | $0 | 3 | 500 total | 1GB total | 30 days |
-| **Pro** | $19/user | $15/user ($180/year) | Unlimited | 1,000/month | 5GB | 1 year |
-| **Team** | $39/user | $31/user ($372/year) | Unlimited | 1,500/month | 25GB | Unlimited |
-| **Enterprise** | Custom (from $100/user) | Custom | Unlimited | Custom | Custom | Custom |
-
-**Additional features:**
-- **Free:** Community support
-- **Pro:** Email support, purchase credits at $8/1K
-- **Team:** Priority email support, purchase credits at $7/1K, bring your own LLM keys
-- **Enterprise:** Dedicated support, SLA, white-label, on-premise, custom regions
-
-[See full comparison →](/get-started/plans-and-pricing)
-
-## Billing Contact & Support
-
-Need help with billing?
-
-<CardGroup cols={2}>
-  <Card title="Billing Support" icon="envelope" href="mailto:billing@quiva.ai">
-    billing@quiva.ai
-    
-    Invoice questions, payment issues
-  </Card>
-  
-  <Card title="Sales Team" icon="handshake" href="https://quiva.ai/help-center/">
-    Enterprise inquiries and custom pricing
-  </Card>
-  
-  <Card title="Documentation" icon="book" href="/get-started/plans-and-pricing">
-    Detailed pricing and features
-  </Card>
-  
-  <Card title="General Support" icon="life-ring" href="https://quiva.ai/help-center/">
-    Account and technical support
-  </Card>
-</CardGroup>
-
-## Related Resources
-
-<CardGroup cols={2}>
-  <Card title="Plans & Pricing" icon="tags" href="/get-started/plans-and-pricing">
-    Compare all plans and features
-  </Card>
-  
   <Card title="Account Settings" icon="gear" href="/essentials/account/account-settings">
-    Update company and billing details
+    Account details, branding and retention
   </Card>
-  
+
   <Card title="User Roles" icon="users-gear" href="/essentials/users/roles-permissions">
-    Who can manage billing
+    Who can see and change billing
   </Card>
-  
+
+  <Card title="User Management" icon="users" href="/essentials/users/user-management">
+    Invite, suspend and remove people
+  </Card>
+
   <Card title="Close Account" icon="circle-xmark" href="/essentials/account/closing-account">
-    Permanently delete account
+    Close the account and cancel the subscription
   </Card>
 </CardGroup>

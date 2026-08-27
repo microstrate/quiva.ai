@@ -1,177 +1,133 @@
 ---
 title: "Account Settings"
-description: "Manage your account name, details, branding, and global configuration"
+description: "Account details, branding, global assistant configuration, escalations, retention and specialization"
 icon: "gear"
 ---
 
-# Account Settings
+Account settings cover everything that applies to the whole account rather than to one person.
 
-Manage your QuivaWorks account configuration, including account name, company details, branding, and workspace-wide settings.
-
-## Account Details
-
-### Changing Your Account Name
-
-Your account name is used to log in and appears on billing statements and team invitations.
-
-<Warning>
-When you update your account name, all users must use the new name to log in. All users will be notified via email of this change.
-</Warning>
-
-**To update your account name:**
-
-1. Navigate to **Account Management → Account → Details**
-2. Find the "Account Name" field
-3. Enter your new account name (case-sensitive)
-4. Click "Rename Account"
-
-### Updating Company Details
-
-Keep your account information current for billing and communication purposes.
-
-1. Navigate to **Account Management → Account → Details**
-2. Update the following fields:
-   - **Company/Entity Name**
-   - **Address**
-   - **Website**
-   - **Phone Number**
-   - **Country**
-3. Click "Save"
-
-## Managing Account Regions (Enterprise only)
-
-QuivaWorks' multi-cloud mesh architecture allows you to deploy resources across different geographic regions for optimal performance and compliance.
-
-### Available Regions
-
-<CardGroup cols={3}>
-  <Card title="EU" icon="location-dot">
-    European Union
-    - GDPR compliant
-    - Frankfurt/Paris data centres
-  </Card>
-  
-  <Card title="US" icon="location-dot">
-    United States
-    - Multiple availability zones
-    - East/West coast options
-  </Card>
-  
-  <Card title="Australia" icon="location-dot">
-    Sydney
-    - Asia-Pacific access
-    - Low latency for APAC
-  </Card>
-</CardGroup>
-
-### Modifying Mesh Regions
-
-1. Navigate to **Account Management → Mesh**
-2. Select desired regions for your mesh nodes
-3. Click "Save Changes"
+Open **Account** in the sidebar — depending on your account it sits at the top level or under **More**. The page is visible to the **root** and **admin** roles only.
 
 <Info>
-Your mesh configuration determines where your data is processed and stored. Choose regions that align with your compliance requirements and user locations.
+This is one page with a settings list down the left, not a set of tabs. Each section is also addressable directly with `?tab=` — for example `?tab=retention`.
 </Info>
+
+The sections are **Details**, **Branding**, **Global Instructions**, **Global Knowledge**, **Escalation Responders**, **Data Retention** and **Specialization**.
 
 <Note>
-Need additional regions or private infrastructure? [Contact us](/contact) about Enterprise options including BYO Cloud and on-premise deployments.
+Personal preferences — your profile, theme, notifications, password and sessions — live somewhere else entirely, under **Settings** in the user menu. [Personal settings →](/essentials/users/user-settings)
 </Note>
 
-## Changing the Root Email Address
+## Details
 
-Only the root user can change the account's root email address.
+The **Account Details** card holds the account's identity and contact information.
 
-<Steps>
-  <Step title="Initiate Change">
-    1. Log in as the root user
-    2. Click your profile icon → "Settings"
-    3. Navigate to "Credentials"
-    4. Update the email address field
-    5. Click "Request Change"
-  </Step>
-  
-  <Step title="Confirm via Email">
-    Check the **old email address** for a confirmation email and click the confirmation link
-  </Step>
-  
-  <Step title="Complete Transfer">
-    Once confirmed, the new email becomes the root login. The old email can now be used for another account.
-  </Step>
-</Steps>
+| Field | Notes |
+|---|---|
+| Account Name | Editable by root only. Admins see it read-only. |
+| Owner Email | Read-only here. |
+| Company/Entity name | |
+| Address | |
+| Website | |
+| Phone Number | |
+| Country | The country or region where the business is registered. If you operate as an individual, the location you work from. |
+
+Click **Save** to store changes to the contact fields.
+
+**Close Account** also sits in this card. It is root-only and disappears once a deletion has already been scheduled. [Closing your account →](/essentials/account/closing-account)
+
+### Renaming the account
+
+Only the root user can rename an account. Editing **Account Name** enables a **Rename Account** button, which opens a confirmation modal.
 
 <Warning>
-The old email address must approve the transfer before it takes effect. This prevents unauthorised email changes.
+Renaming signs out you and every member of the account. Everyone must use the new account name to sign in again, and an email notification about the change is sent to everyone affected.
 </Warning>
 
-## Workspace Branding & Customisation
+To confirm, click **Send code**, enter the code emailed to you, then click **Apply Change**. If the code does not arrive, you can request another once the countdown on the button finishes.
 
-Personalise your QuivaWorks workspace with custom branding, colours, logos, and application name.
+<Note>
+Account names are matched case-insensitively — they are lowercased and trimmed when stored, so `AcmeOps` and `acmeops` are the same name.
+</Note>
 
-Navigate to **Account Management → Account → Branding** to configure:
+## Branding
 
-- **Brand Colours** — Custom primary and secondary colours that update your interface theme
-- **Logo & Favicon** — Upload your company logo and custom favicon for consistency across the application
-- **App Name** — Replace the default QuivaWorks branding with your organisation's application name
+App name, favicon and brand colours. [Branding and global assistant settings →](/essentials/account/global-admin-branding-settings)
 
-<Info>
-Custom branding is applied instantly across your entire workspace for all users.
-</Info>
+## Global Instructions
 
-[Learn more about workspace branding →](/essentials/account/global-admin-branding-settings)
+Instructions that every assistant can inherit, so behaviour is consistent across the account. [Global assistant instructions →](/essentials/account/global-admin-branding-settings#global-assistant-instructions)
 
-## Global Assistant Instructions
+## Global Knowledge
 
-Set organisation-wide guidelines that all agents inherit by default.
+Files that assistants across the account can draw on. [Global knowledge →](/essentials/account/global-admin-branding-settings#global-knowledge)
 
-Navigate to **Account Management → Account → Global Instructions** to:
+## Escalation Responders
 
-- Create baseline behavioural rules and tone guidelines
-- Specify compliance requirements and escalation procedures
-- Maintain consistency across all agents in your workspace
+Pick the people who handle escalations when nobody more specific is named.
+
+The section holds a single **Assignees** multi-select. The selected users are notified for any escalation task and are authorised to respond when no responder is set on the assistant or flow that raised it.
 
 <Info>
-Global instructions are automatically merged into each agent's prompt. Agent-specific instructions can override global guidelines for specialised use cases.
+If no default responders are set, the account root is the default responder.
 </Info>
 
-[Explore global instructions in detail →](/essentials/account/global-instructions)
+Click **Save** to apply.
 
-## Global Knowledge Base
+## Data Retention
 
-Add organisation-wide knowledge resources that agents can reference during conversations.
+Controls how long your assistants' conversation history is kept before it is permanently deleted.
 
-Navigate to **Account Management → Account → Global Knowledge** to:
+Set a **Retention period (days)** and click **Save**.
 
-- Upload company policies, FAQs, and documentation
-- Link external knowledge sources and resources
-- Make information instantly available to all agents
+<Note>
+This is separate from pipeline execution traces and diagnostics, which are always kept for 7 days no matter what you set here.
+</Note>
 
-<Info>
-Global knowledge is indexed and cached for instant retrieval. Updates take effect immediately on the next agent invocation.
-</Info>
+How high you can set it depends on your plan:
 
-[See the global knowledge guide →](/essentials/account/global-knowledge)
+| Plan | Self-serve ceiling |
+|---|---|
+| Free | 45 days |
+| Pro | 90 days |
+| Team | 365 days |
 
-## Related Pages
+A banner at the top of the section shows the current setting in plain language.
+
+Setting the field to `0` means keep conversation history forever. That is not self-serve — it needs a platform-issued override, and an account running under one shows a **Platform override in place** warning. You can always lower the period yourself; raising it back above your plan's ceiling requires contacting us again.
+
+[Compare plans →](/essentials/account/billing-subscriptions)
+
+## Specialization
+
+A dashboard for the account's verticals, where you can view, customise and extend the configurations deployed for your vertical. A **Get Help Setting Up** button opens a setup assistant.
+
+## Data hosting
+
+Where an account's data is hosted is chosen once, on the onboarding screen **"Choose the way your data is hosted"**, which is shown to any account that has no regions set yet. The region on offer is **Europe**, and the node count is a choice between **1** and **3**.
+
+<Warning>
+Three nodes means three copies of your data, so it uses three times the storage.
+</Warning>
+
+The choice is not gated on your plan. [Creating your account →](/essentials/account/creating-account)
+
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Workspace Branding" icon="palette" href="/essentials/account/global-admin-branding-settings">
-    Configure custom colours, logos, and app name
+  <Card title="Branding & Global Assistant Settings" icon="palette" href="/essentials/account/global-admin-branding-settings">
+    App name, favicon, colours, global instructions and knowledge
   </Card>
-  
+
   <Card title="User Management" icon="users" href="/essentials/users/user-management">
-    Add and manage team members
+    Invite people and assign roles
   </Card>
-  
+
   <Card title="Billing & Subscriptions" icon="credit-card" href="/essentials/account/billing-subscriptions">
-    Manage your plan and payments
+    Plans, credits and invoices
   </Card>
-  
-  <Card title="Security Overview" icon="shield" href="/essentials/security/overview">
-    Secure your account
-  </Card>
-  
+
   <Card title="Close Account" icon="circle-xmark" href="/essentials/account/closing-account">
-    Delete your account
+    Close the account
   </Card>
 </CardGroup>
