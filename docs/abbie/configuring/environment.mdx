@@ -1,0 +1,62 @@
+---
+title: "Environment variables"
+description: "Configuration values and secret references Abbie uses when calling your systems"
+icon: "code"
+---
+
+The **Environment** tab holds named values Abbie can use when she calls out to your systems — the
+tenant id, the base URL, the API key that a given integration needs.
+
+## Two scopes
+
+| Scope | Who it applies to | Who can edit it |
+|---|---|---|
+| **Organisation** | Everyone on the account | Account admins only |
+| **Personal** | Just you | You |
+
+Non-admins can see the organisation variables — so you can tell what Abbie has available — but
+cannot change them.
+
+## Adding a variable
+
+Each variable has:
+
+<ParamField path="Key" type="string" required>
+  The variable's name, for example `XERO_TENANT_ID`. Keys are validated; an invalid one is
+  rejected as you type.
+</ParamField>
+
+<ParamField path="Description" type="string">
+  What Abbie is told about this key. Worth filling in — it is how she knows what the value is for.
+</ParamField>
+
+<ParamField path="Value" type="string" required>
+  Either a literal value, or a reference to a stored secret.
+</ParamField>
+
+<ParamField path="Catalog server" type="string">
+  Optional. Ties the variable to a specific integration, for example `xero`.
+</ParamField>
+
+## Literals and secrets
+
+A value can be given two ways:
+
+- **A literal** — stored and shown as itself. Right for non-sensitive configuration: a base URL,
+  a tenant identifier, a region.
+- **A secret reference** — the row holds a `SECRET::` reference rather than the secret itself. The
+  actual value lives in your account's secrets store and is resolved when it is needed.
+
+<Warning>
+Use a secret reference for anything sensitive. A literal is stored and displayed as written — an
+API key entered as a literal is readable by anyone who can see that scope.
+</Warning>
+
+<CardGroup cols={2}>
+  <Card title="Integrations" icon="plug" href="/abbie/connecting/integrations-and-mcp">
+    What Abbie can reach, and what she is authorised to use.
+  </Card>
+  <Card title="Credential identity" icon="key" href="/abbie/connecting/credential-identity">
+    Whose login a given call actually runs under.
+  </Card>
+</CardGroup>

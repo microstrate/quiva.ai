@@ -1,0 +1,35 @@
+---
+title: "What each stage means"
+description: "A closer look at what Abbie is actually doing at each step between your message and her reply."
+icon: "diagram-project"
+---
+
+Abbie doesn't produce a reply in a single pass. Every message goes through a short pipeline of stages, visible live as the [stage strip](/abbie/chatting/watching-her-think) and recorded in full in the [cognition log](/abbie/transparency/cognition-log).
+
+<AccordionGroup>
+  <Accordion title="Classify">
+    Works out what you're actually asking. If your message bundles more than one distinct ask together, it's split into parts here so each gets properly addressed rather than one crowding out the other.
+  </Accordion>
+  <Accordion title="Enrich">
+    Pulls in whatever memory and organisational context is relevant before drafting begins, so the answer starts from what Abbie already knows about you and the account rather than a blank slate. See [Memory](/abbie/teaching/memory).
+  </Accordion>
+  <Accordion title="Router">
+    Decides how much effort the request warrants and how many independent drafts to produce. A quick factual question doesn't need the same treatment as a genuinely hard problem.
+  </Accordion>
+  <Accordion title="Experts">
+    Produces one or more draft answers. Straightforward requests get a single draft; more demanding ones get several produced independently, so the strongest can be chosen rather than committing to the first attempt.
+  </Accordion>
+  <Accordion title="Judge">
+    When more than one draft was produced, an independent pass compares them and picks or combines the best answer. This step is skipped entirely when only one draft was made; there's nothing to judge between.
+  </Accordion>
+  <Accordion title="Verify">
+    A final, independent check of the chosen answer against your preferences and the facts available, before it's sent to you. See [Confidence and verification](/abbie/transparency/confidence-and-verification).
+  </Accordion>
+  <Accordion title="Output">
+    The finished reply, delivered to the conversation.
+  </Accordion>
+</AccordionGroup>
+
+## Why a stage sometimes retries or falls back
+
+If a model is briefly unavailable, Abbie retries automatically and, if needed, falls back to a different model to get you an answer rather than failing the turn outright. This shows as a retry count or a fallback badge on that stage in the cognition log; the answer still arrived, just not on the first attempt or the preferred model.

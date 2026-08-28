@@ -1,0 +1,35 @@
+---
+title: "The cognition log"
+description: "The complete record of how Abbie produced a given answer: every stage, every model, every retry."
+icon: "list-timeline"
+---
+
+The cognition log, at **Abbie's logs**, is the full technical record behind any conversation: a step-by-step account of how each of her replies was actually produced, for anyone who wants to look under the stage strip shown in chat.
+
+## How it's organised
+
+Events are grouped first by turn (one exchange with Abbie), then by stage within that turn, in the order they ran: classify, enrich, router, one or more experts, judge, verify, output.
+
+Each stage shows:
+
+- Its status: completed, failed, running, or answered by a fallback model.
+- Which provider and model handled it.
+- How long it took, and whether it needed a retry.
+
+Selecting a stage expands it to the complete detail behind that step, including exact timestamps.
+
+## Totals
+
+At the top of a session's log, you'll find rolled-up totals: tokens used, total duration, and how many turns and stages the conversation involved.
+
+## Finding a session
+
+Use the same session sidebar as the chat page, or paste in a session ID directly if you have one but it isn't in your own list, useful when someone's shared a link to a conversation with you.
+
+## Deep links
+
+A link can point at an entire session, or at one specific stage of one specific turn: opening it scrolls straight there and expands it automatically. See [Deep links](/abbie/chatting/deep-links).
+
+<Card title="Pipeline stages" icon="diagram-project" href="/abbie/transparency/pipeline-stages">
+  What's actually happening at each of those stages, and why.
+</Card>

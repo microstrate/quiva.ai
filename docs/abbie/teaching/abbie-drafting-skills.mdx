@@ -1,0 +1,33 @@
+---
+title: "Abbie drafting a skill"
+description: "Asking Abbie to turn a conversation into a skill, and reviewing what she writes before it goes live."
+icon: "pen-nib"
+---
+
+Abbie can turn a conversation into a skill herself, but only when you ask her to. Ask her to "turn this into a skill" or "save this for later" and she drafts one from the process you just worked through together.
+
+<Note>
+Abbie never proposes a skill unprompted. She only drafts one in response to you asking — she doesn't notice a good candidate mid-conversation and suggest it herself.
+</Note>
+
+## What she writes
+
+From the conversation, she puts together:
+
+- A **name** and **description**.
+- A step-by-step **instruction**, written from what you actually did together.
+- The **tools** she used — pulled from her actual tool calls in that conversation, not from her memory of what she thinks she used.
+
+If you point her at an existing skill instead of a fresh conversation, she produces a refinement of that skill rather than a new one.
+
+## It's a draft, not a live skill
+
+Nothing Abbie writes this way goes live on its own. What she produces is a draft that lands in the **Suggested** section of the Skills tab, where you can read it over, edit it, and either approve it or leave it as a draft.
+
+## Client data is rewritten before saving
+
+Before saving a draft, Abbie rewrites anything that looks like client data — names, account numbers, invoice amounts, email addresses — into `{{placeholder}}` form, so the skill reads as a reusable template rather than a record of one specific case. The review screen tells you which categories of data were rewritten.
+
+<Warning>
+This rewriting is imperfect. It can occasionally catch a real number that actually belonged in the instructions as a real number, not a placeholder. Skim the draft's instruction before approving it, and put back anything that was rewritten by mistake.
+</Warning>

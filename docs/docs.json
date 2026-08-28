@@ -39,6 +39,22 @@
             ]
           },
           {
+            "group": "Meetings",
+            "icon": "video",
+            "pages": [
+              "meetings/overview",
+              "meetings/connecting-a-calendar",
+              "meetings/bot-settings",
+              "meetings/scheduling-bots",
+              "meetings/on-demand-bots",
+              "meetings/bots-tab",
+              "meetings/live-transcript",
+              "meetings/recordings",
+              "meetings/summaries",
+              "meetings/sharing-to-a-space"
+            ]
+          },
+          {
             "group": "Forms",
             "icon": "clipboard-list",
             "pages": [
@@ -197,6 +213,111 @@
                   "advanced/rules/common-patterns"
                 ]
               }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Abbie",
+        "groups": [
+          {
+            "group": "Getting started",
+            "icon": "sparkles",
+            "pages": [
+              "abbie/getting-started/introduction",
+              "abbie/getting-started/how-shes-different",
+              "abbie/getting-started/first-conversation",
+              "abbie/getting-started/abbie-home"
+            ]
+          },
+          {
+            "group": "Chatting",
+            "icon": "messages",
+            "pages": [
+              "abbie/chatting/chat-surface",
+              "abbie/chatting/watching-her-think",
+              "abbie/chatting/sessions-and-history",
+              "abbie/chatting/deep-links",
+              "abbie/chatting/attachments-and-images",
+              "abbie/chatting/decisions-and-authorisations",
+              "abbie/chatting/stopping-a-run"
+            ]
+          },
+          {
+            "group": "Abbie's backlog",
+            "icon": "list-check",
+            "pages": [
+              "abbie/backlog/how-abbie-tracks-work",
+              "abbie/backlog/personal-and-team",
+              "abbie/backlog/backlog-page",
+              "abbie/backlog/in-chat-panel",
+              "abbie/backlog/cancelling-and-deferring",
+              "abbie/backlog/reminders-and-schedules"
+            ]
+          },
+          {
+            "group": "Proactive Abbie",
+            "icon": "bell",
+            "pages": [
+              "abbie/proactive/check-ins-and-follow-ups",
+              "abbie/proactive/suggestions",
+              "abbie/proactive/cadence-and-quiet-hours"
+            ]
+          },
+          {
+            "group": "Teaching Abbie",
+            "icon": "wand-magic-sparkles",
+            "pages": [
+              "abbie/teaching/skills-library",
+              "abbie/teaching/creating-and-importing-skills",
+              "abbie/teaching/browsing-skills",
+              "abbie/teaching/abbie-drafting-skills",
+              "abbie/teaching/running-skill-scripts",
+              "abbie/teaching/memory",
+              "abbie/teaching/rapport",
+              "abbie/teaching/personal-profile",
+              "abbie/teaching/corrections",
+              "abbie/teaching/rapport-log"
+            ]
+          },
+          {
+            "group": "Configuring Abbie",
+            "icon": "sliders",
+            "pages": [
+              "abbie/configuring/settings-overview",
+              "abbie/configuring/organisation-profile",
+              "abbie/configuring/model-pool",
+              "abbie/configuring/environment",
+              "abbie/configuring/outreach-settings",
+              "abbie/configuring/task-filing"
+            ]
+          },
+          {
+            "group": "Connecting Abbie",
+            "icon": "plug",
+            "pages": [
+              "abbie/connecting/slack",
+              "abbie/connecting/teams",
+              "abbie/connecting/integrations-and-mcp",
+              "abbie/connecting/credential-identity"
+            ]
+          },
+          {
+            "group": "Transparency",
+            "icon": "shield-check",
+            "pages": [
+              "abbie/transparency/cognition-log",
+              "abbie/transparency/pipeline-stages",
+              "abbie/transparency/confidence-and-verification"
+            ]
+          },
+          {
+            "group": "Reference",
+            "icon": "circle-question",
+            "pages": [
+              "abbie/reference/faq",
+              "abbie/reference/troubleshooting",
+              "abbie/reference/coming-soon"
             ]
           }
         ]

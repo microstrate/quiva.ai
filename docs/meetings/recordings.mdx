@@ -1,0 +1,105 @@
+---
+title: "Recordings"
+description: "Playing back a meeting, editing its transcript, annotating it, and downloading or deleting it"
+icon: "play"
+---
+
+## Finding a recording
+
+**Meetings → Recordings** lists everything that has been recorded, in two views:
+
+- **List** — a table of title, date, participants, and icons showing which assets exist
+  (video, audio, summary).
+- **Calendar** — the same recordings plotted by date.
+
+The same list is available in your personal **Settings → Recordings**.
+
+Where a meeting had more than two participants, the table shows the first two and a `+N more`
+count. Clicking any row opens the recording.
+
+<Frame caption="The Recordings list. The icons on the right show which assets each recording has.">
+  <img src="/images/meetings/recordings-list.png" alt="The Recordings table listing meetings with their date, participants and available media icons" />
+</Frame>
+
+## The recording
+
+A recording opens with three tabs:
+
+<CardGroup cols={3}>
+  <Card title="Audio" icon="volume">
+    The audio player, with the transcript alongside it.
+  </Card>
+  <Card title="Video" icon="video">
+    The video player, with the transcript alongside it.
+  </Card>
+  <Card title="Summary" icon="clipboard-list">
+    The written summary, and the controls to generate one.
+  </Card>
+</CardGroup>
+
+Which of Audio and Video have anything in them depends on the bot's **Record media type**. A bot
+set to Audio only will show *No video available* on the Video tab.
+
+The transcript scrolls alongside playback, so you can read along or jump to a moment.
+
+<Frame caption="A recording open on the Audio tab: player, transcript and the notes panel.">
+  <img src="/images/meetings/recording.png" alt="An open recording showing an audio player, a speaker-attributed transcript, and a notes panel with segment-anchored and general notes" />
+</Frame>
+
+## Editing the transcript
+
+Transcripts are machine-generated and get names, jargon and acronyms wrong. The transcript panel is
+editable, so those can be fixed.
+
+There is also **find and replace** across the whole transcript — the fastest way to correct a name
+that was misheard consistently throughout an hour-long call.
+
+Edits are saved back to the recording, so the corrected text is what any summary generated
+afterwards will be working from.
+
+<Note>
+Fix the transcript *before* generating a summary. A summary is written from the transcript as it
+stands at that moment — correcting the transcript afterwards does not update a summary that has
+already been generated.
+</Note>
+
+## Notes
+
+Notes taken during the meeting on the [live transcript](/meetings/live-transcript) page appear
+here, and more can be added afterwards. A note can be general to the meeting, or anchored to a
+specific transcript segment — clicking an anchored note jumps to the moment it refers to.
+
+Every note records its author. Everyone who can see the recording sees every note, but **only the
+author can edit their own**.
+
+## The toolbar
+
+| Action | What it does |
+|---|---|
+| **Transcript** | Downloads the transcript as a file |
+| **Share** | Copies selected assets into a Space folder — see [Sharing to a Space](/meetings/sharing-to-a-space) |
+| **Download** | Downloads whichever tab you are on — the audio, the video, or the summary |
+| **Delete** | Deletes the recording |
+
+**Download** follows the active tab, so switch to Video before downloading if the video is what you
+want.
+
+<Warning>
+**Delete** removes the recording. If you want to keep any of it, share it into a Space first — a
+shared copy lives in the Space's files and survives the original being deleted.
+</Warning>
+
+## Recordings that disappear on their own
+
+A bot configured with **Recording retention: Timed** deletes its recording automatically after the
+set number of hours. Its bot status becomes **Media Expired**. Anything shared into a Space before
+that point stays.
+
+<CardGroup cols={2}>
+  <Card title="Summaries and templates" icon="wand-magic-sparkles" href="/meetings/summaries">
+    Generating a written summary, and controlling how it is written.
+  </Card>
+  <Card title="Sharing to a Space" icon="folder-open" href="/meetings/sharing-to-a-space">
+    Getting a recording into the folder it belongs to.
+  </Card>
+</CardGroup>

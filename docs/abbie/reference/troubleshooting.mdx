@@ -1,0 +1,35 @@
+---
+title: "Troubleshooting"
+description: "What to do about common messages and situations you might run into with Abbie."
+icon: "screwdriver-wrench"
+---
+
+<AccordionGroup>
+  <Accordion title="An integration shows 'Needs connecting'">
+    Nobody has connected that integration yet. If it needs a simple sign-in, connect it yourself from the integrations catalogue or the moment Abbie asks for it in chat. If it needs credentials only an admin can configure, ask an account admin; Abbie will tell you as much if that's the case. See [Integrations and MCP connections](/abbie/connecting/integrations-and-mcp).
+  </Accordion>
+  <Accordion title="I selected Stop, but Abbie kept going for a moment">
+    Stopping a run interrupts the reply she's generating. If you stopped a backlog item she's actively working through, the step already underway finishes before the stop takes effect; she just won't start another one. See [Stopping a run](/abbie/chatting/stopping-a-run) and [Cancelling and deferring](/abbie/backlog/cancelling-and-deferring).
+  </Accordion>
+  <Accordion title="A settings tab says it isn't available yet">
+    This means your account's backend hasn't finished updating to the latest version. It resolves on its own; try again shortly.
+  </Accordion>
+  <Accordion title="A skill isn't triggering when I expect it to">
+    Open the skill in the Skills tab and use its **Test activation** box with a message like the one you tried. It shows whether the skill would fire outright or is merely something Abbie could find and choose herself, which tells you whether to adjust its keywords or simply trust her to reach for it. See [Creating and importing skills](/abbie/teaching/creating-and-importing-skills).
+  </Accordion>
+  <Accordion title="A rapport change I expected hasn't applied">
+    Rapport suggestions from Abbie's analyser are proposals, not automatic changes; check the Rapport tab, or the "Abbie needs you" card on the home page, for a pending draft to approve. See [Rapport](/abbie/teaching/rapport).
+  </Accordion>
+  <Accordion title="A reminder or scheduled task didn't fire exactly on time">
+    If something prevented it firing right when due, Abbie doesn't skip it silently. It shows as overdue with its original time so the miss is visible, and a recurring one simply re-arms for its next occurrence. See [Reminders and schedules](/abbie/backlog/reminders-and-schedules).
+  </Accordion>
+  <Accordion title="I can't find a conversation that started in Slack">
+    Check the origin filter in the session sidebar; it lets you narrow the list to Slack-originated conversations specifically. See [Sessions and history](/abbie/chatting/sessions-and-history).
+  </Accordion>
+</AccordionGroup>
+
+## Limits worth knowing
+
+- A single request has an outer time limit you control (15 to 60 minutes). See [Model pool](/abbie/configuring/model-pool).
+- Higher judge quorums and Accuracy routing mode cost more per request, since more models run per answer.
+- Suggestions are capped to roughly once a week and never alongside a check-in, by design. See [Suggestions](/abbie/proactive/suggestions).

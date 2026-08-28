@@ -1,0 +1,23 @@
+---
+title: "Coming soon"
+description: "Features that are planned but not yet available, so you know exactly what to expect today."
+icon: "road"
+---
+
+<Warning>
+Nothing on this page works yet. It's here so it's clear these aren't available, rather than leaving you to discover it by trying.
+</Warning>
+
+<Card title="Telegram" icon="telegram">
+  A personal Abbie in your own Telegram DMs. Shown as **Coming soon** in the product today.
+</Card>
+
+Abbie is connected through [Slack](/abbie/connecting/slack) and
+[Microsoft Teams](/abbie/connecting/teams) today.
+
+## Other things not yet available
+
+- **A single preferred channel for proactive messages**: right now, proactive notifications follow your general notification preferences rather than a dedicated "always tell me on Slack" style setting.
+- **Exporting a skill** you've created back out as a shareable bundle: importing one in is supported today, but there's no export yet.
+- **Abbie proposing a skill on her own**: she only ever drafts one when you explicitly ask her to, whether that's a fresh skill from a conversation or a refinement of an existing one. She doesn't notice a good candidate mid-conversation and suggest it unprompted. See [Abbie drafting a skill](/abbie/teaching/abbie-drafting-skills).
+- **Installing a skill's own dependencies**: if a skill ships a `requirements.txt`, the skill itself installs fine, but running its scripts is refused if they need anything beyond the [preinstalled libraries](/abbie/teaching/running-skill-scripts) — that file is never installed, no matter what it lists.
