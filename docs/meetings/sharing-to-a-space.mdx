@@ -1,0 +1,92 @@
+---
+title: "Sharing to a Space"
+description: "Getting recordings, transcripts and summaries into the Space folder they belong to"
+icon: "folder-open"
+---
+
+## Two ways to file a meeting
+
+A meeting's output can reach a [Space](/spaces/spaces) either automatically or after the fact.
+
+<CardGroup cols={2}>
+  <Card title="Set it up front" icon="robot">
+    The bot's **Space & folder** setting routes the meeting's output into that folder as soon as it
+    exists. Nothing to do afterwards.
+  </Card>
+  <Card title="Share it afterwards" icon="share-nodes">
+    **Share recording** copies whichever assets you choose into a folder you pick, at any time
+    after the meeting.
+  </Card>
+</CardGroup>
+
+Both put the result in the same place: the Space's **Files → Meetings** tab, under the folder you
+chose.
+
+## Setting the destination up front
+
+In [bot settings](/meetings/bot-settings#space--folder), **Choose space & folder** picks where the
+meeting's outputs are saved. Set it on:
+
+- A **calendar**, so every meeting on that calendar files to the same place.
+- A **single event's bot**, for a one-off.
+- An **on-demand bot** — and if you started it from a Space folder, that folder is already filled
+  in for you.
+
+This is the better option when meetings map cleanly onto folders you already have — a client, a
+project, a recurring engagement.
+
+## Sharing after the fact
+
+Open the recording and press **Share** in its toolbar. The share dialog asks two things.
+
+<Steps>
+  <Step title="Choose what to include">
+    Tick the assets you want copied:
+
+    | Asset | Default |
+    |---|---|
+    | **Video** | On, when the recording has video |
+    | **Audio** | On, when the recording has audio |
+    | **Transcript** | On |
+    | **Summary** | On, when a summary has been generated |
+
+    Assets the recording does not have are not offered. If you want the summary included, generate
+    it before sharing — see [Summaries](/meetings/summaries).
+  </Step>
+  <Step title="Choose the destination">
+    Pick a Space and a folder. You must select at least one asset and a destination before
+    **Share** will do anything.
+  </Step>
+</Steps>
+
+<Frame caption="The Share recording dialog: choose the assets, then the destination folder.">
+  <img src="/images/meetings/share-recording.png" alt="The Share recording modal with Audio, Video, Transcript and Summary checkboxes and a Choose folder button" />
+</Frame>
+
+## Where it lands
+
+Shared files appear under the Space's **Files → Meetings** tab, in the folder you chose. From there
+they behave like any other file in a Space — they show in the folder's Overview counts, and they
+are reachable by anyone with access to the account.
+
+<Note>
+Sharing **copies** the assets into the Space. The copy is independent of the original recording, so
+deleting the recording afterwards — or letting a timed retention period expire it — does not remove
+what you shared.
+</Note>
+
+## Starting a meeting from a folder
+
+The relationship works in both directions. A Space folder's **Meetings** panel has an **Add** menu
+with **Add Bot to Meeting**, which opens the on-demand bot form with that folder already set as the
+destination. Open the client's folder, send a bot to the call, and the recording comes back to the
+folder it came from.
+
+<CardGroup cols={2}>
+  <Card title="On-demand bots" icon="link" href="/meetings/on-demand-bots">
+    Sending a bot from a meeting URL.
+  </Card>
+  <Card title="Files and folders" icon="folder" href="/spaces/file-management">
+    How folders work in a Space, and how contacts get their own.
+  </Card>
+</CardGroup>

@@ -1,0 +1,38 @@
+---
+title: "Decisions and authorisations"
+description: "The two cards Abbie shows inline when she needs you to choose, or to give her permission."
+icon: "circle-check"
+---
+
+Sometimes Abbie can't just carry on: she needs an answer from you, or your permission to use something. Rather than guessing, she shows a card directly in the conversation, next to the step that raised it.
+
+There are two kinds of card, and they ask for different things.
+
+## Decision cards
+
+A decision card appears when Abbie needs you to choose between options, or to give her a piece of information she doesn't have. It shows the question, optional context, and, where relevant, a set of options to pick from (single-choice or multiple, depending on the question) plus an open text box if a free-form answer also makes sense.
+
+- **Submit** sends your answer back to Abbie as part of the conversation.
+- **Not now** tells her you're declining to answer for now; she'll carry on without it rather than asking again immediately.
+
+A recommended option is marked with a small pill, but it's never pre-selected for you: a decision only counts if you actually made it.
+
+Once answered, the card shows what happened: **Answered**, **Skipped**, or **No longer needed** if events overtook the question before you got to it.
+
+## Authorisation cards
+
+An authorisation card appears when a request would need Abbie to use an integration, or take an action worth confirming first. What it asks for depends on the situation:
+
+- **Confirm this action**: a one-off action worth a yes before she does it. Choosing **Yes, do it** approves just that one action; it isn't remembered as a standing permission.
+- **Connect an integration**: the integration needs a login before Abbie can use it at all. **Connect** opens the normal connection flow.
+- **Allow Abbie to use an integration**: Abbie already has a route to an integration but needs the account's go-ahead to use it. **Authorise** grants it for the whole account going forward.
+
+**Not now** is always available and is treated as a real answer: Abbie is told no, and continues without that tool rather than asking again straight away.
+
+<Note>
+Granting an integration for the whole account is an account admin decision. If you aren't an admin, the card tells you plainly that an admin needs to enable it, rather than showing a button that would fail.
+</Note>
+
+Abbie's tool catalogue is intentionally visible to her even before anything is authorised. That's what lets her say "I could do that through Xero, may I?" in the first place. She'll never use a tool without going through one of these cards first, and a card is never shown for something she's already allowed to do on her own (the account's own platform tools, for instance), so you won't get nagged for permissions that don't need asking.
+
+See [Connecting Abbie](/abbie/connecting/integrations-and-mcp) for how integrations and authorisation work more broadly, and [Credential identity](/abbie/connecting/credential-identity) for whose login a given call actually uses.

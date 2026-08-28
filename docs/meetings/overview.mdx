@@ -1,0 +1,118 @@
+---
+title: "Meetings Overview"
+description: "How the QuivaWorks notetaker joins your calls, records them, and files the results into a Space"
+icon: "video"
+---
+
+## What Meetings is
+
+QuivaWorks can send a **notetaker bot** into your video calls. The bot joins as an ordinary
+participant, records the call, transcribes it, and leaves behind a recording, a transcript and —
+on request — a written summary. Any of those can be filed into a [Space](/spaces/spaces) folder,
+where the rest of your work on that client or project already lives.
+
+There are two ways a bot gets into a meeting:
+
+<CardGroup cols={2}>
+  <Card title="From a connected calendar" icon="calendar" href="/meetings/connecting-a-calendar">
+    Connect Google Calendar or Microsoft Outlook. The bot can join every scheduled meeting
+    automatically, or you can schedule it onto individual events.
+  </Card>
+  <Card title="On demand, from a URL" icon="link" href="/meetings/on-demand-bots">
+    Paste the link to a call that is already running — or about to — and send a bot to it.
+    No calendar connection needed.
+  </Card>
+</CardGroup>
+
+## The lifecycle
+
+```
+calendar event  →  bot scheduled  →  bot joins  →  recording
+                                                      ↓
+                          transcript  →  summary  →  Space folder
+```
+
+Each step has its own surface in the product:
+
+| Stage | Where you do it |
+|---|---|
+| Connect a calendar | **Settings → Calendars** |
+| Set what the bot does | [Bot settings](/meetings/bot-settings), reachable from four places |
+| Put a bot on an event | **Meetings → Calendar** or **Upcoming Events** |
+| Send a bot to a live call | **Meetings → Bots → Add Bot to Meeting** |
+| Watch a call as it happens | The [live transcript](/meetings/live-transcript) page |
+| Play back, edit, annotate | **Meetings → Recordings** |
+| Write a summary | The recording's **Summary** tab |
+| File it into a Space | **Share recording**, or the bot's own Space & folder setting |
+
+## The Meetings page
+
+**Meetings** in the sidebar opens a page with four tabs:
+
+<CardGroup cols={2}>
+  <Card title="Calendar" icon="calendar-days">
+    Your connected calendars plotted on a month, week, day, year or list view.
+  </Card>
+  <Card title="Upcoming Events" icon="clock">
+    The same events as a forward-looking list, with the per-event actions on each row.
+  </Card>
+  <Card title="Recordings" icon="play">
+    Everything that has been recorded, as a list or on a calendar.
+  </Card>
+  <Card title="Bots" icon="robot">
+    Every bot — scheduled, live and finished — with its status and the actions it allows.
+  </Card>
+</CardGroup>
+
+The tab, the calendar view, the date, the time filter and the calendar sources are all held in the
+URL, so any view you are looking at can be copied out of the address bar and shared.
+
+<Frame caption="The Meetings page on the Calendar tab. The four tabs sit across the top.">
+  <img src="/images/meetings/meetings-calendar.png" alt="The Meetings page showing Calendar, Upcoming Events, Recordings and Bots tabs above a month calendar" />
+</Frame>
+
+<Note>
+Calendar, Recordings and Summarization Templates also appear as sections in your personal
+[Settings](/essentials/users/user-settings). Those are the same surfaces — Settings is where
+calendars are connected; the Meetings page is where you work day to day.
+</Note>
+
+## What is personal and what is shared
+
+A calendar connection is **personal** — it is OAuthed against your own Google or Microsoft
+account, and it is yours. Recordings, bots and summarization templates are visible across the
+account.
+
+Summarization templates have one extra rule: anyone can open a template and use it, but **only its
+creator can edit or delete it**. See [Summaries and templates](/meetings/summaries).
+
+<Warning>
+Recording a conversation carries legal obligations that vary by country and by state. The bot
+joins as a visible, named participant, and can be configured to announce itself in the meeting
+chat when it arrives — see [On bot join](/meetings/bot-settings#on-bot-join). Getting consent from
+participants remains your responsibility.
+</Warning>
+
+
+## Asking Abbie about a meeting
+
+[Abbie](/abbie/getting-started/introduction) ships with a built-in **Meetings** skill, so she can
+list recordings, read a transcript, summarise a meeting and share its files into a Space when you
+ask her to in conversation — the same operations described on these pages, without opening them.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Connect a calendar" icon="calendar-plus" href="/meetings/connecting-a-calendar">
+    The first thing to do — Google Calendar or Microsoft Outlook.
+  </Card>
+  <Card title="Bot settings reference" icon="sliders" href="/meetings/bot-settings">
+    Every field on the bot settings form, and what it changes.
+  </Card>
+  <Card title="Scheduling bots" icon="calendar-check" href="/meetings/scheduling-bots">
+    Putting a bot on an event, and the actions available at each point.
+  </Card>
+  <Card title="Sharing to a Space" icon="folder-open" href="/meetings/sharing-to-a-space">
+    Getting recordings, transcripts and summaries into your Space folders.
+  </Card>
+</CardGroup>

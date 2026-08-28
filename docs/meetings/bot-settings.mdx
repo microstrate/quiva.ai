@@ -1,0 +1,112 @@
+---
+title: "Bot Settings"
+description: "Every field on the notetaker's settings form — what it records, where the output goes, and what it says in the meeting"
+icon: "sliders"
+---
+
+## One form, four places
+
+The same bot settings form appears wherever a bot is configured:
+
+| Where | Applies to |
+|---|---|
+| **Settings → Calendars → Add calendar**, step 2 | The defaults for every meeting on that calendar |
+| An open calendar's **Settings** cog | The same defaults, edited later — with **Apply to existing bots** |
+| The **Bot settings** cog on an upcoming event, or a row in the **Bots** tab | That one bot |
+| **Add Bot to Meeting** | The [on-demand bot](/meetings/on-demand-bots) you are about to send |
+
+A bot's settings can only be edited while it is still scheduled to join in the future. Once it has
+joined the call there is nothing left to reconfigure, and the cog is replaced by a removal action.
+
+<Frame caption="The bot settings form, opened from Add Bot to Meeting.">
+  <img src="/images/meetings/bot-settings.png" alt="The Add a bot form showing Meeting URL, Bot name, Space and folder, Bot image, Record media type, Transcription, Join time and Recording retention" />
+</Frame>
+
+## Bot name
+
+<ParamField path="Bot name" type="string" required>
+  The participant name shown to everyone else in the meeting. This is what the other attendees see
+  in the participant list, so make it recognisable — your organisation's name reads better to
+  external guests than a generic one.
+
+  The **Add calendar** wizard pre-fills this with `QuivaWorks Notetaker`. **Add a bot** starts
+  blank, and will not submit until you give the bot a name.
+</ParamField>
+
+## Space & folder
+
+Where the meeting's outputs are saved. Choosing a Space and a folder here means the recording,
+transcript and summary are filed automatically as soon as they exist — they show up under the
+Space's **Files → Meetings** tab.
+
+Press **Choose space & folder** to open the folder picker. Leaving it unset means nothing is filed
+automatically; you can still share a recording into a Space afterwards. See
+[Sharing to a Space](/meetings/sharing-to-a-space).
+
+## Bot image
+
+The picture the bot shows as its camera feed while it is in the call.
+
+- **Upload image** — a JPG or PNG, cropped to 16:9.
+- **Browse gallery** — pick from the images already available in your account.
+- **Remove image** — go back to no image.
+
+## Recording
+
+<ParamField path="Record media type" type="enum" default="Audio">
+  What the bot captures. **Audio**, **Video**, or **Audio & Video**.
+</ParamField>
+
+<ParamField path="Transcription" type="enum" default="Post-recording">
+  When the transcript is produced.
+
+  - **Post-recording** — transcribed after the meeting ends.
+  - **Real-time** — transcribed as people speak. **This is what enables the
+    [live transcript](/meetings/live-transcript) page.** Without it, there is nothing to follow
+    during the call.
+  - **Disabled** — no transcript at all.
+</ParamField>
+
+<ParamField path="Join time (seconds)" type="number" default="0">
+  How many seconds after the meeting's scheduled start the bot should join. `0` means it joins at
+  the start time.
+</ParamField>
+
+<ParamField path="Recording retention" type="enum" default="Forever">
+  **Forever** keeps recordings until you delete them. **Timed** reveals a second field —
+  **Recording keep (hours)** — after which the recording is deleted automatically.
+</ParamField>
+
+<Note>
+If you want to follow a meeting live, you must set **Transcription** to **Real-time** *before* the
+bot joins. It cannot be switched on mid-call, and a bot that recorded with post-recording
+transcription has no live view to go back to.
+</Note>
+
+## On bot join
+
+An optional message the bot posts to the meeting chat when it arrives. Useful for telling the room
+that the call is being recorded.
+
+| Field | What it does |
+|---|---|
+| **Message on bot join** | Turns the announcement on |
+| **Send to** | **Host**, **Everyone**, or **Everyone except host** |
+| **Message** | The text to post |
+| **Pin message** | Pins it after sending — **Google Meet and Microsoft Teams only** |
+
+## On participant join
+
+An optional message sent when a *participant* joins, rather than when the bot does.
+
+| Field | What it does |
+|---|---|
+| **Message on participant join** | Turns it on |
+| **Message** | The text to post |
+| **Exclude host** | Do not send it to the meeting host |
+
+<Warning>
+These messages are the main way attendees are told a bot is present. The bot is a visible named
+participant either way, but an explicit announcement is a good habit — and in some jurisdictions,
+a requirement.
+</Warning>

@@ -1,0 +1,79 @@
+---
+title: "Scheduling Bots"
+description: "Putting a notetaker on a calendar event, and the actions available before, during and after a meeting"
+icon: "calendar-check"
+---
+
+## The Calendar and Upcoming Events tabs
+
+The first two tabs on the **Meetings** page show the same events in two shapes:
+
+- **Calendar** plots them on a day, week, month, year or list view.
+- **Upcoming Events** is a forward-looking list, with a time filter.
+
+Both draw from every calendar you have connected, and both carry the same per-event actions.
+
+### Filtering by source
+
+The **Calendars** filter selects which sources are plotted. As well as your connected Google and
+Microsoft calendars, it offers **My Tasks** — your QuivaWorks tasks that carry a due date or a
+scheduled-at date, placed on the same grid.
+
+A task entry is plotted on its **due date** where it has one, and on its **scheduled at** date
+otherwise, matching the [Space Tasks calendar](/spaces/scheduling#the-schedule-view). Task rows
+offer **Open task** rather than any bot action.
+
+## Putting a bot on an event
+
+If the event has no bot yet, its row shows **Schedule bot**. That creates a bot for the event using
+the calendar's default [bot settings](/meetings/bot-settings). The row immediately swaps to showing
+**Bot settings** instead.
+
+If the calendar was connected with **Join all meetings** on, events already have bots and there is
+nothing to schedule.
+
+<Note>
+An event that has already ended and was never recorded shows **Not recorded**, and offers nothing
+else. You cannot retrospectively record a meeting that has finished.
+</Note>
+
+## What each action means
+
+Which buttons appear depends on where the meeting is in its life and what the bot is doing.
+
+| Action | Appears when |
+|---|---|
+| **Schedule bot** | The event has no bot and has not ended |
+| **Bot settings** | The event has a bot that has not yet joined, failed, or finished |
+| **Add bot** | A previous bot finished (`Done`) but the meeting is still running — sends a fresh one |
+| **Recordings** | A recording exists for the event |
+| **Live Transcript** | The meeting is running now *and* the bot was configured **Real-time** |
+| **Kick the bot out of the meeting** | The bot is on its way into, or inside, the call |
+| **Remove the bot** | The bot has finished, failed, or the meeting has ended |
+| **Not recorded** | The meeting has ended with no recording |
+
+Both removal actions ask for confirmation first. They are not the same thing:
+
+- **Kick** removes the bot from a call it is currently in. Whatever it recorded up to that point
+  is kept.
+- **Remove** deletes the bot record for an event it never joined, or has already finished with.
+
+## Event details
+
+The **Details** action on an event opens its full information — attendees, times, the meeting link
+— alongside a **Join** button for the call itself.
+
+## Doing the same thing from a calendar
+
+Opening a calendar in **Settings → Calendars** shows only that calendar's events, on the same
+calendar surface with the same actions. Useful when you have several calendars connected and want
+to work through one of them.
+
+<CardGroup cols={2}>
+  <Card title="Bots tab" icon="robot" href="/meetings/bots-tab">
+    Every bot in one table, with its status.
+  </Card>
+  <Card title="On-demand bots" icon="link" href="/meetings/on-demand-bots">
+    Sending a bot to a call that is not on a connected calendar.
+  </Card>
+</CardGroup>

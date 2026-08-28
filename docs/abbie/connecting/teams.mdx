@@ -1,0 +1,96 @@
+---
+title: "Microsoft Teams"
+description: "Approving Abbie for your Microsoft 365 tenant, getting her into the Teams app catalog, and adding her to teams"
+icon: "microsoft"
+---
+
+Abbie can work in Microsoft Teams: in channels, in group chats and in 1:1 chats, the same as she
+does in [Slack](/abbie/connecting/slack) and in the web chat.
+
+<Warning>
+**Teams setup is not a single button.** Granting Microsoft 365 admin consent only approves Abbie
+for your organisation — it does **not** put her in Teams. The app package still has to be uploaded
+to your Teams app catalog and then added to the teams you want her in. Until that happens, Abbie
+appears nowhere in Teams, however green the connection looks in QuivaWorks.
+
+This is the single most common reason for "I connected it but nothing happens".
+</Warning>
+
+## What you need before you start
+
+- A **QuivaWorks account admin** to start the connection.
+- A **Microsoft 365 or Teams administrator** for the middle of it. If that is not you, send them
+  the setup page — steps 2 to 5 are theirs.
+
+## Connecting
+
+<Steps>
+  <Step title="Approve Abbie for your organisation">
+    An account admin selects **Connect Microsoft Teams** from the **Where Abbie works** card on the
+    [Abbie home page](/abbie/getting-started/abbie-home), or from Chat platforms in Integrations
+    settings. That opens Microsoft's admin-consent screen.
+
+    Approving it provisions Abbie in your tenant. The connection now shows as **consent granted** —
+    not as installed.
+  </Step>
+  <Step title="Download Abbie for Teams">
+    From **Set up Teams**, download the app package. This is the file your Teams admin uploads.
+  </Step>
+  <Step title="Open your Teams admin center">
+    The setup screen links straight to the Manage apps page in the Teams admin center.
+  </Step>
+  <Step title="Upload the file">
+    Upload the package you downloaded. This puts Abbie in your organisation's Teams app catalog.
+
+    QuivaWorks checks the catalog for you and moves on once it can see her there. **Check again**
+    re-runs the check if it has not caught up yet.
+  </Step>
+  <Step title="Choose which teams Abbie joins">
+    Pick the teams to install her into — up to **30 at a time**. QuivaWorks reports the result for
+    each one, and anything that failed stays selected so it can be retried.
+  </Step>
+  <Step title="Add your colleagues">
+    Once Abbie is in the catalog, invite the people who should have their own Abbie in Teams. Each
+    person's Teams identity is linked to their QuivaWorks account, so Abbie knows who she is
+    talking to.
+  </Step>
+</Steps>
+
+<Note>
+Installing Abbie into a team **does not require the team's owner** — she is added directly. The
+team list also includes private teams you may not be a member of. Choose deliberately.
+</Note>
+
+An install into a team covers that team's standard channels; you do not need to add her channel by
+channel.
+
+## Linking your own account
+
+Each person links their Teams identity to their QuivaWorks account so Abbie knows who she is
+speaking to. Message Abbie in Teams and she sends a link card, or link from the Chat platforms
+section of Integrations settings.
+
+Unlike Slack, there is no "DM her a keyword" shortcut — the card she sends carries its own button.
+
+## If she stops responding
+
+If Abbie says an administrator needs to approve her again, the tenant's consent is missing or
+incomplete. Every surface that reports this offers a **Re-approve permissions** action, which
+re-runs the admin-consent step from step 1.
+
+## Managing the connection
+
+From **Chat platforms** in Integrations settings you can connect another tenant, unlink your own
+Teams account (which detaches your identity but leaves the app installed), or add more people.
+
+Removing Abbie from a team, or from the tenant's app catalog, is done from Teams' own admin
+surfaces.
+
+<CardGroup cols={2}>
+  <Card title="Slack" icon="slack" href="/abbie/connecting/slack">
+    The other chat platform Abbie is connected through.
+  </Card>
+  <Card title="Integrations" icon="plug" href="/abbie/connecting/integrations-and-mcp">
+    What else Abbie can reach, and what she is authorised to use.
+  </Card>
+</CardGroup>

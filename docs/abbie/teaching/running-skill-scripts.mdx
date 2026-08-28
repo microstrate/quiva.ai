@@ -1,0 +1,39 @@
+---
+title: "Running a skill's scripts"
+description: "The sandbox a skill's own code runs in, what's preinstalled, and the approvals needed before Abbie can execute it."
+icon: "terminal"
+---
+
+Many published skills — including the Excel, Word, PowerPoint and PDF ones — ship Python scripts alongside their instructions, rather than relying on Abbie to write the equivalent code from scratch each time. Abbie can run these scripts, inside a sandbox built to limit what they can touch.
+
+## The sandbox
+
+A skill's scripts run with:
+
+- **No network access.** A script cannot reach the internet, your systems, or anything else outside the sandbox.
+- **No access to your uploaded documents.** A skill's scripts only ever see the skill's own files, plus whatever Abbie explicitly passes in.
+
+The only thing a script can write is its own output, which is what comes back to Abbie.
+
+### Preinstalled libraries
+
+Only these libraries are available to a script: `openpyxl`, `pandas`, `numpy`, `python-docx`, `python-pptx`, `pypdf`, `pdfplumber`, `reportlab`, `Pillow`, `lxml`, `beautifulsoup4`, `markitdown`.
+
+<Warning>
+A skill's own dependency list can't be installed. A skill that ships a `requirements.txt` still installs fine, but nothing in that file is ever fetched — only the libraries above are available, whatever the skill asks for.
+
+Where the file sits changes what you see. A `requirements.txt` at the top of a skill is taken as its dependency list, so its scripts are refused up front rather than run and failed halfway. One tucked away beside a single script, or shipped as documentation, doesn't block anything — those scripts run, and only fail if they actually reach for something missing. Either way the message names the `requirements.txt` file, so you can tell this apart from a broken skill.
+</Warning>
+
+## Two approvals before anything runs
+
+Running a skill's scripts at all takes two separate approvals:
+
+1. An account admin turns script execution on for the account.
+2. Each individual skill is approved on its own, on top of that.
+
+Approving a skill shows you the exact script files you're approving, not just the skill's name. Revoking approval is one click, and a skill that ships no scripts of its own offers no approval control at all, because there's nothing to approve.
+
+## LibreOffice isn't available
+
+Some document skills use LibreOffice for a final validation pass after producing a file. That step isn't available here, so it's skipped — the document itself is still produced, just without that last check.

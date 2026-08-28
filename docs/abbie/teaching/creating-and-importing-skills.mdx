@@ -1,0 +1,47 @@
+---
+title: "Creating and importing skills"
+description: "Writing a new skill from scratch, testing when it fires, and importing one from a SKILL.md bundle or GitHub."
+icon: "file-pen"
+---
+
+## Creating a skill
+
+Select **New skill** from the Skills tab in [Abbie's settings](/abbie/configuring/settings-overview). A skill is made up of:
+
+- **Name** and **description**: what it is, for your own reference and Abbie's.
+- **Instruction**: the actual guidance Abbie follows once the skill is active.
+- **Keywords and patterns** (optional, under advanced options): phrases or patterns that switch the skill on automatically. Leave these empty and the skill is discoverable-only: Abbie can still find and use it, but nothing you type triggers it directly.
+- **Always on**: an option for a skill that should apply to every conversation rather than only when triggered.
+- **Tool grants**: which tools become available to Abbie while this skill is active.
+- **Resources**: supporting files the skill can refer to (see below).
+
+### Testing when it fires
+
+Every skill's editor includes a quick test box: type a message Abbie might receive and it shows whether this skill would activate outright, or is merely something she could find and choose to use. This is the fastest way to check your keywords actually catch what you intend before you rely on them.
+
+### Adding file bundles
+
+A skill can carry its own supporting files: reference material, templates, anything Abbie should be able to pull up while the skill is active. Manage these from the file manager inside the skill's editor once it's been saved.
+
+These are read back exactly as written, not approximately, so templates and reference documents come back the way you uploaded them — including spreadsheets and other binary files.
+
+## Importing a skill
+
+Select **Import** from the Skills tab to bring in a skill written elsewhere, in the same `SKILL.md` bundle format used by Claude and shared on GitHub. Two ways in:
+
+<Tabs>
+  <Tab title="Drop a folder">
+    Drag the skill's folder onto the import dialog. Its `SKILL.md` and any accompanying files are read and previewed before you confirm.
+  </Tab>
+  <Tab title="GitHub URL">
+    Paste a link to a public GitHub repository (or folder within one) containing a `SKILL.md` bundle, and Abbie fetches it directly.
+  </Tab>
+</Tabs>
+
+You'll get a preview, name, description and instruction, to review and adjust before saving it as one of your own skills.
+
+<Note>
+Importing takes a folder or a GitHub URL, not a zip file. There's currently no way to export a skill you've created back out as a bundle.
+</Note>
+
+If you're after a skill someone else has already published rather than a specific bundle you have in hand, see [Browsing skills](/abbie/teaching/browsing-skills) — it installs through this same import path from a catalogue of trusted sources instead of a folder or URL you supply yourself.

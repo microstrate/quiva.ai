@@ -1,0 +1,43 @@
+---
+title: "Watching her think"
+description: "The stage strip that shows how Abbie is putting an answer together, live."
+icon: "diagram-project"
+---
+
+While Abbie is working on a reply, a row of small pills appears above it: the stage strip. Each pill is a step in producing the answer, and it fills in live as that step finishes.
+
+## The stages
+
+<Steps>
+  <Step title="Classify">
+    Abbie works out what you're actually asking, including whether it's more than one thing at once, in which case it gets split into parts before anything else happens.
+  </Step>
+  <Step title="Enrich">
+    She pulls in relevant memory and organisational context before drafting anything, so the answer is grounded in what she already knows about you and the account.
+  </Step>
+  <Step title="Router">
+    She decides how much firepower the request needs, and how many independent drafts to produce.
+  </Step>
+  <Step title="Experts">
+    One or more drafts get produced in parallel. On straightforward requests this is a single pass; on more demanding ones several run side by side and the strongest is chosen.
+  </Step>
+  <Step title="Judge">
+    When more than one draft was produced, an independent pass compares them and picks or combines the best answer.
+  </Step>
+  <Step title="Verify">
+    A final check reviews the answer against your preferences and the facts available before it's sent to you.
+  </Step>
+  <Step title="Output">
+    The finished reply.
+  </Step>
+</Steps>
+
+A stage pill can show as running, done, retried, or answered by a fallback model when the preferred one wasn't available. Selecting a completed pill expands it to show which model handled it, how long it took, and, for a signed-in session, a link into the full [cognition log](/abbie/transparency/cognition-log) for that step.
+
+## Collapsed and expanded
+
+While a run is fresh, the strip shows every stage in full. Once you've moved on to read older messages, it collapses to a one-line summary: how long the reply took, how many experts ran, and whether verification passed cleanly. Expand it again any time to see the detail.
+
+<Note>
+If a run is taking a while, that's usually a harder request working through several draft attempts rather than something stuck. See [Confidence and verification](/abbie/transparency/confidence-and-verification) for what each stage is actually checking.
+</Note>

@@ -1,0 +1,41 @@
+---
+title: "Reminders and schedules"
+description: "Asking Abbie to do something later, remind you about something, or repeat on a schedule."
+icon: "alarm-clock"
+---
+
+You can ask Abbie to act at a future time, or on a recurring schedule, just by saying so in plain language. No special syntax is required.
+
+<CodeGroup>
+```text one-off reminder
+Remind me tomorrow at 9am to send the invoice.
+```
+
+```text recurring task
+Every Monday morning, check in on the open items from last week.
+```
+
+```text scheduled work
+On the 1st of next month, put together a summary of this quarter.
+```
+</CodeGroup>
+
+Abbie confirms back the exact time and timezone she's scheduled it for, so there's never any ambiguity about when it'll fire, especially if you're not in your usual timezone at the time.
+
+## Reminders vs scheduled work
+
+A **reminder** is just a message Abbie will send you at the right time: a nudge, not a job. **Scheduled work** is a backlog item that starts at a given time and runs like anything else on her backlog. Both show up in the **Scheduled** view of the [Backlog page](/abbie/backlog/backlog-page), and both can repeat.
+
+## If a schedule couldn't fire on time
+
+If something prevented Abbie from firing a schedule right when it was due, she won't silently skip it. An overdue one-shot reminder or task shows as **Was due** with its original time, so the miss is visible rather than swallowed. A recurring schedule simply re-arms for its next occurrence.
+
+## Changing a schedule
+
+- **Reschedule** moves a one-off scheduled item to a new date and time.
+- **Stop repeating** cancels a recurring reminder or task without affecting anything else on your backlog.
+- To change *how often* something repeats, not just when it next fires, tell Abbie directly in a conversation. Recurrence is expressed as a real schedule under the hood, so it's simplest to describe the change in words rather than pick it from a date field.
+
+<Note>
+Cancelling a schedule stops future occurrences; it doesn't cancel the backlog item itself unless you also select **Stop Abbie** on it. See [Cancelling and deferring](/abbie/backlog/cancelling-and-deferring).
+</Note>
