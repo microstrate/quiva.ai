@@ -422,6 +422,332 @@
           }
         }
       }
+    },
+    "/trigger/email": {
+      "post": {
+        "summary": "Create an email trigger",
+        "description": "Creates a new email trigger for data processing and routing.",
+        "operationId": "createEmailTrigger",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.post.email",
+        "tags": [
+          "Email Triggers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailTriggerRequest"
+              },
+              "example": {
+                "name": "my-email-trigger",
+                "collection": "my-collection",
+                "description": "Email processing trigger",
+                "trigger_type": "email",
+                "flow_subject": "ms.hub.config.workflow.a.b"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stream trigger created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailTriggerResponse"
+                },
+                "example": {
+                  "body": {
+                    "name": "my-email-trigger",
+                    "collection": "my-collection",
+                    "description": "Email processing trigger",
+                    "trigger_type": "email",
+                    "flow_subject": "ms.hub.config.workflow.a.b",
+                    "subject": "ms.trigger.email.my-email-trigger",
+                    "type": "created",
+                    "email_published": "published_forward_email@quiva.ai",
+                    "email_draft": "draft_forward_email@quiva.ai"
+                  },
+                  "status_code": 201
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trigger/emails/{uid}": {
+      "get": {
+        "summary": "Retrieve a specific email",
+        "description": "Retrieves detailed information about a specific email.",
+        "operationId": "getEmail",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.get.emails",
+        "tags": [
+          "Emails"
+        ],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the email",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailResponse"
+                },
+                "example": {
+                  "body": {
+                    "uid": 1,
+                    "seq_num": 2,
+                    "subject": "Support ticket: 123",
+                    "body": "Support ticket body",
+                    "html_body": "<html>Support ticket body</html>",
+                    "from": [
+                      "customer@mail.com"
+                    ],
+                    "to": [
+                      "company@quiva.ai"
+                    ],
+                    "forwarded_to": [
+                      "company@quiva.ai"
+                    ],
+                    "timestamp": 1780403919,
+                    "attachments": [
+                      {
+                        "filename": "data.json",
+                        "content_type": "application/json",
+                        "size": 123,
+                        "status": "success"
+                      }
+                    ],
+                    "flow_subject": "ms.hub.config.workflow.a.b",
+                    "status": "success"
+                  },
+                  "metadata": {
+                    "subject": "ms.trigger-email.1"
+                  },
+                  "status_code": 200
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an email",
+        "description": "Marks an email as deleted (poison-pilled).",
+        "operationId": "deleteEmail",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.delete.emails",
+        "tags": [
+          "Emails"
+        ],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the email",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status_code": {
+                      "type": "integer",
+                      "description": "HTTP status code indicating success",
+                      "example": 200
+                    }
+                  }
+                },
+                "example": {
+                  "status_code": 200
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trigger/emails/{uid}/trigger": {
+      "post": {
+        "summary": "Trigger an email workflow",
+        "description": "Re-trigger an email workflow",
+        "operationId": "retriggerEmail",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.post.emails-trigger",
+        "tags": [
+          "Emails"
+        ],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the email",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully re-triggered email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status_code": {
+                      "type": "integer",
+                      "description": "HTTP status code indicating success",
+                      "example": 200
+                    }
+                  }
+                },
+                "example": {
+                  "status_code": 200
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trigger/emails/search": {
+      "post": {
+        "summary": "Retrieve a list of emails",
+        "description": "Search emails.",
+        "operationId": "searchEmail",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.trigger.get.emails-search",
+        "tags": [
+          "Emails"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchEmailResponse"
+                },
+                "example": {
+                  "body": {
+                    "results": [
+                      {
+                        "fields": {
+                          "attachments": 1,
+                          "flow_subject": "ms.hub.config.workflow.draft.a.b",
+                          "from": "customer1@quiva.ai",
+                          "status": "success",
+                          "timestamp": 1780403919
+                        },
+                        "id": "1"
+                      },
+                      {
+                        "fields": {
+                          "attachments": 0,
+                          "flow_subject": "ms.hub.config.workflow.draft.a.c",
+                          "from": "customer2@quiva.ai",
+                          "status": "failed",
+                          "timestamp": 1780403920
+                        },
+                        "id": "2"
+                      }
+                    ],
+                    "results_total": 2
+                  },
+                  "metadata": {
+                    "total_hits": 2
+                  },
+                  "status_code": 200
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -899,6 +1225,305 @@
             "type": "integer",
             "description": "HTTP status code indicating the result of the operation.",
             "example": 201
+          }
+        }
+      },
+      "EmailTriggerRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "trigger_type",
+          "flow_subject"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+            "example": "my-email-trigger"
+          },
+          "collection": {
+            "type": "string",
+            "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+            "example": "my-collection"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description explaining the trigger's purpose and function.",
+            "example": "Email processing trigger"
+          },
+          "trigger_type": {
+            "type": "string",
+            "enum": [
+              "email"
+            ],
+            "description": "Must be 'email' for this endpoint. Determines the trigger's behavior and available properties.",
+            "example": "email"
+          },
+          "flow_subject": {
+            "type": "string",
+            "description": "Subject of a flow to trigger when email is received.",
+            "example": "ms.hub.config.workflow.a.b"
+          }
+        }
+      },
+      "EmailTriggerResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Unique name identifier for the trigger. Used to construct the trigger's topic and subject.",
+                "example": "my-email-trigger"
+              },
+              "collection": {
+                "type": "string",
+                "description": "Logical grouping the trigger belongs to. Used for organizing and filtering triggers.",
+                "example": "my-collection"
+              },
+              "description": {
+                "type": "string",
+                "description": "Human-readable description explaining the trigger's purpose and function.",
+                "example": "Email processing trigger"
+              },
+              "subject": {
+                "type": "string",
+                "description": "Full subject identifier for the trigger, following the pattern \"ms.trigger.email.[name]\".",
+                "example": "ms.trigger.email.my-email-trigger"
+              },
+              "trigger_type": {
+                "type": "string",
+                "enum": [
+                  "email"
+                ],
+                "description": "Type of trigger, always 'email' for email triggers.",
+                "example": "email"
+              },
+              "type": {
+                "type": "string",
+                "description": "Specific type identifier providing additional classification information.",
+                "example": "email-trigger"
+              },
+              "flow_subject": {
+                "type": "string",
+                "description": "Subject of a flow to trigger when email is received.",
+                "example": "ms.hub.config.workflow.a.b"
+              },
+              "email_published": {
+                "type": "string",
+                "description": "Unique email generated for the trigger to run published version of a workflow specified in 'flow_subject'.",
+                "example": "published_forward_email@quiva.ai"
+              },
+              "email_draft": {
+                "type": "string",
+                "description": "Unique email generated for the trigger to run draft version of a workflow specified in 'flow_subject'.",
+                "example": "draft_forward_email@quiva.ai"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the operation.",
+            "example": 201
+          }
+        }
+      },
+      "EmailResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "uid": {
+                "type": "integer",
+                "description": "Unique identifier for the email.",
+                "example": 1
+              },
+              "seq_num": {
+                "type": "integer",
+                "description": "Sequence number for the email in mailbox.",
+                "example": 2
+              },
+              "subject": {
+                "type": "string",
+                "description": "Subject for the email",
+                "example": "Support ticket: 123"
+              },
+              "body": {
+                "type": "string",
+                "description": "Text version of the email body.",
+                "example": "Support ticket body"
+              },
+              "html_body": {
+                "type": "string",
+                "description": "HTML version of the email body.",
+                "example": "<html>Support ticket body</html>"
+              },
+              "from": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of 'from' addresses for the email",
+                "example": [
+                  "customer@mail.com"
+                ]
+              },
+              "to": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of 'to' addresses for the email",
+                "example": [
+                  "company@quiva.ai"
+                ]
+              },
+              "forwarded_to": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of 'forwarded to' addresses for the email",
+                "example": [
+                  "company@quiva.ai"
+                ]
+              },
+              "timestamp": {
+                "type": "integer",
+                "description": "Received timestamp for the email in mailbox.",
+                "example": 1780403919
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "failed"
+                ],
+                "description": "Status of the email processing, whether trigger was successful or failure.",
+                "example": "success"
+              },
+              "flow_subject": {
+                "type": "string",
+                "description": "Subject of a flow to trigger when email is received.",
+                "example": "ms.hub.config.workflow.a.b"
+              },
+              "attachments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "filename": {
+                      "type": "string",
+                      "description": "Name of the attached file.",
+                      "example": "data.json"
+                    },
+                    "content_type": {
+                      "type": "string",
+                      "description": "Content type of the attached file.",
+                      "example": "application/json"
+                    },
+                    "size": {
+                      "type": "integer",
+                      "description": "Size of the attached file.",
+                      "example": 123
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success",
+                        "failed"
+                      ],
+                      "description": "Status of the attachment download, whether download was successful or failure.",
+                      "example": "success"
+                    }
+                  }
+                },
+                "description": "List of 'attachments' for the email",
+                "example": [
+                  {
+                    "filename": "data.json",
+                    "content_type": "application/json",
+                    "size": 123,
+                    "status": "success"
+                  }
+                ]
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the operation.",
+            "example": 201
+          }
+        }
+      },
+      "SearchEmailResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "results": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "attachments": {
+                      "type": "integer",
+                      "description": "Total count of email attachments.",
+                      "example": 2
+                    },
+                    "flow_subject": {
+                      "type": "string",
+                      "description": "Subject of a flow to trigger when email is received.",
+                      "example": "ms.hub.config.workflow.a.b"
+                    },
+                    "from": {
+                      "type": "string",
+                      "description": "Comma separated list of 'from' addresses for the email",
+                      "example": "customer1@mail.com,customer1@mail.com"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success",
+                        "failed"
+                      ],
+                      "description": "Status of the email processing, whether trigger was successful or failure.",
+                      "example": "success"
+                    },
+                    "timestamp": {
+                      "type": "integer",
+                      "description": "Received timestamp for the email in mailbox.",
+                      "example": 1780403919
+                    }
+                  }
+                },
+                "description": "Array of emails data objects matching the query criteria."
+              },
+              "results_total": {
+                "type": "integer",
+                "description": "Total count of emails matching the query criteria.",
+                "example": 2
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "total_hits": {
+                "type": "string",
+                "description": "Total count of emails matching the query criteria.",
+                "example": 2
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the operation.",
+            "example": 200
           }
         }
       },
