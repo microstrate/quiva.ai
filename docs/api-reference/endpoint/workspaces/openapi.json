@@ -188,139 +188,139 @@
         "x-resource-type": "service",
         "x-resource": "microstrate.workspaces.get.tasks",
         "parameters": [
-                {
-                    "name": "space_id",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "archived",
-                    "in": "query",
-                    "schema": {
-                        "type": "boolean"
-                    }
-                },
-                {
-                    "name": "scheduled",
-                    "in": "query",
-                    "schema": {
-                        "type": "boolean"
-                    }
-                },
-                {
-                    "name": "limit",
-                    "in": "query",
-                    "description": "How many maximum results should be returned",
-                    "schema": {
-                        "type": "integer",
-                        "default": 300
-                    }
-                },
-                {
-                    "name": "offset",
-                    "in": "query",
-                    "description": "If there are more results than the limit, offset can be used to get to the next batch of results",
-                    "schema": {
-                        "type": "integer",
-                        "default": 0
-                    }
-                },
-                {
-                    "name": "sort_by",
-                    "in": "query",
-                    "description": "Name of the field used for sorting the list of results",
-                    "schema": {
-                        "type": "string",
-                        "default": "created_at"
-                    }
-                },
-                {
-                    "name": "sort_order",
-                    "in": "query",
-                    "description":"Should the results be sorted in ascending or descending order relative to sort_by field",
-                    "schema": {
-                        "type": "string",
-                        "enum": [
-                            "asc",
-                            "desc"
-                        ],
-                        "default": "asc"
-                    }
-                },
-                {
-                    "name": "created_by",
-                    "in": "query",
-                    "description": "Exact match on the user ID of the task creator",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "priority",
-                    "in": "query",
-                    "description": "Exact match on priority; comma-separated values to filter by priority",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "status",
-                    "in": "query",
-                    "description": "Exact match on status; comma-separated values to filter by multiple statuses",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "title",
-                    "in": "query",
-                    "description": "Term search on task title",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "asignees",
-                    "in": "query",
-                    "description": "Comma-separated assignee IDs; at least one must match",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "reporter",
-                    "in": "query",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "created_at",
-                    "in": "query",
-                    "description": "Filter by creation date. Use a single date or a range as `{start_date},{end_date}`",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "updated_at",
-                    "in": "query",
-                    "description": "Filter by last-updated date. Use a single date or a range as `{start_date},{end_date}`",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "scheduled_at",
-                    "in": "query",
-                    "description": "Filter by scheduled date. Use a single date or a range as `{start_date},{end_date}`",
-                    "schema": {
-                        "type": "string"
-                    }
-                }
+          {
+            "name": "space_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "scheduled",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many maximum results should be returned",
+            "schema": {
+              "type": "integer",
+              "default": 300
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "If there are more results than the limit, offset can be used to get to the next batch of results",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Name of the field used for sorting the list of results",
+            "schema": {
+              "type": "string",
+              "default": "created_at"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "Should the results be sorted in ascending or descending order relative to sort_by field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "created_by",
+            "in": "query",
+            "description": "Exact match on the user ID of the task creator",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "description": "Exact match on priority; comma-separated values to filter by priority",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Exact match on status; comma-separated values to filter by multiple statuses",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Term search on task title",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "asignees",
+            "in": "query",
+            "description": "Comma-separated assignee IDs; at least one must match",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reporter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "description": "Filter by creation date. Use a single date or a range as `{start_date},{end_date}`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updated_at",
+            "in": "query",
+            "description": "Filter by last-updated date. Use a single date or a range as `{start_date},{end_date}`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scheduled_at",
+            "in": "query",
+            "description": "Filter by scheduled date. Use a single date or a range as `{start_date},{end_date}`",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -764,13 +764,72 @@
           }
         }
       }
+    },
+    "/workspaces/task/{task_id}/mute": {
+      "post": {
+        "summary": "Mute every notification for a task",
+        "operationId": "muteNotification",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.post.task-mute",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unmute every notification for a task",
+        "operationId": "unmuteNotification",
+        "x-resource-type": "service",
+        "x-resource": "microstrate.workspaces.delete.task-mute",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "SpaceStatus": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -798,7 +857,10 @@
       },
       "CreateSpaceRequest": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -835,7 +897,9 @@
       },
       "UpdateSpaceRequest": {
         "type": "object",
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -1011,7 +1075,9 @@
       },
       "CreateTaskRequest": {
         "type": "object",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "properties": {
           "title": {
             "type": "string"
@@ -1061,7 +1127,9 @@
           },
           {
             "type": "object",
-            "required": ["id"],
+            "required": [
+              "id"
+            ],
             "properties": {
               "id": {
                 "type": "string"
@@ -1075,7 +1143,9 @@
       },
       "UpdateMultiTaskRequest": {
         "type": "object",
-        "required": ["tasks"],
+        "required": [
+          "tasks"
+        ],
         "properties": {
           "tasks": {
             "type": "array",
@@ -1150,7 +1220,9 @@
       },
       "CreateCommentRequest": {
         "type": "object",
-        "required": ["body"],
+        "required": [
+          "body"
+        ],
         "properties": {
           "body": {
             "type": "string",
@@ -1198,7 +1270,9 @@
       },
       "CommentReactionRequest": {
         "type": "object",
-        "required": ["reaction"],
+        "required": [
+          "reaction"
+        ],
         "properties": {
           "reaction": {
             "type": "object",
@@ -1228,6 +1302,14 @@
       }
     },
     "responses": {
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "BadRequest": {
         "description": "Bad Request",
         "content": {
