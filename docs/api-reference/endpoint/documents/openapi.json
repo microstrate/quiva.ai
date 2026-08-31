@@ -38,7 +38,7 @@
         }
     ],
     "paths": {
-        "/templates/{key}": {
+        "/file-generator/templates/{key}": {
             "get": {
                 "tags": [
                     "Templates"
@@ -252,7 +252,7 @@
                 }
             }
         },
-        "/templates": {
+        "/file-generator/templates": {
             "get": {
                 "tags": [
                     "Templates"
@@ -456,7 +456,7 @@
                 }
             }
         },
-        "/templates/{key}/publish": {
+        "/file-generator/templates/{key}/publish": {
             "post": {
                 "tags": [
                     "Templates"
@@ -500,7 +500,7 @@
                 }
             }
         },
-        "/templates/validate": {
+        "/file-generator/templates/validate": {
             "post": {
                 "tags": [
                     "Templates"
@@ -573,7 +573,7 @@
                 }
             }
         },
-        "/templates/{key}/unset": {
+        "/file-generator/templates/{key}/unset": {
             "patch": {
                 "tags": [
                     "Templates"
@@ -634,7 +634,7 @@
                 }
             }
         },
-        "/templates/trigger": {
+        "/file-generator/templates/trigger": {
             "post": {
                 "tags": [
                     "Templates"
@@ -765,7 +765,7 @@
                 }
             }
         },
-        "/documents/{key}": {
+        "/file-generator/documents/{key}": {
             "get": {
                 "tags": [
                     "Documents"
@@ -979,7 +979,7 @@
                 }
             }
         },
-        "/documents": {
+        "/file-generator/documents": {
             "get": {
                 "tags": [
                     "Documents"
@@ -1048,7 +1048,7 @@
                 }
             }
         },
-        "/documents/{key}/unset": {
+        "/file-generator/documents/{key}/unset": {
             "patch": {
                 "tags": [
                     "Documents"
@@ -1109,7 +1109,7 @@
                 }
             }
         },
-        "/documents/{key}/signature-url": {
+        "/file-generator/documents/{key}/signature-url": {
             "get": {
                 "tags": [
                     "Signatures"
@@ -1163,7 +1163,7 @@
                 }
             }
         },
-        "/webhooks/hellosign": {
+        "/file-generator/webhooks/hellosign/{account}": {
             "post": {
                 "tags": [
                     "Signatures"
@@ -1174,6 +1174,18 @@
                 "x-is-public": true,
                 "x-resource-type": "service",
                 "x-resource": "microstrate.file-generator.post.hellosign-callback",
+                "parameters": [
+                    {
+                        "name": "account",
+                        "in": "path",
+                        "required": true,
+                        "description": "account id",
+                        "schema": {
+                            "type": "string",
+                            "example": "123456"
+                        }
+                    }
+                ],
                 "security": [],
                 "requestBody": {
                     "required": true,
